@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.2.1 - 30th March 2026
+
+- Fixed `ReutersScraper` to follow HTTP redirects
+- Updated default feed URL to Google News RSS (Reuters
+  discontinued their public RSS feeds)
+
+
 ### v0.2.0 - 30th March 2026
 
 - Added `web_scraping` module:

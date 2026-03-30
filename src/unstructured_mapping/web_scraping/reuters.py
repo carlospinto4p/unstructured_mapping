@@ -8,7 +8,11 @@ import httpx
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.models import Article
 
-_DEFAULT_FEED_URL = "https://www.reutersagency.com/feed/"
+_DEFAULT_FEED_URL = (
+    "https://news.google.com/rss/search"
+    "?q=when:24h+allinurl:reuters.com"
+    "&ceid=US:en&hl=en-US&gl=US"
+)
 
 
 class ReutersScraper(Scraper):
@@ -42,6 +46,7 @@ class ReutersScraper(Scraper):
         response = httpx.get(
             self._feed_url,
             timeout=self._timeout,
+            follow_redirects=True,
         )
         response.raise_for_status()
         return self._parse_feed(response.text)
