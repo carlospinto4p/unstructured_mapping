@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "auto-lint and format Python files after edits"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "run pytest before git commits"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(uv sync|run|pip install|ruff)",
+      "Bash(git status|add|commit|diff|log|branch|checkout|switch|push|rm)",
+      "Bash(mkdir|echo|tree)"
+    ],
+    "deny": [
+      "Read(credentials/**)",
+      "Read(.env)"
+    ]
+  }
+}
