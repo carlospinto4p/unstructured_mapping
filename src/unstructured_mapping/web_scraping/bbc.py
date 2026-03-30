@@ -12,6 +12,56 @@ from unstructured_mapping.web_scraping.models import Article
 
 _DEFAULT_FEED_URL = "https://feeds.bbci.co.uk/news/rss.xml"
 
+BBC_FEEDS: dict[str, str] = {
+    "top": "https://feeds.bbci.co.uk/news/rss.xml",
+    "world": "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "business": (
+        "https://feeds.bbci.co.uk/news/business/rss.xml"
+    ),
+    "technology": (
+        "https://feeds.bbci.co.uk/news/technology/rss.xml"
+    ),
+    "science": (
+        "https://feeds.bbci.co.uk/news/science_and_environment"
+        "/rss.xml"
+    ),
+    "politics": (
+        "https://feeds.bbci.co.uk/news/politics/rss.xml"
+    ),
+    "health": (
+        "https://feeds.bbci.co.uk/news/health/rss.xml"
+    ),
+    "education": (
+        "https://feeds.bbci.co.uk/news/education/rss.xml"
+    ),
+    "entertainment": (
+        "https://feeds.bbci.co.uk/news/entertainment_and_arts"
+        "/rss.xml"
+    ),
+    "uk": "https://feeds.bbci.co.uk/news/uk/rss.xml",
+    "asia": (
+        "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
+    ),
+    "europe": (
+        "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
+    ),
+    "africa": (
+        "https://feeds.bbci.co.uk/news/world/africa/rss.xml"
+    ),
+    "latin_america": (
+        "https://feeds.bbci.co.uk/news/world/latin_america"
+        "/rss.xml"
+    ),
+    "middle_east": (
+        "https://feeds.bbci.co.uk/news/world/middle_east"
+        "/rss.xml"
+    ),
+    "us_canada": (
+        "https://feeds.bbci.co.uk/news/world/us_and_canada"
+        "/rss.xml"
+    ),
+}
+
 _USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -22,11 +72,12 @@ _USER_AGENT = (
 class BBCScraper(Scraper):
     """Scraper that fetches articles from BBC News RSS.
 
-    Parses the RSS feed for article metadata, then fetches
-    each article page to extract the full text.
+    Parses one or more RSS feeds for article metadata, then
+    optionally fetches each article page for the full text.
 
-    :param feed_url: RSS feed URL. Defaults to BBC News
-        top stories.
+    :param feed_urls: RSS feed URLs. Pass a single string or
+        a list. Defaults to BBC News top stories only. Use
+        ``BBC_FEEDS.values()`` for all feeds.
     :param fetch_full_text: Whether to fetch and parse the
         full article HTML. When ``False``, only the RSS
         summary is used.
@@ -35,11 +86,14 @@ class BBCScraper(Scraper):
 
     def __init__(
         self,
-        feed_url: str = _DEFAULT_FEED_URL,
+        feed_urls: str | list[str] = _DEFAULT_FEED_URL,
         fetch_full_text: bool = True,
         timeout: float = 30.0,
     ) -> None:
-        self._feed_url = feed_url
+        if isinstance(feed_urls, str):
+            self._feed_urls = [feed_urls]
+        else:
+            self._feed_urls = list(feed_urls)
         self._fetch_full_text = fetch_full_text
         self._timeout = timeout
 
@@ -49,20 +103,29 @@ class BBCScraper(Scraper):
         return "bbc"
 
     def fetch(self) -> list[Article]:
-        """Fetch articles from the BBC News RSS feed.
+        """Fetch articles from all configured RSS feeds.
+
+        Deduplicates by URL across feeds.
 
         :return: List of articles with full text when
             `fetch_full_text` is enabled.
         :raises httpx.HTTPStatusError: If any HTTP request
             fails.
         """
-        response = httpx.get(
-            self._feed_url,
-            timeout=self._timeout,
-            follow_redirects=True,
-        )
-        response.raise_for_status()
-        return self._parse_feed(response.text)
+        seen_urls: set[str] = set()
+        articles: list[Article] = []
+        for feed_url in self._feed_urls:
+            response = httpx.get(
+                feed_url,
+                timeout=self._timeout,
+                follow_redirects=True,
+            )
+            response.raise_for_status()
+            for article in self._parse_feed(response.text):
+                if article.url not in seen_urls:
+                    seen_urls.add(article.url)
+                    articles.append(article)
+        return articles
 
     def _parse_feed(self, xml: str) -> list[Article]:
         """Parse RSS XML into articles.

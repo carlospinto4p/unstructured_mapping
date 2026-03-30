@@ -67,6 +67,19 @@ print(f"Saved {new} new articles ({store.count()} total)")
 Available scrapers: `BBCScraper` (RSS + full text),
 `ReutersScraper` (RSS headlines).
 
+### CLI
+
+```bash
+# Scrape all sources (BBC + Reuters), all feeds
+uv run python -m unstructured_mapping.cli.scrape
+
+# BBC only, top stories feed
+uv run python -m unstructured_mapping.cli.scrape --sources bbc --feeds default
+
+# Show database stats
+uv run python -m unstructured_mapping.cli.scrape --stats
+```
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

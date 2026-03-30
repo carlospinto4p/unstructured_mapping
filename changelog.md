@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.4.0 - 30th March 2026
+
+- Added multi-feed support to `BBCScraper`:
+    - `feed_urls` parameter accepts a string or list
+    - `BBC_FEEDS` dict with 16 topic feeds
+    - In-memory deduplication across feeds
+- Added `cli.scrape` CLI script with argparse:
+    - `--sources`, `--feeds`, `--db`, `--no-full-text`,
+      `--stats`, `--timeout` options
+    - Run via `uv run python -m unstructured_mapping.cli.scrape`
+
+
 ### v0.3.0 - 30th March 2026
 
 - Added `BBCScraper` with full-text extraction via
