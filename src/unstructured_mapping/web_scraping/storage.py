@@ -1,10 +1,13 @@
 """SQLite storage for scraped articles."""
 
+import logging
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
 from unstructured_mapping.web_scraping.models import Article
+
+logger = logging.getLogger(__name__)
 
 _DEFAULT_DB_PATH = Path("data/articles.db")
 
@@ -65,7 +68,10 @@ class ArticleStore:
                 )
                 inserted += 1
             except sqlite3.IntegrityError:
-                pass
+                logger.debug(
+                    "Skipping duplicate: %s",
+                    article.url,
+                )
         self._conn.commit()
         return inserted
 
@@ -114,6 +120,12 @@ class ArticleStore:
     def close(self) -> None:
         """Close the database connection."""
         self._conn.close()
+
+    def __enter__(self) -> "ArticleStore":
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.close()
 
     @staticmethod
     def _row_to_article(

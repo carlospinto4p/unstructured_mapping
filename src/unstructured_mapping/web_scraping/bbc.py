@@ -1,14 +1,22 @@
 """BBC News RSS scraper with full-text extraction."""
 
+import logging
+
 import feedparser
 import httpx
 from bs4 import BeautifulSoup
 
 from unstructured_mapping.web_scraping.base import Scraper
+from unstructured_mapping.web_scraping.config import (
+    DEFAULT_TIMEOUT,
+    USER_AGENT,
+)
 from unstructured_mapping.web_scraping.models import Article
 from unstructured_mapping.web_scraping.parsing import (
     parse_feed_date,
 )
+
+logger = logging.getLogger(__name__)
 
 _DEFAULT_FEED_URL = "https://feeds.bbci.co.uk/news/rss.xml"
 
@@ -62,13 +70,6 @@ BBC_FEEDS: dict[str, str] = {
     ),
 }
 
-_USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/131.0.0.0 Safari/537.36"
-)
-
-
 class BBCScraper(Scraper):
     """Scraper that fetches articles from BBC News RSS.
 
@@ -88,7 +89,7 @@ class BBCScraper(Scraper):
         self,
         feed_urls: str | list[str] = _DEFAULT_FEED_URL,
         fetch_full_text: bool = True,
-        timeout: float = 30.0,
+        timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         super().__init__(
             feed_urls=feed_urls, timeout=timeout
@@ -143,10 +144,11 @@ class BBCScraper(Scraper):
                 url,
                 timeout=self._timeout,
                 follow_redirects=True,
-                headers={"User-Agent": _USER_AGENT},
+                headers={"User-Agent": USER_AGENT},
             )
             resp.raise_for_status()
         except httpx.HTTPError:
+            logger.warning("Failed to fetch %s", url)
             return ""
 
         soup = BeautifulSoup(resp.text, "html.parser")

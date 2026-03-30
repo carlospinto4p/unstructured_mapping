@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.4.2 - 31st March 2026
+
+- Added context manager support to `ArticleStore`
+- Added `logging` to `BBCScraper._extract_body()` and
+  `ArticleStore.save()` replacing silent exceptions
+- Added `web_scraping/config.py` with shared `USER_AGENT`
+  and `DEFAULT_TIMEOUT` constants
+
+
 ### v0.4.1 - 30th March 2026
 
 - Refactored scraper architecture:

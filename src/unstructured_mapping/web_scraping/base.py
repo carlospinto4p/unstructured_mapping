@@ -4,6 +4,9 @@ from abc import ABC, abstractmethod
 
 import httpx
 
+from unstructured_mapping.web_scraping.config import (
+    DEFAULT_TIMEOUT,
+)
 from unstructured_mapping.web_scraping.models import Article
 
 
@@ -21,7 +24,7 @@ class Scraper(ABC):
     def __init__(
         self,
         feed_urls: str | list[str],
-        timeout: float = 30.0,
+        timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         if isinstance(feed_urls, str):
             self._feed_urls = [feed_urls]

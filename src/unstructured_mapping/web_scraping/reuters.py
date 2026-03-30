@@ -3,6 +3,9 @@
 import feedparser
 
 from unstructured_mapping.web_scraping.base import Scraper
+from unstructured_mapping.web_scraping.config import (
+    DEFAULT_TIMEOUT,
+)
 from unstructured_mapping.web_scraping.models import Article
 from unstructured_mapping.web_scraping.parsing import (
     parse_feed_date,
@@ -31,7 +34,7 @@ class ReutersScraper(Scraper):
     def __init__(
         self,
         feed_urls: str | list[str] = _DEFAULT_FEED_URL,
-        timeout: float = 30.0,
+        timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         super().__init__(
             feed_urls=feed_urls, timeout=timeout

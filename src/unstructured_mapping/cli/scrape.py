@@ -19,6 +19,9 @@ from unstructured_mapping.web_scraping import (
     BBCScraper,
     ReutersScraper,
 )
+from unstructured_mapping.web_scraping.config import (
+    DEFAULT_TIMEOUT,
+)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -63,8 +66,9 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--timeout",
         type=float,
-        default=30.0,
-        help="HTTP timeout in seconds (default: 30).",
+        default=DEFAULT_TIMEOUT,
+        help="HTTP timeout in seconds "
+        f"(default: {DEFAULT_TIMEOUT}).",
     )
     return p
 
