@@ -9,6 +9,16 @@
 - [ ] Implement AP News scraper
 - [x] Implement BBC News scraper
 
+#### Refactoring (v0.4.0 review)
+
+- [x] Extract shared `_parse_date()` into `web_scraping/parsing.py` — duplicated in `bbc.py` and `reuters.py`
+- [x] Align scraper interfaces: rename `ReutersScraper.feed_url` → `feed_urls` (str | list), add `fetch_full_text` flag
+- [x] Move shared feed-fetching logic into `Scraper` base class (template method)
+- [ ] Add `__enter__`/`__exit__` to `ArticleStore` for context manager support
+- [ ] Add `logging` to `BBCScraper._extract_body()` and `ArticleStore.save()` instead of silent exception swallowing
+- [ ] Move `_USER_AGENT` and `DEFAULT_TIMEOUT` into shared `web_scraping/config.py`
+- [ ] Move mid-function `from time import mktime` to module level in `reuters.py`
+
 #### Knowledge graph — entity store
 
 - [ ] Define KG data model:

@@ -116,7 +116,9 @@ def main(argv: list[str] | None = None) -> None:
 
     if "reuters" in args.sources:
         print("Scraping Reuters (RSS headlines)...")
-        scraper_r = ReutersScraper(timeout=args.timeout)
+        scraper_r = ReutersScraper(
+            timeout=args.timeout
+        )
         articles_r = scraper_r.fetch()
         new_r = store.save(articles_r)
         total_new += new_r

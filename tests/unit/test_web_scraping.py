@@ -88,11 +88,11 @@ def test_reuters_source():
     assert scraper.source == "reuters"
 
 
-@patch("unstructured_mapping.web_scraping.reuters.httpx.get")
+@patch("unstructured_mapping.web_scraping.base.httpx.get")
 def test_reuters_fetch_parses_rss(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = ReutersScraper(
-        feed_url="https://fake.feed/rss"
+        feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
 
@@ -103,11 +103,11 @@ def test_reuters_fetch_parses_rss(mock_get):
     assert articles[0].source == "reuters"
 
 
-@patch("unstructured_mapping.web_scraping.reuters.httpx.get")
+@patch("unstructured_mapping.web_scraping.base.httpx.get")
 def test_reuters_fetch_parses_date(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = ReutersScraper(
-        feed_url="https://fake.feed/rss"
+        feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
 
@@ -117,11 +117,11 @@ def test_reuters_fetch_parses_date(mock_get):
     assert articles[0].published.tzinfo == timezone.utc
 
 
-@patch("unstructured_mapping.web_scraping.reuters.httpx.get")
+@patch("unstructured_mapping.web_scraping.base.httpx.get")
 def test_reuters_fetch_missing_date(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = ReutersScraper(
-        feed_url="https://fake.feed/rss"
+        feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
 
@@ -163,15 +163,17 @@ def test_bbc_source():
     assert scraper.source == "bbc"
 
 
-@patch("unstructured_mapping.web_scraping.bbc.httpx.get")
+@patch("httpx.get")
 def test_bbc_fetch_full_text(mock_get):
     def side_effect(url, **kwargs):
-        if "feeds.bbci" in url or "fake.feed" in url:
+        if "fake.feed" in url:
             return _mock_response(BBC_RSS)
         return _mock_response(BBC_HTML)
 
     mock_get.side_effect = side_effect
-    scraper = BBCScraper(feed_urls="https://fake.feed/rss")
+    scraper = BBCScraper(
+        feed_urls="https://fake.feed/rss"
+    )
     articles = scraper.fetch()
 
     assert len(articles) == 1
@@ -182,7 +184,7 @@ def test_bbc_fetch_full_text(mock_get):
     assert articles[0].source == "bbc"
 
 
-@patch("unstructured_mapping.web_scraping.bbc.httpx.get")
+@patch("httpx.get")
 def test_bbc_fetch_summary_only(mock_get):
     mock_get.return_value = _mock_response(BBC_RSS)
     scraper = BBCScraper(
@@ -194,15 +196,19 @@ def test_bbc_fetch_summary_only(mock_get):
     assert articles[0].body == "BBC summary."
 
 
-@patch("unstructured_mapping.web_scraping.bbc.httpx.get")
+@patch("httpx.get")
 def test_bbc_fallback_on_extraction_failure(mock_get):
     def side_effect(url, **kwargs):
         if "fake.feed" in url:
             return _mock_response(BBC_RSS)
-        return _mock_response("<html><body>No article</body></html>")
+        return _mock_response(
+            "<html><body>No article</body></html>"
+        )
 
     mock_get.side_effect = side_effect
-    scraper = BBCScraper(feed_urls="https://fake.feed/rss")
+    scraper = BBCScraper(
+        feed_urls="https://fake.feed/rss"
+    )
     articles = scraper.fetch()
 
     assert articles[0].body == "BBC summary."

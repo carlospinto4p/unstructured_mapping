@@ -1,14 +1,14 @@
 """BBC News RSS scraper with full-text extraction."""
 
-from datetime import datetime, timezone
-from time import mktime
-
 import feedparser
 import httpx
 from bs4 import BeautifulSoup
 
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.models import Article
+from unstructured_mapping.web_scraping.parsing import (
+    parse_feed_date,
+)
 
 _DEFAULT_FEED_URL = "https://feeds.bbci.co.uk/news/rss.xml"
 
@@ -90,42 +90,15 @@ class BBCScraper(Scraper):
         fetch_full_text: bool = True,
         timeout: float = 30.0,
     ) -> None:
-        if isinstance(feed_urls, str):
-            self._feed_urls = [feed_urls]
-        else:
-            self._feed_urls = list(feed_urls)
+        super().__init__(
+            feed_urls=feed_urls, timeout=timeout
+        )
         self._fetch_full_text = fetch_full_text
-        self._timeout = timeout
 
     @property
     def source(self) -> str:
         """Return ``"bbc"``."""
         return "bbc"
-
-    def fetch(self) -> list[Article]:
-        """Fetch articles from all configured RSS feeds.
-
-        Deduplicates by URL across feeds.
-
-        :return: List of articles with full text when
-            `fetch_full_text` is enabled.
-        :raises httpx.HTTPStatusError: If any HTTP request
-            fails.
-        """
-        seen_urls: set[str] = set()
-        articles: list[Article] = []
-        for feed_url in self._feed_urls:
-            response = httpx.get(
-                feed_url,
-                timeout=self._timeout,
-                follow_redirects=True,
-            )
-            response.raise_for_status()
-            for article in self._parse_feed(response.text):
-                if article.url not in seen_urls:
-                    seen_urls.add(article.url)
-                    articles.append(article)
-        return articles
 
     def _parse_feed(self, xml: str) -> list[Article]:
         """Parse RSS XML into articles.
@@ -139,7 +112,7 @@ class BBCScraper(Scraper):
             url = entry.get("link", "")
             title = entry.get("title", "")
             summary = entry.get("summary", "")
-            published = self._parse_date(entry)
+            published = parse_feed_date(entry)
 
             if self._fetch_full_text and url:
                 body = self._extract_body(url)
@@ -186,20 +159,4 @@ class BBCScraper(Scraper):
             p.get_text(strip=True)
             for p in paragraphs
             if p.get_text(strip=True)
-        )
-
-    @staticmethod
-    def _parse_date(
-        entry: feedparser.FeedParserDict,
-    ) -> datetime | None:
-        """Extract publication date from a feed entry.
-
-        :param entry: A single RSS feed entry.
-        :return: Parsed datetime or ``None``.
-        """
-        parsed = entry.get("published_parsed")
-        if parsed is None:
-            return None
-        return datetime.fromtimestamp(
-            mktime(parsed), tz=timezone.utc
         )

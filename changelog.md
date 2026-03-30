@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.4.1 - 30th March 2026
+
+- Refactored scraper architecture:
+    - Extracted `parse_feed_date()` into `web_scraping/parsing.py`
+    - Moved `fetch()` with dedup logic into `Scraper` base class
+      (template method pattern)
+    - Aligned `ReutersScraper` to use `feed_urls` (str | list)
+      matching `BBCScraper` interface
+    - Removed duplicated date parsing and feed-fetching code
+
+
 ### v0.4.0 - 30th March 2026
 
 - Added multi-feed support to `BBCScraper`:
