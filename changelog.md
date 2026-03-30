@@ -1,5 +1,18 @@
 ## Changelog
 
+### v0.4.3 - 31st March 2026
+
+- Optimized `Scraper` base class:
+    - Persistent `httpx.Client` with connection pooling
+    - Added `close()` and context manager support
+- Optimized `BBCScraper` full-text extraction:
+    - Parallel fetching with `ThreadPoolExecutor` (8 workers)
+    - ~7x speedup (21s vs ~150s for 400 articles)
+- Optimized `ArticleStore.save()`:
+    - Bulk `INSERT OR IGNORE` with `executemany()`
+    - 506 articles saved in 47ms
+
+
 ### v0.4.2 - 31st March 2026
 
 - Added context manager support to `ArticleStore`

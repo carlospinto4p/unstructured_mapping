@@ -6,6 +6,7 @@ import httpx
 
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
+    USER_AGENT,
 )
 from unstructured_mapping.web_scraping.models import Article
 
@@ -16,6 +17,10 @@ class Scraper(ABC):
     Provides a template-method :meth:`fetch` that iterates
     over feed URLs, fetches each one, deduplicates by URL,
     and delegates parsing to :meth:`_parse_feed`.
+
+    Uses a persistent ``httpx.Client`` for connection
+    pooling. Call :meth:`close` when done, or use as a
+    context manager.
 
     :param feed_urls: One or more RSS feed URLs.
     :param timeout: HTTP request timeout in seconds.
@@ -31,6 +36,11 @@ class Scraper(ABC):
         else:
             self._feed_urls = list(feed_urls)
         self._timeout = timeout
+        self._client = httpx.Client(
+            timeout=timeout,
+            follow_redirects=True,
+            headers={"User-Agent": USER_AGENT},
+        )
 
     @property
     @abstractmethod
@@ -57,11 +67,7 @@ class Scraper(ABC):
         seen_urls: set[str] = set()
         articles: list[Article] = []
         for feed_url in self._feed_urls:
-            response = httpx.get(
-                feed_url,
-                timeout=self._timeout,
-                follow_redirects=True,
-            )
+            response = self._client.get(feed_url)
             response.raise_for_status()
             for article in self._parse_feed(
                 response.text
@@ -70,3 +76,13 @@ class Scraper(ABC):
                     seen_urls.add(article.url)
                     articles.append(article)
         return articles
+
+    def close(self) -> None:
+        """Close the HTTP client."""
+        self._client.close()
+
+    def __enter__(self) -> "Scraper":
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.close()

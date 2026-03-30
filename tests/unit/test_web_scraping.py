@@ -86,15 +86,17 @@ def _mock_response(text: str):
 def test_reuters_source():
     scraper = ReutersScraper()
     assert scraper.source == "reuters"
+    scraper.close()
 
 
-@patch("unstructured_mapping.web_scraping.base.httpx.get")
+@patch("httpx.Client.get")
 def test_reuters_fetch_parses_rss(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = ReutersScraper(
         feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
+    scraper.close()
 
     assert len(articles) == 2
     assert articles[0].title == "Test headline"
@@ -103,13 +105,14 @@ def test_reuters_fetch_parses_rss(mock_get):
     assert articles[0].source == "reuters"
 
 
-@patch("unstructured_mapping.web_scraping.base.httpx.get")
+@patch("httpx.Client.get")
 def test_reuters_fetch_parses_date(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = ReutersScraper(
         feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
+    scraper.close()
 
     assert articles[0].published is not None
     assert articles[0].published.year == 2026
@@ -117,13 +120,14 @@ def test_reuters_fetch_parses_date(mock_get):
     assert articles[0].published.tzinfo == timezone.utc
 
 
-@patch("unstructured_mapping.web_scraping.base.httpx.get")
+@patch("httpx.Client.get")
 def test_reuters_fetch_missing_date(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = ReutersScraper(
         feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
+    scraper.close()
 
     assert articles[1].published is None
 
@@ -161,9 +165,10 @@ BBC_HTML = """\
 def test_bbc_source():
     scraper = BBCScraper()
     assert scraper.source == "bbc"
+    scraper.close()
 
 
-@patch("httpx.get")
+@patch("httpx.Client.get")
 def test_bbc_fetch_full_text(mock_get):
     def side_effect(url, **kwargs):
         if "fake.feed" in url:
@@ -175,6 +180,7 @@ def test_bbc_fetch_full_text(mock_get):
         feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
+    scraper.close()
 
     assert len(articles) == 1
     assert articles[0].title == "BBC headline"
@@ -184,7 +190,7 @@ def test_bbc_fetch_full_text(mock_get):
     assert articles[0].source == "bbc"
 
 
-@patch("httpx.get")
+@patch("httpx.Client.get")
 def test_bbc_fetch_summary_only(mock_get):
     mock_get.return_value = _mock_response(BBC_RSS)
     scraper = BBCScraper(
@@ -192,11 +198,12 @@ def test_bbc_fetch_summary_only(mock_get):
         fetch_full_text=False,
     )
     articles = scraper.fetch()
+    scraper.close()
 
     assert articles[0].body == "BBC summary."
 
 
-@patch("httpx.get")
+@patch("httpx.Client.get")
 def test_bbc_fallback_on_extraction_failure(mock_get):
     def side_effect(url, **kwargs):
         if "fake.feed" in url:
@@ -210,6 +217,7 @@ def test_bbc_fallback_on_extraction_failure(mock_get):
         feed_urls="https://fake.feed/rss"
     )
     articles = scraper.fetch()
+    scraper.close()
 
     assert articles[0].body == "BBC summary."
 
@@ -228,53 +236,57 @@ def _make_article(url="https://example.com/1", title="T"):
 
 def test_store_save_and_load(tmp_path):
     db = tmp_path / "test.db"
-    store = ArticleStore(db_path=db)
-    articles = [_make_article()]
-    inserted = store.save(articles)
+    with ArticleStore(db_path=db) as store:
+        articles = [_make_article()]
+        inserted = store.save(articles)
 
-    assert inserted == 1
-    loaded = store.load()
-    assert len(loaded) == 1
-    assert loaded[0].title == "T"
-    assert loaded[0].body == "Body text"
-    store.close()
+        assert inserted == 1
+        loaded = store.load()
+        assert len(loaded) == 1
+        assert loaded[0].title == "T"
+        assert loaded[0].body == "Body text"
 
 
 def test_store_deduplication(tmp_path):
     db = tmp_path / "test.db"
-    store = ArticleStore(db_path=db)
-    articles = [_make_article()]
-    store.save(articles)
-    inserted = store.save(articles)
+    with ArticleStore(db_path=db) as store:
+        articles = [_make_article()]
+        store.save(articles)
+        inserted = store.save(articles)
 
-    assert inserted == 0
-    assert store.count() == 1
-    store.close()
+        assert inserted == 0
+        assert store.count() == 1
 
 
 def test_store_filter_by_source(tmp_path):
     db = tmp_path / "test.db"
-    store = ArticleStore(db_path=db)
-    a1 = Article(
-        title="A", body="B", url="u1", source="bbc"
-    )
-    a2 = Article(
-        title="C", body="D", url="u2", source="reuters"
-    )
-    store.save([a1, a2])
+    with ArticleStore(db_path=db) as store:
+        a1 = Article(
+            title="A", body="B", url="u1", source="bbc"
+        )
+        a2 = Article(
+            title="C",
+            body="D",
+            url="u2",
+            source="reuters",
+        )
+        store.save([a1, a2])
 
-    assert store.count(source="bbc") == 1
-    assert store.count(source="reuters") == 1
-    assert store.count() == 2
-    bbc_articles = store.load(source="bbc")
-    assert len(bbc_articles) == 1
-    assert bbc_articles[0].title == "A"
-    store.close()
+        assert store.count(source="bbc") == 1
+        assert store.count(source="reuters") == 1
+        assert store.count() == 2
+        bbc_articles = store.load(source="bbc")
+        assert len(bbc_articles) == 1
+        assert bbc_articles[0].title == "A"
 
 
 def test_store_count_empty(tmp_path):
     db = tmp_path / "test.db"
-    store = ArticleStore(db_path=db)
+    with ArticleStore(db_path=db) as store:
+        assert store.count() == 0
 
-    assert store.count() == 0
-    store.close()
+
+def test_store_save_empty(tmp_path):
+    db = tmp_path / "test.db"
+    with ArticleStore(db_path=db) as store:
+        assert store.save([]) == 0

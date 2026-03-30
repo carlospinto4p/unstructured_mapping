@@ -41,39 +41,41 @@ class ArticleStore:
     def save(self, articles: list[Article]) -> int:
         """Save articles, skipping duplicates by URL.
 
+        Uses bulk insert for performance.
+
         :param articles: Articles to store.
         :return: Number of newly inserted articles.
         """
+        if not articles:
+            return 0
         now = datetime.now(timezone.utc).isoformat()
-        inserted = 0
-        for article in articles:
-            pub = (
-                article.published.isoformat()
-                if article.published
-                else None
+        before = self._conn.execute(
+            "SELECT COUNT(*) FROM articles"
+        ).fetchone()[0]
+        rows = [
+            (
+                a.url,
+                a.title,
+                a.body,
+                a.source,
+                a.published.isoformat()
+                if a.published
+                else None,
+                now,
             )
-            try:
-                self._conn.execute(
-                    "INSERT INTO articles "
-                    "(url, title, body, source, published, "
-                    "scraped_at) VALUES (?, ?, ?, ?, ?, ?)",
-                    (
-                        article.url,
-                        article.title,
-                        article.body,
-                        article.source,
-                        pub,
-                        now,
-                    ),
-                )
-                inserted += 1
-            except sqlite3.IntegrityError:
-                logger.debug(
-                    "Skipping duplicate: %s",
-                    article.url,
-                )
+            for a in articles
+        ]
+        self._conn.executemany(
+            "INSERT OR IGNORE INTO articles "
+            "(url, title, body, source, published, "
+            "scraped_at) VALUES (?, ?, ?, ?, ?, ?)",
+            rows,
+        )
         self._conn.commit()
-        return inserted
+        after = self._conn.execute(
+            "SELECT COUNT(*) FROM articles"
+        ).fetchone()[0]
+        return after - before
 
     def load(
         self, source: str | None = None

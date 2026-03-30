@@ -1,6 +1,7 @@
 """BBC News RSS scraper with full-text extraction."""
 
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 import feedparser
 import httpx
@@ -9,7 +10,6 @@ from bs4 import BeautifulSoup
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
-    USER_AGENT,
 )
 from unstructured_mapping.web_scraping.models import Article
 from unstructured_mapping.web_scraping.parsing import (
@@ -70,11 +70,15 @@ BBC_FEEDS: dict[str, str] = {
     ),
 }
 
+_MAX_WORKERS = 8
+
+
 class BBCScraper(Scraper):
     """Scraper that fetches articles from BBC News RSS.
 
     Parses one or more RSS feeds for article metadata, then
-    optionally fetches each article page for the full text.
+    optionally fetches each article page for the full text
+    using parallel requests.
 
     :param feed_urls: RSS feed URLs. Pass a single string or
         a list. Defaults to BBC News top stories only. Use
@@ -83,6 +87,8 @@ class BBCScraper(Scraper):
         full article HTML. When ``False``, only the RSS
         summary is used.
     :param timeout: HTTP request timeout in seconds.
+    :param max_workers: Max parallel threads for full-text
+        extraction.
     """
 
     def __init__(
@@ -90,11 +96,13 @@ class BBCScraper(Scraper):
         feed_urls: str | list[str] = _DEFAULT_FEED_URL,
         fetch_full_text: bool = True,
         timeout: float = DEFAULT_TIMEOUT,
+        max_workers: int = _MAX_WORKERS,
     ) -> None:
         super().__init__(
             feed_urls=feed_urls, timeout=timeout
         )
         self._fetch_full_text = fetch_full_text
+        self._max_workers = max_workers
 
     @property
     def source(self) -> str:
@@ -104,24 +112,33 @@ class BBCScraper(Scraper):
     def _parse_feed(self, xml: str) -> list[Article]:
         """Parse RSS XML into articles.
 
+        When full-text extraction is enabled, article bodies
+        are fetched in parallel using a thread pool.
+
         :param xml: Raw RSS XML string.
         :return: Parsed articles.
         """
         feed = feedparser.parse(xml)
+
+        entries = [
+            (
+                entry.get("link", ""),
+                entry.get("title", ""),
+                entry.get("summary", ""),
+                parse_feed_date(entry),
+            )
+            for entry in feed.entries
+        ]
+
+        if self._fetch_full_text:
+            urls = [url for url, _, _, _ in entries]
+            bodies = self._extract_bodies(urls)
+        else:
+            bodies = {}
+
         articles: list[Article] = []
-        for entry in feed.entries:
-            url = entry.get("link", "")
-            title = entry.get("title", "")
-            summary = entry.get("summary", "")
-            published = parse_feed_date(entry)
-
-            if self._fetch_full_text and url:
-                body = self._extract_body(url)
-                if not body:
-                    body = summary
-            else:
-                body = summary
-
+        for url, title, summary, published in entries:
+            body = bodies.get(url) or summary
             articles.append(
                 Article(
                     title=title,
@@ -133,6 +150,28 @@ class BBCScraper(Scraper):
             )
         return articles
 
+    def _extract_bodies(
+        self, urls: list[str]
+    ) -> dict[str, str]:
+        """Fetch multiple article pages in parallel.
+
+        :param urls: Article URLs to fetch.
+        :return: Mapping of URL to extracted body text.
+        """
+        results: dict[str, str] = {}
+        urls_to_fetch = [u for u in urls if u]
+        with ThreadPoolExecutor(
+            max_workers=self._max_workers
+        ) as pool:
+            futures = {
+                pool.submit(self._extract_body, url): url
+                for url in urls_to_fetch
+            }
+            for future in futures:
+                url = futures[future]
+                results[url] = future.result()
+        return results
+
     def _extract_body(self, url: str) -> str:
         """Fetch an article page and extract body text.
 
@@ -140,12 +179,7 @@ class BBCScraper(Scraper):
         :return: Extracted text, or empty string on failure.
         """
         try:
-            resp = httpx.get(
-                url,
-                timeout=self._timeout,
-                follow_redirects=True,
-                headers={"User-Agent": USER_AGENT},
-            )
+            resp = self._client.get(url)
             resp.raise_for_status()
         except httpx.HTTPError:
             logger.warning("Failed to fetch %s", url)
