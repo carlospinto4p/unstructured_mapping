@@ -7,7 +7,7 @@
 - [x] Create `web_scraping` module with base scraper interface
 - [x] Implement Reuters scraper (first source)
 - [ ] Implement AP News scraper
-- [ ] Implement BBC News scraper
+- [x] Implement BBC News scraper
 
 #### Knowledge graph — entity store
 

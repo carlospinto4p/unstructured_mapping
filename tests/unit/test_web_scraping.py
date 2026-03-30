@@ -7,6 +7,8 @@ import pytest
 
 from unstructured_mapping.web_scraping import (
     Article,
+    ArticleStore,
+    BBCScraper,
     ReutersScraper,
     Scraper,
 )
@@ -124,3 +126,149 @@ def test_reuters_fetch_missing_date(mock_get):
     articles = scraper.fetch()
 
     assert articles[1].published is None
+
+
+# -- BBCScraper --
+
+
+BBC_RSS = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>BBC News</title>
+    <item>
+      <title>BBC headline</title>
+      <link>https://www.bbc.com/news/test-article</link>
+      <description>BBC summary.</description>
+      <pubDate>Mon, 30 Mar 2026 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
+"""
+
+BBC_HTML = """\
+<html><body>
+<article>
+  <p>First paragraph of the article.</p>
+  <p>Second paragraph with more details.</p>
+  <p></p>
+  <p>Third paragraph conclusion.</p>
+</article>
+</body></html>
+"""
+
+
+def test_bbc_source():
+    scraper = BBCScraper()
+    assert scraper.source == "bbc"
+
+
+@patch("unstructured_mapping.web_scraping.bbc.httpx.get")
+def test_bbc_fetch_full_text(mock_get):
+    def side_effect(url, **kwargs):
+        if "feeds.bbci" in url or "fake.feed" in url:
+            return _mock_response(BBC_RSS)
+        return _mock_response(BBC_HTML)
+
+    mock_get.side_effect = side_effect
+    scraper = BBCScraper(feed_url="https://fake.feed/rss")
+    articles = scraper.fetch()
+
+    assert len(articles) == 1
+    assert articles[0].title == "BBC headline"
+    assert "First paragraph" in articles[0].body
+    assert "Second paragraph" in articles[0].body
+    assert "Third paragraph" in articles[0].body
+    assert articles[0].source == "bbc"
+
+
+@patch("unstructured_mapping.web_scraping.bbc.httpx.get")
+def test_bbc_fetch_summary_only(mock_get):
+    mock_get.return_value = _mock_response(BBC_RSS)
+    scraper = BBCScraper(
+        feed_url="https://fake.feed/rss",
+        fetch_full_text=False,
+    )
+    articles = scraper.fetch()
+
+    assert articles[0].body == "BBC summary."
+
+
+@patch("unstructured_mapping.web_scraping.bbc.httpx.get")
+def test_bbc_fallback_on_extraction_failure(mock_get):
+    def side_effect(url, **kwargs):
+        if "fake.feed" in url:
+            return _mock_response(BBC_RSS)
+        return _mock_response("<html><body>No article</body></html>")
+
+    mock_get.side_effect = side_effect
+    scraper = BBCScraper(feed_url="https://fake.feed/rss")
+    articles = scraper.fetch()
+
+    assert articles[0].body == "BBC summary."
+
+
+# -- ArticleStore --
+
+
+def _make_article(url="https://example.com/1", title="T"):
+    return Article(
+        title=title,
+        body="Body text",
+        url=url,
+        source="test",
+    )
+
+
+def test_store_save_and_load(tmp_path):
+    db = tmp_path / "test.db"
+    store = ArticleStore(db_path=db)
+    articles = [_make_article()]
+    inserted = store.save(articles)
+
+    assert inserted == 1
+    loaded = store.load()
+    assert len(loaded) == 1
+    assert loaded[0].title == "T"
+    assert loaded[0].body == "Body text"
+    store.close()
+
+
+def test_store_deduplication(tmp_path):
+    db = tmp_path / "test.db"
+    store = ArticleStore(db_path=db)
+    articles = [_make_article()]
+    store.save(articles)
+    inserted = store.save(articles)
+
+    assert inserted == 0
+    assert store.count() == 1
+    store.close()
+
+
+def test_store_filter_by_source(tmp_path):
+    db = tmp_path / "test.db"
+    store = ArticleStore(db_path=db)
+    a1 = Article(
+        title="A", body="B", url="u1", source="bbc"
+    )
+    a2 = Article(
+        title="C", body="D", url="u2", source="reuters"
+    )
+    store.save([a1, a2])
+
+    assert store.count(source="bbc") == 1
+    assert store.count(source="reuters") == 1
+    assert store.count() == 2
+    bbc_articles = store.load(source="bbc")
+    assert len(bbc_articles) == 1
+    assert bbc_articles[0].title == "A"
+    store.close()
+
+
+def test_store_count_empty(tmp_path):
+    db = tmp_path / "test.db"
+    store = ArticleStore(db_path=db)
+
+    assert store.count() == 0
+    store.close()

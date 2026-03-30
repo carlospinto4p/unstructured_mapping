@@ -47,21 +47,25 @@ for mention in result.mentions:
 
 ## Web Scraping
 
-The `web_scraping` module provides a base `Scraper` interface and
-concrete implementations for fetching unstructured text from news
-sources:
+The `web_scraping` module provides a base `Scraper` interface,
+concrete scrapers, and SQLite storage:
 
 ```python
-from unstructured_mapping.web_scraping import ReutersScraper
+from unstructured_mapping.web_scraping import (
+    BBCScraper,
+    ArticleStore,
+)
 
-scraper = ReutersScraper()
+scraper = BBCScraper()
 articles = scraper.fetch()
 
-for article in articles:
-    print(f"{article.title} ({article.source})")
+store = ArticleStore()
+new = store.save(articles)
+print(f"Saved {new} new articles ({store.count()} total)")
 ```
 
-Available scrapers: `ReutersScraper` (RSS-based).
+Available scrapers: `BBCScraper` (RSS + full text),
+`ReutersScraper` (RSS headlines).
 
 ## Project Status
 

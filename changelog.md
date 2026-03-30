@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.3.0 - 30th March 2026
+
+- Added `BBCScraper` with full-text extraction via
+  BeautifulSoup
+- Added `ArticleStore` for SQLite-backed article persistence
+- Added `beautifulsoup4` dependency
+
+
 ### v0.2.1 - 30th March 2026
 
 - Fixed `ReutersScraper` to follow HTTP redirects
