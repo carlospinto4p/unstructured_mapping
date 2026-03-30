@@ -1,3 +1,5 @@
+## Changelog
+
 ### v0.1.0 - 30th March 2026
 
 - Initial project skeleton
