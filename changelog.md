@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.2.0 - 30th March 2026
+
+- Added `web_scraping` module:
+    - `Article` dataclass for scraped content
+    - `Scraper` ABC as base interface
+    - `ReutersScraper` for fetching articles via RSS
+- Added `httpx` and `feedparser` dependencies
+- Added unit tests for web scraping module
+
+
 ### v0.1.0 - 30th March 2026
 
 - Initial project skeleton

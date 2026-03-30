@@ -45,6 +45,24 @@ for mention in result.mentions:
 
 *(API is provisional and will evolve as the PoC matures.)*
 
+## Web Scraping
+
+The `web_scraping` module provides a base `Scraper` interface and
+concrete implementations for fetching unstructured text from news
+sources:
+
+```python
+from unstructured_mapping.web_scraping import ReutersScraper
+
+scraper = ReutersScraper()
+articles = scraper.fetch()
+
+for article in articles:
+    print(f"{article.title} ({article.source})")
+```
+
+Available scrapers: `ReutersScraper` (RSS-based).
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

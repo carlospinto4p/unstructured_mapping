@@ -4,8 +4,8 @@
 
 #### Web scraping — unstructured corpus
 
-- [ ] Create `web_scraping` module with base scraper interface
-- [ ] Implement Reuters scraper (first source)
+- [x] Create `web_scraping` module with base scraper interface
+- [x] Implement Reuters scraper (first source)
 - [ ] Implement AP News scraper
 - [ ] Implement BBC News scraper
 
