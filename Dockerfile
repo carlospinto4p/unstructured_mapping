@@ -11,8 +11,9 @@ COPY pyproject.toml uv.lock ./
 # Install runtime dependencies only (no dev extras)
 RUN uv sync --frozen --no-dev
 
-# Copy source code
+# Copy source code and install the project
 COPY src/ src/
+RUN uv pip install --no-deps .
 
 # Data directory (mount point for SQLite volume)
 RUN mkdir -p data
