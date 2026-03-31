@@ -8,8 +8,8 @@ WORKDIR /app
 # Copy dependency files first (layer caching)
 COPY pyproject.toml uv.lock ./
 
-# Install runtime dependencies only (no dev extras)
-RUN uv sync --frozen --no-dev
+# Install runtime + scraping dependencies (no dev extras)
+RUN uv sync --frozen --no-dev --extra scraping
 
 # Copy source code and install the project
 COPY src/ src/

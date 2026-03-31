@@ -1,6 +1,6 @@
 [project]
 name = "unstructured-mapping"
-version = "0.5.1"
+version = "0.5.2"
 description = "Map well-defined knowledge-graph entities to unstructured text."
 authors = [{ name = "Carlos Pinto", email = "carlospinto4p@gmail.com" }]
 readme = "README.md"
@@ -12,6 +12,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+scraping = [
+    "trafilatura>=2.0.0",
+    "googlenewsdecoder>=0.1.0",
+]
 dev = [
     "pre-commit>=4.2.0",
     "ruff>=0.12.0",

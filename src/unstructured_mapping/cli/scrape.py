@@ -135,9 +135,13 @@ def main(argv: list[str] | None = None) -> None:
         )
 
     if "ap" in args.sources:
-        print("Scraping AP News (RSS headlines)...")
+        print(
+            f"Scraping AP News "
+            f"(full_text={fetch_full})..."
+        )
         scraper_ap = APScraper(
-            timeout=args.timeout
+            fetch_full_text=fetch_full,
+            timeout=args.timeout,
         )
         articles_ap = scraper_ap.fetch()
         new_ap = store.save(articles_ap)

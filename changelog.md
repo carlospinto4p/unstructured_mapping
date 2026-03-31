@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.5.2 - 31st March 2026
+
+- Added full-text extraction to `APScraper` using
+  `trafilatura` and `googlenewsdecoder`
+- Added `scraping` optional dependency group
+  (`pip install unstructured-mapping[scraping]`)
+- Parallel extraction with `ThreadPoolExecutor` (8 workers)
+- Graceful fallback to RSS summary when extraction fails
+  or optional deps not installed
+- Docker image now installs `scraping` extra by default
+
+
 ### v0.5.1 - 31st March 2026
 
 - Added `APScraper` in `web_scraping/ap.py` for AP News

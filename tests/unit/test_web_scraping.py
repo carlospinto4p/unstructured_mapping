@@ -146,7 +146,8 @@ def test_ap_source():
 def test_ap_fetch_parses_rss(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     scraper = APScraper(
-        feed_urls="https://fake.feed/rss"
+        feed_urls="https://fake.feed/rss",
+        fetch_full_text=False,
     )
     articles = scraper.fetch()
     scraper.close()
@@ -155,6 +156,50 @@ def test_ap_fetch_parses_rss(mock_get):
     assert articles[0].title == "Test headline"
     assert articles[0].body == "Article body text."
     assert articles[0].source == "ap"
+
+
+@patch(
+    "unstructured_mapping.web_scraping.ap"
+    ".APScraper._extract_body"
+)
+@patch("httpx.Client.get")
+def test_ap_fetch_full_text(mock_get, mock_extract):
+    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_extract.return_value = (
+        "Full article text from AP.",
+        "https://apnews.com/article/test",
+    )
+    scraper = APScraper(
+        feed_urls="https://fake.feed/rss",
+        fetch_full_text=True,
+    )
+    articles = scraper.fetch()
+    scraper.close()
+
+    assert articles[0].body == "Full article text from AP."
+    assert articles[0].url == (
+        "https://apnews.com/article/test"
+    )
+
+
+@patch(
+    "unstructured_mapping.web_scraping.ap"
+    ".APScraper._extract_body"
+)
+@patch("httpx.Client.get")
+def test_ap_fallback_on_extraction_failure(
+    mock_get, mock_extract
+):
+    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_extract.return_value = ("", "")
+    scraper = APScraper(
+        feed_urls="https://fake.feed/rss",
+        fetch_full_text=True,
+    )
+    articles = scraper.fetch()
+    scraper.close()
+
+    assert articles[0].body == "Article body text."
 
 
 # -- BBCScraper --

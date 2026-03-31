@@ -66,7 +66,13 @@ print(f"Saved {new} new articles ({store.count()} total)")
 
 Available scrapers: `BBCScraper` (RSS + full text),
 `ReutersScraper` (RSS headlines),
-`APScraper` (RSS headlines).
+`APScraper` (RSS + full text with `scraping` extra).
+
+For AP full-text extraction, install optional dependencies:
+
+```bash
+pip install unstructured-mapping[scraping]
+```
 
 ### CLI
 
