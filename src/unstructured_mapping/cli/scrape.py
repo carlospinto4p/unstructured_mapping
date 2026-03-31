@@ -14,6 +14,7 @@ import argparse
 from pathlib import Path
 
 from unstructured_mapping.web_scraping import (
+    APScraper,
     BBC_FEEDS,
     ArticleStore,
     BBCScraper,
@@ -31,8 +32,8 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--sources",
         nargs="+",
-        choices=["bbc", "reuters"],
-        default=["bbc", "reuters"],
+        choices=["bbc", "reuters", "ap"],
+        default=["bbc", "reuters", "ap"],
         help="News sources to scrape (default: all).",
     )
     p.add_argument(
@@ -77,9 +78,11 @@ def _show_stats(store: ArticleStore) -> None:
     total = store.count()
     bbc = store.count(source="bbc")
     reuters = store.count(source="reuters")
+    ap = store.count(source="ap")
     print(f"Total:   {total}")
     print(f"BBC:     {bbc}")
     print(f"Reuters: {reuters}")
+    print(f"AP:      {ap}")
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -129,6 +132,19 @@ def main(argv: list[str] | None = None) -> None:
         print(
             f"  Fetched {len(articles_r)}, "
             f"saved {new_r} new articles"
+        )
+
+    if "ap" in args.sources:
+        print("Scraping AP News (RSS headlines)...")
+        scraper_ap = APScraper(
+            timeout=args.timeout
+        )
+        articles_ap = scraper_ap.fetch()
+        new_ap = store.save(articles_ap)
+        total_new += new_ap
+        print(
+            f"  Fetched {len(articles_ap)}, "
+            f"saved {new_ap} new articles"
         )
 
     print(

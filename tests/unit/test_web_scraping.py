@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 
 from unstructured_mapping.web_scraping import (
+    APScraper,
     Article,
     ArticleStore,
     BBCScraper,
@@ -130,6 +131,30 @@ def test_reuters_fetch_missing_date(mock_get):
     scraper.close()
 
     assert articles[1].published is None
+
+
+# -- APScraper --
+
+
+def test_ap_source():
+    scraper = APScraper()
+    assert scraper.source == "ap"
+    scraper.close()
+
+
+@patch("httpx.Client.get")
+def test_ap_fetch_parses_rss(mock_get):
+    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    scraper = APScraper(
+        feed_urls="https://fake.feed/rss"
+    )
+    articles = scraper.fetch()
+    scraper.close()
+
+    assert len(articles) == 2
+    assert articles[0].title == "Test headline"
+    assert articles[0].body == "Article body text."
+    assert articles[0].source == "ap"
 
 
 # -- BBCScraper --

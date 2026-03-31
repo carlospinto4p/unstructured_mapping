@@ -6,7 +6,7 @@
 
 - [x] Create `web_scraping` module with base scraper interface
 - [x] Implement Reuters scraper (first source)
-- [ ] Implement AP News scraper
+- [x] Implement AP News scraper
 - [x] Implement BBC News scraper
 
 #### Refactoring (v0.4.0 review)

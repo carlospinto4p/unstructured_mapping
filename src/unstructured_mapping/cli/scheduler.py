@@ -39,7 +39,9 @@ def _build_argv() -> list[str]:
     """Build CLI arguments from environment variables."""
     argv: list[str] = []
 
-    sources = os.environ.get("SCRAPE_SOURCES", "bbc reuters")
+    sources = os.environ.get(
+        "SCRAPE_SOURCES", "bbc reuters ap"
+    )
     argv.extend(["--sources", *sources.split()])
 
     feeds = os.environ.get("SCRAPE_FEEDS", "all")

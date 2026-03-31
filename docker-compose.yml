@@ -7,6 +7,6 @@ services:
       - ./data:/app/data
     environment:
       - SCRAPE_INTERVAL_HOURS=4
-      - SCRAPE_SOURCES=bbc reuters
+      - SCRAPE_SOURCES=bbc reuters ap
       - SCRAPE_FEEDS=all
       - SCRAPE_FULL_TEXT=1

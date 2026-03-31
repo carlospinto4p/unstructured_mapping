@@ -65,7 +65,8 @@ print(f"Saved {new} new articles ({store.count()} total)")
 ```
 
 Available scrapers: `BBCScraper` (RSS + full text),
-`ReutersScraper` (RSS headlines).
+`ReutersScraper` (RSS headlines),
+`APScraper` (RSS headlines).
 
 ### CLI
 

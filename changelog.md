@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.5.1 - 31st March 2026
+
+- Added `APScraper` in `web_scraping/ap.py` for AP News
+  headlines via Google News RSS
+- Updated CLI and Docker to include `ap` as a default source
+
+
 ### v0.5.0 - 31st March 2026
 
 - Added Docker deployment for automated news scraping:
