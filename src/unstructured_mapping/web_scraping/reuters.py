@@ -1,14 +1,8 @@
 """Reuters RSS scraper."""
 
-import feedparser
-
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
-)
-from unstructured_mapping.web_scraping.models import Article
-from unstructured_mapping.web_scraping.parsing import (
-    parse_feed_date,
 )
 
 _DEFAULT_FEED_URL = (
@@ -44,23 +38,3 @@ class ReutersScraper(Scraper):
     def source(self) -> str:
         """Return ``"reuters"``."""
         return "reuters"
-
-    def _parse_feed(self, xml: str) -> list[Article]:
-        """Parse RSS XML into articles.
-
-        :param xml: Raw RSS XML string.
-        :return: Parsed articles.
-        """
-        feed = feedparser.parse(xml)
-        articles: list[Article] = []
-        for entry in feed.entries:
-            articles.append(
-                Article(
-                    title=entry.get("title", ""),
-                    body=entry.get("summary", ""),
-                    url=entry.get("link", ""),
-                    source=self.source,
-                    published=parse_feed_date(entry),
-                )
-            )
-        return articles

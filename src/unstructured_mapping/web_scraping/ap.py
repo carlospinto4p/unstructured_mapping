@@ -7,17 +7,14 @@ Full-text extraction requires the ``scraping`` extra::
 
 import logging
 from concurrent.futures import ThreadPoolExecutor
-
-import feedparser
+from dataclasses import replace
 
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
+    DEFAULT_MAX_WORKERS,
     DEFAULT_TIMEOUT,
 )
 from unstructured_mapping.web_scraping.models import Article
-from unstructured_mapping.web_scraping.parsing import (
-    parse_feed_date,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +23,6 @@ _DEFAULT_FEED_URL = (
     "?q=when:24h+allinurl:apnews.com"
     "&ceid=US:en&hl=en-US&gl=US"
 )
-
-_MAX_WORKERS = 8
 
 
 def _has_scraping_deps() -> bool:
@@ -64,7 +59,7 @@ class APScraper(Scraper):
         feed_urls: str | list[str] = _DEFAULT_FEED_URL,
         fetch_full_text: bool = True,
         timeout: float = DEFAULT_TIMEOUT,
-        max_workers: int = _MAX_WORKERS,
+        max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
         super().__init__(
             feed_urls=feed_urls, timeout=timeout
@@ -84,57 +79,45 @@ class APScraper(Scraper):
         """Return ``"ap"``."""
         return "ap"
 
-    def _parse_feed(self, xml: str) -> list[Article]:
-        """Parse RSS XML into articles.
+    def _enrich(
+        self, articles: list[Article]
+    ) -> list[Article]:
+        """Decode Google News URLs and extract full text.
 
-        :param xml: Raw RSS XML string.
-        :return: Parsed articles.
+        Falls back to RSS summary when extraction fails.
+
+        :param articles: Articles from RSS parsing.
+        :return: Articles with resolved URLs and full text.
         """
-        feed = feedparser.parse(xml)
-
-        entries = [
-            (
-                entry.get("link", ""),
-                entry.get("title", ""),
-                entry.get("summary", ""),
-                parse_feed_date(entry),
+        if not self._fetch_full_text:
+            return articles
+        enriched: list[Article] = []
+        results = self._extract_bodies(
+            [a.url for a in articles]
+        )
+        for article in articles:
+            body, real_url = results.get(
+                article.url, ("", "")
             )
-            for entry in feed.entries
-        ]
-
-        if self._fetch_full_text:
-            gnews_urls = [url for url, _, _, _ in entries]
-            bodies = self._extract_bodies(gnews_urls)
-        else:
-            bodies = {}
-
-        articles: list[Article] = []
-        for url, title, summary, published in entries:
-            body = bodies.get(url) or summary
-            real_url = (
-                bodies.get(f"_resolved_{url}") or url
-            )
-            articles.append(
-                Article(
-                    title=title,
-                    body=body,
-                    url=real_url,
-                    source=self.source,
-                    published=published,
+            enriched.append(
+                replace(
+                    article,
+                    body=body or article.body,
+                    url=real_url or article.url,
                 )
             )
-        return articles
+        return enriched
 
     def _extract_bodies(
         self, gnews_urls: list[str]
-    ) -> dict[str, str]:
+    ) -> dict[str, tuple[str, str]]:
         """Decode and fetch multiple articles in parallel.
 
         :param gnews_urls: Google News redirect URLs.
-        :return: Mapping of original URL to body text,
-            plus ``_resolved_<url>`` keys with real URLs.
+        :return: Mapping of original URL to
+            ``(body, real_url)`` tuples.
         """
-        results: dict[str, str] = {}
+        results: dict[str, tuple[str, str]] = {}
         urls_to_fetch = [u for u in gnews_urls if u]
         with ThreadPoolExecutor(
             max_workers=self._max_workers
@@ -147,12 +130,7 @@ class APScraper(Scraper):
             }
             for future in futures:
                 gnews_url = futures[future]
-                body, real_url = future.result()
-                results[gnews_url] = body
-                if real_url:
-                    results[
-                        f"_resolved_{gnews_url}"
-                    ] = real_url
+                results[gnews_url] = future.result()
         return results
 
     def _extract_body(

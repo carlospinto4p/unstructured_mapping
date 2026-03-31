@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 
+import feedparser
 import httpx
 
 from unstructured_mapping.web_scraping.config import (
@@ -9,6 +10,9 @@ from unstructured_mapping.web_scraping.config import (
     USER_AGENT,
 )
 from unstructured_mapping.web_scraping.models import Article
+from unstructured_mapping.web_scraping.parsing import (
+    parse_feed_date,
+)
 
 
 class Scraper(ABC):
@@ -17,6 +21,12 @@ class Scraper(ABC):
     Provides a template-method :meth:`fetch` that iterates
     over feed URLs, fetches each one, deduplicates by URL,
     and delegates parsing to :meth:`_parse_feed`.
+
+    Subclasses that only need basic RSS parsing can rely on
+    the default :meth:`_parse_feed`, which builds articles
+    from feed entry fields. Subclasses needing enrichment
+    (e.g. full-text extraction) should override
+    :meth:`_enrich` to transform the article list.
 
     Uses a persistent ``httpx.Client`` for connection
     pooling. Call :meth:`close` when done, or use as a
@@ -47,13 +57,43 @@ class Scraper(ABC):
     def source(self) -> str:
         """Short identifier for this news source."""
 
-    @abstractmethod
     def _parse_feed(self, xml: str) -> list[Article]:
         """Parse raw RSS XML into articles.
 
+        Extracts title, summary, URL, and publication date
+        from each feed entry, then passes the list through
+        :meth:`_enrich` for optional enrichment.
+
         :param xml: Raw RSS XML string.
-        :return: Parsed articles.
+        :return: Parsed (and possibly enriched) articles.
         """
+        feed = feedparser.parse(xml)
+        articles: list[Article] = []
+        for entry in feed.entries:
+            articles.append(
+                Article(
+                    title=entry.get("title", ""),
+                    body=entry.get("summary", ""),
+                    url=entry.get("link", ""),
+                    source=self.source,
+                    published=parse_feed_date(entry),
+                )
+            )
+        return self._enrich(articles)
+
+    def _enrich(
+        self, articles: list[Article]
+    ) -> list[Article]:
+        """Enrich articles after initial RSS parsing.
+
+        The default implementation returns articles
+        unchanged. Subclasses can override this to add
+        full-text extraction or URL resolution.
+
+        :param articles: Articles from RSS parsing.
+        :return: Enriched articles.
+        """
+        return articles
 
     def fetch(self) -> list[Article]:
         """Fetch articles from all configured RSS feeds.

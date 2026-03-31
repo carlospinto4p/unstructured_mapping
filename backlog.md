@@ -28,6 +28,15 @@
 - [x] **LOW** — Add SQLite indexes on `source` and `scraped_at` columns
 - [x] **LOW** — Pass `resp.content` (bytes) to BeautifulSoup instead of `resp.text` to skip redundant decode
 
+#### Refactoring (v0.5.3 review)
+
+- [x] **HIGH** — Extract common `_parse_feed` logic into base class helper — all three scrapers repeat the same feedparser → entries → Article pattern
+- [x] **HIGH** — Refactor `cli/scrape.py:main()` to loop over source configs instead of three near-identical blocks
+- [x] **MEDIUM** — Centralize `_MAX_WORKERS = 8` into `config.py` — duplicated in `ap.py` and `bbc.py`
+- [ ] **MEDIUM** — Replace `print()` with `logging` in `cli/scrape.py` for consistency with `scheduler.py`
+- [ ] **LOW** — Replace bare `except Exception` in `ap.py` with specific exception types
+- [ ] **LOW** — Split large `_extract_body` methods in `ap.py` and `bbc.py` into smaller helpers
+
 #### Knowledge graph — entity store
 
 - [ ] Define KG data model:

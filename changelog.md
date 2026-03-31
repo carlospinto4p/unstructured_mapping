@@ -1,5 +1,21 @@
 ## Changelog
 
+### v0.5.4 - 31st March 2026
+
+- Refactored `Scraper` base class:
+    - Added default `_parse_feed()` with shared RSS parsing
+    - Added `_enrich()` hook for subclass enrichment
+- Simplified `ReutersScraper`: removed redundant
+  `_parse_feed()` override (inherits from base)
+- Refactored `BBCScraper` and `APScraper` to use
+  `_enrich()` instead of duplicating `_parse_feed()`
+- Refactored `cli/scrape.py`:
+    - Replaced three duplicate blocks with `_build_scraper()`
+      factory and source loop
+    - Extracted `_SOURCES` constant
+- Centralized `DEFAULT_MAX_WORKERS` in `config.py`
+
+
 ### v0.5.3 - 31st March 2026
 
 - Added `limit`/`offset` pagination to `ArticleStore.load()`

@@ -19,10 +19,13 @@ from unstructured_mapping.web_scraping import (
     ArticleStore,
     BBCScraper,
     ReutersScraper,
+    Scraper,
 )
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
 )
+
+_SOURCES = ["bbc", "reuters", "ap"]
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -32,8 +35,8 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--sources",
         nargs="+",
-        choices=["bbc", "reuters", "ap"],
-        default=["bbc", "reuters", "ap"],
+        choices=_SOURCES,
+        default=_SOURCES,
         help="News sources to scrape (default: all).",
     )
     p.add_argument(
@@ -76,13 +79,44 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def _show_stats(store: ArticleStore) -> None:
     total = store.count()
-    bbc = store.count(source="bbc")
-    reuters = store.count(source="reuters")
-    ap = store.count(source="ap")
-    print(f"Total:   {total}")
-    print(f"BBC:     {bbc}")
-    print(f"Reuters: {reuters}")
-    print(f"AP:      {ap}")
+    for src in _SOURCES:
+        count = store.count(source=src)
+        print(f"{src.upper():8s} {count}")
+    print(f"{'TOTAL':8s} {total}")
+
+
+def _build_scraper(
+    name: str,
+    feeds: str,
+    fetch_full_text: bool,
+    timeout: float,
+) -> Scraper:
+    """Create a scraper instance by source name.
+
+    :param name: Source name (``bbc``, ``reuters``,
+        ``ap``).
+    :param feeds: BBC feed selection.
+    :param fetch_full_text: Enable full-text extraction.
+    :param timeout: HTTP timeout in seconds.
+    :return: Configured scraper instance.
+    """
+    if name == "bbc":
+        feed_urls = (
+            list(BBC_FEEDS.values())
+            if feeds == "all"
+            else [BBC_FEEDS["top"]]
+        )
+        return BBCScraper(
+            feed_urls=feed_urls,
+            fetch_full_text=fetch_full_text,
+            timeout=timeout,
+        )
+    if name == "reuters":
+        return ReutersScraper(timeout=timeout)
+    return APScraper(
+        fetch_full_text=fetch_full_text,
+        timeout=timeout,
+    )
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -98,57 +132,17 @@ def main(argv: list[str] | None = None) -> None:
     fetch_full = not args.no_full_text
     total_new = 0
 
-    if "bbc" in args.sources:
-        if args.feeds == "all":
-            feed_urls = list(BBC_FEEDS.values())
-        else:
-            feed_urls = [BBC_FEEDS["top"]]
-
-        print(
-            f"Scraping BBC ({len(feed_urls)} feeds, "
-            f"full_text={fetch_full})..."
+    for name in args.sources:
+        scraper = _build_scraper(
+            name, args.feeds, fetch_full, args.timeout
         )
-        scraper = BBCScraper(
-            feed_urls=feed_urls,
-            fetch_full_text=fetch_full,
-            timeout=args.timeout,
-        )
+        print(f"Scraping {name}...")
         articles = scraper.fetch()
         new = store.save(articles)
         total_new += new
         print(
             f"  Fetched {len(articles)}, "
             f"saved {new} new articles"
-        )
-
-    if "reuters" in args.sources:
-        print("Scraping Reuters (RSS headlines)...")
-        scraper_r = ReutersScraper(
-            timeout=args.timeout
-        )
-        articles_r = scraper_r.fetch()
-        new_r = store.save(articles_r)
-        total_new += new_r
-        print(
-            f"  Fetched {len(articles_r)}, "
-            f"saved {new_r} new articles"
-        )
-
-    if "ap" in args.sources:
-        print(
-            f"Scraping AP News "
-            f"(full_text={fetch_full})..."
-        )
-        scraper_ap = APScraper(
-            fetch_full_text=fetch_full,
-            timeout=args.timeout,
-        )
-        articles_ap = scraper_ap.fetch()
-        new_ap = store.save(articles_ap)
-        total_new += new_ap
-        print(
-            f"  Fetched {len(articles_ap)}, "
-            f"saved {new_ap} new articles"
         )
 
     print(
