@@ -1,11 +1,15 @@
 """Base scraper interface."""
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
+from typing import TypeVar
 
 import feedparser
 import httpx
 
 from unstructured_mapping.web_scraping.config import (
+    DEFAULT_MAX_WORKERS,
     DEFAULT_TIMEOUT,
     USER_AGENT,
 )
@@ -13,6 +17,8 @@ from unstructured_mapping.web_scraping.models import Article
 from unstructured_mapping.web_scraping.parsing import (
     parse_feed_date,
 )
+
+_T = TypeVar("_T")
 
 
 class Scraper(ABC):
@@ -116,6 +122,34 @@ class Scraper(ABC):
                     seen_urls.add(article.url)
                     articles.append(article)
         return articles
+
+    @staticmethod
+    def _parallel_map(
+        fn: Callable[[str], _T],
+        keys: list[str],
+        max_workers: int = DEFAULT_MAX_WORKERS,
+    ) -> dict[str, _T]:
+        """Run `fn` on each key in parallel.
+
+        :param fn: Callable taking a URL string.
+        :param keys: URLs to process.
+        :param max_workers: Thread pool size.
+        :return: Mapping of key to result.
+        """
+        results: dict[str, _T] = {}
+        to_fetch = [k for k in keys if k]
+        with ThreadPoolExecutor(
+            max_workers=max_workers
+        ) as pool:
+            futures = {
+                pool.submit(fn, k): k
+                for k in to_fetch
+            }
+            for future in futures:
+                results[futures[future]] = (
+                    future.result()
+                )
+        return results
 
     def close(self) -> None:
         """Close the HTTP client."""

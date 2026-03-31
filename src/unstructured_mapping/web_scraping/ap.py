@@ -6,7 +6,6 @@ Full-text extraction requires the ``scraping`` extra::
 """
 
 import logging
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 
 from unstructured_mapping.web_scraping.base import Scraper
@@ -91,47 +90,21 @@ class APScraper(Scraper):
         """
         if not self._fetch_full_text:
             return articles
-        enriched: list[Article] = []
-        results = self._extract_bodies(
-            [a.url for a in articles]
+        results = self._parallel_map(
+            self._extract_body,
+            [a.url for a in articles],
+            self._max_workers,
         )
-        for article in articles:
-            body, real_url = results.get(
-                article.url, ("", "")
+        return [
+            replace(
+                a,
+                body=(results.get(a.url, ("", ""))[0]
+                      or a.body),
+                url=(results.get(a.url, ("", ""))[1]
+                     or a.url),
             )
-            enriched.append(
-                replace(
-                    article,
-                    body=body or article.body,
-                    url=real_url or article.url,
-                )
-            )
-        return enriched
-
-    def _extract_bodies(
-        self, gnews_urls: list[str]
-    ) -> dict[str, tuple[str, str]]:
-        """Decode and fetch multiple articles in parallel.
-
-        :param gnews_urls: Google News redirect URLs.
-        :return: Mapping of original URL to
-            ``(body, real_url)`` tuples.
-        """
-        results: dict[str, tuple[str, str]] = {}
-        urls_to_fetch = [u for u in gnews_urls if u]
-        with ThreadPoolExecutor(
-            max_workers=self._max_workers
-        ) as pool:
-            futures = {
-                pool.submit(
-                    self._extract_body, url
-                ): url
-                for url in urls_to_fetch
-            }
-            for future in futures:
-                gnews_url = futures[future]
-                results[gnews_url] = future.result()
-        return results
+            for a in articles
+        ]
 
     def _extract_body(
         self, gnews_url: str
@@ -161,7 +134,9 @@ class APScraper(Scraper):
             result = new_decoderv1(gnews_url)
         except (ValueError, KeyError, OSError):
             logger.warning(
-                "Failed to decode %s", gnews_url
+                "Failed to decode %s",
+                gnews_url,
+                exc_info=True,
             )
             return ""
 
@@ -188,7 +163,9 @@ class APScraper(Scraper):
             )
         except (OSError, ValueError):
             logger.warning(
-                "Failed to extract %s", url
+                "Failed to extract %s",
+                url,
+                exc_info=True,
             )
             return ""
         return text or ""

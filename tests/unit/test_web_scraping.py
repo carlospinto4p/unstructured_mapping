@@ -86,35 +86,34 @@ def _mock_response(text: str):
 
 
 def test_reuters_source():
-    scraper = ReutersScraper()
-    assert scraper.source == "reuters"
-    scraper.close()
+    with ReutersScraper() as scraper:
+        assert scraper.source == "reuters"
 
 
 @patch("httpx.Client.get")
 def test_reuters_fetch_parses_rss(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
-    scraper = ReutersScraper(
+    with ReutersScraper(
         feed_urls="https://fake.feed/rss"
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert len(articles) == 2
     assert articles[0].title == "Test headline"
     assert articles[0].body == "Article body text."
-    assert articles[0].url == "https://example.com/article"
+    assert articles[0].url == (
+        "https://example.com/article"
+    )
     assert articles[0].source == "reuters"
 
 
 @patch("httpx.Client.get")
 def test_reuters_fetch_parses_date(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
-    scraper = ReutersScraper(
+    with ReutersScraper(
         feed_urls="https://fake.feed/rss"
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert articles[0].published is not None
     assert articles[0].published.year == 2026
@@ -125,11 +124,10 @@ def test_reuters_fetch_parses_date(mock_get):
 @patch("httpx.Client.get")
 def test_reuters_fetch_missing_date(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
-    scraper = ReutersScraper(
+    with ReutersScraper(
         feed_urls="https://fake.feed/rss"
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert articles[1].published is None
 
@@ -138,20 +136,18 @@ def test_reuters_fetch_missing_date(mock_get):
 
 
 def test_ap_source():
-    scraper = APScraper()
-    assert scraper.source == "ap"
-    scraper.close()
+    with APScraper() as scraper:
+        assert scraper.source == "ap"
 
 
 @patch("httpx.Client.get")
 def test_ap_fetch_parses_rss(mock_get):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
-    scraper = APScraper(
+    with APScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=False,
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert len(articles) == 2
     assert articles[0].title == "Test headline"
@@ -170,14 +166,15 @@ def test_ap_fetch_full_text(mock_get, mock_extract):
         "Full article text from AP.",
         "https://apnews.com/article/test",
     )
-    scraper = APScraper(
+    with APScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=True,
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
-    assert articles[0].body == "Full article text from AP."
+    assert articles[0].body == (
+        "Full article text from AP."
+    )
     assert articles[0].url == (
         "https://apnews.com/article/test"
     )
@@ -193,12 +190,11 @@ def test_ap_fallback_on_extraction_failure(
 ):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
     mock_extract.return_value = ("", "")
-    scraper = APScraper(
+    with APScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=True,
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert articles[0].body == "Article body text."
 
@@ -234,9 +230,8 @@ BBC_HTML = """\
 
 
 def test_bbc_source():
-    scraper = BBCScraper()
-    assert scraper.source == "bbc"
-    scraper.close()
+    with BBCScraper() as scraper:
+        assert scraper.source == "bbc"
 
 
 @patch("httpx.Client.get")
@@ -247,11 +242,10 @@ def test_bbc_fetch_full_text(mock_get):
         return _mock_response(BBC_HTML)
 
     mock_get.side_effect = side_effect
-    scraper = BBCScraper(
+    with BBCScraper(
         feed_urls="https://fake.feed/rss"
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert len(articles) == 1
     assert articles[0].title == "BBC headline"
@@ -264,12 +258,11 @@ def test_bbc_fetch_full_text(mock_get):
 @patch("httpx.Client.get")
 def test_bbc_fetch_summary_only(mock_get):
     mock_get.return_value = _mock_response(BBC_RSS)
-    scraper = BBCScraper(
+    with BBCScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=False,
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert articles[0].body == "BBC summary."
 
@@ -284,11 +277,10 @@ def test_bbc_fallback_on_extraction_failure(mock_get):
         )
 
     mock_get.side_effect = side_effect
-    scraper = BBCScraper(
+    with BBCScraper(
         feed_urls="https://fake.feed/rss"
-    )
-    articles = scraper.fetch()
-    scraper.close()
+    ) as scraper:
+        articles = scraper.fetch()
 
     assert articles[0].body == "BBC summary."
 

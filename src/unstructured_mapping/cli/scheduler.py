@@ -32,7 +32,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _build_argv() -> list[str]:
@@ -65,19 +65,19 @@ def run() -> None:
     interval_s = interval_h * 3600
     argv = _build_argv()
 
-    log.info(
+    logger.info(
         "Scheduler started: interval=%.1fh, argv=%s",
         interval_h,
         argv,
     )
 
     while True:
-        log.info("Starting scrape cycle...")
+        logger.info("Starting scrape cycle...")
         try:
             scrape(argv)
         except Exception:
-            log.exception("Scrape cycle failed")
-        log.info(
+            logger.exception("Scrape cycle failed")
+        logger.info(
             "Cycle complete. Sleeping %.1f hours...",
             interval_h,
         )

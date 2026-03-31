@@ -141,18 +141,18 @@ def main(argv: list[str] | None = None) -> None:
     total_new = 0
 
     for name in args.sources:
-        scraper = _build_scraper(
+        with _build_scraper(
             name, args.feeds, fetch_full, args.timeout
-        )
-        logger.info("Scraping %s...", name)
-        articles = scraper.fetch()
-        new = store.save(articles)
-        total_new += new
-        logger.info(
-            "  Fetched %d, saved %d new articles",
-            len(articles),
-            new,
-        )
+        ) as scraper:
+            logger.info("Scraping %s...", name)
+            articles = scraper.fetch()
+            new = store.save(articles)
+            total_new += new
+            logger.info(
+                "  Fetched %d, saved %d new articles",
+                len(articles),
+                new,
+            )
 
     logger.info(
         "Done: %d new articles (%d total in DB)",

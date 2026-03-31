@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.5.6 - 31st March 2026
+
+- Added `Scraper._parallel_map()` helper, replacing
+  duplicate `ThreadPoolExecutor` patterns in `BBCScraper`
+  and `APScraper`
+- Fixed scraper resource leak in CLI loop — now uses
+  context managers
+- Converted all test scraper usage to context managers
+- Renamed `log` to `logger` in `scheduler.py` for
+  consistency
+- Added `exc_info=True` to `APScraper` warning logs for
+  exception context
+
+
 ### v0.5.5 - 31st March 2026
 
 - Replaced `print()` with `logging` in `cli/scrape.py`

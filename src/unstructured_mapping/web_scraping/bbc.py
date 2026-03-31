@@ -1,7 +1,6 @@
 """BBC News RSS scraper with full-text extraction."""
 
 import logging
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 
 import httpx
@@ -122,35 +121,15 @@ class BBCScraper(Scraper):
         """
         if not self._fetch_full_text:
             return articles
-        bodies = self._extract_bodies(
-            [a.url for a in articles]
+        bodies = self._parallel_map(
+            self._extract_body,
+            [a.url for a in articles],
+            self._max_workers,
         )
         return [
             replace(a, body=bodies.get(a.url) or a.body)
             for a in articles
         ]
-
-    def _extract_bodies(
-        self, urls: list[str]
-    ) -> dict[str, str]:
-        """Fetch multiple article pages in parallel.
-
-        :param urls: Article URLs to fetch.
-        :return: Mapping of URL to extracted body text.
-        """
-        results: dict[str, str] = {}
-        urls_to_fetch = [u for u in urls if u]
-        with ThreadPoolExecutor(
-            max_workers=self._max_workers
-        ) as pool:
-            futures = {
-                pool.submit(self._extract_body, url): url
-                for url in urls_to_fetch
-            }
-            for future in futures:
-                url = futures[future]
-                results[url] = future.result()
-        return results
 
     def _extract_body(self, url: str) -> str:
         """Fetch an article page and extract body text.

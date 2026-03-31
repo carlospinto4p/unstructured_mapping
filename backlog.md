@@ -37,6 +37,14 @@
 - [x] **LOW** — Replace bare `except Exception` in `ap.py` with specific exception types
 - [x] **LOW** — Split large `_extract_body` methods in `ap.py` and `bbc.py` into smaller helpers
 
+#### Refactoring (v0.5.5 review)
+
+- [x] **HIGH** — Close scrapers in CLI loop — `_build_scraper()` returns scrapers that are never closed; use context managers
+- [x] **MEDIUM** — Extract duplicate `ThreadPoolExecutor` pattern from `APScraper._extract_bodies()` and `BBCScraper._extract_bodies()` into a shared helper
+- [x] **MEDIUM** — Use context managers in tests instead of manual `scraper.close()` calls
+- [x] **LOW** — Rename `log` to `logger` in `scheduler.py` for consistency with other modules
+- [x] **LOW** — Add `exc_info=True` to `APScraper._decode_url()` warning to preserve exception context
+
 #### Knowledge graph — entity store
 
 - [ ] Define KG data model:
