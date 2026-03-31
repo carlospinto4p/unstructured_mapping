@@ -185,7 +185,7 @@ class BBCScraper(Scraper):
             logger.warning("Failed to fetch %s", url)
             return ""
 
-        soup = BeautifulSoup(resp.text, "html.parser")
+        soup = BeautifulSoup(resp.content, "html.parser")
         article = soup.find("article")
         if article is None:
             return ""

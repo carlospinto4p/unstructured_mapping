@@ -23,10 +23,10 @@
 - [x] **HIGH** — Use `httpx.Client` with connection pooling in `Scraper` base class instead of per-request `httpx.get()`
 - [x] **HIGH** — Parallelize full-text extraction in `BBCScraper` with async or threading (sequential HTTP is the main bottleneck)
 - [x] **HIGH** — Use `executemany()` in `ArticleStore.save()` instead of row-by-row inserts
-- [ ] **MEDIUM** — Add `limit`/`offset` pagination to `ArticleStore.load()` to avoid loading all rows into memory
-- [ ] **MEDIUM** — Simplify date parsing in `parsing.py`: use `datetime(*parsed[:6])` instead of `mktime` roundtrip
-- [ ] **LOW** — Add SQLite indexes on `source` and `scraped_at` columns
-- [ ] **LOW** — Pass `resp.content` (bytes) to BeautifulSoup instead of `resp.text` to skip redundant decode
+- [x] **MEDIUM** — Add `limit`/`offset` pagination to `ArticleStore.load()` to avoid loading all rows into memory
+- [x] **MEDIUM** — Simplify date parsing in `parsing.py`: use `datetime(*parsed[:6])` instead of `mktime` roundtrip
+- [x] **LOW** — Add SQLite indexes on `source` and `scraped_at` columns
+- [x] **LOW** — Pass `resp.content` (bytes) to BeautifulSoup instead of `resp.text` to skip redundant decode
 
 #### Knowledge graph — entity store
 

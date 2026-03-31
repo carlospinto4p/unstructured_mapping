@@ -22,6 +22,13 @@ CREATE TABLE IF NOT EXISTS articles (
 )
 """
 
+_CREATE_INDEXES = [
+    "CREATE INDEX IF NOT EXISTS idx_source "
+    "ON articles (source)",
+    "CREATE INDEX IF NOT EXISTS idx_scraped_at "
+    "ON articles (scraped_at)",
+]
+
 
 class ArticleStore:
     """SQLite-backed store for scraped articles.
@@ -36,6 +43,8 @@ class ArticleStore:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(str(db_path))
         self._conn.execute(_CREATE_TABLE)
+        for idx in _CREATE_INDEXES:
+            self._conn.execute(idx)
         self._conn.commit()
 
     def save(self, articles: list[Article]) -> int:
@@ -78,26 +87,38 @@ class ArticleStore:
         return after - before
 
     def load(
-        self, source: str | None = None
+        self,
+        source: str | None = None,
+        limit: int | None = None,
+        offset: int = 0,
     ) -> list[Article]:
         """Load articles from the store.
 
         :param source: Filter by source name, or ``None``
             for all.
+        :param limit: Maximum number of articles to return,
+            or ``None`` for all.
+        :param offset: Number of articles to skip.
         :return: List of articles.
         """
-        if source is None:
-            rows = self._conn.execute(
-                "SELECT url, title, body, source, published "
-                "FROM articles ORDER BY scraped_at DESC"
-            ).fetchall()
-        else:
-            rows = self._conn.execute(
-                "SELECT url, title, body, source, published "
-                "FROM articles WHERE source = ? "
-                "ORDER BY scraped_at DESC",
-                (source,),
-            ).fetchall()
+        query = (
+            "SELECT url, title, body, source, published "
+            "FROM articles"
+        )
+        params: list[str | int] = []
+        if source is not None:
+            query += " WHERE source = ?"
+            params.append(source)
+        query += " ORDER BY scraped_at DESC"
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
+        if offset:
+            query += " OFFSET ?"
+            params.append(offset)
+        rows = self._conn.execute(
+            query, params
+        ).fetchall()
         return [self._row_to_article(r) for r in rows]
 
     def count(self, source: str | None = None) -> int:

@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.5.3 - 31st March 2026
+
+- Added `limit`/`offset` pagination to `ArticleStore.load()`
+- Added SQLite indexes on `source` and `scraped_at` columns
+- Simplified `parse_feed_date()`: use `datetime(*parsed[:6])`
+  instead of `mktime` roundtrip
+- Changed `BBCScraper._extract_body()` to pass `resp.content`
+  (bytes) to BeautifulSoup instead of `resp.text`
+
+
 ### v0.5.2 - 31st March 2026
 
 - Added full-text extraction to `APScraper` using

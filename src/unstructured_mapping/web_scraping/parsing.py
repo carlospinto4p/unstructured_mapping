@@ -1,7 +1,6 @@
 """Shared parsing utilities for RSS feed scrapers."""
 
 from datetime import datetime, timezone
-from time import mktime
 
 import feedparser
 
@@ -18,6 +17,4 @@ def parse_feed_date(
     parsed = entry.get("published_parsed")
     if parsed is None:
         return None
-    return datetime.fromtimestamp(
-        mktime(parsed), tz=timezone.utc
-    )
+    return datetime(*parsed[:6], tzinfo=timezone.utc)

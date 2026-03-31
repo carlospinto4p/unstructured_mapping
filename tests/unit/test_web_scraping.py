@@ -76,6 +76,7 @@ def _mock_response(text: str):
     class _Resp:
         def __init__(self):
             self.text = text
+            self.content = text.encode()
             self.status_code = 200
 
         def raise_for_status(self):
@@ -348,6 +349,28 @@ def test_store_filter_by_source(tmp_path):
         bbc_articles = store.load(source="bbc")
         assert len(bbc_articles) == 1
         assert bbc_articles[0].title == "A"
+
+
+def test_store_load_limit(tmp_path):
+    db = tmp_path / "test.db"
+    with ArticleStore(db_path=db) as store:
+        store.save([
+            _make_article(url=f"https://example.com/{i}")
+            for i in range(5)
+        ])
+        assert len(store.load(limit=3)) == 3
+        assert len(store.load(limit=10)) == 5
+
+
+def test_store_load_offset(tmp_path):
+    db = tmp_path / "test.db"
+    with ArticleStore(db_path=db) as store:
+        store.save([
+            _make_article(url=f"https://example.com/{i}")
+            for i in range(5)
+        ])
+        assert len(store.load(limit=2, offset=3)) == 2
+        assert len(store.load(limit=10, offset=4)) == 1
 
 
 def test_store_count_empty(tmp_path):
