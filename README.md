@@ -80,6 +80,34 @@ uv run python -m unstructured_mapping.cli.scrape --sources bbc --feeds default
 uv run python -m unstructured_mapping.cli.scrape --stats
 ```
 
+## Docker Deployment
+
+Run the scraper on a schedule using Docker. The container
+automatically restarts when Docker Desktop starts.
+
+```bash
+# Build and start (scrapes every 4 hours by default)
+docker compose up -d
+
+# Check logs
+docker compose logs -f scraper
+
+# Stop
+docker compose down
+```
+
+Configure via environment variables in `docker-compose.yml`:
+
+| Variable | Default | Description |
+|---|---|---|
+| `SCRAPE_INTERVAL_HOURS` | `4` | Hours between scrape cycles |
+| `SCRAPE_SOURCES` | `bbc reuters` | Space-separated sources |
+| `SCRAPE_FEEDS` | `all` | `default` (top stories) or `all` |
+| `SCRAPE_FULL_TEXT` | `1` | Set to `0` to skip full-text extraction |
+
+The SQLite database is persisted in `data/articles.db` via a
+volume mount.
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

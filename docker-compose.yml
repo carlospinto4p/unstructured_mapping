@@ -1,0 +1,12 @@
+services:
+  scraper:
+    build: .
+    container_name: news-scraper
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    environment:
+      - SCRAPE_INTERVAL_HOURS=4
+      - SCRAPE_SOURCES=bbc reuters
+      - SCRAPE_FEEDS=all
+      - SCRAPE_FULL_TEXT=1

@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.5.0 - 31st March 2026
+
+- Added Docker deployment for automated news scraping:
+    - `Dockerfile` with Python 3.14-slim and `uv`
+    - `docker-compose.yml` with `restart: unless-stopped`
+    - `.dockerignore` for lean image builds
+- Added `scheduler` CLI module with configurable interval
+  via `SCRAPE_INTERVAL_HOURS` environment variable
+- Volume-mounted `data/` directory persists SQLite database
+  across container restarts
+
+
 ### v0.4.3 - 31st March 2026
 
 - Optimized `Scraper` base class:

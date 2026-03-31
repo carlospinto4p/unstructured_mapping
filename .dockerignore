@@ -1,0 +1,15 @@
+.git
+.github
+.claude
+.venv
+__pycache__
+*.pyc
+data/
+tests/
+backlog.md
+changelog.md
+README.md
+CLAUDE.md
+*.egg-info
+.ruff_cache
+.pytest_cache
