@@ -11,6 +11,7 @@ Usage::
 """
 
 import argparse
+import logging
 from pathlib import Path
 
 from unstructured_mapping.web_scraping import (
@@ -24,6 +25,8 @@ from unstructured_mapping.web_scraping import (
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
 )
+
+logger = logging.getLogger(__name__)
 
 _SOURCES = ["bbc", "reuters", "ap"]
 
@@ -81,8 +84,8 @@ def _show_stats(store: ArticleStore) -> None:
     total = store.count()
     for src in _SOURCES:
         count = store.count(source=src)
-        print(f"{src.upper():8s} {count}")
-    print(f"{'TOTAL':8s} {total}")
+        logger.info("%8s %d", src.upper(), count)
+    logger.info("%8s %d", "TOTAL", total)
 
 
 def _build_scraper(
@@ -121,6 +124,11 @@ def _build_scraper(
 
 def main(argv: list[str] | None = None) -> None:
     """Entry point for the scrape CLI."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
     args = _build_parser().parse_args(argv)
     store = ArticleStore(db_path=args.db)
 
@@ -136,18 +144,20 @@ def main(argv: list[str] | None = None) -> None:
         scraper = _build_scraper(
             name, args.feeds, fetch_full, args.timeout
         )
-        print(f"Scraping {name}...")
+        logger.info("Scraping %s...", name)
         articles = scraper.fetch()
         new = store.save(articles)
         total_new += new
-        print(
-            f"  Fetched {len(articles)}, "
-            f"saved {new} new articles"
+        logger.info(
+            "  Fetched %d, saved %d new articles",
+            len(articles),
+            new,
         )
 
-    print(
-        f"\nDone: {total_new} new articles "
-        f"({store.count()} total in DB)"
+    logger.info(
+        "Done: %d new articles (%d total in DB)",
+        total_new,
+        store.count(),
     )
     store.close()
 

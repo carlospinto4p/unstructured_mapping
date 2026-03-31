@@ -158,18 +158,36 @@ class BBCScraper(Scraper):
         :param url: Article URL.
         :return: Extracted text, or empty string on failure.
         """
+        html = self._fetch_page(url)
+        if html is None:
+            return ""
+        return self._parse_article(html)
+
+    def _fetch_page(self, url: str) -> bytes | None:
+        """Fetch raw HTML from an article URL.
+
+        :param url: Article URL.
+        :return: HTML bytes, or ``None`` on failure.
+        """
         try:
             resp = self._client.get(url)
             resp.raise_for_status()
         except httpx.HTTPError:
             logger.warning("Failed to fetch %s", url)
-            return ""
+            return None
+        return resp.content
 
-        soup = BeautifulSoup(resp.content, "html.parser")
+    @staticmethod
+    def _parse_article(html: bytes) -> str:
+        """Extract article text from HTML.
+
+        :param html: Raw HTML bytes.
+        :return: Joined paragraph text, or empty string.
+        """
+        soup = BeautifulSoup(html, "html.parser")
         article = soup.find("article")
         if article is None:
             return ""
-
         paragraphs = article.find_all("p")
         return "\n\n".join(
             p.get_text(strip=True)

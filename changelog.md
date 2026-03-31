@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.5.5 - 31st March 2026
+
+- Replaced `print()` with `logging` in `cli/scrape.py`
+- Replaced bare `except Exception` in `APScraper` with
+  specific types (`ValueError`, `KeyError`, `OSError`)
+- Split `BBCScraper._extract_body()` into `_fetch_page()`
+  and `_parse_article()`
+- Split `APScraper._extract_body()` into `_decode_url()`
+  and `_fetch_text()`
+
+
 ### v0.5.4 - 31st March 2026
 
 - Refactored `Scraper` base class:

@@ -142,35 +142,53 @@ class APScraper(Scraper):
         :return: Tuple of (extracted text, real URL).
             Text is empty on failure.
         """
+        real_url = self._decode_url(gnews_url)
+        if not real_url:
+            return "", ""
+        text = self._fetch_text(real_url)
+        return text, real_url
+
+    @staticmethod
+    def _decode_url(gnews_url: str) -> str:
+        """Resolve a Google News redirect to a real URL.
+
+        :param gnews_url: Google News redirect URL.
+        :return: Resolved URL, or empty string on failure.
+        """
         from googlenewsdecoder import new_decoderv1
 
         try:
             result = new_decoderv1(gnews_url)
-        except Exception:
+        except (ValueError, KeyError, OSError):
             logger.warning(
                 "Failed to decode %s", gnews_url
             )
-            return "", ""
+            return ""
 
         if not result.get("status"):
             logger.warning(
                 "Decoder failed for %s", gnews_url
             )
-            return "", ""
+            return ""
+        return result["decoded_url"]
 
-        real_url = result["decoded_url"]
+    @staticmethod
+    def _fetch_text(url: str) -> str:
+        """Fetch and extract article text with trafilatura.
 
+        :param url: Direct article URL.
+        :return: Extracted text, or empty string on failure.
+        """
         import trafilatura
 
         try:
-            html = trafilatura.fetch_url(real_url)
+            html = trafilatura.fetch_url(url)
             text = (
                 trafilatura.extract(html) if html else ""
             )
-        except Exception:
+        except (OSError, ValueError):
             logger.warning(
-                "Failed to extract %s", real_url
+                "Failed to extract %s", url
             )
-            return "", real_url
-
-        return text or "", real_url
+            return ""
+        return text or ""
