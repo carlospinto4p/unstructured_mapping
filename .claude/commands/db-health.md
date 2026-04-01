@@ -1,0 +1,1 @@
+Run `uv run python -m unstructured_mapping.cli.db_health` and present the output to the user. If any issues are found (empty bodies, missing dates, gaps in daily coverage, stale data), highlight them and suggest next steps.

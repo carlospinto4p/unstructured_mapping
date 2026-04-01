@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.5.10 - 2nd April 2026
+
+- Added `cli/db_health.py` — database health report CLI
+  showing per-source counts, last scrape timestamps, recent
+  batches, daily coverage gaps, and data quality checks
+- Added `/db-health` skill in `.claude/commands/`
+
+
 ### v0.5.9 - 2nd April 2026
 
 - Simplified `ArticleStore.count()` — merged two branches
