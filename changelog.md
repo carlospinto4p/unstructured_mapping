@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.7.3 - 2nd April 2026
+
+- Added full table schemas to `docs/knowledge_graph.md` —
+  every column with type, constraints, and purpose
+
+
 ### v0.7.2 - 2nd April 2026
 
 - Moved design docs from `knowledge_graph/DESIGN.md` to
