@@ -115,6 +115,33 @@ Configure via environment variables in `docker-compose.yml`:
 The SQLite database is persisted in `data/articles.db` via a
 volume mount.
 
+## Knowledge Graph
+
+The `knowledge_graph` module provides the data model and SQLite
+storage for mapping entities to unstructured text:
+
+```python
+from unstructured_mapping.knowledge_graph import (
+    Entity,
+    EntityType,
+    KnowledgeStore,
+)
+
+entity = Entity(
+    canonical_name="Apple Inc.",
+    entity_type=EntityType.ORGANIZATION,
+    description="American multinational technology company.",
+    aliases=("Apple", "AAPL"),
+)
+
+with KnowledgeStore() as store:
+    store.save_entity(entity)
+    results = store.find_by_alias("Apple")
+```
+
+Entity types: `PERSON`, `ORGANIZATION`, `PLACE`, `TOPIC`.
+See `knowledge_graph/DESIGN.md` for rationale.
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

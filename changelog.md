@@ -1,5 +1,28 @@
 ## Changelog
 
+### v0.7.1 - 2nd April 2026
+
+- Changed `Article.document_id` type from `str` to
+  `uuid.UUID` for type safety and standard formatting
+- Updated `ArticleStore` to serialize/deserialize `UUID`
+- Added migration step to normalize existing hex-format
+  IDs (32 chars) to canonical UUID format (8-4-4-4-12)
+
+
+### v0.7.0 - 2nd April 2026
+
+- Added `knowledge_graph` module with LLM-first data model:
+  - `EntityType` enum: PERSON, ORGANIZATION, PLACE, TOPIC
+  - `EntityStatus` enum: ACTIVE, MERGED, DEPRECATED
+  - `Entity`, `Provenance`, `Relationship` frozen dataclasses
+  - `KnowledgeStore` — SQLite storage with CRUD, alias
+    lookup, and entity merge
+- Added `knowledge_graph/DESIGN.md` documenting all design
+  decisions, enum rationale, and deferred features
+- Added `.claude/rules/documentation.md` — design decisions
+  must be documented for cold readers
+
+
 ### v0.6.1 - 2nd April 2026
 
 - Fixed `_migrate()` — rebuilds table after backfill to
