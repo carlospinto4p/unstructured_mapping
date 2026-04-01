@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.6.1 - 2nd April 2026
+
+- Fixed `_migrate()` — rebuilds table after backfill to
+  enforce `NOT NULL UNIQUE` constraint on `document_id`
+  (SQLite `ALTER TABLE ADD COLUMN` cannot add constraints)
+- Drops stale `idx_source` index from pre-v0.5.8 databases
+- Added `document_id` integrity checks to `db_health.py`
+  (null count, duplicate count, migration status)
+
+
 ### v0.6.0 - 2nd April 2026
 
 - Added `document_id` field to `Article` — stable UUID

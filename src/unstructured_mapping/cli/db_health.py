@@ -121,6 +121,36 @@ def _run_report(conn: sqlite3.Connection) -> str:
         f"  Short bodies (<50): {short_body}"
     )
 
+    # document_id checks (v0.6.0+)
+    col_names = {
+        row[1]
+        for row in conn.execute(
+            "PRAGMA table_info(articles)"
+        )
+    }
+    if "document_id" in col_names:
+        null_ids = conn.execute(
+            "SELECT COUNT(*) FROM articles "
+            "WHERE document_id IS NULL"
+        ).fetchone()[0]
+        lines.append(
+            f"  Null document_ids: {null_ids}"
+        )
+        dupe_ids = conn.execute(
+            "SELECT COUNT(*) FROM ("
+            "  SELECT document_id FROM articles "
+            "  GROUP BY document_id "
+            "  HAVING COUNT(*) > 1"
+            ")"
+        ).fetchone()[0]
+        lines.append(
+            f"  Dupe document_ids: {dupe_ids}"
+        )
+    else:
+        lines.append(
+            "  document_id:       MISSING (run migration)"
+        )
+
     # --- DB file size ---
     lines.append("")
     db_path = conn.execute("PRAGMA database_list").fetchone()[2]

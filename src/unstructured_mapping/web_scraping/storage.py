@@ -53,14 +53,32 @@ class ArticleStore:
         self._conn.commit()
 
     def _migrate(self) -> None:
-        """Add `document_id` column to legacy databases."""
+        """Migrate legacy databases to current schema.
+
+        Handles two cases:
+
+        1. Table exists without ``document_id`` column —
+           adds the column, backfills UUIDs, then rebuilds
+           the table with proper NOT NULL + UNIQUE
+           constraints.
+        2. Table has ``document_id`` but without NOT NULL
+           constraint (from a previous partial migration) —
+           rebuilds the table to enforce constraints.
+
+        Also drops the stale ``idx_source`` index replaced
+        by ``idx_source_scraped`` in v0.5.8.
+        """
         cols = {
             row[1]
             for row in self._conn.execute(
                 "PRAGMA table_info(articles)"
             )
         }
-        if "document_id" not in cols and cols:
+        if not cols:
+            return
+
+        # Step 1: add column + backfill if missing
+        if "document_id" not in cols:
             self._conn.execute(
                 "ALTER TABLE articles "
                 "ADD COLUMN document_id TEXT"
@@ -78,9 +96,45 @@ class ArticleStore:
                 )
             self._conn.commit()
             logger.info(
-                "Migrated %d articles with document_id",
+                "Backfilled document_id for %d articles",
                 len(rows),
             )
+
+        # Step 2: rebuild table if constraints are missing
+        info = {
+            row[1]: row[3]  # name -> notnull
+            for row in self._conn.execute(
+                "PRAGMA table_info(articles)"
+            )
+        }
+        if not info.get("document_id"):
+            self._conn.executescript("""
+                ALTER TABLE articles
+                    RENAME TO _articles_old;
+            """)
+            self._conn.execute(_CREATE_TABLE)
+            self._conn.execute("""
+                INSERT INTO articles
+                    (url, title, body, source,
+                     published, scraped_at, document_id)
+                SELECT url, title, body, source,
+                       published, scraped_at, document_id
+                FROM _articles_old
+            """)
+            self._conn.execute(
+                "DROP TABLE _articles_old"
+            )
+            self._conn.commit()
+            logger.info(
+                "Rebuilt articles table with "
+                "document_id constraints"
+            )
+
+        # Step 3: drop stale index from pre-v0.5.8
+        self._conn.execute(
+            "DROP INDEX IF EXISTS idx_source"
+        )
+        self._conn.commit()
 
     def save(self, articles: list[Article]) -> int:
         """Save articles, skipping duplicates by URL.
