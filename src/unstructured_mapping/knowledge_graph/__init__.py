@@ -1,6 +1,6 @@
 """Knowledge graph module for entity mapping.
 
-See ``DESIGN.md`` in this package for detailed rationale
+See ``docs/knowledge_graph.md`` for detailed rationale
 behind the data model, enum values, and deferred features.
 """
 

@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.7.2 - 2nd April 2026
+
+- Moved design docs from `knowledge_graph/DESIGN.md` to
+  `docs/knowledge_graph.md`
+- Cleaned up design docs to document decisions and reasons
+  only, removing references to planning alternatives that
+  were never implemented
+- Updated all docstring references to new docs path
+
+
 ### v0.7.1 - 2nd April 2026
 
 - Changed `Article.document_id` type from `str` to

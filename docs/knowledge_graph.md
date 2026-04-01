@@ -26,29 +26,29 @@ matching. This means:
 
 ### Why not more types?
 
-- **EVENT was dropped.** Events are better modeled as
+- **No EVENT type.** Events are better modeled as
   *relationships with temporal bounds* between entities.
-  "Russia invaded Ukraine" is a Relationship(source=Russia,
-  target=Ukraine, relation_type="invaded",
-  valid_from=2022-02-24). Making events a separate entity type
-  creates duplication (the event entity AND the relationships it
-  implies).
+  "Russia invaded Ukraine" becomes
+  Relationship(source=Russia, target=Ukraine,
+  relation_type="invaded", valid_from=2022-02-24). A
+  separate entity type would duplicate what relationships
+  already express.
 
-- **CONCEPT was replaced by TOPIC.** "Concept" is too vague —
-  anything could be a concept. "Topic" is concrete: a recurring
-  subject the news covers, useful for clustering and linking
-  articles.
+- **TOPIC instead of a broader CONCEPT.** "Concept" is too
+  vague — anything qualifies. "Topic" is concrete: a
+  recurring subject the news covers, useful for clustering
+  and linking articles.
 
-- **COMPANY was not split from ORGANIZATION.** The boundary is
-  blurry (is the BBC a company or a public institution? Is
-  SpaceX a company or a government contractor?). The LLM
-  resolves this nuance via `Entity.description`. If subtypes
-  are needed later, add an optional `subtype` field rather than
-  multiplying enum values.
+- **ORGANIZATION is not split into COMPANY, GOVERNMENT, etc.**
+  The boundary is blurry (is the BBC a company or a public
+  institution? Is SpaceX a company or a government
+  contractor?). The LLM resolves this nuance via
+  `Entity.description`. If subtypes are needed later, add an
+  optional `subtype` field rather than multiplying enum values.
 
-- **LOCATION was renamed to PLACE.** Reads more naturally in
-  news context ("the place where X happened") vs "location"
-  which implies coordinates.
+- **PLACE rather than LOCATION.** "Place" reads more naturally
+  in news context and avoids implying coordinates or
+  geospatial precision.
 
 ### Adding new types
 

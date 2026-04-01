@@ -140,7 +140,7 @@ with KnowledgeStore() as store:
 ```
 
 Entity types: `PERSON`, `ORGANIZATION`, `PLACE`, `TOPIC`.
-See `knowledge_graph/DESIGN.md` for rationale.
+See `docs/knowledge_graph.md` for rationale.
 
 ## Project Status
 

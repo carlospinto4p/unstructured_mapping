@@ -13,9 +13,8 @@ be documented with:
 
 - Module-level docstrings for new modules.
 - Class/field docstrings for data models.
-- A `DESIGN.md` file at the package level for decisions
-  that span multiple files (e.g. "why EntityType has four
-  values, not seven").
+- A file in `docs/` for decisions that span multiple files
+  (e.g. `docs/knowledge_graph.md` for the KG data model).
 
 ## Audience
 

@@ -6,7 +6,7 @@ design is LLM-first: the graph serves as a rich reference
 catalog that an LLM reads and reasons over, rather than an
 engine for algorithmic vector matching.
 
-See ``DESIGN.md`` in this package for detailed rationale
+See ``docs/knowledge_graph.md`` for detailed rationale
 behind every enum value, field choice, and deferred feature.
 """
 
@@ -26,7 +26,7 @@ class EntityType(StrEnum):
     ORGANIZATION). Splitting into subtypes would make
     classification harder without improving LLM resolution.
 
-    See ``DESIGN.md`` for why EVENT and CONCEPT were
+    See ``docs/knowledge_graph.md`` for why EVENT was
     excluded and what each type covers.
     """
 
