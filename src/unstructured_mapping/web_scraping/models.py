@@ -1,8 +1,9 @@
 """Data models for web scraping."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import NamedTuple
+from uuid import uuid4
 
 
 class ExtractionResult(NamedTuple):
@@ -25,6 +26,8 @@ class Article:
     :param url: Canonical URL of the article.
     :param source: Name of the news source (e.g. ``"reuters"``).
     :param published: Publication timestamp, if available.
+    :param document_id: Stable unique identifier (UUID hex).
+        Auto-generated when not provided.
     """
 
     title: str
@@ -32,3 +35,6 @@ class Article:
     url: str
     source: str
     published: datetime | None = None
+    document_id: str = field(
+        default_factory=lambda: uuid4().hex
+    )

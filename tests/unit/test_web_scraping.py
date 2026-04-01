@@ -52,6 +52,28 @@ def test_article_fields():
     assert article.published is None
 
 
+def test_article_document_id_auto_generated():
+    a1 = Article(
+        title="T", body="B", url="u1", source="s"
+    )
+    a2 = Article(
+        title="T", body="B", url="u2", source="s"
+    )
+    assert len(a1.document_id) == 32
+    assert a1.document_id != a2.document_id
+
+
+def test_article_document_id_explicit():
+    article = Article(
+        title="T",
+        body="B",
+        url="u",
+        source="s",
+        document_id="abc123",
+    )
+    assert article.document_id == "abc123"
+
+
 def test_article_is_frozen():
     article = Article(
         title="T", body="B", url="u", source="s"
@@ -376,3 +398,48 @@ def test_store_save_empty(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
         assert store.save([]) == 0
+
+
+def test_store_document_id_round_trip(tmp_path):
+    db = tmp_path / "test.db"
+    article = Article(
+        title="T",
+        body="B",
+        url="https://example.com/1",
+        source="test",
+        document_id="deadbeef" * 4,
+    )
+    with ArticleStore(db_path=db) as store:
+        store.save([article])
+        loaded = store.load()
+
+    assert loaded[0].document_id == "deadbeef" * 4
+
+
+def test_store_migration_adds_document_id(tmp_path):
+    db = tmp_path / "test.db"
+    import sqlite3
+
+    conn = sqlite3.connect(str(db))
+    conn.execute(
+        "CREATE TABLE articles ("
+        "url TEXT PRIMARY KEY, "
+        "title TEXT NOT NULL, "
+        "body TEXT NOT NULL, "
+        "source TEXT NOT NULL, "
+        "published TEXT, "
+        "scraped_at TEXT NOT NULL)"
+    )
+    conn.execute(
+        "INSERT INTO articles VALUES "
+        "(?, ?, ?, ?, ?, ?)",
+        ("u1", "T", "B", "s", None, "2026-01-01"),
+    )
+    conn.commit()
+    conn.close()
+
+    with ArticleStore(db_path=db) as store:
+        loaded = store.load()
+
+    assert len(loaded) == 1
+    assert len(loaded[0].document_id) == 32

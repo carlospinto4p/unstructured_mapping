@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.6.0 - 2nd April 2026
+
+- Added `document_id` field to `Article` — stable UUID
+  identifier auto-generated on creation
+- Added `document_id` column to `articles` table with
+  `UNIQUE` constraint and index
+- Added `ArticleStore._migrate()` — backfills `document_id`
+  for existing rows in legacy databases
+
+
 ### v0.5.10 - 2nd April 2026
 
 - Added `cli/db_health.py` — database health report CLI

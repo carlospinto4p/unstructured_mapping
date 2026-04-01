@@ -4,6 +4,7 @@ import logging
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
+from uuid import uuid4
 
 from unstructured_mapping.web_scraping.models import Article
 
@@ -18,7 +19,8 @@ CREATE TABLE IF NOT EXISTS articles (
     body        TEXT NOT NULL,
     source      TEXT NOT NULL,
     published   TEXT,
-    scraped_at  TEXT NOT NULL
+    scraped_at  TEXT NOT NULL,
+    document_id TEXT NOT NULL UNIQUE
 )
 """
 
@@ -27,6 +29,8 @@ _CREATE_INDEXES = [
     "ON articles (source, scraped_at DESC)",
     "CREATE INDEX IF NOT EXISTS idx_scraped_at "
     "ON articles (scraped_at)",
+    "CREATE INDEX IF NOT EXISTS idx_document_id "
+    "ON articles (document_id)",
 ]
 
 
@@ -42,10 +46,41 @@ class ArticleStore:
     ) -> None:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(str(db_path))
+        self._migrate()
         self._conn.execute(_CREATE_TABLE)
         for idx in _CREATE_INDEXES:
             self._conn.execute(idx)
         self._conn.commit()
+
+    def _migrate(self) -> None:
+        """Add `document_id` column to legacy databases."""
+        cols = {
+            row[1]
+            for row in self._conn.execute(
+                "PRAGMA table_info(articles)"
+            )
+        }
+        if "document_id" not in cols and cols:
+            self._conn.execute(
+                "ALTER TABLE articles "
+                "ADD COLUMN document_id TEXT"
+            )
+            rows = self._conn.execute(
+                "SELECT url FROM articles "
+                "WHERE document_id IS NULL"
+            ).fetchall()
+            for (url,) in rows:
+                self._conn.execute(
+                    "UPDATE articles "
+                    "SET document_id = ? "
+                    "WHERE url = ?",
+                    (uuid4().hex, url),
+                )
+            self._conn.commit()
+            logger.info(
+                "Migrated %d articles with document_id",
+                len(rows),
+            )
 
     def save(self, articles: list[Article]) -> int:
         """Save articles, skipping duplicates by URL.
@@ -69,13 +104,15 @@ class ArticleStore:
                 if a.published
                 else None,
                 now,
+                a.document_id,
             )
             for a in articles
         ]
         self._conn.executemany(
             "INSERT OR IGNORE INTO articles "
             "(url, title, body, source, published, "
-            "scraped_at) VALUES (?, ?, ?, ?, ?, ?)",
+            "scraped_at, document_id) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
             rows,
         )
         self._conn.commit()
@@ -97,8 +134,8 @@ class ArticleStore:
         :return: List of articles.
         """
         query = (
-            "SELECT url, title, body, source, published "
-            "FROM articles"
+            "SELECT url, title, body, source, published,"
+            " document_id FROM articles"
         )
         params: list[str | int] = []
         if source is not None:
@@ -155,9 +192,11 @@ class ArticleStore:
 
     @staticmethod
     def _row_to_article(
-        row: tuple[str, str, str, str, str | None],
+        row: tuple[
+            str, str, str, str, str | None, str
+        ],
     ) -> Article:
-        url, title, body, source, pub_str = row
+        url, title, body, source, pub_str, doc_id = row
         published = (
             datetime.fromisoformat(pub_str)
             if pub_str
@@ -169,4 +208,5 @@ class ArticleStore:
             body=body,
             source=source,
             published=published,
+            document_id=doc_id,
         )
