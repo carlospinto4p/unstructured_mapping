@@ -4,7 +4,7 @@ import logging
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from unstructured_mapping.web_scraping.models import Article
 
@@ -92,7 +92,7 @@ class ArticleStore:
                     "UPDATE articles "
                     "SET document_id = ? "
                     "WHERE url = ?",
-                    (uuid4().hex, url),
+                    (str(uuid4()), url),
                 )
             self._conn.commit()
             logger.info(
@@ -130,7 +130,26 @@ class ArticleStore:
                 "document_id constraints"
             )
 
-        # Step 3: drop stale index from pre-v0.5.8
+        # Step 3: normalize hex IDs to canonical UUID format
+        hex_rows = self._conn.execute(
+            "SELECT url, document_id FROM articles "
+            "WHERE LENGTH(document_id) = 32"
+        ).fetchall()
+        if hex_rows:
+            for url, hex_id in hex_rows:
+                self._conn.execute(
+                    "UPDATE articles "
+                    "SET document_id = ? "
+                    "WHERE url = ?",
+                    (str(UUID(hex_id)), url),
+                )
+            self._conn.commit()
+            logger.info(
+                "Normalized %d hex document_ids to UUID",
+                len(hex_rows),
+            )
+
+        # Step 4: drop stale index from pre-v0.5.8
         self._conn.execute(
             "DROP INDEX IF EXISTS idx_source"
         )
@@ -158,7 +177,7 @@ class ArticleStore:
                 if a.published
                 else None,
                 now,
-                a.document_id,
+                str(a.document_id),
             )
             for a in articles
         ]
@@ -262,5 +281,5 @@ class ArticleStore:
             body=body,
             source=source,
             published=published,
-            document_id=doc_id,
+            document_id=UUID(doc_id),
         )

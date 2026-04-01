@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import NamedTuple
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 
 class ExtractionResult(NamedTuple):
@@ -35,6 +35,4 @@ class Article:
     url: str
     source: str
     published: datetime | None = None
-    document_id: str = field(
-        default_factory=lambda: uuid4().hex
-    )
+    document_id: UUID = field(default_factory=uuid4)

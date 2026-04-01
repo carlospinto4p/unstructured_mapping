@@ -2,6 +2,7 @@
 
 from datetime import timezone
 from unittest.mock import patch
+from uuid import UUID
 
 import pytest
 
@@ -59,19 +60,20 @@ def test_article_document_id_auto_generated():
     a2 = Article(
         title="T", body="B", url="u2", source="s"
     )
-    assert len(a1.document_id) == 32
+    assert isinstance(a1.document_id, UUID)
     assert a1.document_id != a2.document_id
 
 
 def test_article_document_id_explicit():
+    uid = UUID("12345678-1234-5678-1234-567812345678")
     article = Article(
         title="T",
         body="B",
         url="u",
         source="s",
-        document_id="abc123",
+        document_id=uid,
     )
-    assert article.document_id == "abc123"
+    assert article.document_id == uid
 
 
 def test_article_is_frozen():
@@ -402,18 +404,19 @@ def test_store_save_empty(tmp_path):
 
 def test_store_document_id_round_trip(tmp_path):
     db = tmp_path / "test.db"
+    uid = UUID("deadbeef-dead-beef-dead-beefdeadbeef")
     article = Article(
         title="T",
         body="B",
         url="https://example.com/1",
         source="test",
-        document_id="deadbeef" * 4,
+        document_id=uid,
     )
     with ArticleStore(db_path=db) as store:
         store.save([article])
         loaded = store.load()
 
-    assert loaded[0].document_id == "deadbeef" * 4
+    assert loaded[0].document_id == uid
 
 
 def test_store_migration_adds_document_id(tmp_path):
@@ -442,4 +445,4 @@ def test_store_migration_adds_document_id(tmp_path):
         loaded = store.load()
 
     assert len(loaded) == 1
-    assert len(loaded[0].document_id) == 32
+    assert isinstance(loaded[0].document_id, UUID)
