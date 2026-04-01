@@ -148,23 +148,39 @@ class Scraper(ABC):
         """
         return ExtractionResult()
 
+    def _fetch_feed(self, feed_url: str) -> str:
+        """Fetch a single RSS feed.
+
+        :param feed_url: RSS feed URL.
+        :return: Raw XML string.
+        :raises httpx.HTTPStatusError: On HTTP errors.
+        """
+        response = self._client.get(feed_url)
+        response.raise_for_status()
+        return response.text
+
     def fetch(self) -> list[Article]:
         """Fetch articles from all configured RSS feeds.
 
-        Deduplicates by URL across feeds.
+        Feeds are fetched in parallel when there are
+        multiple URLs. Deduplicates by URL across feeds.
 
         :return: List of scraped articles.
         :raises httpx.HTTPStatusError: If any feed request
             fails.
         """
+        feeds = self._parallel_map(
+            self._fetch_feed,
+            self._feed_urls,
+            self._max_workers,
+        )
         seen_urls: set[str] = set()
         articles: list[Article] = []
         for feed_url in self._feed_urls:
-            response = self._client.get(feed_url)
-            response.raise_for_status()
-            for article in self._parse_feed(
-                response.text
-            ):
+            xml = feeds.get(feed_url, "")
+            if not xml:
+                continue
+            for article in self._parse_feed(xml):
                 if article.url not in seen_urls:
                     seen_urls.add(article.url)
                     articles.append(article)

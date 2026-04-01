@@ -83,11 +83,14 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _show_stats(store: ArticleStore) -> None:
-    total = store.count()
+    counts = store.counts_by_source()
     for src in _SOURCES:
-        count = store.count(source=src)
-        logger.info("%8s %d", src.upper(), count)
-    logger.info("%8s %d", "TOTAL", total)
+        logger.info(
+            "%8s %d", src.upper(), counts.get(src, 0)
+        )
+    logger.info(
+        "%8s %d", "TOTAL", sum(counts.values())
+    )
 
 
 def _build_scraper(

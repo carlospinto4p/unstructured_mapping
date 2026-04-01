@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.5.8 - 1st April 2026
+
+- Replaced two `SELECT COUNT(*)` scans in
+  `ArticleStore.save()` with `total_changes` for O(1)
+  insert counting
+- Parallelized RSS feed fetching in `Scraper.fetch()`
+  via `_parallel_map()`
+- Added `ArticleStore.counts_by_source()` with single
+  `GROUP BY` query, used in `_show_stats()`
+- Fixed double `get_text()` call in
+  `BBCScraper._parse_article()` with walrus operator
+- Replaced `idx_source` with composite index
+  `(source, scraped_at DESC)` for filtered+ordered queries
+
+
 ### v0.5.7 - 1st April 2026
 
 - Lifted `_fetch_full_text`, `_max_workers`, and `_enrich()`

@@ -152,7 +152,7 @@ class BBCScraper(Scraper):
             return ""
         paragraphs = article.find_all("p")
         return "\n\n".join(
-            p.get_text(strip=True)
+            text
             for p in paragraphs
-            if p.get_text(strip=True)
+            if (text := p.get_text(strip=True))
         )

@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS articles (
 """
 
 _CREATE_INDEXES = [
-    "CREATE INDEX IF NOT EXISTS idx_source "
-    "ON articles (source)",
+    "CREATE INDEX IF NOT EXISTS idx_source_scraped "
+    "ON articles (source, scraped_at DESC)",
     "CREATE INDEX IF NOT EXISTS idx_scraped_at "
     "ON articles (scraped_at)",
 ]
@@ -58,9 +58,7 @@ class ArticleStore:
         if not articles:
             return 0
         now = datetime.now(timezone.utc).isoformat()
-        before = self._conn.execute(
-            "SELECT COUNT(*) FROM articles"
-        ).fetchone()[0]
+        before = self._conn.total_changes
         rows = [
             (
                 a.url,
@@ -81,10 +79,7 @@ class ArticleStore:
             rows,
         )
         self._conn.commit()
-        after = self._conn.execute(
-            "SELECT COUNT(*) FROM articles"
-        ).fetchone()[0]
-        return after - before
+        return self._conn.total_changes - before
 
     def load(
         self,
@@ -139,6 +134,17 @@ class ArticleStore:
                 (source,),
             ).fetchone()
         return row[0]
+
+    def counts_by_source(self) -> dict[str, int]:
+        """Count articles grouped by source.
+
+        :return: Mapping of source name to article count.
+        """
+        rows = self._conn.execute(
+            "SELECT source, COUNT(*) FROM articles "
+            "GROUP BY source"
+        ).fetchall()
+        return {src: cnt for src, cnt in rows}
 
     def close(self) -> None:
         """Close the database connection."""

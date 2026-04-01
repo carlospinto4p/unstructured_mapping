@@ -9,6 +9,14 @@
 - [x] **MEDIUM** — Extract shared `logging.basicConfig(...)` setup from `cli/scrape.py` and `cli/scheduler.py` into a `cli/_logging.py` helper
 - [x] **LOW** — Extract Google News RSS URL builder — `ap.py` and `reuters.py` duplicate the same `news.google.com/rss/search?q=when:24h+allinurl:` pattern
 
+#### Performance (v0.5.7 review)
+
+- [x] **HIGH** — Use `cursor.rowcount` or `total_changes` in `ArticleStore.save()` instead of two `SELECT COUNT(*)` full-table scans to count inserted rows
+- [x] **HIGH** — Parallelize RSS feed fetching in `Scraper.fetch()` — feeds are fetched sequentially, wasteful with 16 BBC feeds
+- [x] **MEDIUM** — Single `GROUP BY source` query in `_show_stats()` instead of N+1 separate `COUNT(*)` calls
+- [x] **MEDIUM** — Use walrus operator in `BBCScraper._parse_article()` to avoid calling `get_text(strip=True)` twice per paragraph
+- [x] **LOW** — Add composite index `(source, scraped_at DESC)` to replace separate `idx_source` — covers filtered+ordered queries in `load()`
+
 #### Knowledge graph — entity store
 
 - [ ] Define KG data model:
