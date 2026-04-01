@@ -14,6 +14,8 @@ import argparse
 import logging
 from pathlib import Path
 
+from unstructured_mapping.cli._logging import setup_logging
+
 from unstructured_mapping.web_scraping import (
     APScraper,
     BBC_FEEDS,
@@ -124,11 +126,7 @@ def _build_scraper(
 
 def main(argv: list[str] | None = None) -> None:
     """Entry point for the scrape CLI."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
+    setup_logging()
     args = _build_parser().parse_args(argv)
     store = ArticleStore(db_path=args.db)
 

@@ -10,6 +10,7 @@ from unstructured_mapping.web_scraping import (
     Article,
     ArticleStore,
     BBCScraper,
+    ExtractionResult,
     ReutersScraper,
     Scraper,
 )
@@ -162,9 +163,9 @@ def test_ap_fetch_parses_rss(mock_get):
 @patch("httpx.Client.get")
 def test_ap_fetch_full_text(mock_get, mock_extract):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
-    mock_extract.return_value = (
-        "Full article text from AP.",
-        "https://apnews.com/article/test",
+    mock_extract.return_value = ExtractionResult(
+        body="Full article text from AP.",
+        url="https://apnews.com/article/test",
     )
     with APScraper(
         feed_urls="https://fake.feed/rss",
@@ -189,7 +190,7 @@ def test_ap_fallback_on_extraction_failure(
     mock_get, mock_extract
 ):
     mock_get.return_value = _mock_response(SAMPLE_RSS)
-    mock_extract.return_value = ("", "")
+    mock_extract.return_value = ExtractionResult()
     with APScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=True,

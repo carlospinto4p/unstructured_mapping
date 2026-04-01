@@ -6,7 +6,10 @@ from unstructured_mapping.web_scraping.bbc import (
     BBC_FEEDS,
     BBCScraper,
 )
-from unstructured_mapping.web_scraping.models import Article
+from unstructured_mapping.web_scraping.models import (
+    Article,
+    ExtractionResult,
+)
 from unstructured_mapping.web_scraping.reuters import (
     ReutersScraper,
 )
@@ -18,6 +21,7 @@ __all__ = [
     "APScraper",
     "Article",
     "ArticleStore",
+    "ExtractionResult",
     "BBC_FEEDS",
     "BBCScraper",
     "ReutersScraper",

@@ -6,22 +6,20 @@ Full-text extraction requires the ``scraping`` extra::
 """
 
 import logging
-from dataclasses import replace
 
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_MAX_WORKERS,
     DEFAULT_TIMEOUT,
+    google_news_rss,
 )
-from unstructured_mapping.web_scraping.models import Article
+from unstructured_mapping.web_scraping.models import (
+    ExtractionResult,
+)
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_FEED_URL = (
-    "https://news.google.com/rss/search"
-    "?q=when:24h+allinurl:apnews.com"
-    "&ceid=US:en&hl=en-US&gl=US"
-)
+_DEFAULT_FEED_URL = google_news_rss("apnews.com")
 
 
 def _has_scraping_deps() -> bool:
@@ -60,14 +58,14 @@ class APScraper(Scraper):
         timeout: float = DEFAULT_TIMEOUT,
         max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
+        has_deps = _has_scraping_deps()
         super().__init__(
-            feed_urls=feed_urls, timeout=timeout
+            feed_urls=feed_urls,
+            timeout=timeout,
+            fetch_full_text=fetch_full_text and has_deps,
+            max_workers=max_workers,
         )
-        self._fetch_full_text = (
-            fetch_full_text and _has_scraping_deps()
-        )
-        self._max_workers = max_workers
-        if fetch_full_text and not self._fetch_full_text:
+        if fetch_full_text and not has_deps:
             logger.warning(
                 "scraping extra not installed; "
                 "falling back to RSS summaries"
@@ -78,48 +76,19 @@ class APScraper(Scraper):
         """Return ``"ap"``."""
         return "ap"
 
-    def _enrich(
-        self, articles: list[Article]
-    ) -> list[Article]:
-        """Decode Google News URLs and extract full text.
-
-        Falls back to RSS summary when extraction fails.
-
-        :param articles: Articles from RSS parsing.
-        :return: Articles with resolved URLs and full text.
-        """
-        if not self._fetch_full_text:
-            return articles
-        results = self._parallel_map(
-            self._extract_body,
-            [a.url for a in articles],
-            self._max_workers,
-        )
-        return [
-            replace(
-                a,
-                body=(results.get(a.url, ("", ""))[0]
-                      or a.body),
-                url=(results.get(a.url, ("", ""))[1]
-                     or a.url),
-            )
-            for a in articles
-        ]
-
     def _extract_body(
         self, gnews_url: str
-    ) -> tuple[str, str]:
+    ) -> ExtractionResult:
         """Decode a Google News URL and extract text.
 
         :param gnews_url: Google News redirect URL.
-        :return: Tuple of (extracted text, real URL).
-            Text is empty on failure.
+        :return: Extraction result with text and real URL.
         """
         real_url = self._decode_url(gnews_url)
         if not real_url:
-            return "", ""
+            return ExtractionResult()
         text = self._fetch_text(real_url)
-        return text, real_url
+        return ExtractionResult(body=text, url=real_url)
 
     @staticmethod
     def _decode_url(gnews_url: str) -> str:

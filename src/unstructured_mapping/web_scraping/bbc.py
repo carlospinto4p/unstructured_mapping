@@ -1,7 +1,6 @@
 """BBC News RSS scraper with full-text extraction."""
 
 import logging
-from dataclasses import replace
 
 import httpx
 from bs4 import BeautifulSoup
@@ -11,7 +10,9 @@ from unstructured_mapping.web_scraping.config import (
     DEFAULT_MAX_WORKERS,
     DEFAULT_TIMEOUT,
 )
-from unstructured_mapping.web_scraping.models import Article
+from unstructured_mapping.web_scraping.models import (
+    ExtractionResult,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -98,49 +99,31 @@ class BBCScraper(Scraper):
         max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
         super().__init__(
-            feed_urls=feed_urls, timeout=timeout
+            feed_urls=feed_urls,
+            timeout=timeout,
+            fetch_full_text=fetch_full_text,
+            max_workers=max_workers,
         )
-        self._fetch_full_text = fetch_full_text
-        self._max_workers = max_workers
 
     @property
     def source(self) -> str:
         """Return ``"bbc"``."""
         return "bbc"
 
-    def _enrich(
-        self, articles: list[Article]
-    ) -> list[Article]:
-        """Replace RSS summaries with full article text.
-
-        Fetches article pages in parallel. Falls back to
-        the RSS summary when extraction fails.
-
-        :param articles: Articles from RSS parsing.
-        :return: Articles with full-text bodies.
-        """
-        if not self._fetch_full_text:
-            return articles
-        bodies = self._parallel_map(
-            self._extract_body,
-            [a.url for a in articles],
-            self._max_workers,
-        )
-        return [
-            replace(a, body=bodies.get(a.url) or a.body)
-            for a in articles
-        ]
-
-    def _extract_body(self, url: str) -> str:
+    def _extract_body(
+        self, url: str
+    ) -> ExtractionResult:
         """Fetch an article page and extract body text.
 
         :param url: Article URL.
-        :return: Extracted text, or empty string on failure.
+        :return: Extraction result with body text.
         """
         html = self._fetch_page(url)
         if html is None:
-            return ""
-        return self._parse_article(html)
+            return ExtractionResult()
+        return ExtractionResult(
+            body=self._parse_article(html)
+        )
 
     def _fetch_page(self, url: str) -> bytes | None:
         """Fetch raw HTML from an article URL.

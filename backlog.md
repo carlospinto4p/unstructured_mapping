@@ -2,48 +2,12 @@
 
 ### 2026 March 30th
 
-#### Web scraping — unstructured corpus
+#### Refactoring (v0.5.7 review)
 
-- [x] Create `web_scraping` module with base scraper interface
-- [x] Implement Reuters scraper (first source)
-- [x] Implement AP News scraper
-- [x] Implement BBC News scraper
-
-#### Refactoring (v0.4.0 review)
-
-- [x] Extract shared `_parse_date()` into `web_scraping/parsing.py` — duplicated in `bbc.py` and `reuters.py`
-- [x] Align scraper interfaces: rename `ReutersScraper.feed_url` → `feed_urls` (str | list), add `fetch_full_text` flag
-- [x] Move shared feed-fetching logic into `Scraper` base class (template method)
-- [x] Add `__enter__`/`__exit__` to `ArticleStore` for context manager support
-- [x] Add `logging` to `BBCScraper._extract_body()` and `ArticleStore.save()` instead of silent exception swallowing
-- [x] Move `_USER_AGENT` and `DEFAULT_TIMEOUT` into shared `web_scraping/config.py`
-
-#### Performance (v0.4.2 review)
-
-- [x] **HIGH** — Use `httpx.Client` with connection pooling in `Scraper` base class instead of per-request `httpx.get()`
-- [x] **HIGH** — Parallelize full-text extraction in `BBCScraper` with async or threading (sequential HTTP is the main bottleneck)
-- [x] **HIGH** — Use `executemany()` in `ArticleStore.save()` instead of row-by-row inserts
-- [x] **MEDIUM** — Add `limit`/`offset` pagination to `ArticleStore.load()` to avoid loading all rows into memory
-- [x] **MEDIUM** — Simplify date parsing in `parsing.py`: use `datetime(*parsed[:6])` instead of `mktime` roundtrip
-- [x] **LOW** — Add SQLite indexes on `source` and `scraped_at` columns
-- [x] **LOW** — Pass `resp.content` (bytes) to BeautifulSoup instead of `resp.text` to skip redundant decode
-
-#### Refactoring (v0.5.3 review)
-
-- [x] **HIGH** — Extract common `_parse_feed` logic into base class helper — all three scrapers repeat the same feedparser → entries → Article pattern
-- [x] **HIGH** — Refactor `cli/scrape.py:main()` to loop over source configs instead of three near-identical blocks
-- [x] **MEDIUM** — Centralize `_MAX_WORKERS = 8` into `config.py` — duplicated in `ap.py` and `bbc.py`
-- [x] **MEDIUM** — Replace `print()` with `logging` in `cli/scrape.py` for consistency with `scheduler.py`
-- [x] **LOW** — Replace bare `except Exception` in `ap.py` with specific exception types
-- [x] **LOW** — Split large `_extract_body` methods in `ap.py` and `bbc.py` into smaller helpers
-
-#### Refactoring (v0.5.5 review)
-
-- [x] **HIGH** — Close scrapers in CLI loop — `_build_scraper()` returns scrapers that are never closed; use context managers
-- [x] **MEDIUM** — Extract duplicate `ThreadPoolExecutor` pattern from `APScraper._extract_bodies()` and `BBCScraper._extract_bodies()` into a shared helper
-- [x] **MEDIUM** — Use context managers in tests instead of manual `scraper.close()` calls
-- [x] **LOW** — Rename `log` to `logger` in `scheduler.py` for consistency with other modules
-- [x] **LOW** — Add `exc_info=True` to `APScraper._decode_url()` warning to preserve exception context
+- [x] **HIGH** — Lift `_fetch_full_text`, `_max_workers`, and the `_enrich()` template into base `Scraper` — `APScraper` and `BBCScraper` duplicate identical init params and the same guard-then-parallel-map-then-replace pattern
+- [x] **MEDIUM** — Replace magic tuple indices in `APScraper._enrich()` with a `NamedTuple` — `results.get(a.url, ("", ""))[0]`/`[1]` is unclear
+- [x] **MEDIUM** — Extract shared `logging.basicConfig(...)` setup from `cli/scrape.py` and `cli/scheduler.py` into a `cli/_logging.py` helper
+- [x] **LOW** — Extract Google News RSS URL builder — `ap.py` and `reuters.py` duplicate the same `news.google.com/rss/search?q=when:24h+allinurl:` pattern
 
 #### Knowledge graph — entity store
 

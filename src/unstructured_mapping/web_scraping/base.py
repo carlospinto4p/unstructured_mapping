@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from typing import TypeVar
 
 import feedparser
@@ -13,7 +14,10 @@ from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
     USER_AGENT,
 )
-from unstructured_mapping.web_scraping.models import Article
+from unstructured_mapping.web_scraping.models import (
+    Article,
+    ExtractionResult,
+)
 from unstructured_mapping.web_scraping.parsing import (
     parse_feed_date,
 )
@@ -40,18 +44,26 @@ class Scraper(ABC):
 
     :param feed_urls: One or more RSS feed URLs.
     :param timeout: HTTP request timeout in seconds.
+    :param fetch_full_text: Enable full-text extraction
+        via :meth:`_extract_body`. Defaults to ``False``.
+    :param max_workers: Thread pool size for parallel
+        full-text extraction.
     """
 
     def __init__(
         self,
         feed_urls: str | list[str],
         timeout: float = DEFAULT_TIMEOUT,
+        fetch_full_text: bool = False,
+        max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
         if isinstance(feed_urls, str):
             self._feed_urls = [feed_urls]
         else:
             self._feed_urls = list(feed_urls)
         self._timeout = timeout
+        self._fetch_full_text = fetch_full_text
+        self._max_workers = max_workers
         self._client = httpx.Client(
             timeout=timeout,
             follow_redirects=True,
@@ -90,16 +102,51 @@ class Scraper(ABC):
     def _enrich(
         self, articles: list[Article]
     ) -> list[Article]:
-        """Enrich articles after initial RSS parsing.
+        """Enrich articles with full-text extraction.
 
-        The default implementation returns articles
-        unchanged. Subclasses can override this to add
-        full-text extraction or URL resolution.
+        When ``fetch_full_text`` is enabled, runs
+        :meth:`_extract_body` in parallel for each article
+        URL and merges the results back. Subclasses only
+        need to override :meth:`_extract_body`.
 
         :param articles: Articles from RSS parsing.
         :return: Enriched articles.
         """
-        return articles
+        if not self._fetch_full_text:
+            return articles
+        _empty = ExtractionResult()
+        results = self._parallel_map(
+            self._extract_body,
+            [a.url for a in articles],
+            self._max_workers,
+        )
+        return [
+            replace(
+                a,
+                body=(
+                    results.get(a.url, _empty).body
+                    or a.body
+                ),
+                url=(
+                    results.get(a.url, _empty).url
+                    or a.url
+                ),
+            )
+            for a in articles
+        ]
+
+    def _extract_body(
+        self, url: str
+    ) -> ExtractionResult:
+        """Extract full text from an article URL.
+
+        Override in subclasses to provide source-specific
+        extraction. The default returns an empty result.
+
+        :param url: Article URL.
+        :return: Extraction result with body and/or URL.
+        """
+        return ExtractionResult()
 
     def fetch(self) -> list[Article]:
         """Fetch articles from all configured RSS feeds.

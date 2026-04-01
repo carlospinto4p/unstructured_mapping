@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.5.7 - 1st April 2026
+
+- Lifted `_fetch_full_text`, `_max_workers`, and `_enrich()`
+  template into base `Scraper` — subclasses now only override
+  `_extract_body()`
+- Added `ExtractionResult` NamedTuple in `models.py`,
+  replacing magic tuple indices in `APScraper`
+- Added `cli/_logging.py` with shared `setup_logging()`,
+  replacing duplicate `logging.basicConfig()` in
+  `cli/scrape.py` and `cli/scheduler.py`
+- Added `google_news_rss()` builder in `config.py`,
+  replacing duplicate URL patterns in `ap.py` and
+  `reuters.py`
+
+
 ### v0.5.6 - 31st March 2026
 
 - Added `Scraper._parallel_map()` helper, replacing

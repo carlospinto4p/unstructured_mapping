@@ -25,13 +25,10 @@ import logging
 import os
 import time
 
+from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli.scrape import main as scrape
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
+setup_logging()
 logger = logging.getLogger(__name__)
 
 
