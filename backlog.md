@@ -17,6 +17,12 @@
 - [x] **MEDIUM** — Use walrus operator in `BBCScraper._parse_article()` to avoid calling `get_text(strip=True)` twice per paragraph
 - [x] **LOW** — Add composite index `(source, scraped_at DESC)` to replace separate `idx_source` — covers filtered+ordered queries in `load()`
 
+#### Refactoring (v0.5.8 review)
+
+- [x] **MEDIUM** — Simplify `ArticleStore.count()` — two near-identical branches for filtered/unfiltered can be a single query path with conditional WHERE
+- [x] **MEDIUM** — Rename `APScraper._fetch_text()` → `_fetch_page()` and `_decode_url()` → `_resolve_url()` for consistency with `BBCScraper` naming
+- [x] **LOW** — Narrow bare `except Exception` in `scheduler.py` to specific types (`OSError`, `httpx.HTTPError`)
+
 #### Knowledge graph — entity store
 
 - [ ] Define KG data model:

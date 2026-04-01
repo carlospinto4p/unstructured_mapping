@@ -25,6 +25,8 @@ import logging
 import os
 import time
 
+import httpx
+
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli.scrape import main as scrape
 
@@ -72,7 +74,7 @@ def run() -> None:
         logger.info("Starting scrape cycle...")
         try:
             scrape(argv)
-        except Exception:
+        except (OSError, httpx.HTTPError, ValueError):
             logger.exception("Scrape cycle failed")
         logger.info(
             "Cycle complete. Sleeping %.1f hours...",

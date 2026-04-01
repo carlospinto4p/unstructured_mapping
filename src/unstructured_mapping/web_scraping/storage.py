@@ -123,17 +123,14 @@ class ArticleStore:
             for all.
         :return: Number of articles.
         """
-        if source is None:
-            row = self._conn.execute(
-                "SELECT COUNT(*) FROM articles"
-            ).fetchone()
-        else:
-            row = self._conn.execute(
-                "SELECT COUNT(*) FROM articles "
-                "WHERE source = ?",
-                (source,),
-            ).fetchone()
-        return row[0]
+        query = "SELECT COUNT(*) FROM articles"
+        params: tuple[str, ...] = ()
+        if source is not None:
+            query += " WHERE source = ?"
+            params = (source,)
+        return self._conn.execute(
+            query, params
+        ).fetchone()[0]
 
     def counts_by_source(self) -> dict[str, int]:
         """Count articles grouped by source.

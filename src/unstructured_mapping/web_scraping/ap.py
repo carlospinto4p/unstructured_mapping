@@ -84,15 +84,15 @@ class APScraper(Scraper):
         :param gnews_url: Google News redirect URL.
         :return: Extraction result with text and real URL.
         """
-        real_url = self._decode_url(gnews_url)
+        real_url = self._resolve_url(gnews_url)
         if not real_url:
             return ExtractionResult()
-        text = self._fetch_text(real_url)
+        text = self._fetch_page(real_url)
         return ExtractionResult(body=text, url=real_url)
 
     @staticmethod
-    def _decode_url(gnews_url: str) -> str:
-        """Resolve a Google News redirect to a real URL.
+    def _resolve_url(gnews_url: str) -> str:
+        """Resolve a Google News redirect URL.
 
         :param gnews_url: Google News redirect URL.
         :return: Resolved URL, or empty string on failure.
@@ -117,8 +117,8 @@ class APScraper(Scraper):
         return result["decoded_url"]
 
     @staticmethod
-    def _fetch_text(url: str) -> str:
-        """Fetch and extract article text with trafilatura.
+    def _fetch_page(url: str) -> str:
+        """Fetch article page and extract text.
 
         :param url: Direct article URL.
         :return: Extracted text, or empty string on failure.

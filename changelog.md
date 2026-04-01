@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.5.9 - 2nd April 2026
+
+- Simplified `ArticleStore.count()` — merged two branches
+  into single query path with conditional WHERE
+- Renamed `APScraper._decode_url()` → `_resolve_url()` and
+  `_fetch_text()` → `_fetch_page()` for consistency with
+  `BBCScraper` naming
+- Narrowed bare `except Exception` in `scheduler.py` to
+  `OSError`, `httpx.HTTPError`, `ValueError`
+
+
 ### v0.5.8 - 1st April 2026
 
 - Replaced two `SELECT COUNT(*)` scans in
