@@ -48,7 +48,7 @@
 
 #### KG design review (v0.10.2)
 
-- [ ] Add co-mention query: `find_co_mentioned(entity_id, since)` with `(document_id, entity_id)` index on provenance — core query for event-driven strategies
+- [x] Add co-mention query: `find_co_mentioned(entity_id, since)` with `(document_id, entity_id)` index on provenance — core query for event-driven strategies
 - [ ] Add optional `sentiment` field to Provenance (positive/negative/neutral/mixed) — quants need polarity, not just mention detection
 - [ ] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
 - [ ] Document VIX dual-nature in subtypes.md — guidance for entities that are both tradeable and indicators, with cross-reference relationship pattern

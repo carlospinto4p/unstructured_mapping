@@ -906,3 +906,161 @@ def test_relationship_save_reason(tmp_path):
         )
 
     assert history[0].reason == "extracted from article"
+
+
+# -- Co-mention query --
+
+
+def test_find_co_mentioned_basic(tmp_path):
+    db = tmp_path / "kg.db"
+    cpi = _make_entity(
+        canonical_name="CPI",
+        entity_type=EntityType.METRIC,
+        description="Consumer Price Index.",
+    )
+    apple = _make_entity(
+        canonical_name="Apple Inc.",
+        entity_type=EntityType.ORGANIZATION,
+        description="Tech company.",
+    )
+    gold = _make_entity(
+        canonical_name="Gold",
+        entity_type=EntityType.ASSET,
+        description="Commodity.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(cpi)
+        store.save_entity(apple)
+        store.save_entity(gold)
+        # CPI and Apple in doc1
+        store.save_provenance(Provenance(
+            entity_id=cpi.entity_id,
+            document_id="doc1", source="bbc",
+            mention_text="CPI",
+            context_snippet="CPI rose 3.2%",
+        ))
+        store.save_provenance(Provenance(
+            entity_id=apple.entity_id,
+            document_id="doc1", source="bbc",
+            mention_text="Apple",
+            context_snippet="Apple stock fell",
+        ))
+        # CPI and Gold in doc2
+        store.save_provenance(Provenance(
+            entity_id=cpi.entity_id,
+            document_id="doc2", source="bbc",
+            mention_text="CPI",
+            context_snippet="CPI data released",
+        ))
+        store.save_provenance(Provenance(
+            entity_id=gold.entity_id,
+            document_id="doc2", source="bbc",
+            mention_text="Gold",
+            context_snippet="Gold surged",
+        ))
+        # CPI and Apple again in doc3
+        store.save_provenance(Provenance(
+            entity_id=cpi.entity_id,
+            document_id="doc3", source="ap",
+            mention_text="CPI",
+            context_snippet="CPI beat expectations",
+        ))
+        store.save_provenance(Provenance(
+            entity_id=apple.entity_id,
+            document_id="doc3", source="ap",
+            mention_text="Apple",
+            context_snippet="Apple earnings",
+        ))
+        results = store.find_co_mentioned(
+            cpi.entity_id
+        )
+
+    assert len(results) == 2
+    # Apple co-mentioned in 2 docs, Gold in 1
+    assert results[0][0].entity_id == apple.entity_id
+    assert results[0][1] == 2
+    assert results[1][0].entity_id == gold.entity_id
+    assert results[1][1] == 1
+
+
+def test_find_co_mentioned_with_since(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="E1")
+    e2 = _make_entity(
+        canonical_name="E2",
+        entity_type=EntityType.ORGANIZATION,
+        description="Org.",
+    )
+    old = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    recent = datetime(2024, 6, 1, tzinfo=timezone.utc)
+    cutoff = datetime(2024, 3, 1, tzinfo=timezone.utc)
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        # Old co-mention
+        store.save_provenance(Provenance(
+            entity_id=e1.entity_id,
+            document_id="old_doc", source="bbc",
+            mention_text="E1",
+            context_snippet="ctx",
+            detected_at=old,
+        ))
+        store.save_provenance(Provenance(
+            entity_id=e2.entity_id,
+            document_id="old_doc", source="bbc",
+            mention_text="E2",
+            context_snippet="ctx",
+            detected_at=old,
+        ))
+        # Recent co-mention
+        store.save_provenance(Provenance(
+            entity_id=e1.entity_id,
+            document_id="new_doc", source="ap",
+            mention_text="E1",
+            context_snippet="ctx",
+            detected_at=recent,
+        ))
+        store.save_provenance(Provenance(
+            entity_id=e2.entity_id,
+            document_id="new_doc", source="ap",
+            mention_text="E2",
+            context_snippet="ctx",
+            detected_at=recent,
+        ))
+        all_results = store.find_co_mentioned(
+            e1.entity_id
+        )
+        recent_results = store.find_co_mentioned(
+            e1.entity_id, since=cutoff
+        )
+
+    assert len(all_results) == 1
+    assert all_results[0][1] == 2  # 2 docs total
+    assert len(recent_results) == 1
+    assert recent_results[0][1] == 1  # 1 doc since cutoff
+
+
+def test_find_co_mentioned_no_self_match(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        store.save_provenance(Provenance(
+            entity_id=e.entity_id,
+            document_id="doc1", source="bbc",
+            mention_text="Test",
+            context_snippet="ctx",
+        ))
+        results = store.find_co_mentioned(e.entity_id)
+
+    assert len(results) == 0
+
+
+def test_find_co_mentioned_empty(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        results = store.find_co_mentioned(e.entity_id)
+
+    assert len(results) == 0

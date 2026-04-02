@@ -143,6 +143,8 @@ _CREATE_INDEXES = [
     "ON entity_aliases (alias COLLATE NOCASE)",
     "CREATE INDEX IF NOT EXISTS idx_prov_document "
     "ON provenance (document_id)",
+    "CREATE INDEX IF NOT EXISTS idx_prov_co_mention "
+    "ON provenance (document_id, entity_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_source "
     "ON relationships (source_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_target "
@@ -537,6 +539,64 @@ class KnowledgeStore:
             )
             for r in rows
         ]
+
+    # -- Co-mention query --
+
+    def find_co_mentioned(
+        self,
+        entity_id: str,
+        since: datetime | None = None,
+    ) -> list[tuple[Entity, int]]:
+        """Find entities co-mentioned with the given entity.
+
+        Returns entities that appear in the same documents,
+        sorted by co-occurrence count (descending). Each
+        result is a ``(Entity, count)`` tuple where count
+        is the number of distinct documents they share.
+
+        :param entity_id: The entity to find co-mentions
+            for.
+        :param since: If set, only consider provenance
+            records with ``detected_at >= since``.
+        :return: List of (entity, document_count) tuples.
+        """
+        if since is not None:
+            rows = self._conn.execute(
+                "SELECT p2.entity_id, "
+                "COUNT(DISTINCT p2.document_id) AS cnt "
+                "FROM provenance p1 "
+                "JOIN provenance p2 "
+                "ON p1.document_id = p2.document_id "
+                "WHERE p1.entity_id = ? "
+                "AND p2.entity_id != ? "
+                "AND p1.detected_at >= ? "
+                "GROUP BY p2.entity_id "
+                "ORDER BY cnt DESC",
+                (
+                    entity_id,
+                    entity_id,
+                    _dt_to_iso(since),
+                ),
+            ).fetchall()
+        else:
+            rows = self._conn.execute(
+                "SELECT p2.entity_id, "
+                "COUNT(DISTINCT p2.document_id) AS cnt "
+                "FROM provenance p1 "
+                "JOIN provenance p2 "
+                "ON p1.document_id = p2.document_id "
+                "WHERE p1.entity_id = ? "
+                "AND p2.entity_id != ? "
+                "GROUP BY p2.entity_id "
+                "ORDER BY cnt DESC",
+                (entity_id, entity_id),
+            ).fetchall()
+        results: list[tuple[Entity, int]] = []
+        for eid, count in rows:
+            entity = self.get_entity(eid)
+            if entity is not None:
+                results.append((entity, count))
+        return results
 
     # -- Merge operation --
 

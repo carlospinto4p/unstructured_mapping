@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.11.6 - 2nd April 2026
+
+- Added `KnowledgeStore.find_co_mentioned()` — finds
+  entities mentioned in the same articles as a given
+  entity, returns `(Entity, count)` tuples sorted by
+  co-occurrence count descending. Supports optional
+  `since` parameter for time-windowed queries.
+- Added composite index `(document_id, entity_id)` on
+  provenance table for fast co-mention joins
+
+
 ### v0.11.5 - 2nd April 2026
 
 - Updated `/review-kg` skill (v1.1.0):
