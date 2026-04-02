@@ -42,7 +42,7 @@
 - [x] Define canonical subtype conventions per entity type — document recommended values (e.g. ORGANIZATION subtypes: company, central_bank, regulator, exchange, fund, multilateral) so LLM ingestion produces consistent values
 - [x] Consider whether TOPIC subtypes are useful for financial focus (e.g. sector, macro_theme, geopolitical) or if TOPIC remains broad by design
 - [x] Evaluate whether ASSET needs a `ticker` or `identifier` field beyond aliases — resolved: aliases suffice for detection; `external_ids` table (post-population) handles structured joins
-- [ ] Explore METRIC metadata: release schedule (monthly, quarterly), issuing body (BLS, Fed), and expected-vs-actual framing — these are critical for market-impact analysis but may belong in description or a future structured field
+- [x] Explore METRIC metadata: release schedule (monthly, quarterly), issuing body (BLS, Fed), and expected-vs-actual framing — resolved: issuing body as relationship, schedule and expected-vs-actual out of KG scope
 - [ ] Consider cross-type relationship patterns for financial analysis: ORGANIZATION/central_bank → METRIC/monetary_policy, PERSON/policymaker → LEGISLATION/regulation — document common patterns as examples in docs
 - [x] Design storage layer for the KG (graph DB or equivalent)
 

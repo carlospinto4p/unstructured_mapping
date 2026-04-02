@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.11.3 - 2nd April 2026
+
+- Documented METRIC metadata boundaries in
+  `docs/knowledge_graph/subtypes.md`: issuing body as
+  relationship, release schedule and expected-vs-actual
+  out of KG scope
+
+
 ### v0.11.2 - 2nd April 2026
 
 - Documented ASSET ticker/identifier decision in

@@ -113,6 +113,29 @@ non-ticker instruments cleanly.
 | trade           | International trade flows                       | Trade balance, current account deficit |
 | housing         | Real estate and construction indicators         | Housing starts, Case-Shiller index     |
 
+#### What the KG stores vs what it doesn't
+
+The KG stores enough about a metric to **detect it in text
+and link it to other entities**. It does not store operational
+metadata:
+
+- **Issuing body** — modeled as a relationship
+  (`METRIC → issued_by → ORGANIZATION`), not a field.
+  E.g. CPI → issued_by → Bureau of Labor Statistics.
+- **Release schedule and frequency** — out of scope.
+  The KG is an index into the news, not an economic
+  calendar. Schedules belong in dedicated tables that
+  can be joined via `entity_id` or the future
+  `external_ids` table.
+- **Expected vs actual values** — per-release data, not
+  entity metadata. Belongs in a time-series store or
+  ingestion layer, not the KG.
+
+The `description` field should include enough context for
+the LLM to recognize the metric in text (e.g. "Released
+monthly by the BLS; measures average price changes for
+urban consumers").
+
 
 ### PERSON
 
