@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.11.15 - 2nd April 2026
+
+- Fixed scope drift in `docs/knowledge_graph/design.md`:
+  METRIC example no longer implies KG stores actual values
+- Fixed scope drift in `docs/knowledge_graph/subtypes.md`:
+  company sub-classification plan now uses relationships
+  only, removing suggestion to add structured attributes
+  to Entity
+
+
 ### v0.11.14 - 2nd April 2026
 
 - Added `/review-kg-scope` skill — audits KG for scope

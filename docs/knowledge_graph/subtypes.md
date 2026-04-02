@@ -54,18 +54,18 @@ Other useful distinctions include sector (tech, energy,
 financial) and market cap tier (large-cap, mid-cap,
 small-cap).
 
-These are not implemented as nested subtypes. When the need
-arises, the recommended approach is:
+These are not implemented as nested subtypes or additional
+Entity fields. The KG does not store structured attributes
+like `listing_status` or `sector` — those belong in external
+tables. The recommended approach is **relationships**:
 
-- Add optional **structured attributes** to Entity (e.g.
-  `listing_status`, `sector`) rather than encoding them in
-  the subtype string (no `"company.public"` dot notation).
-- Alternatively, model these as **relationships**: Company
-  → Exchange (listed_on), Company → Sector (classified_as).
+- `ORGANIZATION/company → listed_on → ORGANIZATION/exchange`
+  (public vs private: listed companies have this relationship)
+- `ORGANIZATION/company → classified_as → TOPIC/sector`
 
 This keeps `subtype` as a single flat token for fast filtering
-while richer classification lives in purpose-built fields or
-relationships.
+and avoids creeping quantitative or classification metadata
+onto the Entity model.
 
 
 ### ASSET

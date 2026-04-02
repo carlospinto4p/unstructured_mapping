@@ -121,13 +121,14 @@ or topic. They were added in v0.8.0.
   *become* news that moves the market.
 
 - **METRIC** is distinct from TOPIC. A topic is a recurring
-  subject ("inflation"); a metric is a specific quantitative
-  indicator ("CPI") with a value, a direction, and a release
-  schedule. Metrics are the primary language of market-moving
-  news — "CPI came in at 3.2%, above expectations" is a
-  metric story, not a topic story. Having them as entities
-  lets the KG link articles to the specific indicators they
-  discuss.
+  subject ("inflation"); a metric is a specific named
+  indicator ("CPI") that news articles reference. Metrics
+  are the primary language of market-moving news — an
+  article discussing a CPI release is a metric story, not
+  a topic story. Having them as entities lets the KG link
+  articles to the specific indicators they discuss. The KG
+  stores *that* a metric was mentioned, not the actual
+  values — numbers belong in external time-series tables.
 
 ### Why not more types?
 
