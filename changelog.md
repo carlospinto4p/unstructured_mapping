@@ -1,5 +1,26 @@
 ## Changelog
 
+### v0.8.0 - 2nd April 2026
+
+- Added `ROLE` and `RELATION_KIND` to `EntityType` —
+  meta-types that reuse the entity/alias system for
+  structured querying and synonym resolution
+- Added `qualifier_id` to `Relationship` — optional FK
+  to a ROLE entity, solving n-ary relationships
+  (person + role + company)
+- Added `relation_kind_id` to `Relationship` — optional
+  FK to a RELATION_KIND entity for normalized lookup
+  across synonym surface forms
+- Added `KnowledgeStore` methods:
+  - `find_by_qualifier()`: query by relationship qualifier
+  - `find_by_relation_kind()`: query by canonical kind
+  - `find_entities_by_type()`: query entities by type
+- Added migration for existing databases in
+  `KnowledgeStore.__init__()`
+- Updated `docs/knowledge_graph.md` with ROLE,
+  RELATION_KIND, qualifier, and relation kind rationale
+
+
 ### v0.7.4 - 2nd April 2026
 
 - Updated `docs/knowledge_graph.md`: clarify KG as a runtime

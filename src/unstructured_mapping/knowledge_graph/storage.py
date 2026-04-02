@@ -65,14 +65,16 @@ CREATE TABLE IF NOT EXISTS provenance (
 
 _CREATE_RELATIONSHIPS = """
 CREATE TABLE IF NOT EXISTS relationships (
-    source_id     TEXT NOT NULL,
-    target_id     TEXT NOT NULL,
-    relation_type TEXT NOT NULL,
-    description   TEXT NOT NULL,
-    valid_from    TEXT,
-    valid_until   TEXT,
-    document_id   TEXT,
-    discovered_at TEXT,
+    source_id        TEXT NOT NULL,
+    target_id        TEXT NOT NULL,
+    relation_type    TEXT NOT NULL,
+    description      TEXT NOT NULL,
+    qualifier_id     TEXT,
+    relation_kind_id TEXT,
+    valid_from       TEXT,
+    valid_until      TEXT,
+    document_id      TEXT,
+    discovered_at    TEXT,
     PRIMARY KEY (
         source_id, target_id,
         relation_type, valid_from
@@ -80,6 +82,10 @@ CREATE TABLE IF NOT EXISTS relationships (
     FOREIGN KEY (source_id)
         REFERENCES entities (entity_id),
     FOREIGN KEY (target_id)
+        REFERENCES entities (entity_id),
+    FOREIGN KEY (qualifier_id)
+        REFERENCES entities (entity_id),
+    FOREIGN KEY (relation_kind_id)
         REFERENCES entities (entity_id)
 )
 """
@@ -97,7 +103,19 @@ _CREATE_INDEXES = [
     "ON relationships (source_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_target "
     "ON relationships (target_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_qualifier "
+    "ON relationships (qualifier_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_kind "
+    "ON relationships (relation_kind_id)",
 ]
+
+
+_REL_SELECT = (
+    "SELECT source_id, target_id, relation_type, "
+    "description, qualifier_id, relation_kind_id, "
+    "valid_from, valid_until, document_id, "
+    "discovered_at FROM relationships "
+)
 
 
 class KnowledgeStore:
@@ -120,6 +138,7 @@ class KnowledgeStore:
             _CREATE_RELATIONSHIPS,
         ):
             self._conn.execute(ddl)
+        self._migrate_relationships()
         for idx in _CREATE_INDEXES:
             self._conn.execute(idx)
         self._conn.commit()
@@ -288,14 +307,17 @@ class KnowledgeStore:
         self._conn.execute(
             "INSERT OR IGNORE INTO relationships "
             "(source_id, target_id, relation_type, "
-            "description, valid_from, valid_until, "
-            "document_id, discovered_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "description, qualifier_id, "
+            "relation_kind_id, valid_from, "
+            "valid_until, document_id, discovered_at)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 relationship.source_id,
                 relationship.target_id,
                 relationship.relation_type,
                 relationship.description,
+                relationship.qualifier_id,
+                relationship.relation_kind_id,
                 _dt_to_iso(relationship.valid_from),
                 _dt_to_iso(relationship.valid_until),
                 relationship.document_id,
@@ -322,11 +344,7 @@ class KnowledgeStore:
         results: list[Relationship] = []
         if as_source:
             rows = self._conn.execute(
-                "SELECT source_id, target_id, "
-                "relation_type, description, "
-                "valid_from, valid_until, document_id, "
-                "discovered_at FROM relationships "
-                "WHERE source_id = ?",
+                _REL_SELECT + "WHERE source_id = ?",
                 (entity_id,),
             ).fetchall()
             results.extend(
@@ -334,17 +352,70 @@ class KnowledgeStore:
             )
         if as_target:
             rows = self._conn.execute(
-                "SELECT source_id, target_id, "
-                "relation_type, description, "
-                "valid_from, valid_until, document_id, "
-                "discovered_at FROM relationships "
-                "WHERE target_id = ?",
+                _REL_SELECT + "WHERE target_id = ?",
                 (entity_id,),
             ).fetchall()
             results.extend(
                 _row_to_relationship(r) for r in rows
             )
         return results
+
+    def find_by_qualifier(
+        self, qualifier_id: str
+    ) -> list[Relationship]:
+        """Find relationships with a given qualifier.
+
+        Typically used to find all relationships qualified
+        by a specific ROLE entity (e.g. all CTOs).
+
+        :param qualifier_id: Entity ID of the qualifier.
+        :return: Matching relationships.
+        """
+        rows = self._conn.execute(
+            _REL_SELECT + "WHERE qualifier_id = ?",
+            (qualifier_id,),
+        ).fetchall()
+        return [_row_to_relationship(r) for r in rows]
+
+    def find_by_relation_kind(
+        self, relation_kind_id: str
+    ) -> list[Relationship]:
+        """Find relationships of a normalized kind.
+
+        Returns all relationships linked to the given
+        RELATION_KIND entity, regardless of the raw
+        `relation_type` string.
+
+        :param relation_kind_id: Entity ID of the kind.
+        :return: Matching relationships.
+        """
+        rows = self._conn.execute(
+            _REL_SELECT
+            + "WHERE relation_kind_id = ?",
+            (relation_kind_id,),
+        ).fetchall()
+        return [_row_to_relationship(r) for r in rows]
+
+    def find_entities_by_type(
+        self, entity_type: EntityType
+    ) -> list[Entity]:
+        """Find all entities of a given type.
+
+        :param entity_type: The type to filter by.
+        :return: Matching entities.
+        """
+        rows = self._conn.execute(
+            "SELECT entity_id, canonical_name, "
+            "entity_type, description, valid_from, "
+            "valid_until, status, merged_into, "
+            "created_at FROM entities "
+            "WHERE entity_type = ?",
+            (entity_type.value,),
+        ).fetchall()
+        return [
+            _row_to_entity(r, self._load_aliases(r[0]))
+            for r in rows
+        ]
 
     # -- Merge operation --
 
@@ -390,6 +461,18 @@ class KnowledgeStore:
             (surviving_id, deprecated_id),
         )
         self._conn.execute(
+            "UPDATE relationships "
+            "SET qualifier_id = ? "
+            "WHERE qualifier_id = ?",
+            (surviving_id, deprecated_id),
+        )
+        self._conn.execute(
+            "UPDATE relationships "
+            "SET relation_kind_id = ? "
+            "WHERE relation_kind_id = ?",
+            (surviving_id, deprecated_id),
+        )
+        self._conn.execute(
             "UPDATE entities SET status = ?, "
             "merged_into = ? WHERE entity_id = ?",
             ("merged", surviving_id, deprecated_id),
@@ -418,6 +501,20 @@ class KnowledgeStore:
         self.close()
 
     # -- Internal helpers --
+
+    def _migrate_relationships(self) -> None:
+        """Add columns introduced in v0.8.0."""
+        cursor = self._conn.execute(
+            "PRAGMA table_info(relationships)"
+        )
+        cols = {row[1] for row in cursor.fetchall()}
+        for col in ("qualifier_id", "relation_kind_id"):
+            if col not in cols:
+                self._conn.execute(
+                    f"ALTER TABLE relationships "
+                    f"ADD COLUMN {col} TEXT "
+                    f"REFERENCES entities(entity_id)"
+                )
 
     def _load_aliases(
         self, entity_id: str
@@ -483,6 +580,7 @@ def _row_to_relationship(
         str, str, str, str,
         str | None, str | None,
         str | None, str | None,
+        str | None, str | None,
     ],
 ) -> Relationship:
     return Relationship(
@@ -490,8 +588,10 @@ def _row_to_relationship(
         target_id=row[1],
         relation_type=row[2],
         description=row[3],
-        valid_from=_iso_to_dt(row[4]),
-        valid_until=_iso_to_dt(row[5]),
-        document_id=row[6],
-        discovered_at=_iso_to_dt(row[7]),
+        qualifier_id=row[4],
+        relation_kind_id=row[5],
+        valid_from=_iso_to_dt(row[6]),
+        valid_until=_iso_to_dt(row[7]),
+        document_id=row[8],
+        discovered_at=_iso_to_dt(row[9]),
     )

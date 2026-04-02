@@ -22,7 +22,7 @@ means:
   resolution works.
 
 
-## EntityType — why four values
+## EntityType — six values
 
 | Type           | Covers                                              |
 |----------------|-----------------------------------------------------|
@@ -32,6 +32,37 @@ means:
 |                | water                                               |
 | TOPIC          | Recurring subjects: "inflation", "AI regulation",   |
 |                | "NATO expansion"                                    |
+| ROLE           | Positions and titles: "CTO", "President", "Board    |
+|                | Member". Uses the alias system for synonym           |
+|                | resolution ("CTO" = "Chief Technology Officer")     |
+| RELATION_KIND  | Canonical relationship types: "employment",          |
+|                | "acquisition". Uses aliases so "works_at",           |
+|                | "employed_by", "serves_as" resolve to the same kind |
+
+### Why ROLE and RELATION_KIND as entity types?
+
+Both are **meta-types** that reuse the entity/alias system
+for structured querying and synonym resolution:
+
+- **ROLE** entities solve n-ary relationships. "Person X is
+  CTO at Company Y" is modeled as a relationship with
+  `qualifier_id` pointing to the CTO role entity. Querying
+  "all CTOs" becomes an indexed lookup, not a free-text
+  scan. Roles get aliases for free — "CTO", "Chief
+  Technology Officer", "head of technology" all resolve
+  to the same entity.
+
+- **RELATION_KIND** entities normalize relationship types.
+  The raw `relation_type` string is LLM-generated and
+  free-form. The `relation_kind_id` FK links to a canonical
+  kind entity with aliases, so "works_at", "employed_by",
+  and "serves_as" all resolve to the same "employment"
+  kind. This enables querying all relationships of a kind
+  regardless of surface form.
+
+Neither type has a blurry boundary with the original four.
+A role is never confused with a person, organization, place,
+or topic. They were added in v0.8.0.
 
 ### Why not more types?
 
@@ -137,6 +168,19 @@ future queries to the surviving entity.
   "appointed", "sanctioned", "married", "funded", etc.).
   An enum would constantly need extending.
 
+- **qualifier_id**: Optional FK to an entity (typically ROLE)
+  that qualifies the relationship. Solves n-ary
+  relationships: Person→Company qualified by CTO role means
+  "Person is CTO at Company". Without this, you can't
+  distinguish which role is at which company when a person
+  holds multiple positions.
+
+- **relation_kind_id**: Optional FK to a RELATION_KIND entity
+  for normalized lookup. The raw `relation_type` string is
+  kept as-is (LLM output); this provides canonical grouping
+  so synonyms resolve to the same kind. Populated during
+  ingestion post-processing.
+
 - **Events are relationships**: "2024 US Election" is modeled
   as relationships between candidates and a PLACE entity with
   temporal bounds — not as a standalone entity.
@@ -150,6 +194,9 @@ future queries to the surviving entity.
   judges importance from context.
 - **Relationship ID**: Not needed yet — the composite key
   (source_id, target_id, relation_type, valid_from) is unique.
+- **Multi-qualifier**: Only one qualifier per relationship.
+  Sufficient for the news domain (person+role+company). If
+  needed, add a join table later.
 
 
 ## Storage: SQLite
@@ -168,7 +215,7 @@ Core entity records. Dates stored as ISO 8601 text.
 |----------------|----------|------------------|--------------------------------------------|
 | entity_id      | TEXT     | PRIMARY KEY      | UUID hex (32 chars), auto-generated        |
 | canonical_name | TEXT     | NOT NULL         | Authoritative display name                 |
-| entity_type    | TEXT     | NOT NULL         | One of: person, organization, place, topic |
+| entity_type    | TEXT     | NOT NULL         | person, organization, place, topic, role, relation_kind |
 | description    | TEXT     | NOT NULL         | Natural-language context for LLM resolution|
 | valid_from     | TEXT     |                  | When this entity became relevant           |
 | valid_until    | TEXT     |                  | When this entity ceased to be relevant     |
@@ -216,16 +263,19 @@ free-form string because the space of possible relationships
 in news is unbounded. Events are modeled as relationships with
 temporal bounds rather than as a separate entity type.
 
-| Column        | Type | Constraint                 | Purpose                              |
-|---------------|------|----------------------------|--------------------------------------|
-| source_id     | TEXT | FK → entities, part of PK | Subject entity                       |
-| target_id     | TEXT | FK → entities, part of PK | Object entity                        |
-| relation_type | TEXT | Part of PK                | Free-form label (LLM-generated)      |
-| description   | TEXT | NOT NULL                  | Natural-language context              |
-| valid_from    | TEXT | Part of PK                | When the relationship started         |
-| valid_until   | TEXT |                           | When the relationship ended           |
-| document_id   | TEXT |                           | Where this relationship was discovered|
-| discovered_at | TEXT |                           | When this relationship was detected   |
+| Column           | Type | Constraint                 | Purpose                              |
+|------------------|------|----------------------------|--------------------------------------|
+| source_id        | TEXT | FK → entities, part of PK | Subject entity                       |
+| target_id        | TEXT | FK → entities, part of PK | Object entity                        |
+| relation_type    | TEXT | Part of PK                | Free-form label (LLM-generated)      |
+| description      | TEXT | NOT NULL                  | Natural-language context              |
+| qualifier_id     | TEXT | FK → entities             | Qualifies the relationship (e.g. ROLE)|
+| relation_kind_id | TEXT | FK → entities             | Canonical kind (e.g. "employment")   |
+| valid_from       | TEXT | Part of PK                | When the relationship started         |
+| valid_until      | TEXT |                           | When the relationship ended           |
+| document_id      | TEXT |                           | Where this relationship was discovered|
+| discovered_at    | TEXT |                           | When this relationship was detected   |
 
 Primary key: `(source_id, target_id, relation_type, valid_from)`.
-Indexes: `source_id`, `target_id`.
+Indexes: `source_id`, `target_id`, `qualifier_id`,
+`relation_kind_id`.

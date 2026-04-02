@@ -19,12 +19,12 @@ from uuid import uuid4
 class EntityType(StrEnum):
     """Classification of knowledge graph entities.
 
-    Four coarse-grained types chosen for news-domain
-    entity mapping. Kept intentionally broad — the LLM
-    uses :attr:`Entity.description` for finer-grained
-    distinctions (e.g. "state-owned enterprise" within
-    ORGANIZATION). Splitting into subtypes would make
-    classification harder without improving LLM resolution.
+    Six types for news-domain entity mapping. The first
+    four (PERSON, ORGANIZATION, PLACE, TOPIC) classify
+    real-world things. ROLE and RELATION_KIND are
+    meta-types that enable structured querying and
+    synonym resolution by reusing the entity/alias
+    system.
 
     See ``docs/knowledge_graph.md`` for why EVENT was
     excluded and what each type covers.
@@ -34,6 +34,8 @@ class EntityType(StrEnum):
     ORGANIZATION = "organization"
     PLACE = "place"
     TOPIC = "topic"
+    ROLE = "role"
+    RELATION_KIND = "relation_kind"
 
 
 class EntityStatus(StrEnum):
@@ -155,6 +157,16 @@ class Relationship:
         the relationship (LLM-generated).
     :param description: Natural-language description
         providing context and nuance.
+    :param qualifier_id: Optional FK to an entity
+        (typically ROLE) that qualifies the
+        relationship. Solves n-ary relationships:
+        Person→Company qualified by CTO role.
+    :param relation_kind_id: Optional FK to a
+        RELATION_KIND entity for normalized lookup.
+        The raw `relation_type` string is kept as-is;
+        this provides canonical grouping so synonyms
+        like "works_at" / "employed_by" resolve to
+        the same kind.
     :param valid_from: When the relationship started.
         ``None`` if unbounded.
     :param valid_until: When the relationship ended.
@@ -170,6 +182,8 @@ class Relationship:
     target_id: str
     relation_type: str
     description: str
+    qualifier_id: str | None = None
+    relation_kind_id: str | None = None
     valid_from: datetime | None = None
     valid_until: datetime | None = None
     document_id: str | None = None
