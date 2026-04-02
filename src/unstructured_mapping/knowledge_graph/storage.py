@@ -267,20 +267,9 @@ class KnowledgeStore:
                 _dt_to_iso(entity.updated_at),
             ),
         )
-        self._conn.execute(
-            "DELETE FROM entity_aliases "
-            "WHERE entity_id = ?",
-            (entity.entity_id,),
+        self._sync_aliases(
+            entity.entity_id, entity.aliases
         )
-        if entity.aliases:
-            self._conn.executemany(
-                "INSERT INTO entity_aliases "
-                "(entity_id, alias) VALUES (?, ?)",
-                [
-                    (entity.entity_id, a)
-                    for a in entity.aliases
-                ],
-            )
         self._log_entity(entity, operation, reason)
         self._conn.commit()
 
@@ -649,32 +638,8 @@ class KnowledgeStore:
             f"{surviving_id}"
         )
 
-        self._conn.execute(
-            "UPDATE provenance SET entity_id = ? "
-            "WHERE entity_id = ?",
-            (surviving_id, deprecated_id),
-        )
-        self._conn.execute(
-            "UPDATE relationships SET source_id = ? "
-            "WHERE source_id = ?",
-            (surviving_id, deprecated_id),
-        )
-        self._conn.execute(
-            "UPDATE relationships SET target_id = ? "
-            "WHERE target_id = ?",
-            (surviving_id, deprecated_id),
-        )
-        self._conn.execute(
-            "UPDATE relationships "
-            "SET qualifier_id = ? "
-            "WHERE qualifier_id = ?",
-            (surviving_id, deprecated_id),
-        )
-        self._conn.execute(
-            "UPDATE relationships "
-            "SET relation_kind_id = ? "
-            "WHERE relation_kind_id = ?",
-            (surviving_id, deprecated_id),
+        self._redirect_entity_references(
+            deprecated_id, surviving_id
         )
         self._conn.execute(
             "UPDATE entities SET status = ?, "
@@ -827,7 +792,7 @@ class KnowledgeStore:
             "ORDER BY revision_id",
             (entity_id, entity_id),
         ).fetchall()
-        return [_row_to_rel_rev(r) for r in rows]
+        return [_row_to_relationship_rev(r) for r in rows]
 
     # -- Lifecycle --
 
@@ -877,6 +842,48 @@ class KnowledgeStore:
                 "ALTER TABLE entities "
                 "ADD COLUMN updated_at TEXT"
             )
+
+    def _sync_aliases(
+        self,
+        entity_id: str,
+        aliases: tuple[str, ...],
+    ) -> None:
+        """Delete old aliases and insert new ones."""
+        self._conn.execute(
+            "DELETE FROM entity_aliases "
+            "WHERE entity_id = ?",
+            (entity_id,),
+        )
+        if aliases:
+            self._conn.executemany(
+                "INSERT INTO entity_aliases "
+                "(entity_id, alias) VALUES (?, ?)",
+                [
+                    (entity_id, a) for a in aliases
+                ],
+            )
+
+    def _redirect_entity_references(
+        self,
+        old_id: str,
+        new_id: str,
+    ) -> None:
+        """Redirect all FK references from old to new."""
+        for sql in (
+            "UPDATE provenance SET entity_id = ? "
+            "WHERE entity_id = ?",
+            "UPDATE relationships SET source_id = ? "
+            "WHERE source_id = ?",
+            "UPDATE relationships SET target_id = ? "
+            "WHERE target_id = ?",
+            "UPDATE relationships "
+            "SET qualifier_id = ? "
+            "WHERE qualifier_id = ?",
+            "UPDATE relationships "
+            "SET relation_kind_id = ? "
+            "WHERE relation_kind_id = ?",
+        ):
+            self._conn.execute(sql, (new_id, old_id))
 
     def _log_entity(
         self,
@@ -1058,7 +1065,7 @@ def _row_to_entity_rev(
     )
 
 
-def _row_to_rel_rev(
+def _row_to_relationship_rev(
     row: tuple[
         int, str, str, str, str,
         str, str, str | None,

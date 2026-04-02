@@ -63,9 +63,9 @@
 - [x] **HIGH** — Unify `find_co_mentioned()` query branches — two near-identical SQL blocks differ only by an optional WHERE clause; build query conditionally
 - [x] **MEDIUM** — Split `db_health._run_report()` (142 lines) into per-section helpers — one function per report section for testability
 - [x] **MEDIUM** — Split `ArticleStore._migrate()` (102 lines) into per-step helpers — one function per migration step
-- [ ] **MEDIUM** — Extract `_sync_aliases()` helper from `save_entity()` — alias delete+insert logic is a distinct responsibility
-- [ ] **LOW** — Rename `_row_to_rel_rev` → `_row_to_relationship_rev` for consistency with other `_row_to_*` helpers
-- [ ] **LOW** — Extract `_redirect_entity_references()` helper from `merge_entities()` — five repetitive UPDATE statements
+- [x] **MEDIUM** — Extract `_sync_aliases()` helper from `save_entity()` — alias delete+insert logic is a distinct responsibility
+- [x] **LOW** — Rename `_row_to_rel_rev` → `_row_to_relationship_rev` for consistency with other `_row_to_*` helpers
+- [x] **LOW** — Extract `_redirect_entity_references()` helper from `merge_entities()` — five repetitive UPDATE statements
 
 #### Post-population (after KG is defined and populated)
 

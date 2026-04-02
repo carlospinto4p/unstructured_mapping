@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.11.18 - 2nd April 2026
+
+- Refactored `KnowledgeStore` in `storage.py`:
+  - Extracted `_sync_aliases()` from `save_entity()`
+  - Extracted `_redirect_entity_references()` from
+    `merge_entities()` — five repetitive UPDATE
+    statements replaced with a loop
+  - Renamed `_row_to_rel_rev` → `_row_to_relationship_rev`
+    for consistency with other `_row_to_*` helpers
+
+
 ### v0.11.17 - 2nd April 2026
 
 - Refactored `db_health._run_report()` — split 142-line
