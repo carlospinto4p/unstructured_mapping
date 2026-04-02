@@ -76,7 +76,7 @@
 - [x] **MEDIUM** — Eliminate duplicate COUNT query in `db_health._run_report()` — total is queried in `_section_overall()` then again in the orchestrator
 - [x] **LOW** — Use `lxml` parser in `BBCScraper._parse_article()` for 3-5x speedup over `html.parser` — add `lxml` as optional dependency
 
-#### Improvements (v0.11.21 review)
+#### Pipeline foundation (detection → resolution → extraction)
 
 - [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases
 - [ ] **HIGH** — Entity resolution module: `EntityResolver` ABC + `AliasResolver` for exact alias lookup — resolves detected mentions to KG entities; baseline before LLM-based resolution
