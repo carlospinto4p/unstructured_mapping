@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.11.7 - 2nd April 2026
+
+- Added ASSET/etf subtype — exchange-traded funds, distinct
+  from equity (not individual stocks) and index (tradeable)
+- Added METRIC/earnings subtype — company-level financial
+  metrics (EPS, revenue, guidance, margins)
+
+
 ### v0.11.6 - 2nd April 2026
 
 - Added `KnowledgeStore.find_co_mentioned()` — finds

@@ -76,6 +76,11 @@ relationships.
 | currency  | Fiat currencies and forex pairs                   | EUR/USD, USD/JPY, GBP                  |
 | crypto    | Cryptocurrencies and digital assets               | Bitcoin, Ethereum, Solana              |
 | index     | Market indices and benchmarks                     | S&P 500, Dow Jones, FTSE 100, VIX     |
+| etf       | Exchange-traded funds — fund vehicles that trade   | SPY, QQQ, IWM, GLD, ARKK              |
+|           | on exchanges like stocks but track an index,       |                                        |
+|           | sector, or strategy. Distinct from equity (not an  |                                        |
+|           | individual stock) and index (tradeable, not just   |                                        |
+|           | a benchmark)                                       |                                        |
 | derivative| Futures, options, swaps                           | ES futures, SPX options                |
 
 #### Tickers and external identifiers
@@ -112,6 +117,9 @@ non-ticker instruments cleanly.
 | sentiment       | Confidence and expectations surveys             | Consumer confidence, VIX, Michigan sentiment |
 | trade           | International trade flows                       | Trade balance, current account deficit |
 | housing         | Real estate and construction indicators         | Housing starts, Case-Shiller index     |
+| earnings        | Company-level financial metrics reported in      | EPS, revenue, net income, operating    |
+|                 | earnings releases and filings. The most          | margin, guidance, same-store sales     |
+|                 | market-moving data for individual stocks         |                                        |
 
 #### What the KG stores vs what it doesn't
 

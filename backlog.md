@@ -50,7 +50,7 @@
 
 - [x] Add co-mention query: `find_co_mentioned(entity_id, since)` with `(document_id, entity_id)` index on provenance — core query for event-driven strategies
 - [x] Add optional `sentiment` field to Provenance — resolved: sentiment is analysis output, not provenance; belongs in a future signal/analysis layer, not the KG
-- [ ] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
+- [x] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
 - [ ] Document VIX dual-nature in subtypes.md — guidance for entities that are both tradeable and indicators, with cross-reference relationship pattern
 - [ ] Split ORGANIZATION/fund into fund_manager vs fund vehicle — quants tracking ETF flows need to distinguish BlackRock (manager) from iShares ETF (product)
 - [ ] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
