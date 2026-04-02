@@ -48,7 +48,6 @@
 
 #### KG design review (v0.10.2)
 
-- [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources
 - [ ] Add co-mention query: `find_co_mentioned(entity_id, since)` with `(document_id, entity_id)` index on provenance — core query for event-driven strategies
 - [ ] Add optional `sentiment` field to Provenance (positive/negative/neutral/mixed) — quants need polarity, not just mention detection
 - [ ] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
@@ -57,3 +56,7 @@
 - [ ] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
 - [ ] Plan relationship attributes: document approach for structured values (ownership %, ratings, price targets) as optional JSON column — defer implementation until ingestion pipeline exists
 - [ ] Add `updated_at` field to Entity for freshness tracking and cache invalidation
+
+#### Post-population (after KG is defined and populated)
+
+- [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources
