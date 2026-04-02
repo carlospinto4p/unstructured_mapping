@@ -76,6 +76,17 @@
 - [x] **MEDIUM** — Eliminate duplicate COUNT query in `db_health._run_report()` — total is queried in `_section_overall()` then again in the orchestrator
 - [x] **LOW** — Use `lxml` parser in `BBCScraper._parse_article()` for 3-5x speedup over `html.parser` — add `lxml` as optional dependency
 
+#### Improvements (v0.11.21 review)
+
+- [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases
+- [ ] **HIGH** — Entity resolution module: `EntityResolver` ABC + `AliasResolver` for exact alias lookup — resolves detected mentions to KG entities; baseline before LLM-based resolution
+- [ ] **HIGH** — Pipeline orchestration: `Pipeline` class wiring detection → resolution → provenance creation — process an article and produce entity mentions linked to KG
+- [ ] **MEDIUM** — LLM-based entity resolver using Claude API — reads entity descriptions + context snippets to disambiguate when alias lookup returns multiple candidates
+- [ ] **MEDIUM** — Relationship extraction module: `RelationshipExtractor` ABC + `LLMExtractor` — extract relationships between resolved entities from article text
+- [ ] **MEDIUM** — KG validation: temporal consistency (valid_until >= valid_from), alias collision detection across entities, entity-type relationship constraints
+- [ ] **LOW** — Custom exceptions module (`exceptions.py`) — `EntityNotFound`, `ResolutionAmbiguous`, `ValidationError` replacing generic `ValueError`
+- [ ] **LOW** — Example scripts in `examples/` — basic detection, full pipeline, KG population walkthrough
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
