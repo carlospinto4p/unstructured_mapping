@@ -1,5 +1,18 @@
 ## Changelog
 
+### v0.11.19 - 2nd April 2026
+
+- Fixed N+1 query in `find_co_mentioned()` — entities
+  and counts now fetched in a single JOIN query;
+  aliases batch-loaded via new `_load_aliases_batch()`
+  helper. Reduces N+1 queries to 2 (one join + one
+  alias batch).
+- Fixed unreliable duplicate detection in
+  `save_relationship()` — uses `total_changes` delta
+  instead of cumulative counter to detect whether
+  the INSERT succeeded
+
+
 ### v0.11.18 - 2nd April 2026
 
 - Refactored `KnowledgeStore` in `storage.py`:

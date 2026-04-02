@@ -415,6 +415,7 @@ class KnowledgeStore:
         :param reason: Optional explanation logged in the
             audit trail.
         """
+        before = self._conn.total_changes
         self._conn.execute(
             "INSERT OR IGNORE INTO relationships "
             "(source_id, target_id, relation_type, "
@@ -435,7 +436,8 @@ class KnowledgeStore:
                 _dt_to_iso(relationship.discovered_at),
             ),
         )
-        if self._conn.total_changes:
+        inserted = self._conn.total_changes - before
+        if inserted > 0:
             self._log_relationship(
                 relationship, "create", reason
             )
@@ -573,10 +575,17 @@ class KnowledgeStore:
         """
         query = (
             "SELECT p2.entity_id, "
-            "COUNT(DISTINCT p2.document_id) AS cnt "
+            "COUNT(DISTINCT p2.document_id) AS cnt, "
+            "e.canonical_name, e.entity_type, "
+            "e.subtype, e.description, "
+            "e.valid_from, e.valid_until, "
+            "e.status, e.merged_into, "
+            "e.created_at, e.updated_at "
             "FROM provenance p1 "
             "JOIN provenance p2 "
             "ON p1.document_id = p2.document_id "
+            "JOIN entities e "
+            "ON p2.entity_id = e.entity_id "
             "WHERE p1.entity_id = ? "
             "AND p2.entity_id != ? "
         )
@@ -593,11 +602,18 @@ class KnowledgeStore:
         rows = self._conn.execute(
             query, params
         ).fetchall()
+        if not rows:
+            return []
+        eids = [r[0] for r in rows]
+        alias_map = self._load_aliases_batch(eids)
         results: list[tuple[Entity, int]] = []
-        for eid, count in rows:
-            entity = self.get_entity(eid)
-            if entity is not None:
-                results.append((entity, count))
+        for row in rows:
+            eid, cnt = row[0], row[1]
+            entity = _row_to_entity(
+                (eid, *row[2:]),
+                alias_map.get(eid, ()),
+            )
+            results.append((entity, cnt))
         return results
 
     # -- Merge operation --
@@ -958,6 +974,32 @@ class KnowledgeStore:
             (entity_id,),
         ).fetchall()
         return tuple(r[0] for r in rows)
+
+    def _load_aliases_batch(
+        self, entity_ids: list[str]
+    ) -> dict[str, tuple[str, ...]]:
+        """Fetch aliases for multiple entities in one query.
+
+        :return: Mapping of entity_id to aliases tuple.
+        """
+        if not entity_ids:
+            return {}
+        placeholders = ", ".join(
+            "?" for _ in entity_ids
+        )
+        rows = self._conn.execute(
+            "SELECT entity_id, alias "
+            "FROM entity_aliases "
+            f"WHERE entity_id IN ({placeholders})",
+            entity_ids,
+        ).fetchall()
+        result: dict[str, list[str]] = {}
+        for eid, alias in rows:
+            result.setdefault(eid, []).append(alias)
+        return {
+            eid: tuple(aliases)
+            for eid, aliases in result.items()
+        }
 
 
 # -- Module-level helpers --

@@ -69,9 +69,9 @@
 
 #### Performance (v0.11.18 review)
 
-- [ ] **HIGH** — Fix N+1 query in `find_co_mentioned()` — each co-mentioned entity triggers a separate `get_entity()` call; JOIN entities in the SQL or batch-fetch
+- [x] **HIGH** — Fix N+1 query in `find_co_mentioned()` — each co-mentioned entity triggers a separate `get_entity()` call; JOIN entities in the SQL or batch-fetch
 - [ ] **HIGH** — Batch alias fetches in bulk entity queries — `find_by_name`, `find_entities_by_type`, etc. call `_load_aliases()` per row; fetch all aliases in one IN query
-- [ ] **HIGH** — Fix unreliable `total_changes` check in `save_relationship()` — cumulative counter doesn't detect whether *this specific* INSERT succeeded; use pre-check or row count delta
+- [x] **HIGH** — Fix unreliable `total_changes` check in `save_relationship()` — cumulative counter doesn't detect whether *this specific* INSERT succeeded; use pre-check or row count delta
 - [ ] **MEDIUM** — Add `save_provenances()` bulk method — current single-record `save_provenance()` causes N queries when saving multiple mentions
 - [ ] **MEDIUM** — Eliminate duplicate COUNT query in `db_health._run_report()` — total is queried in `_section_overall()` then again in the orchestrator
 - [ ] **LOW** — Use `lxml` parser in `BBCScraper._parse_article()` for 3-5x speedup over `html.parser` — add `lxml` as optional dependency
