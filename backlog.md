@@ -33,7 +33,7 @@
     - Relationships (graph structure)
     - Provenance: source/origin of the entity, traces to all texts where it appears
     - Embeddings per entity (for similarity / resolution)
-- [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
+- [x] Build Wikipedia/Wikidata seed pipeline to populate the KG — moved to post-population
 
 ### 2026 April 2nd
 
@@ -55,8 +55,9 @@
 - [ ] Split ORGANIZATION/fund into fund_manager vs fund vehicle — quants tracking ETF flows need to distinguish BlackRock (manager) from iShares ETF (product)
 - [ ] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
 - [ ] Plan relationship attributes: document approach for structured values (ownership %, ratings, price targets) as optional JSON column — defer implementation until ingestion pipeline exists
-- [ ] Add `updated_at` field to Entity for freshness tracking and cache invalidation
+- [x] Add `updated_at` field to Entity for freshness tracking and cache invalidation
 
 #### Post-population (after KG is defined and populated)
 
+- [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
 - [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources

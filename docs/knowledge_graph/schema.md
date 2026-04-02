@@ -23,6 +23,7 @@ Core entity records. Dates stored as ISO 8601 text.
 | status         | TEXT     | NOT NULL, DEFAULT 'active' | Lifecycle: active, merged, deprecated |
 | merged_into    | TEXT     |                  | If merged, the surviving entity's ID       |
 | created_at     | TEXT     |                  | When this record was created               |
+| updated_at     | TEXT     |                  | When this record was last modified          |
 
 Indexes: `entity_type`, `(entity_type, subtype)`, `status`.
 

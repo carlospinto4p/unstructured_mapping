@@ -93,6 +93,9 @@ class Entity:
         otherwise.
     :param created_at: When this record was created.
         Auto-populated when not provided.
+    :param updated_at: When this record was last modified.
+        ``None`` until the first update. Used for cache
+        invalidation and freshness tracking.
     """
 
     canonical_name: str
@@ -108,6 +111,7 @@ class Entity:
     status: EntityStatus = EntityStatus.ACTIVE
     merged_into: str | None = None
     created_at: datetime | None = None
+    updated_at: datetime | None = None
 
 
 @dataclass(frozen=True, slots=True)

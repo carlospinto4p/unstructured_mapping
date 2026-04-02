@@ -206,6 +206,11 @@ future queries to the surviving entity.
   are time-bounded (political offices, corporate existence).
   `None` means unbounded on that side.
 
+- **updated_at**: When this record was last modified. ``None``
+  until the first update. Used for cache invalidation and
+  freshness tracking — lets consumers know which entities
+  have stale data.
+
 ### Deferred fields
 
 - **Embeddings**: Not on the entity. If needed, store in a

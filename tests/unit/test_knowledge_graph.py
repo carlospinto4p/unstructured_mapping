@@ -336,6 +336,24 @@ def test_entity_temporal_round_trip(tmp_path):
     assert loaded.valid_from == now
     assert loaded.created_at == now
     assert loaded.valid_until is None
+    assert loaded.updated_at is None
+
+
+def test_entity_updated_at_round_trip(tmp_path):
+    db = tmp_path / "kg.db"
+    created = datetime(2024, 1, 15, tzinfo=timezone.utc)
+    updated = datetime(2024, 6, 1, tzinfo=timezone.utc)
+    e = _make_entity(
+        created_at=created,
+        updated_at=updated,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        loaded = store.get_entity(e.entity_id)
+
+    assert loaded is not None
+    assert loaded.created_at == created
+    assert loaded.updated_at == updated
 
 
 # -- Relationship: qualifier_id and relation_kind_id --

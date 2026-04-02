@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.10.4 - 2nd April 2026
+
+- Added `updated_at` field to `Entity` — tracks when a
+  record was last modified for cache invalidation and
+  freshness monitoring
+- Added `updated_at` column to `entities` table with
+  migration for existing databases
+- Updated `docs/knowledge_graph/design.md` and
+  `docs/knowledge_graph/schema.md`
+
+
 ### v0.10.3 - 2nd April 2026
 
 - Fixed stale docstring references:

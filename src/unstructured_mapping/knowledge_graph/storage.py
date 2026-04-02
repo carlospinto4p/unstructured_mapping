@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS entities (
     valid_until    TEXT,
     status         TEXT NOT NULL DEFAULT 'active',
     merged_into    TEXT,
-    created_at     TEXT
+    created_at     TEXT,
+    updated_at     TEXT
 )
 """
 
@@ -162,8 +163,9 @@ class KnowledgeStore:
             "(entity_id, canonical_name, entity_type, "
             "subtype, description, valid_from, "
             "valid_until, status, merged_into, "
-            "created_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "created_at, updated_at) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 entity.entity_id,
                 entity.canonical_name,
@@ -175,6 +177,7 @@ class KnowledgeStore:
                 entity.status.value,
                 entity.merged_into,
                 _dt_to_iso(entity.created_at),
+                _dt_to_iso(entity.updated_at),
             ),
         )
         self._conn.execute(
@@ -203,7 +206,8 @@ class KnowledgeStore:
             "SELECT entity_id, canonical_name, "
             "entity_type, subtype, description, "
             "valid_from, valid_until, status, "
-            "merged_into, created_at FROM entities "
+            "merged_into, created_at, updated_at "
+            "FROM entities "
             "WHERE entity_id = ?",
             (entity_id,),
         ).fetchone()
@@ -226,7 +230,8 @@ class KnowledgeStore:
             "SELECT entity_id, canonical_name, "
             "entity_type, subtype, description, "
             "valid_from, valid_until, status, "
-            "merged_into, created_at FROM entities "
+            "merged_into, created_at, updated_at "
+            "FROM entities "
             "WHERE canonical_name COLLATE NOCASE = ?",
             (name,),
         ).fetchall()
@@ -249,8 +254,8 @@ class KnowledgeStore:
             "SELECT e.entity_id, e.canonical_name, "
             "e.entity_type, e.subtype, e.description, "
             "e.valid_from, e.valid_until, e.status, "
-            "e.merged_into, e.created_at "
-            "FROM entities e "
+            "e.merged_into, e.created_at, "
+            "e.updated_at FROM entities e "
             "JOIN entity_aliases a "
             "ON e.entity_id = a.entity_id "
             "WHERE a.alias COLLATE NOCASE = ?",
@@ -415,7 +420,8 @@ class KnowledgeStore:
             "SELECT entity_id, canonical_name, "
             "entity_type, subtype, description, "
             "valid_from, valid_until, status, "
-            "merged_into, created_at FROM entities "
+            "merged_into, created_at, updated_at "
+            "FROM entities "
             "WHERE entity_type = ?",
             (entity_type.value,),
         ).fetchall()
@@ -439,7 +445,8 @@ class KnowledgeStore:
             "SELECT entity_id, canonical_name, "
             "entity_type, subtype, description, "
             "valid_from, valid_until, status, "
-            "merged_into, created_at FROM entities "
+            "merged_into, created_at, updated_at "
+            "FROM entities "
             "WHERE entity_type = ? AND subtype = ?",
             (entity_type.value, subtype),
         ).fetchall()
@@ -560,6 +567,11 @@ class KnowledgeStore:
                 "ALTER TABLE entities "
                 "ADD COLUMN subtype TEXT"
             )
+        if "updated_at" not in cols:
+            self._conn.execute(
+                "ALTER TABLE entities "
+                "ADD COLUMN updated_at TEXT"
+            )
 
     def _load_aliases(
         self, entity_id: str
@@ -588,6 +600,7 @@ def _row_to_entity(
         str, str, str, str | None, str,
         str | None, str | None,
         str, str | None, str | None,
+        str | None,
     ],
     aliases: tuple[str, ...],
 ) -> Entity:
@@ -603,6 +616,7 @@ def _row_to_entity(
         status=EntityStatus(row[7]),
         merged_into=row[8],
         created_at=_iso_to_dt(row[9]),
+        updated_at=_iso_to_dt(row[10]),
     )
 
 
