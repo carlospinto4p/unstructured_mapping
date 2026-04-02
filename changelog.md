@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.14 - 2nd April 2026
+
+- Added `/review-kg-scope` skill — audits KG for scope
+  violations: flags quantitative data, operational metadata,
+  or analysis concerns that should live in external tables
+
+
 ### v0.11.13 - 2nd April 2026
 
 - Documented relationship attributes boundary in
