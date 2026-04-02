@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.11.11 - 2nd April 2026
+
+- `.claude/settings.json`:
+  - Added PreToolUse hook to block compound git commands.
+
+
 ### v0.11.10 - 2nd April 2026
 
 - Split ORGANIZATION/fund into `fund_manager` (BlackRock,

@@ -18,6 +18,10 @@
           {
             "type": "command",
             "command": "run pytest before git commits"
+          },
+          {
+            "type": "command",
+            "command": "echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import sys,json; cmd=json.load(sys.stdin).get('command',''); (print('Blocked: use separate Bash calls for git commands — no && or ; chaining', file=sys.stderr), sys.exit(2)) if ('&&' in cmd or ';' in cmd) and 'git' in cmd else sys.exit(0)\""
           }
         ]
       }
