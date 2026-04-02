@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.11.2 - 2nd April 2026
+
+- Documented ASSET ticker/identifier decision in
+  `docs/knowledge_graph/subtypes.md`: aliases suffice for
+  text detection; `external_ids` table is the planned
+  approach for structured joins with price feeds
+
+
 ### v0.11.1 - 2nd April 2026
 
 - Added TOPIC subtypes in `docs/knowledge_graph/subtypes.md`:

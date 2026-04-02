@@ -78,6 +78,28 @@ relationships.
 | index     | Market indices and benchmarks                     | S&P 500, Dow Jones, FTSE 100, VIX     |
 | derivative| Futures, options, swaps                           | ES futures, SPX options                |
 
+#### Tickers and external identifiers
+
+Tickers (e.g. "AAPL") are stored as **aliases**, not in a
+dedicated field. This is intentional:
+
+- A single `ticker` field would be too narrow — assets
+  often have different tickers on different exchanges
+  (`AAPL` on Nasdaq, `APC.F` on Frankfurt, `0R2V.L` on
+  London).
+- Non-ticker assets ("US 10-Year Treasury", "Gold") and
+  rolling futures (`GCQ24`, `GCZ24`) don't fit a single
+  ticker field.
+- Aliases are sufficient for entity detection in text.
+
+For structured joins with price feeds and external data,
+the planned `external_ids` table (see post-population
+backlog) will provide `(entity_id, id_scheme, external_id)`
+tuples — e.g. `("ticker:nasdaq", "AAPL")`,
+`("isin", "US0378331005")`, `("figi", "BBG000B9XRY4")`.
+This handles multi-exchange tickers, ISINs, FIGIs, and
+non-ticker instruments cleanly.
+
 
 ### METRIC
 
