@@ -2,21 +2,21 @@
 
 ### v0.10.0 - 2nd April 2026
 
-- Added `ASSET` to `EntityType` — tradeable financial
-  instruments and stores of value (equities, bonds,
-  commodities, currencies, crypto, indices)
-- Added `METRIC` to `EntityType` — quantitative market
-  indicators (CPI, unemployment rate, GDP growth, VIX)
+- Added `ASSET` and `METRIC` to `EntityType`:
+  - `ASSET` — tradeable financial instruments and stores
+    of value (equities, bonds, commodities, currencies,
+    crypto, indices)
+  - `METRIC` — quantitative market indicators (CPI,
+    unemployment rate, GDP growth, VIX)
 - Added `subtype` field to `Entity` — optional finer
   classification within entity types (e.g. `"company"`
-  for ORGANIZATION, `"equity"` for ASSET). Free-form
-  string to avoid enum explosion
-- Added `subtype` column to `entities` table with
-  migration for existing databases
-- Added compound index `(entity_type, subtype)` for
-  filtered queries
-- Added `KnowledgeStore.find_entities_by_subtype()`
-  query method
+  for ORGANIZATION, `"equity"` for ASSET):
+  - `subtype` column on `entities` table with migration
+    for existing databases
+  - Compound index `(entity_type, subtype)` for filtered
+    queries
+  - `KnowledgeStore.find_entities_by_subtype()` query
+    method
 - Updated `docs/knowledge_graph.md` with ASSET, METRIC,
   and subtype rationale
 
