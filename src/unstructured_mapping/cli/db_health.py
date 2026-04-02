@@ -17,42 +17,46 @@ _DEFAULT_DB = Path("data/articles.db")
 
 def _connect(db_path: Path) -> sqlite3.Connection:
     if not db_path.exists():
-        raise FileNotFoundError(f"Database not found: {db_path}")
+        raise FileNotFoundError(
+            f"Database not found: {db_path}"
+        )
     return sqlite3.connect(str(db_path))
 
 
-def _run_report(conn: sqlite3.Connection) -> str:
-    """Build a full health report and return it as text."""
-    lines: list[str] = []
-
-    # --- Overall counts ---
+def _section_overall(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Total article count."""
     total = conn.execute(
         "SELECT COUNT(*) FROM articles"
     ).fetchone()[0]
-    lines.append(f"Total articles: {total}")
+    return [f"Total articles: {total}"]
 
-    if total == 0:
-        lines.append("Database is empty — nothing to report.")
-        return "\n".join(lines)
 
-    # --- Per-source counts ---
+def _section_by_source(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Article counts per source."""
     rows = conn.execute(
         "SELECT source, COUNT(*) FROM articles "
         "GROUP BY source ORDER BY source"
     ).fetchall()
-    lines.append("")
-    lines.append("Articles by source:")
+    lines = ["", "Articles by source:"]
     for src, cnt in rows:
         lines.append(f"  {src:>10s}  {cnt}")
+    return lines
 
-    # --- Last scrape per source ---
-    lines.append("")
-    lines.append("Last scrape per source:")
+
+def _section_last_scrape(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Most recent scrape timestamp per source."""
     rows = conn.execute(
         "SELECT source, MAX(scraped_at) FROM articles "
         "GROUP BY source ORDER BY source"
     ).fetchall()
     now = datetime.now(timezone.utc)
+    lines = ["", "Last scrape per source:"]
     for src, last in rows:
         ts = datetime.fromisoformat(last)
         ago = now - ts
@@ -60,10 +64,13 @@ def _run_report(conn: sqlite3.Connection) -> str:
         lines.append(
             f"  {src:>10s}  {last}  ({hours:.1f}h ago)"
         )
+    return lines
 
-    # --- Articles per scrape batch (by scraped_at) ---
-    lines.append("")
-    lines.append("Recent scrape batches (last 5):")
+
+def _section_recent_batches(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Last 5 scrape batches by timestamp."""
     rows = conn.execute(
         "SELECT scraped_at, COUNT(*), "
         "GROUP_CONCAT(DISTINCT source) "
@@ -71,27 +78,40 @@ def _run_report(conn: sqlite3.Connection) -> str:
         "GROUP BY scraped_at "
         "ORDER BY scraped_at DESC LIMIT 5"
     ).fetchall()
+    lines = ["", "Recent scrape batches (last 5):"]
     for ts, cnt, sources in rows:
-        lines.append(f"  {ts}  {cnt} articles  [{sources}]")
+        lines.append(
+            f"  {ts}  {cnt} articles  [{sources}]"
+        )
+    return lines
 
-    # --- Gaps: days with no articles ---
-    lines.append("")
-    lines.append("Daily coverage (last 7 days):")
+
+def _section_daily_coverage(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Article counts per day for the last 7 days."""
     rows = conn.execute(
         "SELECT DATE(scraped_at) AS day, COUNT(*) "
         "FROM articles "
         "WHERE scraped_at >= DATE('now', '-7 days') "
         "GROUP BY day ORDER BY day"
     ).fetchall()
+    lines = ["", "Daily coverage (last 7 days):"]
     if rows:
         for day, cnt in rows:
             lines.append(f"  {day}  {cnt} articles")
     else:
-        lines.append("  No articles in the last 7 days.")
+        lines.append(
+            "  No articles in the last 7 days."
+        )
+    return lines
 
-    # --- Data quality checks ---
-    lines.append("")
-    lines.append("Data quality:")
+
+def _section_data_quality(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Data quality checks on articles."""
+    lines = ["", "Data quality:"]
 
     empty_body = conn.execute(
         "SELECT COUNT(*) FROM articles "
@@ -121,7 +141,6 @@ def _run_report(conn: sqlite3.Connection) -> str:
         f"  Short bodies (<50): {short_body}"
     )
 
-    # document_id checks (v0.6.0+)
     col_names = {
         row[1]
         for row in conn.execute(
@@ -148,19 +167,54 @@ def _run_report(conn: sqlite3.Connection) -> str:
         )
     else:
         lines.append(
-            "  document_id:       MISSING (run migration)"
+            "  document_id:       "
+            "MISSING (run migration)"
         )
+    return lines
 
-    # --- DB file size ---
-    lines.append("")
-    db_path = conn.execute("PRAGMA database_list").fetchone()[2]
+
+def _section_db_size(
+    conn: sqlite3.Connection,
+) -> list[str]:
+    """Database file size."""
+    db_path = conn.execute(
+        "PRAGMA database_list"
+    ).fetchone()[2]
     size = Path(db_path).stat().st_size
     if size < 1024 * 1024:
-        lines.append(f"Database size: {size / 1024:.1f} KB")
-    else:
+        return [
+            "",
+            f"Database size: {size / 1024:.1f} KB",
+        ]
+    return [
+        "",
+        f"Database size: "
+        f"{size / (1024 * 1024):.1f} MB",
+    ]
+
+
+def _run_report(conn: sqlite3.Connection) -> str:
+    """Build a full health report."""
+    lines = _section_overall(conn)
+
+    total = conn.execute(
+        "SELECT COUNT(*) FROM articles"
+    ).fetchone()[0]
+    if total == 0:
         lines.append(
-            f"Database size: {size / (1024 * 1024):.1f} MB"
+            "Database is empty — nothing to report."
         )
+        return "\n".join(lines)
+
+    for section in (
+        _section_by_source,
+        _section_last_scrape,
+        _section_recent_batches,
+        _section_daily_coverage,
+        _section_data_quality,
+        _section_db_size,
+    ):
+        lines.extend(section(conn))
 
     return "\n".join(lines)
 

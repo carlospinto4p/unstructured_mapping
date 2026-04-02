@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.11.17 - 2nd April 2026
+
+- Refactored `db_health._run_report()` — split 142-line
+  monolith into 7 per-section helpers (`_section_overall`,
+  `_section_by_source`, `_section_last_scrape`,
+  `_section_recent_batches`, `_section_daily_coverage`,
+  `_section_data_quality`, `_section_db_size`)
+- Refactored `ArticleStore._migrate()` — split 102-line
+  method into 4 per-step helpers
+  (`_migrate_add_document_id`,
+  `_migrate_enforce_constraints`,
+  `_migrate_normalize_uuids`,
+  `_migrate_drop_stale_indexes`)
+
+
 ### v0.11.16 - 2nd April 2026
 
 - Refactored `KnowledgeStore` in `storage.py`:

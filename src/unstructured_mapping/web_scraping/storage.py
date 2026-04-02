@@ -55,18 +55,12 @@ class ArticleStore:
     def _migrate(self) -> None:
         """Migrate legacy databases to current schema.
 
-        Handles two cases:
+        Runs four steps in order:
 
-        1. Table exists without ``document_id`` column —
-           adds the column, backfills UUIDs, then rebuilds
-           the table with proper NOT NULL + UNIQUE
-           constraints.
-        2. Table has ``document_id`` but without NOT NULL
-           constraint (from a previous partial migration) —
-           rebuilds the table to enforce constraints.
-
-        Also drops the stale ``idx_source`` index replaced
-        by ``idx_source_scraped`` in v0.5.8.
+        1. Add ``document_id`` column and backfill UUIDs.
+        2. Rebuild table to enforce NOT NULL + UNIQUE.
+        3. Normalize hex IDs to canonical UUID format.
+        4. Drop stale ``idx_source`` from pre-v0.5.8.
         """
         cols = {
             row[1]
@@ -76,80 +70,93 @@ class ArticleStore:
         }
         if not cols:
             return
+        self._migrate_add_document_id(cols)
+        self._migrate_enforce_constraints()
+        self._migrate_normalize_uuids()
+        self._migrate_drop_stale_indexes()
 
-        # Step 1: add column + backfill if missing
-        if "document_id" not in cols:
+    def _migrate_add_document_id(
+        self, cols: set[str]
+    ) -> None:
+        """Add document_id column and backfill UUIDs."""
+        if "document_id" in cols:
+            return
+        self._conn.execute(
+            "ALTER TABLE articles "
+            "ADD COLUMN document_id TEXT"
+        )
+        rows = self._conn.execute(
+            "SELECT url FROM articles "
+            "WHERE document_id IS NULL"
+        ).fetchall()
+        for (url,) in rows:
             self._conn.execute(
-                "ALTER TABLE articles "
-                "ADD COLUMN document_id TEXT"
+                "UPDATE articles "
+                "SET document_id = ? "
+                "WHERE url = ?",
+                (str(uuid4()), url),
             )
-            rows = self._conn.execute(
-                "SELECT url FROM articles "
-                "WHERE document_id IS NULL"
-            ).fetchall()
-            for (url,) in rows:
-                self._conn.execute(
-                    "UPDATE articles "
-                    "SET document_id = ? "
-                    "WHERE url = ?",
-                    (str(uuid4()), url),
-                )
-            self._conn.commit()
-            logger.info(
-                "Backfilled document_id for %d articles",
-                len(rows),
-            )
+        self._conn.commit()
+        logger.info(
+            "Backfilled document_id for %d articles",
+            len(rows),
+        )
 
-        # Step 2: rebuild table if constraints are missing
+    def _migrate_enforce_constraints(self) -> None:
+        """Rebuild table if NOT NULL constraint missing."""
         info = {
             row[1]: row[3]  # name -> notnull
             for row in self._conn.execute(
                 "PRAGMA table_info(articles)"
             )
         }
-        if not info.get("document_id"):
-            self._conn.executescript("""
-                ALTER TABLE articles
-                    RENAME TO _articles_old;
-            """)
-            self._conn.execute(_CREATE_TABLE)
-            self._conn.execute("""
-                INSERT INTO articles
-                    (url, title, body, source,
-                     published, scraped_at, document_id)
-                SELECT url, title, body, source,
-                       published, scraped_at, document_id
-                FROM _articles_old
-            """)
-            self._conn.execute(
-                "DROP TABLE _articles_old"
-            )
-            self._conn.commit()
-            logger.info(
-                "Rebuilt articles table with "
-                "document_id constraints"
-            )
+        if info.get("document_id"):
+            return
+        self._conn.executescript("""
+            ALTER TABLE articles
+                RENAME TO _articles_old;
+        """)
+        self._conn.execute(_CREATE_TABLE)
+        self._conn.execute("""
+            INSERT INTO articles
+                (url, title, body, source,
+                 published, scraped_at, document_id)
+            SELECT url, title, body, source,
+                   published, scraped_at, document_id
+            FROM _articles_old
+        """)
+        self._conn.execute(
+            "DROP TABLE _articles_old"
+        )
+        self._conn.commit()
+        logger.info(
+            "Rebuilt articles table with "
+            "document_id constraints"
+        )
 
-        # Step 3: normalize hex IDs to canonical UUID format
+    def _migrate_normalize_uuids(self) -> None:
+        """Normalize 32-char hex IDs to UUID format."""
         hex_rows = self._conn.execute(
             "SELECT url, document_id FROM articles "
             "WHERE LENGTH(document_id) = 32"
         ).fetchall()
-        if hex_rows:
-            for url, hex_id in hex_rows:
-                self._conn.execute(
-                    "UPDATE articles "
-                    "SET document_id = ? "
-                    "WHERE url = ?",
-                    (str(UUID(hex_id)), url),
-                )
-            self._conn.commit()
-            logger.info(
-                "Normalized %d hex document_ids to UUID",
-                len(hex_rows),
+        if not hex_rows:
+            return
+        for url, hex_id in hex_rows:
+            self._conn.execute(
+                "UPDATE articles "
+                "SET document_id = ? "
+                "WHERE url = ?",
+                (str(UUID(hex_id)), url),
             )
+        self._conn.commit()
+        logger.info(
+            "Normalized %d hex document_ids to UUID",
+            len(hex_rows),
+        )
 
-        # Step 4: drop stale index from pre-v0.5.8
+    def _migrate_drop_stale_indexes(self) -> None:
+        """Drop idx_source replaced by idx_source_scraped."""
         self._conn.execute(
             "DROP INDEX IF EXISTS idx_source"
         )
