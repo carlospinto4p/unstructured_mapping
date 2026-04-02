@@ -5,7 +5,7 @@ Follows the same pattern as
 constructor takes a :class:`~pathlib.Path`, creates tables and
 indexes, and supports context-manager usage.
 
-See ``DESIGN.md`` in this package for table schema rationale.
+See ``docs/knowledge_graph/`` for table schema rationale.
 """
 
 import logging

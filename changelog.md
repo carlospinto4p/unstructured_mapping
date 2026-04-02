@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.10.3 - 2nd April 2026
+
+- Fixed stale docstring references:
+  - `storage.py` module docstring: `DESIGN.md` ->
+    `docs/knowledge_graph/`
+  - `Entity` class docstring: listed only 4 of 10 types
+  - `EntityType` docstring: "PERSON through LEGISLATION"
+    -> "PERSON through METRIC"
+- Added 9 backlog items from `/review-kg` design review
+
+
 ### v0.10.2 - 2nd April 2026
 
 - Added `/review-kg` skill — reviews KG architecture and

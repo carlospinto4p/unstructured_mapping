@@ -20,7 +20,7 @@ class EntityType(StrEnum):
     """Classification of knowledge graph entities.
 
     Ten types for financial-news entity mapping. The first
-    eight (PERSON through LEGISLATION) classify real-world
+    eight (PERSON through METRIC) classify real-world
     things. ROLE and RELATION_KIND are meta-types that
     enable structured querying and synonym resolution by
     reusing the entity/alias system.
@@ -60,9 +60,9 @@ class EntityStatus(StrEnum):
 class Entity:
     """A knowledge graph entity.
 
-    Represents a real-world thing (person, organization,
-    place, or topic) that can be mentioned in text and
-    resolved against the graph.
+    Represents a real-world thing that can be mentioned
+    in text and resolved against the graph. See
+    :class:`EntityType` for the ten supported types.
 
     :param entity_id: Unique identifier (UUID hex).
         Auto-generated when not provided.

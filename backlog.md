@@ -45,3 +45,15 @@
 - [ ] Explore METRIC metadata: release schedule (monthly, quarterly), issuing body (BLS, Fed), and expected-vs-actual framing — these are critical for market-impact analysis but may belong in description or a future structured field
 - [ ] Consider cross-type relationship patterns for financial analysis: ORGANIZATION/central_bank → METRIC/monetary_policy, PERSON/policymaker → LEGISLATION/regulation — document common patterns as examples in docs
 - [x] Design storage layer for the KG (graph DB or equivalent)
+
+#### KG design review (v0.10.2)
+
+- [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources
+- [ ] Add co-mention query: `find_co_mentioned(entity_id, since)` with `(document_id, entity_id)` index on provenance — core query for event-driven strategies
+- [ ] Add optional `sentiment` field to Provenance (positive/negative/neutral/mixed) — quants need polarity, not just mention detection
+- [ ] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
+- [ ] Document VIX dual-nature in subtypes.md — guidance for entities that are both tradeable and indicators, with cross-reference relationship pattern
+- [ ] Split ORGANIZATION/fund into fund_manager vs fund vehicle — quants tracking ETF flows need to distinguish BlackRock (manager) from iShares ETF (product)
+- [ ] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
+- [ ] Plan relationship attributes: document approach for structured values (ownership %, ratings, price targets) as optional JSON column — defer implementation until ingestion pipeline exists
+- [ ] Add `updated_at` field to Entity for freshness tracking and cache invalidation
