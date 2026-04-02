@@ -146,7 +146,12 @@ class BBCScraper(Scraper):
         :param html: Raw HTML bytes.
         :return: Joined paragraph text, or empty string.
         """
-        soup = BeautifulSoup(html, "html.parser")
+        try:
+            import lxml  # noqa: F401
+            parser = "lxml"
+        except ImportError:
+            parser = "html.parser"
+        soup = BeautifulSoup(html, parser)
         article = soup.find("article")
         if article is None:
             return ""

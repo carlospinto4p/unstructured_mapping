@@ -25,12 +25,15 @@ def _connect(db_path: Path) -> sqlite3.Connection:
 
 def _section_overall(
     conn: sqlite3.Connection,
-) -> list[str]:
-    """Total article count."""
+) -> tuple[list[str], int]:
+    """Total article count.
+
+    :return: Tuple of (report lines, total count).
+    """
     total = conn.execute(
         "SELECT COUNT(*) FROM articles"
     ).fetchone()[0]
-    return [f"Total articles: {total}"]
+    return [f"Total articles: {total}"], total
 
 
 def _section_by_source(
@@ -195,11 +198,9 @@ def _section_db_size(
 
 def _run_report(conn: sqlite3.Connection) -> str:
     """Build a full health report."""
-    lines = _section_overall(conn)
+    overall, total = _section_overall(conn)
+    lines = overall
 
-    total = conn.execute(
-        "SELECT COUNT(*) FROM articles"
-    ).fetchone()[0]
     if total == 0:
         lines.append(
             "Database is empty — nothing to report."

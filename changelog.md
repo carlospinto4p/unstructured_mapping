@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.11.21 - 2nd April 2026
+
+- Eliminated duplicate COUNT query in
+  `db_health._run_report()` — `_section_overall()` now
+  returns `(lines, total)` tuple, orchestrator reuses it
+- `BBCScraper._parse_article()` now uses `lxml` parser
+  when available (3-5x faster), falls back to
+  `html.parser`. Added `lxml` to `scraping` optional deps
+
+
 ### v0.11.20 - 2nd April 2026
 
 - Batch alias fetches in bulk entity queries — all four
