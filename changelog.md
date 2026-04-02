@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.11.4 - 2nd April 2026
+
+- Added `docs/knowledge_graph/relationships.md` — canonical
+  cross-type relationship patterns for financial analysis:
+  - Market structure (issued_by, listed_on, tracks)
+  - People and roles (works_at with ROLE qualifier)
+  - Regulation and policy (regulates, enforces, sets)
+  - Economic indicators (issued_by, measures)
+  - Corporate actions (acquired, appointed_at, departed_from)
+  - Competitive and supply chain (competes_with, supplies)
+  - Sector linkage (classified_as, affects)
+  - Recommended RELATION_KIND entities for normalization
+
+
 ### v0.11.3 - 2nd April 2026
 
 - Documented METRIC metadata boundaries in

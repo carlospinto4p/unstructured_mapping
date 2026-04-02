@@ -43,7 +43,7 @@
 - [x] Consider whether TOPIC subtypes are useful for financial focus (e.g. sector, macro_theme, geopolitical) or if TOPIC remains broad by design
 - [x] Evaluate whether ASSET needs a `ticker` or `identifier` field beyond aliases — resolved: aliases suffice for detection; `external_ids` table (post-population) handles structured joins
 - [x] Explore METRIC metadata: release schedule (monthly, quarterly), issuing body (BLS, Fed), and expected-vs-actual framing — resolved: issuing body as relationship, schedule and expected-vs-actual out of KG scope
-- [ ] Consider cross-type relationship patterns for financial analysis: ORGANIZATION/central_bank → METRIC/monetary_policy, PERSON/policymaker → LEGISLATION/regulation — document common patterns as examples in docs
+- [x] Consider cross-type relationship patterns for financial analysis: ORGANIZATION/central_bank → METRIC/monetary_policy, PERSON/policymaker → LEGISLATION/regulation — document common patterns as examples in docs
 - [x] Design storage layer for the KG (graph DB or equivalent)
 
 #### KG design review (v0.10.2)
