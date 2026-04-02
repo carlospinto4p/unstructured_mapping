@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.11.16 - 2nd April 2026
+
+- Refactored `KnowledgeStore` in `storage.py`:
+  - Extracted `_ENTITY_SELECT` and `_ENTITY_SELECT_ALIASED`
+    constants — eliminated 4 duplicated 11-column SELECT
+    lists
+  - Unified `find_co_mentioned()` — replaced two
+    near-identical SQL branches with conditional query
+    builder
+
+
 ### v0.11.15 - 2nd April 2026
 
 - Fixed scope drift in `docs/knowledge_graph/design.md`:

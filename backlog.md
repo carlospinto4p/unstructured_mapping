@@ -59,8 +59,8 @@
 
 #### Refactoring (v0.11.15 review)
 
-- [ ] **HIGH** — Extract `_ENTITY_SELECT` constant in `storage.py` — same 11-column SELECT list repeated 4 times across `get_entity`, `find_by_name`, `find_entities_by_type`, `find_entities_by_subtype`
-- [ ] **HIGH** — Unify `find_co_mentioned()` query branches — two near-identical SQL blocks differ only by an optional WHERE clause; build query conditionally
+- [x] **HIGH** — Extract `_ENTITY_SELECT` constant in `storage.py` — same 11-column SELECT list repeated 4 times across `get_entity`, `find_by_name`, `find_entities_by_type`, `find_entities_by_subtype`
+- [x] **HIGH** — Unify `find_co_mentioned()` query branches — two near-identical SQL blocks differ only by an optional WHERE clause; build query conditionally
 - [ ] **MEDIUM** — Split `db_health._run_report()` (142 lines) into per-section helpers — one function per report section for testability
 - [ ] **MEDIUM** — Split `ArticleStore._migrate()` (102 lines) into per-step helpers — one function per migration step
 - [ ] **MEDIUM** — Extract `_sync_aliases()` helper from `save_entity()` — alias delete+insert logic is a distinct responsibility

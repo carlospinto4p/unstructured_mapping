@@ -164,6 +164,22 @@ _CREATE_INDEXES = [
 ]
 
 
+_ENTITY_SELECT = (
+    "SELECT entity_id, canonical_name, "
+    "entity_type, subtype, description, "
+    "valid_from, valid_until, status, "
+    "merged_into, created_at, updated_at "
+    "FROM entities "
+)
+
+_ENTITY_SELECT_ALIASED = (
+    "SELECT e.entity_id, e.canonical_name, "
+    "e.entity_type, e.subtype, e.description, "
+    "e.valid_from, e.valid_until, e.status, "
+    "e.merged_into, e.created_at, "
+    "e.updated_at FROM entities e "
+)
+
 _REL_SELECT = (
     "SELECT source_id, target_id, relation_type, "
     "description, qualifier_id, relation_kind_id, "
@@ -275,12 +291,7 @@ class KnowledgeStore:
         :return: The entity, or ``None`` if not found.
         """
         row = self._conn.execute(
-            "SELECT entity_id, canonical_name, "
-            "entity_type, subtype, description, "
-            "valid_from, valid_until, status, "
-            "merged_into, created_at, updated_at "
-            "FROM entities "
-            "WHERE entity_id = ?",
+            _ENTITY_SELECT + "WHERE entity_id = ?",
             (entity_id,),
         ).fetchone()
         if row is None:
@@ -299,12 +310,8 @@ class KnowledgeStore:
         :return: Matching entities.
         """
         rows = self._conn.execute(
-            "SELECT entity_id, canonical_name, "
-            "entity_type, subtype, description, "
-            "valid_from, valid_until, status, "
-            "merged_into, created_at, updated_at "
-            "FROM entities "
-            "WHERE canonical_name COLLATE NOCASE = ?",
+            _ENTITY_SELECT
+            + "WHERE canonical_name COLLATE NOCASE = ?",
             (name,),
         ).fetchall()
         return [
@@ -323,12 +330,8 @@ class KnowledgeStore:
         :return: Matching entities.
         """
         rows = self._conn.execute(
-            "SELECT e.entity_id, e.canonical_name, "
-            "e.entity_type, e.subtype, e.description, "
-            "e.valid_from, e.valid_until, e.status, "
-            "e.merged_into, e.created_at, "
-            "e.updated_at FROM entities e "
-            "JOIN entity_aliases a "
+            _ENTITY_SELECT_ALIASED
+            + "JOIN entity_aliases a "
             "ON e.entity_id = a.entity_id "
             "WHERE a.alias COLLATE NOCASE = ?",
             (alias,),
@@ -528,12 +531,7 @@ class KnowledgeStore:
         :return: Matching entities.
         """
         rows = self._conn.execute(
-            "SELECT entity_id, canonical_name, "
-            "entity_type, subtype, description, "
-            "valid_from, valid_until, status, "
-            "merged_into, created_at, updated_at "
-            "FROM entities "
-            "WHERE entity_type = ?",
+            _ENTITY_SELECT + "WHERE entity_type = ?",
             (entity_type.value,),
         ).fetchall()
         return [
@@ -553,12 +551,8 @@ class KnowledgeStore:
         :return: Matching entities.
         """
         rows = self._conn.execute(
-            "SELECT entity_id, canonical_name, "
-            "entity_type, subtype, description, "
-            "valid_from, valid_until, status, "
-            "merged_into, created_at, updated_at "
-            "FROM entities "
-            "WHERE entity_type = ? AND subtype = ?",
+            _ENTITY_SELECT
+            + "WHERE entity_type = ? AND subtype = ?",
             (entity_type.value, subtype),
         ).fetchall()
         return [
@@ -588,37 +582,28 @@ class KnowledgeStore:
             records with ``detected_at >= since``.
         :return: List of (entity, document_count) tuples.
         """
+        query = (
+            "SELECT p2.entity_id, "
+            "COUNT(DISTINCT p2.document_id) AS cnt "
+            "FROM provenance p1 "
+            "JOIN provenance p2 "
+            "ON p1.document_id = p2.document_id "
+            "WHERE p1.entity_id = ? "
+            "AND p2.entity_id != ? "
+        )
+        params: list[str | None] = [
+            entity_id, entity_id,
+        ]
         if since is not None:
-            rows = self._conn.execute(
-                "SELECT p2.entity_id, "
-                "COUNT(DISTINCT p2.document_id) AS cnt "
-                "FROM provenance p1 "
-                "JOIN provenance p2 "
-                "ON p1.document_id = p2.document_id "
-                "WHERE p1.entity_id = ? "
-                "AND p2.entity_id != ? "
-                "AND p1.detected_at >= ? "
-                "GROUP BY p2.entity_id "
-                "ORDER BY cnt DESC",
-                (
-                    entity_id,
-                    entity_id,
-                    _dt_to_iso(since),
-                ),
-            ).fetchall()
-        else:
-            rows = self._conn.execute(
-                "SELECT p2.entity_id, "
-                "COUNT(DISTINCT p2.document_id) AS cnt "
-                "FROM provenance p1 "
-                "JOIN provenance p2 "
-                "ON p1.document_id = p2.document_id "
-                "WHERE p1.entity_id = ? "
-                "AND p2.entity_id != ? "
-                "GROUP BY p2.entity_id "
-                "ORDER BY cnt DESC",
-                (entity_id, entity_id),
-            ).fetchall()
+            query += "AND p1.detected_at >= ? "
+            params.append(_dt_to_iso(since))
+        query += (
+            "GROUP BY p2.entity_id "
+            "ORDER BY cnt DESC"
+        )
+        rows = self._conn.execute(
+            query, params
+        ).fetchall()
         results: list[tuple[Entity, int]] = []
         for eid, count in rows:
             entity = self.get_entity(eid)
