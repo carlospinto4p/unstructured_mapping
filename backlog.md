@@ -49,7 +49,7 @@
 #### KG design review (v0.10.2)
 
 - [x] Add co-mention query: `find_co_mentioned(entity_id, since)` with `(document_id, entity_id)` index on provenance — core query for event-driven strategies
-- [ ] Add optional `sentiment` field to Provenance (positive/negative/neutral/mixed) — quants need polarity, not just mention detection
+- [x] Add optional `sentiment` field to Provenance — resolved: sentiment is analysis output, not provenance; belongs in a future signal/analysis layer, not the KG
 - [ ] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
 - [ ] Document VIX dual-nature in subtypes.md — guidance for entities that are both tradeable and indicators, with cross-reference relationship pattern
 - [ ] Split ORGANIZATION/fund into fund_manager vs fund vehicle — quants tracking ETF flows need to distinguish BlackRock (manager) from iShares ETF (product)
@@ -61,3 +61,4 @@
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
 - [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources
+- [ ] Build sentiment/signal analysis layer — classify article stance toward entities (positive/negative/neutral), separate from KG provenance
