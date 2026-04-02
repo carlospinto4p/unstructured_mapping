@@ -114,7 +114,7 @@ non-ticker instruments cleanly.
 | employment      | Labor market indicators                         | Unemployment rate, nonfarm payrolls, jobless claims |
 | growth          | Economic output and activity                    | GDP, industrial production, PMI        |
 | monetary_policy | Central bank rates and targets                  | Federal funds rate, ECB deposit rate   |
-| sentiment       | Confidence and expectations surveys             | Consumer confidence, VIX, Michigan sentiment |
+| sentiment       | Confidence and expectations surveys             | Consumer confidence, Michigan sentiment, VIX Index |
 | trade           | International trade flows                       | Trade balance, current account deficit |
 | housing         | Real estate and construction indicators         | Housing starts, Case-Shiller index     |
 | earnings        | Company-level financial metrics reported in      | EPS, revenue, net income, operating    |
@@ -212,6 +212,43 @@ leave subtype as `None`.
 
 No subtypes. These are meta-types used for structured querying
 and synonym resolution. Their classification is inherently flat.
+
+
+## Dual-nature entities
+
+Some real-world things span multiple entity types. The KG
+handles this by creating **separate entities for each role**,
+linked by a relationship. This is not duplication — each
+entity serves a different purpose in queries and analysis.
+
+### Pattern
+
+When something is both a measurable indicator and a tradeable
+instrument (or a benchmark and a fund), create two entities:
+
+| Indicator / benchmark entity | Tradeable entity | Relationship |
+|------------------------------|-----------------|--------------|
+| VIX Index (METRIC/sentiment) | VIX Futures (ASSET/derivative) | derived_from |
+| S&P 500 (ASSET/index) | SPY (ASSET/etf) | tracks |
+| Gold spot price (ASSET/commodity) | GLD (ASSET/etf) | tracks |
+| Federal funds rate (METRIC/monetary_policy) | Fed funds futures (ASSET/derivative) | derived_from |
+| US 10-Year yield (METRIC/monetary_policy) | TLT (ASSET/etf) | tracks |
+
+### When to split vs keep as one entity
+
+- **Split** when the two roles serve different query
+  populations. A quant tracking volatility indicators
+  queries METRIC; a trader managing a VIX futures position
+  queries ASSET. Merging them forces every query to filter
+  out the irrelevant role.
+- **Keep as one** when the entity is unambiguously one type
+  and the other role is incidental. "Gold" in news almost
+  always means the commodity — create one ASSET/commodity
+  entity. Only split if GLD or gold futures appear as
+  distinct entities in your corpus.
+- The `description` field on each entity should note the
+  relationship: "VIX Index — CBOE volatility index measuring
+  S&P 500 expected volatility. See also VIX Futures (ASSET)."
 
 
 ## Adding new subtypes

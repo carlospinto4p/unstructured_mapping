@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.11.9 - 2nd April 2026
+
+- Added "Dual-nature entities" section in
+  `docs/knowledge_graph/subtypes.md` — guidance for when
+  to create separate entities for the same real-world thing
+  (e.g. VIX Index as METRIC vs VIX Futures as ASSET),
+  with split-vs-keep decision criteria and five canonical
+  examples with relationship patterns
+
+
 ### v0.11.8 - 2nd April 2026
 
 - `CLAUDE.md`:
