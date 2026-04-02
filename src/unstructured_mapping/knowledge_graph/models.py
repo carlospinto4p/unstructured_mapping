@@ -19,12 +19,11 @@ from uuid import uuid4
 class EntityType(StrEnum):
     """Classification of knowledge graph entities.
 
-    Six types for news-domain entity mapping. The first
-    four (PERSON, ORGANIZATION, PLACE, TOPIC) classify
-    real-world things. ROLE and RELATION_KIND are
-    meta-types that enable structured querying and
-    synonym resolution by reusing the entity/alias
-    system.
+    Eight types for news-domain entity mapping. The first
+    six (PERSON through LEGISLATION) classify real-world
+    things. ROLE and RELATION_KIND are meta-types that
+    enable structured querying and synonym resolution by
+    reusing the entity/alias system.
 
     See ``docs/knowledge_graph.md`` for why EVENT was
     excluded and what each type covers.
@@ -34,6 +33,8 @@ class EntityType(StrEnum):
     ORGANIZATION = "organization"
     PLACE = "place"
     TOPIC = "topic"
+    PRODUCT = "product"
+    LEGISLATION = "legislation"
     ROLE = "role"
     RELATION_KIND = "relation_kind"
 

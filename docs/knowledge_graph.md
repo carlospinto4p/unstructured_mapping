@@ -31,7 +31,7 @@ means:
   resolution works.
 
 
-## EntityType — six values
+## EntityType — eight values
 
 | Type           | Covers                                              |
 |----------------|-----------------------------------------------------|
@@ -41,6 +41,14 @@ means:
 |                | water                                               |
 | TOPIC          | Recurring subjects: "inflation", "AI regulation",   |
 |                | "NATO expansion"                                    |
+| PRODUCT        | Named products, services, platforms: "iPhone",       |
+|                | "ChatGPT", "Boeing 737 MAX", "Ozempic". Distinct    |
+|                | from the ORGANIZATION that manufactures them        |
+| LEGISLATION    | Laws, regulations, treaties, legal instruments:      |
+|                | "GDPR", "Paris Agreement", "Dodd-Frank Act".        |
+|                | Have temporal bounds (enacted/repealed) and          |
+|                | relationships to sponsors, jurisdictions, and        |
+|                | affected entities                                   |
 | ROLE           | Positions and titles: "CTO", "President", "Board    |
 |                | Member". Uses the alias system for synonym           |
 |                | resolution ("CTO" = "Chief Technology Officer")     |
@@ -69,9 +77,24 @@ for structured querying and synonym resolution:
   kind. This enables querying all relationships of a kind
   regardless of surface form.
 
-Neither type has a blurry boundary with the original four.
+Neither meta-type has a blurry boundary with the other six.
 A role is never confused with a person, organization, place,
 or topic. They were added in v0.8.0.
+
+### Why PRODUCT and LEGISLATION?
+
+- **PRODUCT** is distinct from ORGANIZATION. News frequently
+  references products as standalone entities ("iPhone sales
+  dropped", "Boeing 737 MAX grounded"). Shoehorning them
+  into TOPIC loses the ability to query "all products" and
+  model manufacturer relationships.
+
+- **LEGISLATION** is distinct from TOPIC. A topic is a
+  recurring subject ("data privacy regulation"); a
+  legislation entity is a specific named instrument
+  ("GDPR") with sponsors, jurisdictions, enactment dates,
+  and affected entities. These drive substantial news
+  coverage and have rich relationship structures.
 
 ### Why not more types?
 
@@ -224,7 +247,7 @@ Core entity records. Dates stored as ISO 8601 text.
 |----------------|----------|------------------|--------------------------------------------|
 | entity_id      | TEXT     | PRIMARY KEY      | UUID hex (32 chars), auto-generated        |
 | canonical_name | TEXT     | NOT NULL         | Authoritative display name                 |
-| entity_type    | TEXT     | NOT NULL         | person, organization, place, topic, role, relation_kind |
+| entity_type    | TEXT     | NOT NULL         | person, organization, place, topic, product, legislation, role, relation_kind |
 | description    | TEXT     | NOT NULL         | Natural-language context for LLM resolution|
 | valid_from     | TEXT     |                  | When this entity became relevant           |
 | valid_until    | TEXT     |                  | When this entity ceased to be relevant     |

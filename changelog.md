@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.9.0 - 2nd April 2026
+
+- Added `PRODUCT` to `EntityType` — named products,
+  services, platforms (distinct from manufacturer ORG)
+- Added `LEGISLATION` to `EntityType` — laws, regulations,
+  treaties, legal instruments with temporal bounds and
+  jurisdiction relationships
+- Updated `docs/knowledge_graph.md` with rationale for
+  PRODUCT and LEGISLATION types
+
+
 ### v0.8.2 - 2nd April 2026
 
 - Updated `docs/knowledge_graph.md`: clarify KG as an

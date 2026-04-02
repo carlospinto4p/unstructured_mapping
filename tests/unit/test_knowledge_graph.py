@@ -22,6 +22,8 @@ def test_entity_type_values():
     assert EntityType.ORGANIZATION == "organization"
     assert EntityType.PLACE == "place"
     assert EntityType.TOPIC == "topic"
+    assert EntityType.PRODUCT == "product"
+    assert EntityType.LEGISLATION == "legislation"
     assert EntityType.ROLE == "role"
     assert EntityType.RELATION_KIND == "relation_kind"
 
