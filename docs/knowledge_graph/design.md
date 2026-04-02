@@ -237,6 +237,14 @@ future queries to the surviving entity.
   string, not by `Article` object. This avoids cross-module
   coupling and keeps the KG independently testable.
 
+- **Co-mention queries**: `find_co_mentioned(entity_id, since)`
+  joins provenance on `document_id` to find entities that
+  appear in the same articles. Returns `(Entity, count)` tuples
+  sorted by co-occurrence count. A composite index
+  `(document_id, entity_id)` makes the join fast. This is the
+  core query for event-driven strategies — e.g. "which assets
+  and companies were discussed alongside CPI this week?"
+
 
 ## Relationship — open-ended and temporal
 

@@ -58,7 +58,8 @@ Links the knowledge graph to the articles database via
 | detected_at     | TEXT |                           | When the detection occurred           |
 
 Primary key: `(entity_id, document_id, mention_text)`.
-Index: `document_id` for lookups by article.
+Indexes: `document_id`, `(document_id, entity_id)` for
+co-mention joins.
 
 
 ## `relationships`

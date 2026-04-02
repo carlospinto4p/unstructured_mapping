@@ -9,6 +9,9 @@
   `since` parameter for time-windowed queries.
 - Added composite index `(document_id, entity_id)` on
   provenance table for fast co-mention joins
+- Updated `docs/knowledge_graph/design.md` and
+  `docs/knowledge_graph/schema.md` with co-mention
+  query rationale and index
 
 
 ### v0.11.5 - 2nd April 2026
