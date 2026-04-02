@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.11.13 - 2nd April 2026
+
+- Documented relationship attributes boundary in
+  `docs/knowledge_graph/design.md`: quantitative values
+  (ownership %, ratings, price targets) are out of KG
+  scope — external tables joined via `entity_id`
+
+
 ### v0.11.12 - 2nd April 2026
 
 - Added `KnowledgeStore.find_recent_mentions()` — fetches

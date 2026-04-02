@@ -54,7 +54,7 @@
 - [x] Document VIX dual-nature in subtypes.md — guidance for entities that are both tradeable and indicators, with cross-reference relationship pattern
 - [x] Split ORGANIZATION/fund into fund_manager vs fund vehicle — quants tracking ETF flows need to distinguish BlackRock (manager) from iShares ETF (product)
 - [x] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
-- [ ] Plan relationship attributes: document approach for structured values (ownership %, ratings, price targets) as optional JSON column — defer implementation until ingestion pipeline exists
+- [x] Plan relationship attributes — resolved: quantitative values (ownership %, ratings, price targets) are out of KG scope; external tables joined via entity_id
 - [x] Add `updated_at` field to Entity for freshness tracking and cache invalidation
 
 #### Post-population (after KG is defined and populated)

@@ -289,6 +289,13 @@ future queries to the surviving entity.
 - **Multi-qualifier**: Only one qualifier per relationship.
   Sufficient for the news domain (person+role+company). If
   needed, add a join table later.
+- **Structured attributes** (ownership percentages, rating
+  values, price targets, deal amounts): Out of scope. The
+  KG tracks *that* a relationship exists, not quantitative
+  details about it. Numerical data belongs in external
+  tables that can be maintained independently and joined
+  via `entity_id`. This is the same boundary applied to
+  METRIC release schedules and sentiment scores.
 
 
 ## Audit log — time-travel and revert
