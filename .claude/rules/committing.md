@@ -27,3 +27,5 @@ Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
 - One command per Bash call (no `&&` chains).
 - 72-character subject line max.
 - Imperative mood.
+- Doc-only changes (`docs/`, `backlog.md`) still require a
+  patch version bump, changelog entry, and automatic commit.

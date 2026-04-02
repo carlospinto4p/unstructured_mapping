@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.7.4 - 2nd April 2026
+
+- Updated `docs/knowledge_graph.md`: clarify KG as a runtime
+  knowledge supplement for facts beyond LLM training cutoff
+- Updated `backlog.md`: mark KG data model task as done
+
+
 ### v0.7.3 - 2nd April 2026
 
 - Added full table schemas to `docs/knowledge_graph.md` —

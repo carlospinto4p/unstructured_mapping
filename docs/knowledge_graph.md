@@ -2,15 +2,24 @@
 
 ## Approach: LLM-first
 
-The knowledge graph is a **reference catalog** that an LLM reads
-and reasons over. Entities are resolved by reading descriptions,
-aliases, and provenance context — not by algorithmic vector
-matching. This means:
+The knowledge graph is a **runtime knowledge supplement** — it
+gives the LLM facts it was never trained on. An LLM's training
+data has a cutoff; entities that appear after that date (new
+companies, people, events) are unknown to the model. The KG
+stores enough natural-language context that the LLM can resolve
+and reason about these entities without prior knowledge.
+
+Entities are resolved by reading descriptions, aliases, and
+provenance context — not by algorithmic vector matching. This
+means:
 
 - No embeddings stored on entities (defer to a companion vector
   store if bulk/cost-sensitive processing needs it later).
 - No confidence scores on matches (the LLM reasons directly).
-- Rich natural-language `description` fields are first-class.
+- Rich natural-language `description` fields are first-class —
+  they are **instructions for the LLM**, not labels for humans.
+  The richer and more distinguishing they are, the better
+  resolution works.
 
 
 ## EntityType — why four values

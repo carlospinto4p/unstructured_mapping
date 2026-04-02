@@ -25,7 +25,7 @@
 
 #### Knowledge graph — entity store
 
-- [ ] Define KG data model:
+- [x] Define KG data model:
     - Unique identifiers for entities
     - Entity types (person, org, location, event, concept, ...)
     - Descriptions and hints
