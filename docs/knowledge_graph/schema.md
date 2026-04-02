@@ -59,7 +59,8 @@ Links the knowledge graph to the articles database via
 
 Primary key: `(entity_id, document_id, mention_text)`.
 Indexes: `document_id`, `(document_id, entity_id)` for
-co-mention joins.
+co-mention joins, `(entity_id, detected_at)` for temporal
+queries.
 
 
 ## `relationships`

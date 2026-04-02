@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.11.12 - 2nd April 2026
+
+- Added `KnowledgeStore.find_recent_mentions()` — fetches
+  provenance records after a given datetime, ordered most
+  recent first
+- Added composite index `(entity_id, detected_at)` on
+  provenance table for fast temporal queries
+- Updated `docs/knowledge_graph/design.md` and
+  `docs/knowledge_graph/schema.md`
+
+
 ### v0.11.11 - 2nd April 2026
 
 - `.claude/settings.json`:

@@ -234,6 +234,88 @@ def test_store_provenance_deduplication(tmp_path):
     assert len(records) == 1
 
 
+# -- KnowledgeStore: temporal provenance --
+
+
+def test_find_recent_mentions(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    old = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    recent = datetime(2024, 6, 1, tzinfo=timezone.utc)
+    cutoff = datetime(2024, 3, 1, tzinfo=timezone.utc)
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        store.save_provenance(Provenance(
+            entity_id=e.entity_id,
+            document_id="old_doc", source="bbc",
+            mention_text="Test",
+            context_snippet="old ctx",
+            detected_at=old,
+        ))
+        store.save_provenance(Provenance(
+            entity_id=e.entity_id,
+            document_id="new_doc", source="ap",
+            mention_text="Test",
+            context_snippet="new ctx",
+            detected_at=recent,
+        ))
+        results = store.find_recent_mentions(
+            e.entity_id, since=cutoff
+        )
+
+    assert len(results) == 1
+    assert results[0].document_id == "new_doc"
+
+
+def test_find_recent_mentions_ordered_desc(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    t1 = datetime(2024, 3, 1, tzinfo=timezone.utc)
+    t2 = datetime(2024, 6, 1, tzinfo=timezone.utc)
+    t3 = datetime(2024, 9, 1, tzinfo=timezone.utc)
+    since = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        for i, t in enumerate([t1, t2, t3]):
+            store.save_provenance(Provenance(
+                entity_id=e.entity_id,
+                document_id=f"doc{i}",
+                source="bbc",
+                mention_text="Test",
+                context_snippet="ctx",
+                detected_at=t,
+            ))
+        results = store.find_recent_mentions(
+            e.entity_id, since=since
+        )
+
+    assert len(results) == 3
+    assert results[0].document_id == "doc2"
+    assert results[2].document_id == "doc0"
+
+
+def test_find_recent_mentions_empty(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    future = datetime(2099, 1, 1, tzinfo=timezone.utc)
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        store.save_provenance(Provenance(
+            entity_id=e.entity_id,
+            document_id="doc1", source="bbc",
+            mention_text="Test",
+            context_snippet="ctx",
+            detected_at=datetime(
+                2024, 1, 1, tzinfo=timezone.utc
+            ),
+        ))
+        results = store.find_recent_mentions(
+            e.entity_id, since=future
+        )
+
+    assert len(results) == 0
+
+
 # -- KnowledgeStore: relationship operations --
 
 

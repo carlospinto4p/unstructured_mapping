@@ -245,6 +245,13 @@ future queries to the surviving entity.
   core query for event-driven strategies — e.g. "which assets
   and companies were discussed alongside CPI this week?"
 
+- **Temporal provenance queries**:
+  `find_recent_mentions(entity_id, since)` returns
+  provenance records after a given datetime, ordered most
+  recent first. A composite index `(entity_id, detected_at)`
+  makes time-windowed lookups fast — e.g. "all mentions
+  of the Federal Reserve in the last 24 hours."
+
 
 ## Relationship — open-ended and temporal
 

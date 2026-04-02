@@ -145,6 +145,8 @@ _CREATE_INDEXES = [
     "ON provenance (document_id)",
     "CREATE INDEX IF NOT EXISTS idx_prov_co_mention "
     "ON provenance (document_id, entity_id)",
+    "CREATE INDEX IF NOT EXISTS idx_prov_temporal "
+    "ON provenance (entity_id, detected_at)",
     "CREATE INDEX IF NOT EXISTS idx_rel_source "
     "ON relationships (source_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_target "
@@ -374,6 +376,32 @@ class KnowledgeStore:
             "mention_text, context_snippet, detected_at "
             "FROM provenance WHERE entity_id = ?",
             (entity_id,),
+        ).fetchall()
+        return [_row_to_provenance(r) for r in rows]
+
+    def find_recent_mentions(
+        self,
+        entity_id: str,
+        since: datetime,
+    ) -> list[Provenance]:
+        """Fetch provenance records after a given time.
+
+        Returns mentions of the entity detected at or after
+        ``since``, ordered by most recent first.
+
+        :param entity_id: The entity's unique identifier.
+        :param since: Only return records with
+            ``detected_at >= since``.
+        :return: List of provenance records.
+        """
+        rows = self._conn.execute(
+            "SELECT entity_id, document_id, source, "
+            "mention_text, context_snippet, "
+            "detected_at FROM provenance "
+            "WHERE entity_id = ? "
+            "AND detected_at >= ? "
+            "ORDER BY detected_at DESC",
+            (entity_id, _dt_to_iso(since)),
         ).fetchall()
         return [_row_to_provenance(r) for r in rows]
 

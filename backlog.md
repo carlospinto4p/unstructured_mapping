@@ -53,7 +53,7 @@
 - [x] Add ASSET/etf and METRIC/earnings subtypes — ETFs and earnings data are the most common quant query targets currently missing
 - [x] Document VIX dual-nature in subtypes.md — guidance for entities that are both tradeable and indicators, with cross-reference relationship pattern
 - [x] Split ORGANIZATION/fund into fund_manager vs fund vehicle — quants tracking ETF flows need to distinguish BlackRock (manager) from iShares ETF (product)
-- [ ] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
+- [x] Add temporal provenance query with `(entity_id, detected_at)` index — "mentions in the last 24h" must be fast
 - [ ] Plan relationship attributes: document approach for structured values (ownership %, ratings, price targets) as optional JSON column — defer implementation until ingestion pipeline exists
 - [x] Add `updated_at` field to Entity for freshness tracking and cache invalidation
 
