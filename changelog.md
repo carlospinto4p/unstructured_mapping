@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.11.20 - 2nd April 2026
+
+- Batch alias fetches in bulk entity queries — all four
+  list methods (`find_by_name`, `find_by_alias`,
+  `find_entities_by_type`, `find_entities_by_subtype`)
+  now use `_rows_to_entities()` with a single IN query
+  via `_load_aliases_batch()` instead of per-row fetches
+- Added `KnowledgeStore.save_provenances()` — bulk insert
+  via `executemany()`, returns count of newly inserted
+  records
+
+
 ### v0.11.19 - 2nd April 2026
 
 - Fixed N+1 query in `find_co_mentioned()` — entities

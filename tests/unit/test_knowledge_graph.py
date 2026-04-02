@@ -234,6 +234,56 @@ def test_store_provenance_deduplication(tmp_path):
     assert len(records) == 1
 
 
+def test_store_save_provenances_bulk(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    provenances = [
+        Provenance(
+            entity_id=e.entity_id,
+            document_id=f"doc{i}",
+            source="bbc",
+            mention_text="Test",
+            context_snippet=f"ctx {i}",
+        )
+        for i in range(5)
+    ]
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        inserted = store.save_provenances(provenances)
+        records = store.get_provenance(e.entity_id)
+
+    assert inserted == 5
+    assert len(records) == 5
+
+
+def test_store_save_provenances_deduplication(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    p = Provenance(
+        entity_id=e.entity_id,
+        document_id="doc1",
+        source="bbc",
+        mention_text="Test",
+        context_snippet="ctx",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        store.save_provenance(p)
+        inserted = store.save_provenances([p, p])
+        records = store.get_provenance(e.entity_id)
+
+    assert inserted == 0
+    assert len(records) == 1
+
+
+def test_store_save_provenances_empty(tmp_path):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        inserted = store.save_provenances([])
+
+    assert inserted == 0
+
+
 # -- KnowledgeStore: temporal provenance --
 
 

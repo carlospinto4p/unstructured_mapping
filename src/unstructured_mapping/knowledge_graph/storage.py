@@ -303,10 +303,7 @@ class KnowledgeStore:
             + "WHERE canonical_name COLLATE NOCASE = ?",
             (name,),
         ).fetchall()
-        return [
-            _row_to_entity(r, self._load_aliases(r[0]))
-            for r in rows
-        ]
+        return self._rows_to_entities(rows)
 
     def find_by_alias(
         self, alias: str
@@ -325,10 +322,7 @@ class KnowledgeStore:
             "WHERE a.alias COLLATE NOCASE = ?",
             (alias,),
         ).fetchall()
-        return [
-            _row_to_entity(r, self._load_aliases(r[0]))
-            for r in rows
-        ]
+        return self._rows_to_entities(rows)
 
     # -- Provenance operations --
 
@@ -354,6 +348,37 @@ class KnowledgeStore:
             ),
         )
         self._conn.commit()
+
+    def save_provenances(
+        self, provenances: list[Provenance]
+    ) -> int:
+        """Bulk insert provenance records, skipping dupes.
+
+        :param provenances: The provenance records to save.
+        :return: Number of newly inserted records.
+        """
+        if not provenances:
+            return 0
+        before = self._conn.total_changes
+        self._conn.executemany(
+            "INSERT OR IGNORE INTO provenance "
+            "(entity_id, document_id, source, "
+            "mention_text, context_snippet, "
+            "detected_at) VALUES (?, ?, ?, ?, ?, ?)",
+            [
+                (
+                    p.entity_id,
+                    p.document_id,
+                    p.source,
+                    p.mention_text,
+                    p.context_snippet,
+                    _dt_to_iso(p.detected_at),
+                )
+                for p in provenances
+            ],
+        )
+        self._conn.commit()
+        return self._conn.total_changes - before
 
     def get_provenance(
         self, entity_id: str
@@ -525,10 +550,7 @@ class KnowledgeStore:
             _ENTITY_SELECT + "WHERE entity_type = ?",
             (entity_type.value,),
         ).fetchall()
-        return [
-            _row_to_entity(r, self._load_aliases(r[0]))
-            for r in rows
-        ]
+        return self._rows_to_entities(rows)
 
     def find_entities_by_subtype(
         self,
@@ -546,12 +568,7 @@ class KnowledgeStore:
             + "WHERE entity_type = ? AND subtype = ?",
             (entity_type.value, subtype),
         ).fetchall()
-        return [
-            _row_to_entity(
-                r, self._load_aliases(r[0])
-            )
-            for r in rows
-        ]
+        return self._rows_to_entities(rows)
 
     # -- Co-mention query --
 
@@ -858,6 +875,22 @@ class KnowledgeStore:
                 "ALTER TABLE entities "
                 "ADD COLUMN updated_at TEXT"
             )
+
+    def _rows_to_entities(
+        self,
+        rows: list[tuple[str, ...]],
+    ) -> list[Entity]:
+        """Convert entity rows with batch alias loading."""
+        if not rows:
+            return []
+        eids = [r[0] for r in rows]
+        alias_map = self._load_aliases_batch(eids)
+        return [
+            _row_to_entity(
+                r, alias_map.get(r[0], ())
+            )
+            for r in rows
+        ]
 
     def _sync_aliases(
         self,
