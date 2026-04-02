@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.10.2 - 2nd April 2026
+
+- Added `/review-kg` skill — reviews KG architecture and
+  design for gaps, inconsistencies, and improvements from
+  the perspective of quant researchers and market analysts
+
+
 ### v0.10.1 - 2nd April 2026
 
 - Split `docs/knowledge_graph.md` into `docs/knowledge_graph/`:
