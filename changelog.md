@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.1 - 2nd April 2026
+
+- Added TOPIC subtypes in `docs/knowledge_graph/subtypes.md`:
+  `sector`, `macro_theme`, `geopolitical`, `sector_event`
+- Added disambiguation guidance for TOPIC vs METRIC overlap
+
+
 ### v0.11.0 - 2nd April 2026
 
 - Added audit log for KG time-travel and revert:

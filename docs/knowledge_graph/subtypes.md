@@ -136,11 +136,23 @@ relationships.
 
 ### TOPIC
 
-No canonical subtypes defined yet. TOPIC remains broad by
-design — it captures recurring news subjects like "inflation",
-"AI regulation", "NATO expansion". If financial-focus subtypes
-prove useful (e.g. `sector`, `macro_theme`, `geopolitical`),
-they can be added here.
+| Subtype       | Covers                                           | Examples                                |
+|---------------|--------------------------------------------------|-----------------------------------------|
+| sector        | Industry sectors and verticals, mapping to       | Technology, energy, healthcare,         |
+|               | standard classifications (GICS, ICB)             | financials, real estate                 |
+| macro_theme   | Recurring macro-economic narratives that drive    | Inflation, recession fears, rate hikes, |
+|               | market regimes and cross-asset movements         | trade war, debt ceiling, de-dollarization|
+| geopolitical  | International tensions and geopolitical dynamics  | NATO expansion, South China Sea,        |
+|               | that move commodities, defense stocks, and        | Russia-Ukraine, Middle East tensions    |
+|               | safe-haven assets                                |                                         |
+| sector_event  | Recurring sector-specific events that cluster     | Tech earnings season, bank stress tests,|
+|               | articles and drive volatility windows             | OPEC+ meeting, Fed meeting              |
+
+TOPIC subtypes are intentionally broad — "inflation" could
+arguably be both a `macro_theme` and adjacent to METRIC. When
+the classification is ambiguous, prefer the more specific type
+(METRIC for "CPI", TOPIC/macro_theme for "inflation fears") or
+leave subtype as `None`.
 
 
 ### ROLE and RELATION_KIND
