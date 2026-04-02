@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.8 - 2nd April 2026
+
+- `CLAUDE.md`:
+  - Added Shell Commands, Project Configuration, Versioning / Release,
+    and Testing sections.
+
+
 ### v0.11.7 - 2nd April 2026
 
 - Added ASSET/etf subtype — exchange-traded funds, distinct
