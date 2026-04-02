@@ -202,3 +202,84 @@ class Relationship:
     valid_until: datetime | None = None
     document_id: str | None = None
     discovered_at: datetime | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class EntityRevision:
+    """A snapshot of an entity at a point in time.
+
+    Written to the ``entity_history`` audit log on every
+    create, update, or merge operation. The full entity
+    state (including aliases as a JSON list) is captured
+    so any revision can be restored without loss.
+
+    :param revision_id: Auto-incremented primary key.
+    :param entity_id: The entity this revision belongs to.
+    :param operation: What triggered the snapshot:
+        ``"create"``, ``"update"``, ``"merge"``,
+        or ``"revert"``.
+    :param changed_at: When the operation occurred.
+    :param canonical_name: Entity name at this revision.
+    :param entity_type: Entity type at this revision.
+    :param subtype: Subtype at this revision.
+    :param description: Description at this revision.
+    :param aliases: Aliases at this revision.
+    :param valid_from: Temporal lower bound.
+    :param valid_until: Temporal upper bound.
+    :param status: Lifecycle status at this revision.
+    :param merged_into: Merge target, if applicable.
+    :param reason: Optional free-text explanation
+        (e.g. ``"merged duplicate"``).
+    """
+
+    revision_id: int
+    entity_id: str
+    operation: str
+    changed_at: datetime
+    canonical_name: str
+    entity_type: EntityType
+    subtype: str | None
+    description: str
+    aliases: tuple[str, ...]
+    valid_from: datetime | None = None
+    valid_until: datetime | None = None
+    status: EntityStatus = EntityStatus.ACTIVE
+    merged_into: str | None = None
+    reason: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class RelationshipRevision:
+    """A snapshot of a relationship at a point in time.
+
+    Written to the ``relationship_history`` audit log on
+    every create or merge-redirect operation.
+
+    :param revision_id: Auto-incremented primary key.
+    :param operation: What triggered the snapshot.
+    :param changed_at: When the operation occurred.
+    :param source_id: Subject entity at this revision.
+    :param target_id: Object entity at this revision.
+    :param relation_type: Relationship label.
+    :param description: Context at this revision.
+    :param qualifier_id: Qualifier FK at this revision.
+    :param relation_kind_id: Kind FK at this revision.
+    :param valid_from: Temporal lower bound.
+    :param valid_until: Temporal upper bound.
+    :param document_id: Originating document.
+    :param reason: Optional free-text explanation.
+    """
+
+    revision_id: int
+    operation: str
+    changed_at: datetime
+    source_id: str
+    target_id: str
+    relation_type: str
+    description: str
+    qualifier_id: str | None = None
+    relation_kind_id: str | None = None
+    valid_from: datetime | None = None
+    valid_until: datetime | None = None
+    document_id: str | None = None
+    reason: str | None = None

@@ -710,3 +710,199 @@ def test_metric_entity(tmp_path):
     assert len(by_type) == 1
     assert by_type[0].subtype == "inflation"
     assert len(by_alias) == 1
+
+
+# -- Audit log: entity history --
+
+
+def test_entity_create_logs_history(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity(aliases=("A1",))
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        history = store.get_entity_history(e.entity_id)
+
+    assert len(history) == 1
+    rev = history[0]
+    assert rev.operation == "create"
+    assert rev.canonical_name == "Test Entity"
+    assert rev.aliases == ("A1",)
+    assert rev.reason is None
+
+
+def test_entity_update_logs_history(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity(description="Original.")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        updated = Entity(
+            entity_id=e.entity_id,
+            canonical_name=e.canonical_name,
+            entity_type=e.entity_type,
+            description="Updated.",
+        )
+        store.save_entity(
+            updated, reason="corrected description"
+        )
+        history = store.get_entity_history(e.entity_id)
+
+    assert len(history) == 2
+    assert history[0].operation == "create"
+    assert history[0].description == "Original."
+    assert history[1].operation == "update"
+    assert history[1].description == "Updated."
+    assert history[1].reason == "corrected description"
+
+
+def test_entity_merge_logs_both_entities(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Apple Computer")
+    e2 = _make_entity(canonical_name="Apple Inc.")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.merge_entities(
+            e1.entity_id, e2.entity_id
+        )
+        h1 = store.get_entity_history(e1.entity_id)
+        h2 = store.get_entity_history(e2.entity_id)
+
+    merge_revs_1 = [
+        r for r in h1 if r.operation == "merge"
+    ]
+    merge_revs_2 = [
+        r for r in h2 if r.operation == "merge"
+    ]
+    assert len(merge_revs_1) == 1
+    assert merge_revs_1[0].status == EntityStatus.MERGED
+    assert len(merge_revs_2) == 1
+
+
+def test_entity_at_point_in_time(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity(description="V1.")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        history = store.get_entity_history(e.entity_id)
+        t1 = history[0].changed_at
+        updated = Entity(
+            entity_id=e.entity_id,
+            canonical_name=e.canonical_name,
+            entity_type=e.entity_type,
+            description="V2.",
+        )
+        store.save_entity(updated)
+        snap = store.get_entity_at(e.entity_id, t1)
+
+    assert snap is not None
+    assert snap.description == "V1."
+
+
+def test_entity_at_before_creation(tmp_path):
+    db = tmp_path / "kg.db"
+    past = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    e = _make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        snap = store.get_entity_at(e.entity_id, past)
+
+    assert snap is None
+
+
+def test_revert_entity(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity(
+        description="Original.",
+        aliases=("OG",),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        history = store.get_entity_history(e.entity_id)
+        rev_id = history[0].revision_id
+        updated = Entity(
+            entity_id=e.entity_id,
+            canonical_name=e.canonical_name,
+            entity_type=e.entity_type,
+            description="Wrong update.",
+        )
+        store.save_entity(updated)
+        restored = store.revert_entity(
+            e.entity_id, rev_id
+        )
+        current = store.get_entity(e.entity_id)
+        full_history = store.get_entity_history(
+            e.entity_id
+        )
+
+    assert restored.description == "Original."
+    assert restored.aliases == ("OG",)
+    assert current is not None
+    assert current.description == "Original."
+    assert len(full_history) == 3
+    assert full_history[2].operation == "revert"
+
+
+def test_revert_entity_bad_revision(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        with pytest.raises(ValueError):
+            store.revert_entity(e.entity_id, 9999)
+
+
+# -- Audit log: relationship history --
+
+
+def test_relationship_create_logs_history(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="A")
+    e2 = _make_entity(
+        canonical_name="B",
+        entity_type=EntityType.ORGANIZATION,
+        description="Org B.",
+    )
+    rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="works_at",
+        description="A works at B.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(rel)
+        history = store.get_relationship_history(
+            e1.entity_id
+        )
+
+    assert len(history) == 1
+    assert history[0].operation == "create"
+    assert history[0].relation_type == "works_at"
+
+
+def test_relationship_save_reason(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="X")
+    e2 = _make_entity(
+        canonical_name="Y",
+        entity_type=EntityType.ORGANIZATION,
+        description="Org.",
+    )
+    rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="joined",
+        description="X joined Y.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(
+            rel, reason="extracted from article"
+        )
+        history = store.get_relationship_history(
+            e1.entity_id
+        )
+
+    assert history[0].reason == "extracted from article"

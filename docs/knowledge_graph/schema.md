@@ -84,3 +84,51 @@ temporal bounds rather than as a separate entity type.
 Primary key: `(source_id, target_id, relation_type, valid_from)`.
 Indexes: `source_id`, `target_id`, `qualifier_id`,
 `relation_kind_id`.
+
+
+## `entity_history`
+
+Append-only audit log for entity mutations. Each row is a
+full snapshot of the entity after the operation.
+
+| Column         | Type    | Constraint            | Purpose                               |
+|----------------|---------|-----------------------|---------------------------------------|
+| revision_id    | INTEGER | PRIMARY KEY AUTOINCR  | Monotonically increasing revision     |
+| entity_id      | TEXT    | NOT NULL              | Which entity this revision belongs to |
+| operation      | TEXT    | NOT NULL              | create, update, merge, revert         |
+| changed_at     | TEXT    | NOT NULL              | When the operation occurred (UTC ISO)  |
+| canonical_name | TEXT    | NOT NULL              | Name at this revision                 |
+| entity_type    | TEXT    | NOT NULL              | Type at this revision                 |
+| subtype        | TEXT    |                       | Subtype at this revision              |
+| description    | TEXT    | NOT NULL              | Description at this revision          |
+| aliases        | TEXT    |                       | JSON array of aliases at this revision|
+| valid_from     | TEXT    |                       | Temporal lower bound                  |
+| valid_until    | TEXT    |                       | Temporal upper bound                  |
+| status         | TEXT    | NOT NULL              | Lifecycle status at this revision     |
+| merged_into    | TEXT    |                       | Merge target, if applicable           |
+| reason         | TEXT    |                       | Free-text explanation                 |
+
+Index: `(entity_id, changed_at)`.
+
+
+## `relationship_history`
+
+Append-only audit log for relationship mutations.
+
+| Column           | Type    | Constraint            | Purpose                               |
+|------------------|---------|-----------------------|---------------------------------------|
+| revision_id      | INTEGER | PRIMARY KEY AUTOINCR  | Monotonically increasing revision     |
+| operation        | TEXT    | NOT NULL              | create, merge                         |
+| changed_at       | TEXT    | NOT NULL              | When the operation occurred (UTC ISO)  |
+| source_id        | TEXT    | NOT NULL              | Subject entity at this revision       |
+| target_id        | TEXT    | NOT NULL              | Object entity at this revision        |
+| relation_type    | TEXT    | NOT NULL              | Relationship label                    |
+| description      | TEXT    | NOT NULL              | Context at this revision              |
+| qualifier_id     | TEXT    |                       | Qualifier FK at this revision         |
+| relation_kind_id | TEXT    |                       | Kind FK at this revision              |
+| valid_from       | TEXT    |                       | Temporal lower bound                  |
+| valid_until      | TEXT    |                       | Temporal upper bound                  |
+| document_id      | TEXT    |                       | Originating document                  |
+| reason           | TEXT    |                       | Free-text explanation                 |
+
+Indexes: `(source_id, changed_at)`, `(target_id, changed_at)`.

@@ -6,10 +6,12 @@ behind the data model, enum values, and deferred features.
 
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
+    EntityRevision,
     EntityStatus,
     EntityType,
     Provenance,
     Relationship,
+    RelationshipRevision,
 )
 from unstructured_mapping.knowledge_graph.storage import (
     KnowledgeStore,
@@ -17,9 +19,11 @@ from unstructured_mapping.knowledge_graph.storage import (
 
 __all__ = [
     "Entity",
+    "EntityRevision",
     "EntityStatus",
     "EntityType",
     "KnowledgeStore",
     "Provenance",
     "Relationship",
+    "RelationshipRevision",
 ]

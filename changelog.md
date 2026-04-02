@@ -1,5 +1,28 @@
 ## Changelog
 
+### v0.11.0 - 2nd April 2026
+
+- Added audit log for KG time-travel and revert:
+  - `entity_history` table — append-only snapshots of
+    every entity create, update, merge, and revert
+  - `relationship_history` table — snapshots of every
+    relationship creation
+  - `EntityRevision` and `RelationshipRevision` models
+  - `KnowledgeStore.get_entity_history()` — full revision
+    list for an entity
+  - `KnowledgeStore.get_entity_at()` — entity state at a
+    point in time
+  - `KnowledgeStore.revert_entity()` — restore a prior
+    revision
+  - `KnowledgeStore.get_relationship_history()` — revision
+    list for relationships involving an entity
+  - Optional `reason` parameter on `save_entity()` and
+    `save_relationship()` for audit context
+- Updated `docs/knowledge_graph/design.md` and
+  `docs/knowledge_graph/schema.md` with audit log
+  rationale and table schemas
+
+
 ### v0.10.4 - 2nd April 2026
 
 - Added `updated_at` field to `Entity` — tracks when a

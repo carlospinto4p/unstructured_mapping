@@ -274,3 +274,51 @@ future queries to the surviving entity.
 - **Multi-qualifier**: Only one qualifier per relationship.
   Sufficient for the news domain (person+role+company). If
   needed, add a join table later.
+
+
+## Audit log — time-travel and revert
+
+Every entity and relationship mutation is recorded in
+append-only history tables (`entity_history`,
+`relationship_history`). The approach is **snapshot-based**:
+each revision stores the full state of the record after the
+operation, not a delta.
+
+### Why an audit log?
+
+A financial KG needs point-in-time queries ("what did the KG
+know about Apple on March 15th?") and the ability to revert
+bad updates without losing the trail. Event sourcing was
+considered but rejected as overkill — mutations are infrequent
+relative to reads, and full snapshots are simpler to query and
+restore from.
+
+### Operations logged
+
+| Operation  | Trigger                                       |
+|------------|-----------------------------------------------|
+| `create`   | First `save_entity()` / `save_relationship()` |
+| `update`   | Subsequent `save_entity()` on existing ID     |
+| `merge`    | `merge_entities()` — logged for both entities |
+| `revert`   | `revert_entity()` — restores a prior revision |
+
+### What is captured
+
+- **Entity revisions** include the full entity snapshot
+  plus aliases (as a JSON array) and an optional `reason`
+  field for human-readable context.
+- **Relationship revisions** include the full relationship
+  snapshot plus an optional `reason` field.
+- **Provenance** is not audited — it is append-only by
+  nature (detections are recorded, never modified).
+
+### Query methods
+
+- `get_entity_history(entity_id)` — all revisions in
+  chronological order.
+- `get_entity_at(entity_id, datetime)` — entity state at
+  a point in time (latest revision before that timestamp).
+- `revert_entity(entity_id, revision_id)` — restore a
+  prior snapshot and log a `"revert"` operation.
+- `get_relationship_history(entity_id)` — all relationship
+  revisions involving the entity.

@@ -8,17 +8,20 @@ indexes, and supports context-manager usage.
 See ``docs/knowledge_graph/`` for table schema rationale.
 """
 
+import json
 import logging
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
+    EntityRevision,
     EntityStatus,
     EntityType,
     Provenance,
     Relationship,
+    RelationshipRevision,
 )
 
 logger = logging.getLogger(__name__)
@@ -92,6 +95,43 @@ CREATE TABLE IF NOT EXISTS relationships (
 )
 """
 
+_CREATE_ENTITY_HISTORY = """
+CREATE TABLE IF NOT EXISTS entity_history (
+    revision_id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    entity_id      TEXT NOT NULL,
+    operation      TEXT NOT NULL,
+    changed_at     TEXT NOT NULL,
+    canonical_name TEXT NOT NULL,
+    entity_type    TEXT NOT NULL,
+    subtype        TEXT,
+    description    TEXT NOT NULL,
+    aliases        TEXT,
+    valid_from     TEXT,
+    valid_until    TEXT,
+    status         TEXT NOT NULL,
+    merged_into    TEXT,
+    reason         TEXT
+)
+"""
+
+_CREATE_RELATIONSHIP_HISTORY = """
+CREATE TABLE IF NOT EXISTS relationship_history (
+    revision_id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    operation        TEXT NOT NULL,
+    changed_at       TEXT NOT NULL,
+    source_id        TEXT NOT NULL,
+    target_id        TEXT NOT NULL,
+    relation_type    TEXT NOT NULL,
+    description      TEXT NOT NULL,
+    qualifier_id     TEXT,
+    relation_kind_id TEXT,
+    valid_from       TEXT,
+    valid_until      TEXT,
+    document_id      TEXT,
+    reason           TEXT
+)
+"""
+
 _CREATE_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_entity_type "
     "ON entities (entity_type)",
@@ -111,6 +151,12 @@ _CREATE_INDEXES = [
     "ON relationships (qualifier_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_kind "
     "ON relationships (relation_kind_id)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_hist "
+    "ON entity_history (entity_id, changed_at)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_hist_source "
+    "ON relationship_history (source_id, changed_at)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_hist_target "
+    "ON relationship_history (target_id, changed_at)",
 ]
 
 
@@ -140,6 +186,8 @@ class KnowledgeStore:
             _CREATE_ALIASES,
             _CREATE_PROVENANCE,
             _CREATE_RELATIONSHIPS,
+            _CREATE_ENTITY_HISTORY,
+            _CREATE_RELATIONSHIP_HISTORY,
         ):
             self._conn.execute(ddl)
         self._migrate_relationships()
@@ -150,14 +198,33 @@ class KnowledgeStore:
 
     # -- Entity operations --
 
-    def save_entity(self, entity: Entity) -> None:
+    def save_entity(
+        self,
+        entity: Entity,
+        *,
+        reason: str | None = None,
+        _operation: str | None = None,
+    ) -> None:
         """Insert or update an entity.
 
         Aliases are synced: old aliases removed, new ones
-        added. Uses a transaction for atomicity.
+        added. A snapshot is written to ``entity_history``
+        for every operation.
 
         :param entity: The entity to save.
+        :param reason: Optional explanation logged in the
+            audit trail.
         """
+        if _operation is None:
+            existing = self._conn.execute(
+                "SELECT 1 FROM entities "
+                "WHERE entity_id = ?",
+                (entity.entity_id,),
+            ).fetchone()
+            _operation = (
+                "update" if existing else "create"
+            )
+        operation = _operation
         self._conn.execute(
             "INSERT OR REPLACE INTO entities "
             "(entity_id, canonical_name, entity_type, "
@@ -194,6 +261,7 @@ class KnowledgeStore:
                     for a in entity.aliases
                 ],
             )
+        self._log_entity(entity, operation, reason)
         self._conn.commit()
 
     def get_entity(self, entity_id: str) -> Entity | None:
@@ -310,11 +378,20 @@ class KnowledgeStore:
     # -- Relationship operations --
 
     def save_relationship(
-        self, relationship: Relationship
+        self,
+        relationship: Relationship,
+        *,
+        reason: str | None = None,
     ) -> None:
         """Insert a relationship, skipping duplicates.
 
+        A snapshot is written to ``relationship_history``
+        when a new relationship is created (duplicates
+        are silently skipped).
+
         :param relationship: The relationship to save.
+        :param reason: Optional explanation logged in the
+            audit trail.
         """
         self._conn.execute(
             "INSERT OR IGNORE INTO relationships "
@@ -336,6 +413,10 @@ class KnowledgeStore:
                 _dt_to_iso(relationship.discovered_at),
             ),
         )
+        if self._conn.total_changes:
+            self._log_relationship(
+                relationship, "create", reason
+            )
         self._conn.commit()
 
     def get_relationships(
@@ -470,6 +551,9 @@ class KnowledgeStore:
         relationships) to point to the surviving entity,
         then marks the deprecated entity as MERGED.
 
+        Both entities and all affected relationships are
+        logged to the audit history.
+
         Runs in a single transaction for atomicity.
 
         :param deprecated_id: Entity to deprecate.
@@ -477,13 +561,20 @@ class KnowledgeStore:
             deprecated one.
         :raises ValueError: If either entity is not found.
         """
-        for eid, label in (
-            (deprecated_id, "deprecated_id"),
-            (surviving_id, "surviving_id"),
+        dep = self.get_entity(deprecated_id)
+        surv = self.get_entity(surviving_id)
+        for entity, label in (
+            (dep, "deprecated_id"),
+            (surv, "surviving_id"),
         ):
-            if self.get_entity(eid) is None:
-                msg = f"{label} '{eid}' not found"
+            if entity is None:
+                msg = f"{label} not found"
                 raise ValueError(msg)
+
+        merge_reason = (
+            f"merged {deprecated_id} into "
+            f"{surviving_id}"
+        )
 
         self._conn.execute(
             "UPDATE provenance SET entity_id = ? "
@@ -517,12 +608,153 @@ class KnowledgeStore:
             "merged_into = ? WHERE entity_id = ?",
             ("merged", surviving_id, deprecated_id),
         )
+        merged_dep = self.get_entity(deprecated_id)
+        self._log_entity(
+            merged_dep, "merge", merge_reason  # type: ignore[arg-type]
+        )
+        self._log_entity(
+            surv, "merge", merge_reason  # type: ignore[arg-type]
+        )
         self._conn.commit()
         logger.info(
             "Merged entity %s into %s",
             deprecated_id,
             surviving_id,
         )
+
+    # -- History queries --
+
+    def get_entity_history(
+        self, entity_id: str
+    ) -> list[EntityRevision]:
+        """Fetch all revisions for an entity.
+
+        Returns revisions in chronological order
+        (oldest first).
+
+        :param entity_id: The entity's unique identifier.
+        :return: List of revisions.
+        """
+        rows = self._conn.execute(
+            "SELECT revision_id, entity_id, operation,"
+            " changed_at, canonical_name, entity_type,"
+            " subtype, description, aliases, "
+            "valid_from, valid_until, status, "
+            "merged_into, reason "
+            "FROM entity_history "
+            "WHERE entity_id = ? "
+            "ORDER BY revision_id",
+            (entity_id,),
+        ).fetchall()
+        return [_row_to_entity_rev(r) for r in rows]
+
+    def get_entity_at(
+        self,
+        entity_id: str,
+        at: datetime,
+    ) -> EntityRevision | None:
+        """Fetch an entity's state at a point in time.
+
+        Returns the latest revision with
+        ``changed_at <= at``.
+
+        :param entity_id: The entity's unique identifier.
+        :param at: The point in time to query.
+        :return: The revision, or ``None`` if the entity
+            did not exist at that time.
+        """
+        row = self._conn.execute(
+            "SELECT revision_id, entity_id, operation,"
+            " changed_at, canonical_name, entity_type,"
+            " subtype, description, aliases, "
+            "valid_from, valid_until, status, "
+            "merged_into, reason "
+            "FROM entity_history "
+            "WHERE entity_id = ? "
+            "AND changed_at <= ? "
+            "ORDER BY revision_id DESC LIMIT 1",
+            (entity_id, _dt_to_iso(at)),
+        ).fetchone()
+        if row is None:
+            return None
+        return _row_to_entity_rev(row)
+
+    def revert_entity(
+        self, entity_id: str, revision_id: int
+    ) -> Entity:
+        """Revert an entity to a previous revision.
+
+        Copies the snapshot from ``entity_history`` back
+        to ``entities`` and logs a ``"revert"`` operation
+        in the audit trail.
+
+        :param entity_id: The entity to revert.
+        :param revision_id: The revision to restore.
+        :return: The restored entity.
+        :raises ValueError: If the revision is not found
+            or belongs to a different entity.
+        """
+        row = self._conn.execute(
+            "SELECT revision_id, entity_id, operation,"
+            " changed_at, canonical_name, entity_type,"
+            " subtype, description, aliases, "
+            "valid_from, valid_until, status, "
+            "merged_into, reason "
+            "FROM entity_history "
+            "WHERE revision_id = ? "
+            "AND entity_id = ?",
+            (revision_id, entity_id),
+        ).fetchone()
+        if row is None:
+            msg = (
+                f"revision {revision_id} not found "
+                f"for entity '{entity_id}'"
+            )
+            raise ValueError(msg)
+        rev = _row_to_entity_rev(row)
+        restored = Entity(
+            entity_id=rev.entity_id,
+            canonical_name=rev.canonical_name,
+            entity_type=rev.entity_type,
+            subtype=rev.subtype,
+            description=rev.description,
+            aliases=rev.aliases,
+            valid_from=rev.valid_from,
+            valid_until=rev.valid_until,
+            status=rev.status,
+            merged_into=rev.merged_into,
+        )
+        self.save_entity(
+            restored,
+            reason=f"reverted to revision {revision_id}",
+            _operation="revert",
+        )
+        return restored
+
+    def get_relationship_history(
+        self,
+        entity_id: str,
+    ) -> list[RelationshipRevision]:
+        """Fetch relationship revisions involving an entity.
+
+        Returns revisions where the entity appears as
+        source or target, in chronological order.
+
+        :param entity_id: The entity's unique identifier.
+        :return: List of relationship revisions.
+        """
+        rows = self._conn.execute(
+            "SELECT revision_id, operation, "
+            "changed_at, source_id, target_id, "
+            "relation_type, description, qualifier_id,"
+            " relation_kind_id, valid_from, "
+            "valid_until, document_id, reason "
+            "FROM relationship_history "
+            "WHERE source_id = ? OR target_id = ? "
+            "ORDER BY revision_id",
+            (entity_id, entity_id),
+        ).fetchall()
+        return [_row_to_rel_rev(r) for r in rows]
 
     # -- Lifecycle --
 
@@ -573,6 +805,70 @@ class KnowledgeStore:
                 "ADD COLUMN updated_at TEXT"
             )
 
+    def _log_entity(
+        self,
+        entity: Entity,
+        operation: str,
+        reason: str | None,
+    ) -> None:
+        aliases_json = json.dumps(list(entity.aliases))
+        self._conn.execute(
+            "INSERT INTO entity_history "
+            "(entity_id, operation, changed_at, "
+            "canonical_name, entity_type, subtype, "
+            "description, aliases, valid_from, "
+            "valid_until, status, merged_into, "
+            "reason) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                entity.entity_id,
+                operation,
+                _now_iso(),
+                entity.canonical_name,
+                entity.entity_type.value,
+                entity.subtype,
+                entity.description,
+                aliases_json,
+                _dt_to_iso(entity.valid_from),
+                _dt_to_iso(entity.valid_until),
+                entity.status.value,
+                entity.merged_into,
+                reason,
+            ),
+        )
+
+    def _log_relationship(
+        self,
+        rel: Relationship,
+        operation: str,
+        reason: str | None,
+    ) -> None:
+        self._conn.execute(
+            "INSERT INTO relationship_history "
+            "(operation, changed_at, source_id, "
+            "target_id, relation_type, description, "
+            "qualifier_id, relation_kind_id, "
+            "valid_from, valid_until, document_id, "
+            "reason) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                operation,
+                _now_iso(),
+                rel.source_id,
+                rel.target_id,
+                rel.relation_type,
+                rel.description,
+                rel.qualifier_id,
+                rel.relation_kind_id,
+                _dt_to_iso(rel.valid_from),
+                _dt_to_iso(rel.valid_until),
+                rel.document_id,
+                reason,
+            ),
+        )
+
     def _load_aliases(
         self, entity_id: str
     ) -> tuple[str, ...]:
@@ -585,6 +881,10 @@ class KnowledgeStore:
 
 
 # -- Module-level helpers --
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _dt_to_iso(dt: datetime | None) -> str | None:
@@ -654,4 +954,58 @@ def _row_to_relationship(
         valid_until=_iso_to_dt(row[7]),
         document_id=row[8],
         discovered_at=_iso_to_dt(row[9]),
+    )
+
+
+def _row_to_entity_rev(
+    row: tuple[
+        int, str, str, str, str, str,
+        str | None, str, str | None,
+        str | None, str | None,
+        str, str | None, str | None,
+    ],
+) -> EntityRevision:
+    aliases_raw = row[8]
+    aliases = tuple(json.loads(aliases_raw)) if aliases_raw else ()
+    return EntityRevision(
+        revision_id=row[0],
+        entity_id=row[1],
+        operation=row[2],
+        changed_at=datetime.fromisoformat(row[3]),
+        canonical_name=row[4],
+        entity_type=EntityType(row[5]),
+        subtype=row[6],
+        description=row[7],
+        aliases=aliases,
+        valid_from=_iso_to_dt(row[9]),
+        valid_until=_iso_to_dt(row[10]),
+        status=EntityStatus(row[11]),
+        merged_into=row[12],
+        reason=row[13],
+    )
+
+
+def _row_to_rel_rev(
+    row: tuple[
+        int, str, str, str, str,
+        str, str, str | None,
+        str | None, str | None,
+        str | None, str | None,
+        str | None,
+    ],
+) -> RelationshipRevision:
+    return RelationshipRevision(
+        revision_id=row[0],
+        operation=row[1],
+        changed_at=datetime.fromisoformat(row[2]),
+        source_id=row[3],
+        target_id=row[4],
+        relation_type=row[5],
+        description=row[6],
+        qualifier_id=row[7],
+        relation_kind_id=row[8],
+        valid_from=_iso_to_dt(row[9]),
+        valid_until=_iso_to_dt(row[10]),
+        document_id=row[11],
+        reason=row[12],
     )
