@@ -57,6 +57,16 @@
 - [x] Plan relationship attributes — resolved: quantitative values (ownership %, ratings, price targets) are out of KG scope; external tables joined via entity_id
 - [x] Add `updated_at` field to Entity for freshness tracking and cache invalidation
 
+#### Refactoring (v0.11.15 review)
+
+- [ ] **HIGH** — Extract `_ENTITY_SELECT` constant in `storage.py` — same 11-column SELECT list repeated 4 times across `get_entity`, `find_by_name`, `find_entities_by_type`, `find_entities_by_subtype`
+- [ ] **HIGH** — Unify `find_co_mentioned()` query branches — two near-identical SQL blocks differ only by an optional WHERE clause; build query conditionally
+- [ ] **MEDIUM** — Split `db_health._run_report()` (142 lines) into per-section helpers — one function per report section for testability
+- [ ] **MEDIUM** — Split `ArticleStore._migrate()` (102 lines) into per-step helpers — one function per migration step
+- [ ] **MEDIUM** — Extract `_sync_aliases()` helper from `save_entity()` — alias delete+insert logic is a distinct responsibility
+- [ ] **LOW** — Rename `_row_to_rel_rev` → `_row_to_relationship_rev` for consistency with other `_row_to_*` helpers
+- [ ] **LOW** — Extract `_redirect_entity_references()` helper from `merge_entities()` — five repetitive UPDATE statements
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
