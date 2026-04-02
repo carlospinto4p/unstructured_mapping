@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS entities (
     entity_id      TEXT PRIMARY KEY,
     canonical_name TEXT NOT NULL,
     entity_type    TEXT NOT NULL,
+    subtype        TEXT,
     description    TEXT NOT NULL,
     valid_from     TEXT,
     valid_until    TEXT,
@@ -93,6 +94,8 @@ CREATE TABLE IF NOT EXISTS relationships (
 _CREATE_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_entity_type "
     "ON entities (entity_type)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_type_subtype "
+    "ON entities (entity_type, subtype)",
     "CREATE INDEX IF NOT EXISTS idx_entity_status "
     "ON entities (status)",
     "CREATE INDEX IF NOT EXISTS idx_alias_lookup "
@@ -139,6 +142,7 @@ class KnowledgeStore:
         ):
             self._conn.execute(ddl)
         self._migrate_relationships()
+        self._migrate_entities()
         for idx in _CREATE_INDEXES:
             self._conn.execute(idx)
         self._conn.commit()
@@ -156,13 +160,15 @@ class KnowledgeStore:
         self._conn.execute(
             "INSERT OR REPLACE INTO entities "
             "(entity_id, canonical_name, entity_type, "
-            "description, valid_from, valid_until, "
-            "status, merged_into, created_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "subtype, description, valid_from, "
+            "valid_until, status, merged_into, "
+            "created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 entity.entity_id,
                 entity.canonical_name,
                 entity.entity_type.value,
+                entity.subtype,
                 entity.description,
                 _dt_to_iso(entity.valid_from),
                 _dt_to_iso(entity.valid_until),
@@ -195,9 +201,9 @@ class KnowledgeStore:
         """
         row = self._conn.execute(
             "SELECT entity_id, canonical_name, "
-            "entity_type, description, valid_from, "
-            "valid_until, status, merged_into, "
-            "created_at FROM entities "
+            "entity_type, subtype, description, "
+            "valid_from, valid_until, status, "
+            "merged_into, created_at FROM entities "
             "WHERE entity_id = ?",
             (entity_id,),
         ).fetchone()
@@ -218,9 +224,9 @@ class KnowledgeStore:
         """
         rows = self._conn.execute(
             "SELECT entity_id, canonical_name, "
-            "entity_type, description, valid_from, "
-            "valid_until, status, merged_into, "
-            "created_at FROM entities "
+            "entity_type, subtype, description, "
+            "valid_from, valid_until, status, "
+            "merged_into, created_at FROM entities "
             "WHERE canonical_name COLLATE NOCASE = ?",
             (name,),
         ).fetchall()
@@ -241,9 +247,10 @@ class KnowledgeStore:
         """
         rows = self._conn.execute(
             "SELECT e.entity_id, e.canonical_name, "
-            "e.entity_type, e.description, e.valid_from,"
-            " e.valid_until, e.status, e.merged_into, "
-            "e.created_at FROM entities e "
+            "e.entity_type, e.subtype, e.description, "
+            "e.valid_from, e.valid_until, e.status, "
+            "e.merged_into, e.created_at "
+            "FROM entities e "
             "JOIN entity_aliases a "
             "ON e.entity_id = a.entity_id "
             "WHERE a.alias COLLATE NOCASE = ?",
@@ -406,14 +413,40 @@ class KnowledgeStore:
         """
         rows = self._conn.execute(
             "SELECT entity_id, canonical_name, "
-            "entity_type, description, valid_from, "
-            "valid_until, status, merged_into, "
-            "created_at FROM entities "
+            "entity_type, subtype, description, "
+            "valid_from, valid_until, status, "
+            "merged_into, created_at FROM entities "
             "WHERE entity_type = ?",
             (entity_type.value,),
         ).fetchall()
         return [
             _row_to_entity(r, self._load_aliases(r[0]))
+            for r in rows
+        ]
+
+    def find_entities_by_subtype(
+        self,
+        entity_type: EntityType,
+        subtype: str,
+    ) -> list[Entity]:
+        """Find entities by type and subtype.
+
+        :param entity_type: The type to filter by.
+        :param subtype: The subtype to filter by.
+        :return: Matching entities.
+        """
+        rows = self._conn.execute(
+            "SELECT entity_id, canonical_name, "
+            "entity_type, subtype, description, "
+            "valid_from, valid_until, status, "
+            "merged_into, created_at FROM entities "
+            "WHERE entity_type = ? AND subtype = ?",
+            (entity_type.value, subtype),
+        ).fetchall()
+        return [
+            _row_to_entity(
+                r, self._load_aliases(r[0])
+            )
             for r in rows
         ]
 
@@ -516,6 +549,18 @@ class KnowledgeStore:
                     f"REFERENCES entities(entity_id)"
                 )
 
+    def _migrate_entities(self) -> None:
+        """Add columns introduced in v0.10.0."""
+        cursor = self._conn.execute(
+            "PRAGMA table_info(entities)"
+        )
+        cols = {row[1] for row in cursor.fetchall()}
+        if "subtype" not in cols:
+            self._conn.execute(
+                "ALTER TABLE entities "
+                "ADD COLUMN subtype TEXT"
+            )
+
     def _load_aliases(
         self, entity_id: str
     ) -> tuple[str, ...]:
@@ -540,7 +585,7 @@ def _iso_to_dt(s: str | None) -> datetime | None:
 
 def _row_to_entity(
     row: tuple[
-        str, str, str, str,
+        str, str, str, str | None, str,
         str | None, str | None,
         str, str | None, str | None,
     ],
@@ -550,13 +595,14 @@ def _row_to_entity(
         entity_id=row[0],
         canonical_name=row[1],
         entity_type=EntityType(row[2]),
-        description=row[3],
+        subtype=row[3],
+        description=row[4],
         aliases=aliases,
-        valid_from=_iso_to_dt(row[4]),
-        valid_until=_iso_to_dt(row[5]),
-        status=EntityStatus(row[6]),
-        merged_into=row[7],
-        created_at=_iso_to_dt(row[8]),
+        valid_from=_iso_to_dt(row[5]),
+        valid_until=_iso_to_dt(row[6]),
+        status=EntityStatus(row[7]),
+        merged_into=row[8],
+        created_at=_iso_to_dt(row[9]),
     )
 
 

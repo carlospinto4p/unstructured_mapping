@@ -31,7 +31,7 @@ means:
   resolution works.
 
 
-## EntityType — eight values
+## EntityType — ten values
 
 | Type           | Covers                                              |
 |----------------|-----------------------------------------------------|
@@ -49,6 +49,19 @@ means:
 |                | Have temporal bounds (enacted/repealed) and          |
 |                | relationships to sponsors, jurisdictions, and        |
 |                | affected entities                                   |
+| ASSET          | Tradeable financial instruments and stores of value: |
+|                | "AAPL", "Bitcoin", "Gold", "S&P 500", "US 10-Year   |
+|                | Treasury", "EUR/USD". Distinct from PRODUCT (you     |
+|                | hold/trade an asset for value; you buy/use a         |
+|                | product) and from ORGANIZATION (AAPL the stock vs   |
+|                | Apple Inc. the company)                             |
+| METRIC         | Quantitative indicators that signal market state:    |
+|                | "CPI", "unemployment rate", "PMI", "GDP growth",    |
+|                | "federal funds rate", "VIX". Not entities you find   |
+|                | in text the usual way — they are measurements with   |
+|                | a value and direction — but news constantly          |
+|                | references them, and linking articles to the metrics |
+|                | they discuss is essential for market impact analysis |
 | ROLE           | Positions and titles: "CTO", "President", "Board    |
 |                | Member". Uses the alias system for synonym           |
 |                | resolution ("CTO" = "Chief Technology Officer")     |
@@ -96,6 +109,26 @@ or topic. They were added in v0.8.0.
   and affected entities. These drive substantial news
   coverage and have rich relationship structures.
 
+### Why ASSET and METRIC?
+
+- **ASSET** is distinct from both PRODUCT and ORGANIZATION.
+  An asset is something you hold or trade for value (AAPL
+  stock, Bitcoin, gold futures); a product is something you
+  buy and use (iPhone, Ozempic). The same real-world company
+  may have both an ORGANIZATION entity (Apple Inc.) and an
+  ASSET entity (AAPL). Assets have prices, tickers, and
+  move markets — products generally don't, unless they
+  *become* news that moves the market.
+
+- **METRIC** is distinct from TOPIC. A topic is a recurring
+  subject ("inflation"); a metric is a specific quantitative
+  indicator ("CPI") with a value, a direction, and a release
+  schedule. Metrics are the primary language of market-moving
+  news — "CPI came in at 3.2%, above expectations" is a
+  metric story, not a topic story. Having them as entities
+  lets the KG link articles to the specific indicators they
+  discuss.
+
 ### Why not more types?
 
 - **No EVENT type.** Events are better modeled as
@@ -114,9 +147,10 @@ or topic. They were added in v0.8.0.
 - **ORGANIZATION is not split into COMPANY, GOVERNMENT, etc.**
   The boundary is blurry (is the BBC a company or a public
   institution? Is SpaceX a company or a government
-  contractor?). The LLM resolves this nuance via
-  `Entity.description`. If subtypes are needed later, add an
-  optional `subtype` field rather than multiplying enum values.
+  contractor?). The optional `subtype` field (added in
+  v0.10.0) handles this: set `subtype="company"` or
+  `subtype="central_bank"` for structured filtering without
+  multiplying enum values.
 
 - **PLACE rather than LOCATION.** "Place" reads more naturally
   in news context and avoids implying coordinates or
@@ -157,6 +191,25 @@ future queries to the surviving entity.
 - **aliases**: Tuple of surface forms for detection. Stored
   separately in the DB as a normalized table for indexed
   case-insensitive lookups.
+
+- **subtype**: Optional finer classification within the entity
+  type. Free-form string, not an enum, to avoid combinatorial
+  explosion. Serves two purposes: (1) structured filtering
+  ("show me all ASSET/commodity entities") and (2) routing
+  hints for the LLM (ORGANIZATION/central_bank + METRIC/
+  monetary_policy = rate-decision story). Common subtypes:
+
+  | EntityType   | Subtypes                                          |
+  |--------------|---------------------------------------------------|
+  | ORGANIZATION | company, central_bank, regulator, exchange, fund  |
+  | ASSET        | equity, bond, commodity, currency, crypto, index   |
+  | METRIC       | inflation, employment, growth, monetary_policy     |
+  | PERSON       | executive, policymaker, analyst, politician        |
+  | LEGISLATION  | regulation, tax_law, trade_agreement, sanction     |
+  | PLACE        | country, economic_zone, market                    |
+
+  These are conventions, not enforced values. New subtypes can
+  be introduced freely without schema changes.
 
 - **description**: Critical for LLM resolution. Should include
   distinguishing details: role, country, founding year, etc.
@@ -247,7 +300,8 @@ Core entity records. Dates stored as ISO 8601 text.
 |----------------|----------|------------------|--------------------------------------------|
 | entity_id      | TEXT     | PRIMARY KEY      | UUID hex (32 chars), auto-generated        |
 | canonical_name | TEXT     | NOT NULL         | Authoritative display name                 |
-| entity_type    | TEXT     | NOT NULL         | person, organization, place, topic, product, legislation, role, relation_kind |
+| entity_type    | TEXT     | NOT NULL         | person, organization, place, topic, product, legislation, asset, metric, role, relation_kind |
+| subtype        | TEXT     |                  | Optional finer classification (e.g. "company", "equity") |
 | description    | TEXT     | NOT NULL         | Natural-language context for LLM resolution|
 | valid_from     | TEXT     |                  | When this entity became relevant           |
 | valid_until    | TEXT     |                  | When this entity ceased to be relevant     |
@@ -255,7 +309,7 @@ Core entity records. Dates stored as ISO 8601 text.
 | merged_into    | TEXT     |                  | If merged, the surviving entity's ID       |
 | created_at     | TEXT     |                  | When this record was created               |
 
-Indexes: `entity_type`, `status`.
+Indexes: `entity_type`, `(entity_type, subtype)`, `status`.
 
 ### `entity_aliases`
 

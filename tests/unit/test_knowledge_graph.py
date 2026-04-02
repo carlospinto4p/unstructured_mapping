@@ -24,6 +24,8 @@ def test_entity_type_values():
     assert EntityType.TOPIC == "topic"
     assert EntityType.PRODUCT == "product"
     assert EntityType.LEGISLATION == "legislation"
+    assert EntityType.ASSET == "asset"
+    assert EntityType.METRIC == "metric"
     assert EntityType.ROLE == "role"
     assert EntityType.RELATION_KIND == "relation_kind"
 
@@ -64,10 +66,19 @@ def test_entity_auto_id():
 def test_entity_defaults():
     e = _make_entity()
     assert e.aliases == ()
+    assert e.subtype is None
     assert e.status == EntityStatus.ACTIVE
     assert e.merged_into is None
     assert e.valid_from is None
     assert e.valid_until is None
+
+
+def test_entity_with_subtype():
+    e = _make_entity(
+        entity_type=EntityType.ORGANIZATION,
+        subtype="company",
+    )
+    assert e.subtype == "company"
 
 
 def test_entity_is_frozen():
@@ -568,3 +579,116 @@ def test_store_merge_updates_qualifier(tmp_path):
 
     assert len(rels) == 1
     assert rels[0].qualifier_id == new_role.entity_id
+
+
+# -- Entity subtype --
+
+
+def test_entity_subtype_round_trip(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity(
+        canonical_name="Apple Inc.",
+        entity_type=EntityType.ORGANIZATION,
+        subtype="company",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        loaded = store.get_entity(e.entity_id)
+
+    assert loaded is not None
+    assert loaded.subtype == "company"
+
+
+def test_entity_subtype_none_round_trip(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        loaded = store.get_entity(e.entity_id)
+
+    assert loaded is not None
+    assert loaded.subtype is None
+
+
+def test_store_find_entities_by_subtype(tmp_path):
+    db = tmp_path / "kg.db"
+    company = _make_entity(
+        canonical_name="Apple Inc.",
+        entity_type=EntityType.ORGANIZATION,
+        subtype="company",
+        description="Tech company.",
+    )
+    bank = _make_entity(
+        canonical_name="Federal Reserve",
+        entity_type=EntityType.ORGANIZATION,
+        subtype="central_bank",
+        description="US central bank.",
+    )
+    other = _make_entity(
+        canonical_name="UN",
+        entity_type=EntityType.ORGANIZATION,
+        description="International org.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(company)
+        store.save_entity(bank)
+        store.save_entity(other)
+        companies = store.find_entities_by_subtype(
+            EntityType.ORGANIZATION, "company"
+        )
+        banks = store.find_entities_by_subtype(
+            EntityType.ORGANIZATION, "central_bank"
+        )
+
+    assert len(companies) == 1
+    assert companies[0].canonical_name == "Apple Inc."
+    assert len(banks) == 1
+    assert banks[0].canonical_name == "Federal Reserve"
+
+
+# -- ASSET and METRIC entity types --
+
+
+def test_asset_entity(tmp_path):
+    db = tmp_path / "kg.db"
+    asset = Entity(
+        canonical_name="Bitcoin",
+        entity_type=EntityType.ASSET,
+        subtype="crypto",
+        description="Decentralized cryptocurrency.",
+        aliases=("BTC", "XBT"),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(asset)
+        by_type = store.find_entities_by_type(
+            EntityType.ASSET
+        )
+        by_sub = store.find_entities_by_subtype(
+            EntityType.ASSET, "crypto"
+        )
+
+    assert len(by_type) == 1
+    assert by_type[0].canonical_name == "Bitcoin"
+    assert len(by_sub) == 1
+
+
+def test_metric_entity(tmp_path):
+    db = tmp_path / "kg.db"
+    metric = Entity(
+        canonical_name="Consumer Price Index",
+        entity_type=EntityType.METRIC,
+        subtype="inflation",
+        description="Measures average change in prices "
+        "paid by urban consumers.",
+        aliases=("CPI",),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(metric)
+        by_type = store.find_entities_by_type(
+            EntityType.METRIC
+        )
+        by_alias = store.find_by_alias("CPI")
+
+    assert len(by_type) == 1
+    assert by_type[0].subtype == "inflation"
+    assert len(by_alias) == 1

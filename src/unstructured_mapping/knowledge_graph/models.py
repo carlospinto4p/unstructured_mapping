@@ -19,8 +19,8 @@ from uuid import uuid4
 class EntityType(StrEnum):
     """Classification of knowledge graph entities.
 
-    Eight types for news-domain entity mapping. The first
-    six (PERSON through LEGISLATION) classify real-world
+    Ten types for financial-news entity mapping. The first
+    eight (PERSON through LEGISLATION) classify real-world
     things. ROLE and RELATION_KIND are meta-types that
     enable structured querying and synonym resolution by
     reusing the entity/alias system.
@@ -35,6 +35,8 @@ class EntityType(StrEnum):
     TOPIC = "topic"
     PRODUCT = "product"
     LEGISLATION = "legislation"
+    ASSET = "asset"
+    METRIC = "metric"
     ROLE = "role"
     RELATION_KIND = "relation_kind"
 
@@ -66,6 +68,12 @@ class Entity:
         Auto-generated when not provided.
     :param canonical_name: Authoritative display name.
     :param entity_type: Coarse classification.
+    :param subtype: Optional finer classification within
+        the entity type (e.g. ``"company"`` for
+        ORGANIZATION, ``"equity"`` for ASSET). Free-form
+        string — not an enum — to avoid combinatorial
+        explosion. Used as a routing hint for the LLM
+        and for structured filtering.
     :param description: Natural-language context the LLM
         reads for resolution and disambiguation. Should
         include distinguishing details (role, country,
@@ -90,6 +98,7 @@ class Entity:
     canonical_name: str
     entity_type: EntityType
     description: str
+    subtype: str | None = None
     aliases: tuple[str, ...] = ()
     entity_id: str = field(
         default_factory=lambda: uuid4().hex
