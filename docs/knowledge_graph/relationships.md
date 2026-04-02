@@ -35,7 +35,8 @@ omitted when any subtype applies.
 | `ASSET/bond → issued_by → ORGANIZATION/government` | US 10-Year Treasury → issued_by → US Treasury |
 | `ASSET/etf → tracks → ASSET/index` | SPY → tracks → S&P 500 |
 | `ORGANIZATION/company → listed_on → ORGANIZATION/exchange` | Apple Inc. → listed_on → Nasdaq |
-| `ORGANIZATION/fund → managed_by → ORGANIZATION/company` | iShares Core S&P 500 → managed_by → BlackRock |
+| `ORGANIZATION/fund → managed_by → ORGANIZATION/fund_manager` | PIMCO Total Return → managed_by → PIMCO |
+| `ASSET/etf → managed_by → ORGANIZATION/fund_manager` | iShares Core S&P 500 → managed_by → BlackRock |
 | `ASSET/derivative → derived_from → ASSET` | ES futures → derived_from → S&P 500 |
 
 
@@ -48,8 +49,8 @@ These use `qualifier_id` pointing to a ROLE entity.
 | `PERSON/executive → works_at → ORGANIZATION/company` (qualified by ROLE) | Tim Cook → works_at → Apple Inc. (CEO) |
 | `PERSON/policymaker → works_at → ORGANIZATION/central_bank` (qualified by ROLE) | Jerome Powell → works_at → Federal Reserve (Chair) |
 | `PERSON/politician → leads → ORGANIZATION/government` (qualified by ROLE) | Joe Biden → leads → US Government (President) |
-| `PERSON/analyst → employed_by → ORGANIZATION/fund` | Analyst X → employed_by → Goldman Sachs |
-| `PERSON/investor → founded → ORGANIZATION/fund` | Warren Buffett → founded → Berkshire Hathaway |
+| `PERSON/analyst → employed_by → ORGANIZATION/fund_manager` | Analyst X → employed_by → Goldman Sachs |
+| `PERSON/investor → founded → ORGANIZATION/fund_manager` | Warren Buffett → founded → Berkshire Hathaway |
 
 
 ## Regulation and policy

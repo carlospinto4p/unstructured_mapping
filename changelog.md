@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.11.10 - 2nd April 2026
+
+- Split ORGANIZATION/fund into `fund_manager` (BlackRock,
+  Vanguard) and `fund` (non-ETF vehicles like PIMCO Total
+  Return, CalPERS). ETF vehicles remain ASSET/etf.
+- Updated `docs/knowledge_graph/relationships.md` with
+  fund_manager patterns and ETF managed_by relationship
+
+
 ### v0.11.9 - 2nd April 2026
 
 - Added "Dual-nature entities" section in

@@ -39,7 +39,9 @@ Subtypes serve two roles:
 | central_bank   | Monetary authorities that set interest rates     | Federal Reserve, ECB, Bank of Japan    |
 | regulator      | Government agencies that oversee markets/sectors | SEC, FCA, CFTC, FDA                    |
 | exchange       | Securities and commodities exchanges             | NYSE, Nasdaq, CME, LSE                 |
-| fund           | Investment vehicles: hedge funds, ETFs, pension  | BlackRock, Bridgewater, Vanguard       |
+| fund_manager   | Companies that manage investment funds            | BlackRock, Vanguard, Bridgewater, PIMCO|
+| fund           | Non-ETF investment vehicles: mutual funds, hedge | Bridgewater Pure Alpha, PIMCO Total    |
+|                | funds, pension funds. ETF vehicles are ASSET/etf | Return, CalPERS                        |
 | multilateral   | International organizations and treaty bodies    | IMF, World Bank, WTO, NATO             |
 | government     | National or regional government bodies           | US Treasury, UK Parliament             |
 
