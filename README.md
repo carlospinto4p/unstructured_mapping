@@ -139,8 +139,9 @@ with KnowledgeStore() as store:
     results = store.find_by_alias("Apple")
 ```
 
-Entity types: `PERSON`, `ORGANIZATION`, `PLACE`, `TOPIC`.
-See `docs/knowledge_graph.md` for rationale.
+Entity types: `PERSON`, `ORGANIZATION`, `PLACE`, `TOPIC`,
+`PRODUCT`, `LEGISLATION`, `ASSET`, `METRIC`.
+See `docs/knowledge_graph/` for rationale.
 
 ## Project Status
 

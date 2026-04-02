@@ -1,0 +1,157 @@
+# Knowledge Graph — Subtype Conventions
+
+## Purpose
+
+The `subtype` field on `Entity` provides finer classification
+within an entity type. It is a **free-form string** — not an
+enum — to avoid combinatorial explosion. This document defines
+the canonical values so that LLM ingestion, manual curation,
+and queries all use consistent terminology.
+
+Subtypes serve two roles:
+
+1. **Structured filtering** — "show me all ASSET/commodity
+   entities mentioned this week."
+2. **LLM routing hints** — ORGANIZATION/central_bank +
+   METRIC/monetary_policy signals a rate-decision story,
+   not a corporate earnings story.
+
+
+## When to set subtype
+
+- Set it when the distinction **matters for queries or LLM
+  routing**. An organization that is clearly a company should
+  have `subtype="company"`.
+- Leave it `None` when the classification is ambiguous or
+  irrelevant. Not every entity needs a subtype.
+- When in doubt, prefer setting it — it is easier to ignore a
+  subtype than to backfill one later.
+
+
+## Canonical subtypes by entity type
+
+
+### ORGANIZATION
+
+| Subtype        | Covers                                          | Examples                               |
+|----------------|-------------------------------------------------|----------------------------------------|
+| company        | For-profit corporations, both public and private | Apple Inc., JPMorgan Chase, SpaceX     |
+| central_bank   | Monetary authorities that set interest rates     | Federal Reserve, ECB, Bank of Japan    |
+| regulator      | Government agencies that oversee markets/sectors | SEC, FCA, CFTC, FDA                    |
+| exchange       | Securities and commodities exchanges             | NYSE, Nasdaq, CME, LSE                 |
+| fund           | Investment vehicles: hedge funds, ETFs, pension  | BlackRock, Bridgewater, Vanguard       |
+| multilateral   | International organizations and treaty bodies    | IMF, World Bank, WTO, NATO             |
+| government     | National or regional government bodies           | US Treasury, UK Parliament             |
+
+#### Deferred: sub-classification of companies
+
+Companies will eventually need further classification —
+**public vs private** matters for market analysis (public
+companies have tickers, earnings reports, regulatory filings).
+Other useful distinctions include sector (tech, energy,
+financial) and market cap tier (large-cap, mid-cap,
+small-cap).
+
+These are not implemented as nested subtypes. When the need
+arises, the recommended approach is:
+
+- Add optional **structured attributes** to Entity (e.g.
+  `listing_status`, `sector`) rather than encoding them in
+  the subtype string (no `"company.public"` dot notation).
+- Alternatively, model these as **relationships**: Company
+  → Exchange (listed_on), Company → Sector (classified_as).
+
+This keeps `subtype` as a single flat token for fast filtering
+while richer classification lives in purpose-built fields or
+relationships.
+
+
+### ASSET
+
+| Subtype   | Covers                                            | Examples                               |
+|-----------|---------------------------------------------------|----------------------------------------|
+| equity    | Individual stocks and shares                      | AAPL, TSLA, NVDA                       |
+| bond      | Fixed-income securities: government and corporate | US 10-Year Treasury, German Bund       |
+| commodity | Physical goods traded on exchanges                | Gold, WTI crude oil, wheat, copper     |
+| currency  | Fiat currencies and forex pairs                   | EUR/USD, USD/JPY, GBP                  |
+| crypto    | Cryptocurrencies and digital assets               | Bitcoin, Ethereum, Solana              |
+| index     | Market indices and benchmarks                     | S&P 500, Dow Jones, FTSE 100, VIX     |
+| derivative| Futures, options, swaps                           | ES futures, SPX options                |
+
+
+### METRIC
+
+| Subtype         | Covers                                         | Examples                               |
+|-----------------|-------------------------------------------------|----------------------------------------|
+| inflation       | Price-level indicators                          | CPI, PPI, PCE deflator                |
+| employment      | Labor market indicators                         | Unemployment rate, nonfarm payrolls, jobless claims |
+| growth          | Economic output and activity                    | GDP, industrial production, PMI        |
+| monetary_policy | Central bank rates and targets                  | Federal funds rate, ECB deposit rate   |
+| sentiment       | Confidence and expectations surveys             | Consumer confidence, VIX, Michigan sentiment |
+| trade           | International trade flows                       | Trade balance, current account deficit |
+| housing         | Real estate and construction indicators         | Housing starts, Case-Shiller index     |
+
+
+### PERSON
+
+| Subtype      | Covers                                          | Examples                               |
+|--------------|-------------------------------------------------|----------------------------------------|
+| executive    | Corporate officers and board members             | Tim Cook, Jamie Dimon                  |
+| policymaker  | Central bankers, finance ministers                | Jerome Powell, Christine Lagarde       |
+| analyst      | Market analysts, economists, strategists         | Nouriel Roubini                        |
+| politician   | Elected officials and government leaders         | Joe Biden, Ursula von der Leyen       |
+| investor     | Notable investors and fund managers              | Warren Buffett, Cathie Wood            |
+
+
+### LEGISLATION
+
+| Subtype         | Covers                                         | Examples                               |
+|-----------------|-------------------------------------------------|----------------------------------------|
+| regulation      | Regulatory frameworks and rules                 | GDPR, Basel III, MiFID II              |
+| tax_law         | Tax legislation and reform                      | Tax Cuts and Jobs Act, Pillar Two      |
+| trade_agreement | Bilateral and multilateral trade deals          | USMCA, RCEP                            |
+| sanction        | Economic sanctions and restrictions             | Russia sanctions, Iran sanctions       |
+| monetary_act    | Laws governing central bank mandates            | Federal Reserve Act, ECB statute       |
+
+
+### PLACE
+
+| Subtype       | Covers                                          | Examples                               |
+|---------------|-------------------------------------------------|----------------------------------------|
+| country       | Sovereign nations                                | United States, China, Germany          |
+| economic_zone | Trade blocs and monetary unions                  | Eurozone, ASEAN, BRICS                 |
+| market        | Financial centers and exchange locations          | Wall Street, City of London, Shanghai  |
+| region        | Sub-national regions with economic significance  | Silicon Valley, Shenzhen, Ruhr Valley  |
+
+
+### PRODUCT
+
+| Subtype    | Covers                                           | Examples                               |
+|------------|--------------------------------------------------|----------------------------------------|
+| hardware   | Physical technology products                     | iPhone, Boeing 737 MAX                 |
+| software   | Software products and platforms                  | ChatGPT, Windows, Bloomberg Terminal   |
+| pharma     | Pharmaceutical products                          | Ozempic, Humira                        |
+| service    | Named commercial services                        | AWS, Google Cloud, Stripe              |
+
+
+### TOPIC
+
+No canonical subtypes defined yet. TOPIC remains broad by
+design — it captures recurring news subjects like "inflation",
+"AI regulation", "NATO expansion". If financial-focus subtypes
+prove useful (e.g. `sector`, `macro_theme`, `geopolitical`),
+they can be added here.
+
+
+### ROLE and RELATION_KIND
+
+No subtypes. These are meta-types used for structured querying
+and synonym resolution. Their classification is inherently flat.
+
+
+## Adding new subtypes
+
+1. Add the value to the relevant table in this document.
+2. Include a short description and examples.
+3. No code changes needed — `subtype` is a free-form string.
+4. Update LLM prompts that reference the canonical list.

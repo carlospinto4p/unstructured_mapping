@@ -39,7 +39,7 @@
 
 #### Subtype taxonomy refinement (v0.10.0 follow-up)
 
-- [ ] Define canonical subtype conventions per entity type — document recommended values (e.g. ORGANIZATION subtypes: company, central_bank, regulator, exchange, fund, multilateral) so LLM ingestion produces consistent values
+- [x] Define canonical subtype conventions per entity type — document recommended values (e.g. ORGANIZATION subtypes: company, central_bank, regulator, exchange, fund, multilateral) so LLM ingestion produces consistent values
 - [ ] Consider whether TOPIC subtypes are useful for financial focus (e.g. sector, macro_theme, geopolitical) or if TOPIC remains broad by design
 - [ ] Evaluate whether ASSET needs a `ticker` or `identifier` field beyond aliases — tickers like "AAPL" work as aliases, but instruments like "US 10-Year Treasury" don't have clean tickers
 - [ ] Explore METRIC metadata: release schedule (monthly, quarterly), issuing body (BLS, Fed), and expected-vs-actual framing — these are critical for market-impact analysis but may belong in description or a future structured field

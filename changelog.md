@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.10.1 - 2nd April 2026
+
+- Split `docs/knowledge_graph.md` into `docs/knowledge_graph/`:
+  - `design.md` — approach, entity types, fields, relationships
+  - `subtypes.md` — canonical subtype conventions per entity
+    type with examples and deferred sub-classification plan
+  - `schema.md` — SQLite table schemas
+- Updated references in source code, README, and rules
+- Updated README entity type list to include all ten types
+
+
 ### v0.10.0 - 2nd April 2026
 
 - Added `ASSET` and `METRIC` to `EntityType`:

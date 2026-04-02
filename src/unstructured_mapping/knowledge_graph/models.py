@@ -6,7 +6,7 @@ design is LLM-first: the graph serves as a rich reference
 catalog that an LLM reads and reasons over, rather than an
 engine for algorithmic vector matching.
 
-See ``docs/knowledge_graph.md`` for detailed rationale
+See ``docs/knowledge_graph/`` for detailed rationale
 behind every enum value, field choice, and deferred feature.
 """
 
@@ -25,7 +25,7 @@ class EntityType(StrEnum):
     enable structured querying and synonym resolution by
     reusing the entity/alias system.
 
-    See ``docs/knowledge_graph.md`` for why EVENT was
+    See ``docs/knowledge_graph/`` for why EVENT was
     excluded and what each type covers.
     """
 

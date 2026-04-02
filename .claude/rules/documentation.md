@@ -14,7 +14,7 @@ be documented with:
 - Module-level docstrings for new modules.
 - Class/field docstrings for data models.
 - A file in `docs/` for decisions that span multiple files
-  (e.g. `docs/knowledge_graph.md` for the KG data model).
+  (e.g. `docs/knowledge_graph/` for the KG data model).
 
 ## Audience
 
