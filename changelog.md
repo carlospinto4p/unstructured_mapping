@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.8.1 - 2nd April 2026
+
+- Added `/backlog` skill in `.claude/skills/backlog/`.
+
+
 ### v0.8.0 - 2nd April 2026
 
 - Added `ROLE` and `RELATION_KIND` to `EntityType` —
