@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.11.5 - 2nd April 2026
+
+- Updated `/review-kg` skill (v1.1.0):
+  - Added `relationships.md` to required inputs
+  - Added relationship pattern coverage and RELATION_KIND
+    completeness checks
+  - Expanded consistency checks across all four KG docs
+
+
 ### v0.11.4 - 2nd April 2026
 
 - Added `docs/knowledge_graph/relationships.md` — canonical

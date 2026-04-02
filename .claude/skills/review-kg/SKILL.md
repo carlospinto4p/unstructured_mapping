@@ -1,6 +1,6 @@
 ---
 name: review-kg
-version: 1.0.0
+version: 1.1.0
 description: Review KG architecture and design for gaps, inconsistencies, and improvements. Evaluates from the perspective of quant researchers and market analysts building custom strategies.
 ---
 
@@ -14,9 +14,10 @@ Read ALL of the following before producing output:
 1. `docs/knowledge_graph/design.md` — design philosophy and rationale
 2. `docs/knowledge_graph/subtypes.md` — subtype conventions
 3. `docs/knowledge_graph/schema.md` — SQLite table schemas
-4. `src/unstructured_mapping/knowledge_graph/models.py` — data models
-5. `src/unstructured_mapping/knowledge_graph/storage.py` — storage layer
-6. `backlog.md` — existing open items (avoid duplicating them)
+4. `docs/knowledge_graph/relationships.md` — canonical relationship patterns
+5. `src/unstructured_mapping/knowledge_graph/models.py` — data models
+6. `src/unstructured_mapping/knowledge_graph/storage.py` — storage layer
+7. `backlog.md` — existing open items (avoid duplicating them)
 
 ## Audience
 
@@ -59,6 +60,10 @@ the current design is **adequate**, has a **gap**, or has an
 - Are temporal bounds on relationships sufficient for event-driven
   strategies (e.g., "CEO changed", "sanction imposed")?
 - Is the qualifier system (ROLE, RELATION_KIND) expressive enough?
+- Are the canonical patterns in `relationships.md` complete? Are
+  there common financial relationships not covered?
+- Are the recommended RELATION_KIND entities sufficient for
+  synonym normalization across the documented patterns?
 
 ### 4. Market-signal readiness
 
@@ -85,9 +90,16 @@ the current design is **adequate**, has a **gap**, or has an
 
 ### 7. Consistency
 
-- Do the models, schema, docs, and subtypes all agree?
+- Do the models, schema, and all four docs (design.md,
+  subtypes.md, schema.md, relationships.md) agree?
 - Are there contradictions between design.md rationale and actual
   implementation?
+- Do relationship patterns in relationships.md use entity types
+  and subtypes that exist in subtypes.md?
+- Do examples in relationships.md match the RELATION_KIND
+  conventions documented in the same file?
+- Are scope boundaries documented in subtypes.md (e.g. METRIC
+  metadata, ASSET tickers) consistent with design.md philosophy?
 
 ## Output format
 
