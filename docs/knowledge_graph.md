@@ -2,9 +2,16 @@
 
 ## Approach: LLM-first
 
-The knowledge graph is a **runtime knowledge supplement** — it
-gives the LLM facts it was never trained on. An LLM's training
-data has a cutoff; entities that appear after that date (new
+The knowledge graph is an **index into the news** — it stores
+just enough metadata (names, aliases, descriptions, relationship
+types) for the LLM to recognize and track entity mentions across
+unstructured text. The actual knowledge lives in the articles;
+the KG exists to identify entities and link them, not to
+replicate structured facts (amounts, deal values, positions)
+that already exist in the source text.
+
+It is also a **runtime knowledge supplement**: an LLM's training
+data has a cutoff, and entities that appear after that date (new
 companies, people, events) are unknown to the model. The KG
 stores enough natural-language context that the LLM can resolve
 and reason about these entities without prior knowledge.
@@ -16,6 +23,8 @@ means:
 - No embeddings stored on entities (defer to a companion vector
   store if bulk/cost-sensitive processing needs it later).
 - No confidence scores on matches (the LLM reasons directly).
+- No structured attributes on relationships (no amounts, deal
+  values, etc.) — the KG is shallow but wide.
 - Rich natural-language `description` fields are first-class —
   they are **instructions for the LLM**, not labels for humans.
   The richer and more distinguishing they are, the better

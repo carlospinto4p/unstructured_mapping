@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.8.2 - 2nd April 2026
+
+- Updated `docs/knowledge_graph.md`: clarify KG as an
+  index into the news, not a database of facts
+
+
 ### v0.8.1 - 2nd April 2026
 
 - Added `/backlog` skill in `.claude/skills/backlog/`.
