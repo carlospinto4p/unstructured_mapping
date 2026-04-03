@@ -15,21 +15,24 @@ The pipeline processes each article through four stages:
 
 1. **Detection** — find entity mentions in text using
    rule-based alias matching against the KG.
-2. **Resolution** — resolve detected mentions to
-   structured KG entities, or identify new entity
-   candidates. This is the core *unstructured mapping*
-   that gives the library its name: bridging a free-text
-   mention ("the Fed") to its canonical entity
-   (Federal Reserve, ORGANIZATION/central_bank). It is
-   also the hardest stage — the same surface form can
-   refer to different entities depending on context,
-   entities can appear under names not in the KG, and
-   the model must decide whether a mention is a known
-   entity or a genuinely new one.
+2. **Resolution** — map detected mentions to structured
+   KG entities, or identify new entity candidates.
 3. **Extraction** — extract relationships between
    resolved entities from the article text.
 4. **Persistence** — write provenance, new entities, and
    relationships to the KnowledgeStore.
+
+Resolution is the central challenge of this library.
+Mapping a free-text mention ("the Fed") to its canonical
+entity (Federal Reserve, ORGANIZATION/central_bank) is
+an inherently ambiguous problem: the same surface form
+can refer to different entities depending on context,
+entities can appear under names not yet in the KG, and
+the system must decide whether a mention matches a known
+entity or represents a genuinely new one. The other
+stages are largely mechanical by comparison — detection
+is pattern matching, extraction follows a structured
+prompt, and persistence is a database write.
 
 Each stage has an ABC so implementations can be swapped
 (rule-based vs LLM, local vs API provider, etc.).
@@ -74,19 +77,21 @@ get `created_at` set to the run's timestamp.
 
 ### Why an abstraction layer?
 
-The pipeline needs to call an LLM for entity resolution
-and relationship extraction. The specific model and
-provider will change over time — local models for
-development, API providers for production, different
-model sizes for cost/quality tradeoffs. An abstraction
-decouples the pipeline from any specific provider:
+The pipeline needs an LLM for entity resolution and
+relationship extraction. An abstraction layer decouples
+the pipeline from any specific model or provider, which
+matters for three reasons:
 
-- **Swappable**: switch from Ollama to an API provider
-  without touching pipeline code.
-- **Testable**: mock the provider in unit tests without
-  running a model.
-- **Trackable**: the provider reports its model name and
-  provider identity, which feeds into run metadata.
+- **Swappable** — the best model for this task is not
+  known yet. Being able to switch between providers
+  (Ollama, Anthropic, OpenAI) and models (small/fast
+  vs large/accurate) without touching pipeline code
+  makes experimentation practical.
+- **Testable** — pipeline logic can be tested with a
+  mock provider, without running a model.
+- **Trackable** — the provider reports its model name
+  and identity, which feeds into ingestion run metadata
+  for reproducibility.
 
 ### Provider options considered
 
@@ -100,17 +105,10 @@ decouples the pipeline from any specific provider:
 
 ### Chosen approach: Ollama first
 
-Start with Ollama for local development. It avoids cost,
-latency, and API key management while iterating on
-prompts and pipeline logic. API providers can be added
-later if local models hit a quality ceiling.
-
-### Deferred: API providers
-
-Adding Anthropic or OpenAI implementations is
-straightforward but introduces API key management, rate
-limiting, and cost tracking — operational concerns that
-add complexity without helping the core pipeline design.
+Ollama avoids cost and API key management while the
+pipeline design is still iterating. API providers can
+be added later if local models hit a quality ceiling —
+the abstraction layer makes this a drop-in change.
 
 
 ## Entity creation policy
