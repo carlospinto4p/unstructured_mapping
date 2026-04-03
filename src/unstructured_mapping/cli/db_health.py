@@ -130,48 +130,50 @@ _QUALITY_CHECKS: list[tuple[str, str]] = [
 ]
 
 
-def _data_quality_count(
-    conn: sqlite3.Connection,
-    where: str,
-) -> int:
-    """Count articles matching a WHERE clause."""
-    return conn.execute(
-        f"SELECT COUNT(*) FROM articles "
-        f"WHERE {where}"
-    ).fetchone()[0]
-
-
 def _section_data_quality(
     conn: sqlite3.Connection,
 ) -> list[str]:
-    """Data quality checks on articles."""
+    """Data quality checks on articles.
+
+    Combines basic checks into a single table scan
+    using ``SUM(CASE)`` aggregation.
+    """
     lines = ["", "Data quality:"]
-    for label, where in _QUALITY_CHECKS:
-        cnt = _data_quality_count(conn, where)
-        lines.append(f"  {label + ':':<18s} {cnt}")
+    sums = ", ".join(
+        f"SUM(CASE WHEN {w} THEN 1 ELSE 0 END)"
+        for _, w in _QUALITY_CHECKS
+    )
+    row = conn.execute(
+        f"SELECT {sums} FROM articles"
+    ).fetchone()
+    for i, (label, _) in enumerate(_QUALITY_CHECKS):
+        lines.append(
+            f"  {label + ':':<18s} {row[i]}"
+        )
 
     col_names = {
-        row[1]
-        for row in conn.execute(
+        r[1]
+        for r in conn.execute(
             "PRAGMA table_info(articles)"
         )
     }
     if "document_id" in col_names:
-        null_ids = _data_quality_count(
-            conn, "document_id IS NULL"
-        )
-        lines.append(
-            f"  {'Null document_ids:':<18s} {null_ids}"
-        )
-        dupe_ids = conn.execute(
-            "SELECT COUNT(*) FROM ("
-            "  SELECT document_id FROM articles "
+        row = conn.execute(
+            "SELECT "
+            "SUM(CASE WHEN document_id IS NULL "
+            "THEN 1 ELSE 0 END), "
+            "COUNT(*) FROM ("
+            "  SELECT document_id "
+            "  FROM articles "
             "  GROUP BY document_id "
             "  HAVING COUNT(*) > 1"
             ")"
-        ).fetchone()[0]
+        ).fetchone()
         lines.append(
-            f"  {'Dupe document_ids:':<18s} {dupe_ids}"
+            f"  {'Null document_ids:':<18s} {row[0]}"
+        )
+        lines.append(
+            f"  {'Dupe document_ids:':<18s} {row[1]}"
         )
     else:
         lines.append(

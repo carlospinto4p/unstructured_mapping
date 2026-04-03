@@ -129,6 +129,12 @@
 - [x] **MEDIUM** — Unify storage init pattern — both `ArticleStore` and `KnowledgeStore` repeat `mkdir` + `connect` + DDL loop + migrate + index loop + commit; extract shared `_init_db()` or a base `SQLiteStore` class
 - [x] **LOW** — Replace `source` property boilerplate in scrapers with a class variable — three identical 3-line `@property` overrides return a hardcoded string; a `source: str` class var on the ABC with `__init_subclass__` validation is cleaner
 
+#### Performance (v0.11.39 review)
+
+- [x] **MEDIUM** — Combine data quality checks into single query in `db_health.py` — six separate full-table COUNT scans can be one `SUM(CASE WHEN ... THEN 1 ELSE 0 END)` query
+- [x] **LOW** — Eliminate redundant `get_entity()` call in `merge_entities()` — deprecated entity is fetched at line 763 and re-fetched at line 785; construct the updated entity in-memory instead
+- [x] **LOW** — Cache `results.get(a.url, _empty)` in `_enrich()` — same dict lookup done twice per article in the list comprehension
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG

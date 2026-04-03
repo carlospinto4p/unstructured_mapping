@@ -1,5 +1,18 @@
 ## Changelog
 
+### v0.11.40 - 3rd April 2026
+
+- Performance pass (v0.11.39 review):
+  - Combined data quality checks in `db_health.py` into
+    a single `SUM(CASE)` query — 6 full-table scans → 1
+  - Eliminated redundant `get_entity()` call in
+    `merge_entities()` — constructs merged entity
+    in-memory with `dataclasses.replace` instead of
+    re-fetching from DB
+  - Cached `results.get()` lookup in `Scraper._enrich()`
+    — removed duplicate dict access per article
+
+
 ### v0.11.39 - 3rd April 2026
 
 - Refactoring pass (v0.11.37 review):

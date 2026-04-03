@@ -8,6 +8,7 @@ See ``docs/knowledge_graph/`` for table schema rationale.
 
 import json
 import logging
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -782,9 +783,13 @@ class KnowledgeStore(SQLiteStore):
             "merged_into = ? WHERE entity_id = ?",
             ("merged", surviving_id, deprecated_id),
         )
-        merged_dep = self.get_entity(deprecated_id)
+        merged_dep = replace(
+            dep,  # type: ignore[arg-type]
+            status=EntityStatus.MERGED,
+            merged_into=surviving_id,
+        )
         self._log_entity(
-            merged_dep, "merge", merge_reason  # type: ignore[arg-type]
+            merged_dep, "merge", merge_reason
         )
         self._log_entity(
             surv, "merge", merge_reason  # type: ignore[arg-type]

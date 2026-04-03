@@ -133,16 +133,13 @@ class Scraper(ABC):
         return [
             replace(
                 a,
-                body=(
-                    results.get(a.url, _empty).body
-                    or a.body
-                ),
-                url=(
-                    results.get(a.url, _empty).url
-                    or a.url
-                ),
+                body=ex.body or a.body,
+                url=ex.url or a.url,
             )
             for a in articles
+            for ex in (
+                results.get(a.url, _empty),
+            )
         ]
 
     def _extract_body(
