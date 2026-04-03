@@ -648,6 +648,65 @@ def test_find_entities_by_status_empty(tmp_path):
     assert result == []
 
 
+# -- KnowledgeStore: find_by_name_prefix --
+
+
+def test_find_by_name_prefix(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Apple Inc.")
+    e2 = _make_entity(canonical_name="Applied Materials")
+    e3 = _make_entity(canonical_name="Google")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        found = store.find_by_name_prefix("App")
+        found_ci = store.find_by_name_prefix("app")
+        none = store.find_by_name_prefix("Xyz")
+
+    names = {e.canonical_name for e in found}
+    assert len(found) == 2
+    assert "Apple Inc." in names
+    assert "Applied Materials" in names
+    assert len(found_ci) == 2
+    assert none == []
+
+
+# -- KnowledgeStore: count_entities_by_type --
+
+
+def test_count_entities_by_type(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(
+        canonical_name="A",
+        entity_type=EntityType.PERSON,
+    )
+    e2 = _make_entity(
+        canonical_name="B",
+        entity_type=EntityType.PERSON,
+    )
+    e3 = _make_entity(
+        canonical_name="C",
+        entity_type=EntityType.ORGANIZATION,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        counts = store.count_entities_by_type()
+
+    assert counts["person"] == 2
+    assert counts["organization"] == 1
+    assert "place" not in counts
+
+
+def test_count_entities_by_type_empty(tmp_path):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        counts = store.count_entities_by_type()
+    assert counts == {}
+
+
 # -- KnowledgeStore: merge operation --
 
 

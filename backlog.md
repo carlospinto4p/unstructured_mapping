@@ -135,6 +135,14 @@
 - [x] **LOW** — Eliminate redundant `get_entity()` call in `merge_entities()` — deprecated entity is fetched at line 763 and re-fetched at line 785; construct the updated entity in-memory instead
 - [x] **LOW** — Cache `results.get(a.url, _empty)` in `_enrich()` — same dict lookup done twice per article in the list comprehension
 
+#### KG design review (v0.11.40)
+
+- [x] **MEDIUM** — Add index composition pattern to `relationships.md` — `ASSET/equity → component_of → ASSET/index` with temporal bounds for add/remove; add `component_of` alias to `market_structure` RELATION_KIND
+- [x] **MEDIUM** — Add delisting pattern to `relationships.md` — `ORGANIZATION/company → delisted_from → ORGANIZATION/exchange` with temporal bounds; add `delisted_from` alias to `market_structure` RELATION_KIND
+- [x] **LOW** — Add `runs_on` alias to `product` RELATION_KIND — currently orphaned in Products section
+- [x] **LOW** — Add `find_by_name_prefix(prefix)` query method — `LIKE prefix || '%'` for autocomplete/typeahead lookups
+- [x] **LOW** — Add `count_entities_by_type()` query method — single `GROUP BY entity_type` for dashboard stats without fetching all rows
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG

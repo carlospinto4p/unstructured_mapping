@@ -272,6 +272,15 @@ future queries to the surviving entity.
   CEO?" or "which sanctions are in effect?" without client-side
   filtering.
 
+- **Name prefix search**: `find_by_name_prefix(prefix)` does a
+  case-insensitive prefix match on `canonical_name` — e.g.
+  "App" matches "Apple Inc." and "Applied Materials". Indexed on
+  `canonical_name COLLATE NOCASE` for fast autocomplete lookups.
+
+- **Entity counts**: `count_entities_by_type()` returns a
+  `{type: count}` mapping via a single `GROUP BY` query — useful
+  for dashboard stats without fetching all rows.
+
 
 ## Relationship — open-ended and temporal
 

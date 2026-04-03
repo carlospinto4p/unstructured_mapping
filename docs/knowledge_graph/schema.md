@@ -25,7 +25,8 @@ Core entity records. Dates stored as ISO 8601 text.
 | created_at     | TEXT     |                  | When this record was created               |
 | updated_at     | TEXT     |                  | When this record was last modified          |
 
-Indexes: `entity_type`, `(entity_type, subtype)`, `status`.
+Indexes: `entity_type`, `(entity_type, subtype)`, `status`,
+`canonical_name COLLATE NOCASE`.
 
 
 ## `entity_aliases`

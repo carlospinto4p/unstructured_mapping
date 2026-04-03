@@ -142,6 +142,8 @@ _CREATE_INDEXES = (
     "ON entities (entity_type, subtype)",
     "CREATE INDEX IF NOT EXISTS idx_entity_status "
     "ON entities (status)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_name "
+    "ON entities (canonical_name COLLATE NOCASE)",
     "CREATE INDEX IF NOT EXISTS idx_alias_lookup "
     "ON entity_aliases (alias COLLATE NOCASE)",
     "CREATE INDEX IF NOT EXISTS idx_prov_document "
@@ -673,6 +675,43 @@ class KnowledgeStore(SQLiteStore):
             (status.value,),
         ).fetchall()
         return self._rows_to_entities(rows)
+
+    def find_by_name_prefix(
+        self, prefix: str
+    ) -> list[Entity]:
+        """Find entities whose name starts with a prefix.
+
+        Case-insensitive prefix search for
+        autocomplete/typeahead lookups.
+
+        :param prefix: The prefix to match against
+            ``canonical_name``.
+        :return: Matching entities.
+        """
+        rows = self._conn.execute(
+            _ENTITY_SELECT
+            + "WHERE canonical_name "
+            "COLLATE NOCASE LIKE ? || '%'",
+            (prefix,),
+        ).fetchall()
+        return self._rows_to_entities(rows)
+
+    def count_entities_by_type(
+        self,
+    ) -> dict[str, int]:
+        """Count entities grouped by type.
+
+        Returns a mapping of entity type to count,
+        useful for dashboard stats without fetching
+        all rows.
+
+        :return: Mapping of type string to count.
+        """
+        rows = self._conn.execute(
+            "SELECT entity_type, COUNT(*) "
+            "FROM entities GROUP BY entity_type"
+        ).fetchall()
+        return {t: c for t, c in rows}
 
     # -- Co-mention query --
 

@@ -1,5 +1,23 @@
 ## Changelog
 
+### v0.11.41 - 3rd April 2026
+
+- `docs/knowledge_graph/relationships.md`:
+  - Added index composition pattern: `ASSET/equity →
+    component_of → ASSET/index` with temporal bounds
+  - Added delisting pattern: `ORGANIZATION/company →
+    delisted_from → ORGANIZATION/exchange`
+  - Added `component_of`, `delisted_from` to
+    `market_structure` RELATION_KIND
+  - Added `runs_on` to `product` RELATION_KIND
+- Added `KnowledgeStore.find_by_name_prefix()` — case-
+  insensitive prefix search with `canonical_name` index
+- Added `KnowledgeStore.count_entities_by_type()` — single
+  `GROUP BY` query for dashboard stats
+- Updated `design.md` and `schema.md` with new query
+  methods and index
+
+
 ### v0.11.40 - 3rd April 2026
 
 - Performance pass (v0.11.39 review):

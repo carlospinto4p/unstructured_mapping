@@ -38,6 +38,11 @@ omitted when any subtype applies.
 | `ORGANIZATION/fund → managed_by → ORGANIZATION/fund_manager` | PIMCO Total Return → managed_by → PIMCO |
 | `ASSET/etf → managed_by → ORGANIZATION/fund_manager` | iShares Core S&P 500 → managed_by → BlackRock |
 | `ASSET/derivative → derived_from → ASSET` | ES futures → derived_from → S&P 500 |
+| `ASSET/equity → component_of → ASSET/index` | TSLA → component_of → S&P 500 (valid_from=2020-12-21) |
+
+Use temporal bounds on `component_of` to capture index
+add/remove events — these drive significant volume for
+index-tracking strategies.
 
 
 ## People and roles
@@ -140,6 +145,7 @@ Events are modeled as relationships with temporal bounds
 | `PERSON/executive → appointed_at → ORGANIZATION/company` (qualified by ROLE) | New CEO → appointed_at → Company (CEO, valid_from=2024-01-15) |
 | `PERSON/executive → departed_from → ORGANIZATION/company` (qualified by ROLE) | Old CEO → departed_from → Company (CEO, valid_until=2024-01-14) |
 | `ORGANIZATION/company → ipo_on → ORGANIZATION/exchange` | ARM Holdings → ipo_on → Nasdaq (valid_from=2023-09-14) |
+| `ORGANIZATION/company → delisted_from → ORGANIZATION/exchange` | Didi → delisted_from → NYSE (valid_from=2022-06-10) |
 
 
 ## Credit ratings
@@ -263,8 +269,9 @@ Recommended RELATION_KIND entities for financial analysis:
 | location       | headquartered_in, located_in, based_in            |
 | membership     | member_of, joined                                  |
 | governance     | leads, governs                                     |
-| market_structure | listed_on, ipo_on, managed_by, tracks,            |
-|                  | derived_from                                       |
+| market_structure | listed_on, ipo_on, delisted_from,                  |
+|                  | managed_by, tracks, derived_from,                  |
+|                  | component_of                                       |
 | policy         | enforces, sets, set_by, sponsored_by, applies_to  |
 | classification | classified_as, belongs_to, measures*,              |
 |                | categorized_as                                     |
@@ -272,7 +279,7 @@ Recommended RELATION_KIND entities for financial analysis:
 | partnership    | partners_with, collaborates_with, allied_with      |
 | analyst_coverage | covers, initiates_coverage, drops_coverage        |
 | product        | manufactured_by, produced_by, made_by,               |
-|                | approved, grounded, recalled                         |
+|                | approved, grounded, recalled, runs_on                |
 | event_trigger  | triggers, hosts, schedules                          |
 
 \* `measures` is a semantic stretch — `METRIC → measures →
