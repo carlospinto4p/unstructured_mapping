@@ -148,6 +148,10 @@
 - [x] **MEDIUM** — Add `find_entities_since(datetime)` query method — filter on `created_at >= since` for new-entity alerting; add `(created_at)` index
 - [x] **LOW** — Update `schema.md` intro to reference `SQLiteStore` base class instead of stale `ArticleStore` pattern
 
+#### Pipeline deferred decisions
+
+- [ ] Add `run_id` FK to provenance and relationships — explicit link to the ingestion run that created each record, replacing timestamp-based correlation
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
