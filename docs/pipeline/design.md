@@ -11,38 +11,19 @@ knowledge graph.
 
 ## Architecture overview
 
-```
-Article (from ArticleStore)
-    │
-    ▼
-┌──────────────┐
-│  Detection   │  Find entity mentions in text
-│  (rule-based │  using alias trie matching
-│   + LLM)     │  against the KG
-└──────┬───────┘
-       │ Mention(text, span, context)
-       ▼
-┌──────────────┐
-│  Resolution  │  Resolve mentions to KG entities
-│  (alias →    │  or flag as new candidates
-│   LLM disamb)│
-└──────┬───────┘
-       │ ResolvedMention(entity_id, mention, confidence)
-       ▼
-┌──────────────┐
-│  Extraction  │  Extract relationships between
-│  (LLM)       │  resolved entities from article text
-└──────┬───────┘
-       │ Relationship(source, target, type, ...)
-       ▼
-┌──────────────┐
-│  Persistence │  Write provenance, entities, and
-│              │  relationships to KnowledgeStore
-└──────────────┘
-```
+The pipeline processes each article through four stages:
+
+1. **Detection** — find entity mentions in text using
+   rule-based alias matching against the KG.
+2. **Resolution** — resolve mentions to existing KG
+   entities, or identify new entity candidates.
+3. **Extraction** — extract relationships between
+   resolved entities from the article text.
+4. **Persistence** — write provenance, new entities, and
+   relationships to the KnowledgeStore.
 
 Each stage has an ABC so implementations can be swapped
-(rule-based → LLM, Ollama → API provider, etc.).
+(rule-based vs LLM, local vs API provider, etc.).
 
 
 ## Ingestion run tracking
@@ -58,225 +39,191 @@ versions.
 
 ### What is tracked
 
-Each pipeline execution creates an **ingestion run** record:
-
-| Field            | Type     | Purpose                          |
-|------------------|----------|----------------------------------|
-| run_id           | TEXT PK  | UUID hex, auto-generated         |
-| started_at       | TEXT     | When the run began (UTC ISO)     |
-| finished_at      | TEXT     | When the run ended               |
-| status           | TEXT     | running, completed, failed       |
-| model_name       | TEXT     | e.g. "llama3.1:8b", "mistral"   |
-| model_provider   | TEXT     | e.g. "ollama", "anthropic"       |
-| model_params     | TEXT     | JSON: temperature, context, etc. |
-| articles_total   | INTEGER  | Articles submitted for ingestion |
-| articles_ok      | INTEGER  | Articles successfully processed  |
-| articles_failed  | INTEGER  | Articles that errored            |
-| entities_created | INTEGER  | New entities added to the KG     |
-| entities_resolved| INTEGER  | Mentions linked to existing ents |
-| relationships_extracted | INTEGER | Relationships discovered   |
-| config           | TEXT     | JSON: pipeline config snapshot   |
-| error            | TEXT     | Error message if status=failed   |
+Each pipeline execution creates an **ingestion run** record
+with fields for timing (start/end), status (running,
+completed, failed), model identity (name, provider,
+parameters), article counts (total, succeeded, failed),
+KG mutation counts (entities created, entities resolved,
+relationships extracted), and a config snapshot.
 
 This table lives in the KG database (same SQLite file)
-because runs are tightly coupled to KG mutations.
+because runs are tightly coupled to KG mutations. A
+separate database would require cross-DB joins or
+application-level correlation.
 
 ### Linking runs to records
 
-- **Provenance**: already has `detected_at` — sufficient
-  to correlate with run timestamps. Adding a `run_id` FK
-  would be cleaner but couples provenance to the pipeline
-  module. Deferred: use timestamp-based correlation for
-  now; add `run_id` FK if the need becomes concrete.
-
-- **Relationships**: already has `discovered_at` and
-  `document_id`. Same rationale — timestamp correlation
-  suffices initially.
-
-- **Entities**: new entities created by the pipeline get
-  `created_at` set to the run's timestamp. The run record
-  captures aggregate counts.
-
-### Why not a separate database?
-
-The run table is small (one row per execution) and its
-queries always join against KG data ("which run created
-this entity?"). A separate database would require
-cross-DB joins or application-level correlation.
+Provenance records have `detected_at` and relationships
+have `discovered_at`, which correlate with the run's
+timestamp range. Adding explicit `run_id` FKs would be
+cleaner but couples provenance to the pipeline module —
+deferred until the need becomes concrete. New entities
+get `created_at` set to the run's timestamp.
 
 
 ## LLM provider abstraction
 
-### Interface
+### Why an abstraction layer?
 
-```python
-class LLMProvider(ABC):
-    @abstractmethod
-    def generate(
-        self,
-        prompt: str,
-        *,
-        system: str | None = None,
-        temperature: float = 0.0,
-        max_tokens: int = 2048,
-    ) -> str:
-        """Send a prompt and return the response text."""
+The pipeline needs to call an LLM for entity resolution
+and relationship extraction. The specific model and
+provider will change over time — local models for
+development, API providers for production, different
+model sizes for cost/quality tradeoffs. An abstraction
+decouples the pipeline from any specific provider:
 
-    @abstractmethod
-    def model_name(self) -> str:
-        """Return the model identifier for tracking."""
+- **Swappable**: switch from Ollama to an API provider
+  without touching pipeline code.
+- **Testable**: mock the provider in unit tests without
+  running a model.
+- **Trackable**: the provider reports its model name and
+  provider identity, which feeds into run metadata.
 
-    @abstractmethod
-    def provider_name(self) -> str:
-        """Return the provider name (e.g. 'ollama')."""
-```
+### Provider options considered
 
-### Why an ABC?
+| Provider  | Pros                              | Cons                          |
+|-----------|-----------------------------------|-------------------------------|
+| Ollama    | Free, local, no API keys, fast    | Smaller models, less accurate |
+|           | iteration, full data privacy      |                               |
+| API (e.g. | Higher quality, larger context    | Cost per call, API key mgmt,  |
+| Anthropic,| windows, better structured output | rate limits, data leaves local |
+| OpenAI)   |                                   |                               |
 
-- **Swap providers** without touching pipeline code.
-  Start with Ollama for local development, switch to an
-  API provider (Anthropic, OpenAI) for production or
-  higher-quality extraction.
-- **Testing**: mock the provider in unit tests to test
-  pipeline logic without running a model.
-- **Tracking**: `model_name()` and `provider_name()` feed
-  directly into the ingestion run metadata.
+### Chosen approach: Ollama first
 
-### Ollama implementation
-
-Uses the `ollama` Python package. Requires a running
-Ollama server (`ollama serve`).
-
-Configuration:
-- `model`: which model to use (default: "llama3.1:8b")
-- `base_url`: Ollama server URL (default: localhost:11434)
-- `temperature`: 0.0 for deterministic extraction
-- `num_ctx`: context window size (model-dependent)
+Start with Ollama for local development. It avoids cost,
+latency, and API key management while iterating on
+prompts and pipeline logic. API providers can be added
+later if local models hit a quality ceiling.
 
 ### Deferred: API providers
 
-Anthropic and OpenAI implementations are straightforward
-but add API key management, rate limiting, and cost
-tracking. Defer until local models hit a quality ceiling.
+Adding Anthropic or OpenAI implementations is
+straightforward but introduces API key management, rate
+limiting, and cost tracking — operational concerns that
+add complexity without helping the core pipeline design.
 
 
 ## Entity creation policy
 
 ### The problem
 
-When the LLM finds "Acme Corp" in an article and it does
-not exist in the KG, the pipeline must decide: create a
-new entity, skip it, or flag it for review.
+When the LLM identifies an entity in an article that
+does not exist in the KG, the pipeline must decide what
+to do with it.
 
-### Chosen approach: auto-create with review marker
+### Options considered
 
-New entities are created automatically with:
-- `status = ACTIVE` (usable immediately)
-- `description` generated by the LLM from article context
-- `created_at` set to the run timestamp
-- A provenance record linking to the originating article
+| Option          | Pros                         | Cons                          |
+|-----------------|------------------------------|-------------------------------|
+| Auto-create     | KG grows from ingestion,     | Risk of low-quality or        |
+|                 | new entities available for   | hallucinated entities         |
+|                 | co-mention queries instantly |                               |
+| Flag for review | Human quality gate           | Operational overhead, delays  |
+|                 |                              | KG growth, bottleneck         |
+| Skip unknowns   | No risk of bad entities      | KG never grows from text,    |
+|                 |                              | only from manual seeding      |
 
-**Why auto-create**: the KG must grow from ingestion —
-option (c) "skip unknowns" means the graph only contains
-manually seeded entities, which defeats the purpose. A
-quant researcher discovering a new company in the news
-needs it in the KG for co-mention queries to work.
+### Chosen approach: auto-create with quality controls
 
-**Quality control**: instead of a separate approval
-workflow (which adds operational complexity), quality is
-controlled by:
+New entities are created automatically. The KG must grow
+from ingestion — if it only contains manually seeded
+entities, it cannot discover new companies, people, or
+topics that emerge in the news.
 
-1. **LLM prompt design** — the prompt instructs the LLM
-   to only extract entities that are clearly named and
+Quality is controlled through three mechanisms:
+
+1. **Prompt design** — the LLM is instructed to only
+   extract entities that are clearly named and
    distinguishable, not vague references.
-2. **Validation rules** — `KG validation` (backlog item)
-   catches duplicates via alias collision detection,
-   temporal inconsistencies, and type constraint
-   violations before persistence.
+2. **Validation rules** — alias collision detection,
+   temporal consistency checks, and type constraints
+   catch duplicates and malformed entities before
+   persistence.
 3. **Audit trail** — every entity has `created_at` and
-   provenance linking to the article and run. Bad entities
-   can be found and reverted using the existing history
-   system.
+   provenance linking to the originating article and run.
+   Bad entities can be found and reverted using the
+   existing history system.
 
 ### Deferred: confidence thresholds
 
 Local models don't produce calibrated confidence scores.
-If we move to API models with logprobs, we could add a
-creation threshold ("only create entities the model is
->90% confident about"). Not worth building until then.
+If we move to API models with logprobs, a creation
+threshold could filter low-confidence extractions.
 
 
 ## Single-pass vs multi-pass extraction
+
+### Options considered
+
+| Approach    | Pros                          | Cons                          |
+|-------------|-------------------------------|-------------------------------|
+| Single-pass | One LLM call per article,     | More hallucination, harder to |
+|             | lower cost                    | debug, structural errors      |
+| Two-pass    | Focused tasks, better output  | Doubles LLM cost per article  |
+|             | quality, independently usable |                               |
+| Three-pass  | Maximum separation of         | Triples cost, detection needs |
+| (detect →   | concerns                      | KG context anyway, marginal   |
+| resolve →   |                               | benefit over two-pass         |
+| extract)    |                               |                               |
 
 ### Chosen approach: two-pass
 
 1. **Pass 1: Entity detection + resolution** — extract
    entity mentions from the article and resolve them
    against the KG (or create new entities).
-
 2. **Pass 2: Relationship extraction** — given the
    resolved entities and the article text, extract
    relationships between them.
 
-### Why two-pass?
+Detection and resolution are combined in one pass because
+the LLM needs KG context (descriptions, aliases) to both
+find and resolve entities. Splitting them would require
+the detection pass to output unresolved mentions, then a
+second call to resolve — doubling cost for marginal
+benefit.
 
-- **Reliability**: local models produce better results
-  when the task is focused. Asking for entities AND
-  relationships in one prompt leads to more hallucination
-  and structural errors.
-- **Reusability**: entity detection can run independently
-  (e.g. for co-mention analysis without relationship
-  extraction).
-- **Debuggability**: when extraction fails, you know which
-  stage failed and can inspect the intermediate output.
-
-### Why not three-pass (detect → resolve → extract)?
-
-Detection and resolution are tightly coupled — the LLM
-needs KG context (descriptions, aliases) to both find
-and resolve entities. Splitting them would require the
-detection pass to output unresolved mentions, then a
-second LLM call to resolve. This doubles the cost for
-marginal benefit. Instead, the first pass does both:
-"find entities in this text and match them to these
-known entities (or identify new ones)."
+Two-pass is preferred over single-pass because local
+models produce better results when the task is focused,
+and each stage can be debugged and tested independently.
 
 
 ## Prompt context budget
 
 ### The constraint
 
-Local models (Ollama) typically have 4K-8K context
-windows. The prompt must fit:
-- System instructions (~500 tokens)
-- Article text (variable, 200-2000+ tokens)
-- KG context: candidate entity descriptions and aliases
-  (variable, depends on KG size)
-- Response format instructions (~200 tokens)
+Local models typically have 4K-8K context windows. The
+prompt must fit system instructions, article text, KG
+context (candidate entity descriptions and aliases), and
+response format instructions.
 
 ### Strategy: relevant-entity windowing
 
-Don't send the entire KG. For each article:
+Instead of sending the entire KG (which could be
+thousands of entities), the pipeline narrows the context
+to relevant candidates:
 
-1. **Alias pre-scan**: run a fast text scan (not LLM)
-   to find potential alias matches in the article text.
-   This is the rule-based detection from the backlog.
-2. **Candidate set**: collect entities whose aliases
-   matched, plus their descriptions. This is the
+1. **Alias pre-scan** — a fast text scan (not LLM) finds
+   potential alias matches in the article text. This is
+   the rule-based detection stage.
+2. **Candidate set** — entities whose aliases matched are
+   collected with their descriptions. This is the
    "relevant window" of the KG.
-3. **Budget check**: if the candidate set exceeds the
-   token budget, rank by alias match count and truncate.
-4. **LLM call**: send article + candidate entities to the
-   LLM for resolution and new-entity detection.
+3. **Budget check** — if the candidate set exceeds the
+   token budget, candidates are ranked by match count and
+   truncated.
+4. **LLM call** — the article plus candidate entities are
+   sent for resolution and new-entity detection.
 
-This keeps the prompt compact — typically 20-50 candidate
+This keeps prompts compact — typically 20-50 candidate
 entities, not thousands.
 
-### Fallback for long articles
+### Long articles
 
-If the article itself exceeds the budget (rare for news),
-truncate to the first N paragraphs. News articles front-
-load the key information (inverted pyramid structure).
+If the article itself exceeds the budget, it is truncated
+to the leading paragraphs. News articles front-load key
+information (inverted pyramid structure), so truncation
+loses detail but not the core signal.
 
 
 ## Structured output
@@ -287,20 +234,19 @@ Local models are less reliable at producing structured
 JSON than API models. Malformed responses waste compute
 and block the pipeline.
 
-### Strategy: JSON mode + validation + retry
+### Strategy: constrained output + validation + retry
 
-1. **JSON mode**: Ollama supports `format="json"` which
-   constrains output to valid JSON. Use it.
-2. **Schema validation**: parse the response against a
-   Pydantic model (or dataclass) that defines the expected
-   structure. Reject responses that don't match.
-3. **Retry with error feedback**: on parse failure, retry
-   once with the error message appended to the prompt
-   ("your previous response was invalid JSON: {error}").
-   Max 2 attempts per article.
-4. **Graceful degradation**: if both attempts fail, log
-   the failure to the ingestion run and skip the article.
-   Don't crash the pipeline.
+1. **JSON mode** — Ollama supports constraining output to
+   valid JSON. This eliminates most parse errors.
+2. **Schema validation** — responses are validated against
+   the expected structure. Responses that don't match are
+   rejected.
+3. **Retry with error feedback** — on validation failure,
+   one retry is attempted with the error message included
+   in the prompt. Maximum two attempts per article.
+4. **Graceful degradation** — if both attempts fail, the
+   article is logged as failed and skipped. The pipeline
+   does not crash.
 
 
 ## Already-processed tracking
@@ -309,36 +255,32 @@ and block the pipeline.
 
 Re-running the pipeline should be idempotent — articles
 already processed should not be re-ingested (unless
-explicitly requested for reprocessing).
+explicitly requested).
+
+### Options considered
+
+| Option              | Pros                    | Cons                      |
+|---------------------|-------------------------|---------------------------|
+| Provenance-based    | Source of truth, no new | Must query provenance     |
+| (check if article   | table, can't drift out | before each run           |
+| has provenance)     | of sync                |                           |
+| Separate tracking   | Fast lookup, explicit  | Can drift out of sync     |
+| table               | "processed" flag       | with provenance after     |
+|                     |                        | reverts or deletions      |
 
 ### Chosen approach: provenance-based detection
 
 An article is "processed" if it has at least one
-provenance record in the KG. Before processing, the
-pipeline queries:
-
-```sql
-SELECT DISTINCT document_id FROM provenance
-```
-
-Articles whose `document_id` appears in this set are
-skipped.
-
-### Why not a separate `processed_articles` table?
-
-- Provenance is the source of truth — if provenance
-  exists, the article was processed.
-- A separate table could drift out of sync with
-  provenance (e.g. after a revert or manual deletion).
-- The query is fast with the existing `document_id` index
-  on provenance.
+provenance record in the KG. The pipeline queries existing
+provenance `document_id` values and skips articles that
+appear in this set. The existing `document_id` index on
+provenance makes this fast.
 
 ### Reprocessing
 
-To reprocess an article (e.g. with a better model), delete
-its provenance records first, then re-run the pipeline.
-This is an explicit, auditable action — not something the
-pipeline does automatically.
+To reprocess an article (e.g. with a better model), its
+provenance records are deleted first, then the pipeline
+is re-run. This is an explicit, auditable action.
 
 
 ## Error handling
@@ -346,68 +288,63 @@ pipeline does automatically.
 ### Per-article isolation
 
 Each article is processed independently. If one fails
-(LLM error, parse failure, validation error), the pipeline:
-- Logs the error with article `document_id` and stage
-- Increments `articles_failed` on the run record
-- Continues to the next article
+(LLM error, parse failure, validation error), the
+pipeline logs the error, increments the failure count on
+the run record, and continues to the next article.
 
-The run completes with `status = "completed"` even if some
+A run completes with `status = "completed"` even if some
 articles failed (partial success). `status = "failed"` is
-reserved for pipeline-level errors (DB connection lost,
-Ollama server unreachable).
+reserved for pipeline-level errors (database connection
+lost, LLM server unreachable).
 
 ### LLM-specific errors
 
-- **Connection refused**: fail the entire run (Ollama not
-  running).
+- **Server unreachable**: fail the entire run.
 - **Timeout**: retry once, then skip the article.
-- **Malformed response**: retry with error feedback (see
-  Structured output above).
+- **Malformed response**: retry with error feedback
+  (see Structured output above).
 - **Empty response**: skip the article, log as failed.
 
 
 ## Module structure
 
-```
-src/unstructured_mapping/pipeline/
-    __init__.py
-    models.py          # IngestionRun, Mention, etc.
-    detection.py       # EntityDetector ABC + RuleBasedDetector
-    resolution.py      # EntityResolver ABC + AliasResolver
-    extraction.py      # RelationshipExtractor ABC
-    llm_provider.py    # LLMProvider ABC + OllamaProvider
-    orchestrator.py    # Pipeline class wiring stages
-    prompts.py         # Prompt templates for LLM calls
-    storage.py         # IngestionRunStore (extends SQLiteStore)
-```
+The pipeline lives in its own top-level package
+(`pipeline/`) mirroring the `knowledge_graph/` and
+`web_scraping/` structure: models, storage, and domain
+logic in separate focused files. Key modules:
 
-This mirrors the `knowledge_graph/` and `web_scraping/`
-module structure: models, storage, and domain logic
-separated into focused files.
+- **models** — data classes for ingestion runs, mentions,
+  and intermediate pipeline state.
+- **detection** — entity detector ABC and rule-based
+  implementation.
+- **resolution** — entity resolver ABC and alias-based
+  implementation.
+- **extraction** — relationship extractor ABC.
+- **llm_provider** — LLM provider ABC and Ollama
+  implementation.
+- **orchestrator** — pipeline class wiring the stages.
+- **prompts** — prompt templates for LLM calls.
+- **storage** — ingestion run persistence.
 
 
 ## Dependencies
 
-New dependencies required:
-- `ollama` — Python client for Ollama API
-
-Added as an optional dependency group (`[pipeline]`) so
-the base library stays lightweight. Users who only need
-scraping or KG storage don't pull in LLM dependencies.
+The `ollama` Python package is the only new dependency.
+It is added as an optional dependency group so the base
+library stays lightweight — users who only need scraping
+or KG storage don't pull in LLM dependencies.
 
 
 ## What this design does NOT cover
 
-- **Embedding-based detection**: deferred. The rule-based
-  alias scan + LLM resolution is the baseline. Embeddings
-  can be added later as an alternative detector.
-- **Batch/parallel processing**: articles are processed
-  sequentially. Parallelism adds complexity (concurrent
-  KG writes, connection pooling) without benefit at the
-  current scale.
-- **Streaming**: the pipeline processes a batch of
-  articles per run, not a real-time stream. The scheduler
-  (`cli/scheduler.py`) handles periodic execution.
-- **Prompt tuning**: prompt templates are a starting point.
-  Expect iteration as we test with real articles and
-  different models.
+- **Embedding-based detection** — the rule-based alias
+  scan + LLM resolution is the baseline. Embeddings can
+  be added later as an alternative detector.
+- **Batch/parallel processing** — articles are processed
+  sequentially. Parallelism adds complexity without
+  benefit at the current scale.
+- **Streaming** — the pipeline processes a batch of
+  articles per run, not a real-time stream.
+- **Prompt tuning** — prompt templates are a starting
+  point. Expect iteration as we test with real articles
+  and different models.

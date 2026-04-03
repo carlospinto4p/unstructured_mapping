@@ -3,16 +3,17 @@
 ### v0.12.0 - 3rd April 2026
 
 - Added `docs/pipeline/design.md` — ingestion pipeline
-  architecture covering:
+  design covering architecture, design decisions, and
+  trade-offs for each major concern:
   - Two-pass extraction (entities → relationships)
-  - Ingestion run tracking with metadata table
-  - `LLMProvider` ABC with Ollama as first implementation
-  - Auto-create entity policy with audit trail
+  - Ingestion run tracking with metadata
+  - LLM provider abstraction (Ollama first)
+  - Auto-create entity policy with quality controls
   - Relevant-entity windowing for context budget
-  - JSON mode + validation + retry for structured output
-  - Provenance-based already-processed detection
+  - Structured output with validation and retry
+  - Provenance-based idempotency
   - Per-article error isolation
-  - Module structure and dependency plan
+  - Module structure and dependencies
 
 
 ### v0.11.43 - 3rd April 2026
