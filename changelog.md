@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.12.2 - 3rd April 2026
+
+- Removed dead `Null document_ids` check from `db_health`
+  — `document_id` has a NOT NULL constraint after
+  migration, so the check always returns 0
+
+
 ### v0.12.1 - 3rd April 2026
 
 - Fixed `Null document_ids` showing `None` instead of `0`

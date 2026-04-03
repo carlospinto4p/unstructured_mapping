@@ -158,10 +158,6 @@ def _section_data_quality(
         )
     }
     if "document_id" in col_names:
-        null_ids = conn.execute(
-            "SELECT COUNT(*) FROM articles "
-            "WHERE document_id IS NULL"
-        ).fetchone()[0]
         dupe_ids = conn.execute(
             "SELECT COUNT(*) FROM ("
             "  SELECT document_id "
@@ -170,9 +166,6 @@ def _section_data_quality(
             "  HAVING COUNT(*) > 1"
             ")"
         ).fetchone()[0]
-        lines.append(
-            f"  {'Null document_ids:':<18s} {null_ids}"
-        )
         lines.append(
             f"  {'Dupe document_ids:':<18s} {dupe_ids}"
         )
