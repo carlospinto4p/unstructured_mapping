@@ -398,6 +398,98 @@ def test_store_save_and_get_relationships(tmp_path):
     assert from_target[0].source_id == e1.entity_id
 
 
+# -- KnowledgeStore: NULL valid_from dedup --
+
+
+def test_relationship_null_valid_from_dedup(tmp_path):
+    """Duplicate unbounded relationships are rejected."""
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Entity A")
+    e2 = _make_entity(canonical_name="Entity B")
+    rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="A supplies B.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(rel)
+        store.save_relationship(rel)  # duplicate
+        rels = store.get_relationships(
+            e1.entity_id, as_target=False
+        )
+
+    assert len(rels) == 1
+
+
+def test_relationship_null_valid_from_round_trip(
+    tmp_path,
+):
+    """valid_from=None survives save/load round trip."""
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Entity A")
+    e2 = _make_entity(canonical_name="Entity B")
+    rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="A supplies B.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(rel)
+        loaded = store.get_relationships(
+            e1.entity_id, as_target=False
+        )
+
+    assert loaded[0].valid_from is None
+
+
+# -- KnowledgeStore: get_relationships_between --
+
+
+def test_get_relationships_between(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Apple")
+    e2 = _make_entity(canonical_name="Foxconn")
+    e3 = _make_entity(canonical_name="TSMC")
+    rel1 = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="Foxconn supplies Apple.",
+    )
+    rel2 = Relationship(
+        source_id=e1.entity_id,
+        target_id=e3.entity_id,
+        relation_type="supplies",
+        description="TSMC supplies Apple.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        store.save_relationship(rel1)
+        store.save_relationship(rel2)
+        between = store.get_relationships_between(
+            e1.entity_id, e2.entity_id
+        )
+        reverse = store.get_relationships_between(
+            e2.entity_id, e1.entity_id
+        )
+        none = store.get_relationships_between(
+            e2.entity_id, e3.entity_id
+        )
+
+    assert len(between) == 1
+    assert between[0].target_id == e2.entity_id
+    assert reverse == []
+    assert none == []
+
+
 # -- KnowledgeStore: find_relationships_by_type --
 
 

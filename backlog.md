@@ -93,6 +93,12 @@
 - [x] **LOW** — Add PLACE/city subtype in `subtypes.md` — financial hubs (Tokyo, Frankfurt, Hong Kong) are distinct from markets and regions
 - [x] **LOW** — Update design.md query section with methods added in v0.11.23–v0.11.25: `find_relationships_by_type`, `find_entities_by_status`
 
+#### KG design review (v0.11.29)
+
+- [x] **HIGH** — Fix NULL valid_from in relationship PK — SQLite NULL != NULL allows silent duplicate unbounded relationships; use sentinel empty string
+- [x] **MEDIUM** — Add analyst coverage and sector_event relationship patterns to `relationships.md` — `PERSON/analyst → covers → ASSET/equity`, `TOPIC/sector_event → triggers → METRIC`, add `analyst_coverage` and `event_trigger` RELATION_KINDs
+- [x] **LOW** — Add `KnowledgeStore.get_relationships_between(source_id, target_id)` query method — direct two-entity relationship lookup
+
 #### Pipeline foundation (detection → resolution → extraction)
 
 - [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases

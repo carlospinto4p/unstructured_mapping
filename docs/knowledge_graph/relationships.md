@@ -53,6 +53,37 @@ These use `qualifier_id` pointing to a ROLE entity.
 | `PERSON/investor → founded → ORGANIZATION/fund_manager` | Warren Buffett → founded → Berkshire Hathaway |
 
 
+## Analyst coverage
+
+Analyst initiations, upgrades, and downgrades are major
+catalysts for individual stocks.
+
+| Pattern | Example |
+|---------|---------|
+| `PERSON/analyst → covers → ASSET/equity` | Jane Smith → covers → AAPL |
+| `PERSON/analyst → covers → ORGANIZATION/company` | Mike Chen → covers → Tesla Inc. |
+| `ORGANIZATION/rating_agency → covers → ORGANIZATION/company` | Moody's → covers → Ford Motor |
+
+Use temporal bounds for coverage initiation and
+termination. Rating actions (upgrades, downgrades) are
+modeled in the Credit ratings section with the `rating`
+RELATION_KIND — analyst coverage here refers to the
+ongoing coverage relationship, not individual actions.
+
+
+## Sector events
+
+TOPIC/sector_event entities represent recurring events
+that cluster articles and drive volatility windows.
+
+| Pattern | Example |
+|---------|---------|
+| `TOPIC/sector_event → triggers → METRIC` | Fed meeting → triggers → federal funds rate |
+| `TOPIC/sector_event → affects → TOPIC/sector` | Tech earnings season → affects → Technology |
+| `TOPIC/sector_event → affects → ASSET` | OPEC+ meeting → affects → WTI crude oil |
+| `ORGANIZATION → hosts → TOPIC/sector_event` | Federal Reserve → hosts → Fed meeting |
+
+
 ## Regulation and policy
 
 | Pattern | Example |
@@ -208,3 +239,5 @@ Recommended RELATION_KIND entities for financial analysis:
 | classification | classified_as, measures, categorized_as            |
 | causality      | affects, spun_off, merged_with, triggered          |
 | partnership    | partners_with, collaborates_with, allied_with      |
+| analyst_coverage | covers, initiates_coverage, drops_coverage        |
+| event_trigger  | triggers, hosts, schedules                          |

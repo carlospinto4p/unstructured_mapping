@@ -461,7 +461,8 @@ class KnowledgeStore:
                 relationship.description,
                 relationship.qualifier_id,
                 relationship.relation_kind_id,
-                _dt_to_iso(relationship.valid_from),
+                _dt_to_iso(relationship.valid_from)
+                or "",
                 _dt_to_iso(relationship.valid_until),
                 relationship.document_id,
                 _dt_to_iso(relationship.discovered_at),
@@ -507,6 +508,30 @@ class KnowledgeStore:
                 _row_to_relationship(r) for r in rows
             )
         return results
+
+    def get_relationships_between(
+        self,
+        source_id: str,
+        target_id: str,
+    ) -> list[Relationship]:
+        """Fetch all relationships between two entities.
+
+        Returns relationships where ``source_id`` is the
+        source and ``target_id`` is the target. Does not
+        return the reverse direction — call again with
+        swapped arguments if needed.
+
+        :param source_id: The source entity's ID.
+        :param target_id: The target entity's ID.
+        :return: Matching relationships.
+        """
+        rows = self._conn.execute(
+            _REL_SELECT
+            + "WHERE source_id = ? "
+            "AND target_id = ?",
+            (source_id, target_id),
+        ).fetchall()
+        return [_row_to_relationship(r) for r in rows]
 
     def find_by_qualifier(
         self, qualifier_id: str
@@ -886,7 +911,7 @@ class KnowledgeStore:
     # -- Internal helpers --
 
     def _migrate_relationships(self) -> None:
-        """Add columns introduced in v0.8.0."""
+        """Add columns and fix NULLs from prior versions."""
         cursor = self._conn.execute(
             "PRAGMA table_info(relationships)"
         )
@@ -898,6 +923,12 @@ class KnowledgeStore:
                     f"ADD COLUMN {col} TEXT "
                     f"REFERENCES entities(entity_id)"
                 )
+        # v0.11.29: coalesce NULL valid_from to "" so
+        # the PK dedup works (NULL != NULL in SQLite).
+        self._conn.execute(
+            "UPDATE relationships SET valid_from = '' "
+            "WHERE valid_from IS NULL"
+        )
 
     def _migrate_entities(self) -> None:
         """Add columns introduced in v0.10.0."""

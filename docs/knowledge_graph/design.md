@@ -300,6 +300,10 @@ future queries to the surviving entity.
   judges importance from context.
 - **Relationship ID**: Not needed yet — the composite key
   (source_id, target_id, relation_type, valid_from) is unique.
+  Note: `valid_from` is stored as `""` (empty string) when
+  no temporal bound is set, not as NULL — because SQLite
+  treats `NULL != NULL`, which would allow silent duplicate
+  rows with the same composite key.
 - **Multi-qualifier**: Only one qualifier per relationship.
   Sufficient for the news domain (person+role+company). If
   needed, add a join table later.
