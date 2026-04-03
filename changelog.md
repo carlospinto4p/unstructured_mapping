@@ -1,5 +1,24 @@
 ## Changelog
 
+### v0.11.35 - 3rd April 2026
+
+- `.claude/`:
+  - Migrated `/self-refinement` from command to skill
+    (v1.0.0) for version tracking.
+
+
+### v0.11.34 - 3rd April 2026
+
+- Added PRODUCT relationship patterns to `relationships.md`:
+  - `manufactured_by`, `approved`, `grounded`,
+    `competes_with`, `runs_on`
+  - New `product` RELATION_KIND with aliases
+- Added IPO/listing event pattern:
+  - `ORGANIZATION/company → ipo_on → ORGANIZATION/exchange`
+  - Added `ipo_on` alias to `market_structure` RELATION_KIND
+- Added KG design review backlog items (v0.11.33)
+
+
 ### v0.11.33 - 3rd April 2026
 
 - Added scope warning to ownership/investment patterns in
