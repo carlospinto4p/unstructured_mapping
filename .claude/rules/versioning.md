@@ -39,12 +39,45 @@ After making significant changes, proactively update the version and changelog a
 ```
 
 **Style rules:**
-- Use single backticks (`` `name` ``) for inline code — never double backticks (``` ``name`` ```).
+- Use single backticks (`` `name` ``) for inline code — never double backticks.
 - Do not add "Breaking change" labels or bold markers — the major version bump already signals that. Just describe what changed.
 - Use short action verbs: "Added", "Updated", "Fixed", "Removed".
 - Name the class/method/enum directly — no need to repeat the full module path for every sub-item.
 - One bullet per logical change. **When listing 3+ items** (enums, methods, files, etc.), **always use sub-bullets** — never inline them in a comma-separated list.
-- **Always group by module**: Group items under a parent bullet for each module/directory (e.g., `programme/`, `.claude/rules/`). This applies even when all items belong to a single module — the module header makes the scope clear at a glance.
+- **Always group by module**: Group items under a parent bullet for each module/directory (e.g., `src/`, `.claude/rules/`). This applies even when all items belong to a single module — the module header makes the scope clear at a glance.
+
+**When to use sub-bullets:**
+- Multiple functions/classes added to the same module:
+  ```
+  - Added `db/utils.py`:
+    - `create_db()`: description.
+    - `require_db()`: description.
+  ```
+- Multiple files affected by the same logical change:
+  ```
+  - Added unit tests:
+    - `tests/test_base.py`: 22 tests.
+    - `tests/test_tables.py`: 12 tests.
+  ```
+- Multiple fixes in one version:
+  ```
+  - Fixed:
+    - `module_a.py`: description.
+    - `module_b.py`: description.
+  ```
+- Consequences of a parent change:
+  ```
+  - Moved `app/` into `src/project/app/`:
+    - Updated `Dockerfile` entrypoint.
+    - Updated `README.md` run command.
+  ```
+
+**When NOT to use sub-bullets:**
+- Single-item sublists — fold into the parent bullet instead:
+  ```
+  - Added `docs/schema.md`: ERD and schema documentation.
+  ```
+- Unrelated changes — keep as separate top-level bullets.
 
 **IMPORTANT**: Always leave **two blank lines** between version entries in the changelog for readability.
 
