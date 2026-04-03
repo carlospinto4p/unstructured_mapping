@@ -1,6 +1,6 @@
 [project]
 name = "unstructured-mapping"
-version = "0.11.37"
+version = "0.11.38"
 description = "Map well-defined knowledge-graph entities to unstructured text."
 authors = [{ name = "Carlos Pinto", email = "carlospinto4p@gmail.com" }]
 readme = "README.md"

@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.38 - 3rd April 2026
+
+- `.claude/`:
+  - Migrated `/db-health` from command to skill (v1.0.0)
+    for version tracking.
+
+
 ### v0.11.37 - 3rd April 2026
 
 - Removed duplicate `spun_off` pattern from Corporate
