@@ -144,6 +144,8 @@ _CREATE_INDEXES = (
     "ON entities (status)",
     "CREATE INDEX IF NOT EXISTS idx_entity_name "
     "ON entities (canonical_name COLLATE NOCASE)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_created "
+    "ON entities (created_at)",
     "CREATE INDEX IF NOT EXISTS idx_alias_lookup "
     "ON entity_aliases (alias COLLATE NOCASE)",
     "CREATE INDEX IF NOT EXISTS idx_prov_document "
@@ -712,6 +714,27 @@ class KnowledgeStore(SQLiteStore):
             "FROM entities GROUP BY entity_type"
         ).fetchall()
         return {t: c for t, c in rows}
+
+    def find_entities_since(
+        self, since: datetime
+    ) -> list[Entity]:
+        """Find entities created after a given time.
+
+        Returns entities with ``created_at >= since``,
+        ordered most recent first. Useful for new-entity
+        monitoring ("what was added to the KG today?").
+
+        :param since: Only return entities created at or
+            after this datetime.
+        :return: Matching entities, newest first.
+        """
+        rows = self._conn.execute(
+            _ENTITY_SELECT
+            + "WHERE created_at >= ? "
+            "ORDER BY created_at DESC",
+            (_dt_to_iso(since),),
+        ).fetchall()
+        return self._rows_to_entities(rows)
 
     # -- Co-mention query --
 

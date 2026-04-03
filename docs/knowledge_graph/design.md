@@ -281,6 +281,11 @@ future queries to the surviving entity.
   `{type: count}` mapping via a single `GROUP BY` query — useful
   for dashboard stats without fetching all rows.
 
+- **New entity monitoring**: `find_entities_since(datetime)`
+  returns entities with `created_at >= since`, newest first.
+  Indexed on `created_at` for fast lookups — e.g. "what entities
+  were discovered today?"
+
 
 ## Relationship — open-ended and temporal
 

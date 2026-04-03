@@ -143,6 +143,11 @@
 - [x] **LOW** — Add `find_by_name_prefix(prefix)` query method — `LIKE prefix || '%'` for autocomplete/typeahead lookups
 - [x] **LOW** — Add `count_entities_by_type()` query method — single `GROUP BY entity_type` for dashboard stats without fetching all rows
 
+#### KG design review (v0.11.41)
+
+- [x] **MEDIUM** — Add `find_entities_since(datetime)` query method — filter on `created_at >= since` for new-entity alerting; add `(created_at)` index
+- [x] **LOW** — Update `schema.md` intro to reference `SQLiteStore` base class instead of stale `ArticleStore` pattern
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG

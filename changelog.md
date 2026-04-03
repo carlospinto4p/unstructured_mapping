@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.11.42 - 3rd April 2026
+
+- Added `KnowledgeStore.find_entities_since()` — returns
+  entities created after a given datetime, newest first;
+  indexed on `created_at` for fast new-entity alerting
+- Updated `schema.md` intro to reference `SQLiteStore`
+  base class instead of stale `ArticleStore` pattern
+- Updated `design.md` with `find_entities_since`
+  documentation
+
+
 ### v0.11.41 - 3rd April 2026
 
 - `docs/knowledge_graph/relationships.md`:

@@ -1,10 +1,10 @@
 # Knowledge Graph — SQLite Schema
 
-Follows the `ArticleStore` pattern established in `web_scraping`:
-
-- Constructor takes `Path`, creates tables/indexes.
-- Context manager for connection lifecycle.
-- Bulk insert with deduplication.
+Extends :class:`SQLiteStore` from ``storage_base.py``, which
+handles directory creation, connection lifecycle, DDL execution,
+migration, and index creation. ``KnowledgeStore`` declares its
+tables and indexes as class attributes and overrides ``_migrate``
+for schema evolution.
 
 
 ## `entities`
@@ -26,7 +26,7 @@ Core entity records. Dates stored as ISO 8601 text.
 | updated_at     | TEXT     |                  | When this record was last modified          |
 
 Indexes: `entity_type`, `(entity_type, subtype)`, `status`,
-`canonical_name COLLATE NOCASE`.
+`canonical_name COLLATE NOCASE`, `created_at`.
 
 
 ## `entity_aliases`

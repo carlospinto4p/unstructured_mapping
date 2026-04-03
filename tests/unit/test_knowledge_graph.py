@@ -707,6 +707,44 @@ def test_count_entities_by_type_empty(tmp_path):
     assert counts == {}
 
 
+# -- KnowledgeStore: find_entities_since --
+
+
+def test_find_entities_since(tmp_path):
+    db = tmp_path / "kg.db"
+    t1 = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    t2 = datetime(2025, 6, 1, tzinfo=timezone.utc)
+    e_old = _make_entity(
+        canonical_name="Old",
+        created_at=t1,
+    )
+    e_new = _make_entity(
+        canonical_name="New",
+        created_at=t2,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e_old)
+        store.save_entity(e_new)
+        cutoff = datetime(
+            2025, 3, 1, tzinfo=timezone.utc
+        )
+        found = store.find_entities_since(cutoff)
+        all_found = store.find_entities_since(t1)
+
+    assert len(found) == 1
+    assert found[0].canonical_name == "New"
+    assert len(all_found) == 2
+
+
+def test_find_entities_since_empty(tmp_path):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        found = store.find_entities_since(
+            datetime(2025, 1, 1, tzinfo=timezone.utc)
+        )
+    assert found == []
+
+
 # -- KnowledgeStore: merge operation --
 
 
