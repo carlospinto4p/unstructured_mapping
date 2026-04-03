@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.12.0 - 3rd April 2026
+
+- Added `docs/pipeline/design.md` — ingestion pipeline
+  architecture covering:
+  - Two-pass extraction (entities → relationships)
+  - Ingestion run tracking with metadata table
+  - `LLMProvider` ABC with Ollama as first implementation
+  - Auto-create entity policy with audit trail
+  - Relevant-entity windowing for context budget
+  - JSON mode + validation + retry for structured output
+  - Provenance-based already-processed detection
+  - Per-article error isolation
+  - Module structure and dependency plan
+
+
 ### v0.11.43 - 3rd April 2026
 
 - `CLAUDE.md`:
