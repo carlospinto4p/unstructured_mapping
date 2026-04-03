@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.12.1 - 3rd April 2026
+
+- Fixed `Null document_ids` showing `None` instead of `0`
+  in `db_health` — `SUM(CASE)` returns NULL over empty
+  result sets; split into separate `COUNT(*)` queries
+
+
 ### v0.12.0 - 3rd April 2026
 
 - Added `docs/pipeline/design.md` — ingestion pipeline
