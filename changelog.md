@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.28 - 3rd April 2026
+
+- `.claude/`:
+  - Migrated `/refactor` from command to skill (v1.0.0)
+    for version tracking.
+
+
 ### v0.11.27 - 3rd April 2026
 
 - Added 6 RELATION_KIND entries in
