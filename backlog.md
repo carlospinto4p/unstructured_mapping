@@ -78,7 +78,7 @@
 
 #### KG design review (v0.11.21)
 
-- [ ] **MEDIUM** — Add `rating` RELATION_KIND to relationships.md — aliases: rated_by, downgraded_by, upgraded_by; covers credit rating changes (S&P, Moody's, Fitch)
+- [x] **MEDIUM** — Add `rating` RELATION_KIND to relationships.md — aliases: rated_by, downgraded_by, upgraded_by; covers credit rating changes (S&P, Moody's, Fitch)
 - [ ] **LOW** — Add `find_relationships_by_type(relation_type)` query method — filter relationships by raw string before RELATION_KIND normalization
 - [ ] **LOW** — Fix "other six" → "other eight" in design.md ROLE/RELATION_KIND section (line 93)
 

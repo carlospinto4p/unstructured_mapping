@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.11.22 - 3rd April 2026
+
+- Added `rating` RELATION_KIND to
+  `docs/knowledge_graph/relationships.md` — aliases: rated,
+  upgraded, downgraded, affirmed; covers credit rating
+  actions by S&P, Moody's, Fitch
+- Added credit ratings relationship patterns section with
+  five canonical patterns (agency → entity)
+- Added `rating_agency` ORGANIZATION subtype in
+  `docs/knowledge_graph/subtypes.md`
+
+
 ### v0.11.21 - 2nd April 2026
 
 - Eliminated duplicate COUNT query in

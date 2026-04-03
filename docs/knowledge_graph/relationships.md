@@ -89,6 +89,24 @@ Events are modeled as relationships with temporal bounds
 | `PERSON/executive → departed_from → ORGANIZATION/company` (qualified by ROLE) | Old CEO → departed_from → Company (CEO, valid_until=2024-01-14) |
 
 
+## Credit ratings
+
+Rating actions are major market-moving events. The agency is
+the source; the rated entity is the target.
+
+| Pattern | Example |
+|---------|---------|
+| `ORGANIZATION/rating_agency → rated → ORGANIZATION/company` | S&P → rated → Apple Inc. |
+| `ORGANIZATION/rating_agency → rated → PLACE/country` | Moody's → rated → France |
+| `ORGANIZATION/rating_agency → upgraded → ORGANIZATION/company` | Fitch → upgraded → Ford Motor (valid_from=2024-06-01) |
+| `ORGANIZATION/rating_agency → downgraded → PLACE/country` | S&P → downgraded → United States (valid_from=2011-08-05) |
+| `ORGANIZATION/rating_agency → affirmed → ASSET/bond` | Moody's → affirmed → US 10-Year Treasury |
+
+Use temporal bounds to capture when a rating action occurred.
+The KG does not store the actual rating value (AAA, Baa1) —
+that is quantitative data belonging in external tables.
+
+
 ## Competitive and supply chain
 
 | Pattern | Example |
@@ -139,3 +157,4 @@ Recommended RELATION_KIND entities for financial analysis:
 | sanction       | targets, sanctioned, restricted                  |
 | appointment    | appointed_at, named_to, elected_to               |
 | departure      | departed_from, resigned_from, fired_from         |
+| rating         | rated, upgraded, downgraded, affirmed             |

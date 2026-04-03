@@ -44,6 +44,7 @@ Subtypes serve two roles:
 |                | funds, pension funds. ETF vehicles are ASSET/etf | Return, CalPERS                        |
 | multilateral   | International organizations and treaty bodies    | IMF, World Bank, WTO, NATO             |
 | government     | National or regional government bodies           | US Treasury, UK Parliament             |
+| rating_agency  | Credit rating agencies that assess creditworthiness | S&P Global Ratings, Moody's, Fitch    |
 
 #### Deferred: sub-classification of companies
 
