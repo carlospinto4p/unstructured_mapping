@@ -1,5 +1,33 @@
 ## Changelog
 
+### v0.11.30 - 3rd April 2026
+
+- `.claude/`:
+  - Migrated `/optimize` from command to skill (v1.0.0)
+    for version tracking.
+
+
+### v0.11.29 - 3rd April 2026
+
+- Fixed NULL `valid_from` in relationship PK — SQLite
+  `NULL != NULL` allowed silent duplicate unbounded
+  relationships. Now stores `""` sentinel instead of
+  NULL; migration backfills existing rows
+- Added `KnowledgeStore.get_relationships_between()` —
+  fetches all relationships between two specific entities
+  without Python-side filtering
+- Added relationship pattern sections in
+  `docs/knowledge_graph/relationships.md`:
+  - Analyst coverage: `covers` pattern for
+    PERSON/analyst → ASSET/equity
+  - Sector events: `triggers`, `affects`, `hosts`
+    patterns for TOPIC/sector_event
+- Added `analyst_coverage` and `event_trigger`
+  RELATION_KIND entries
+- Updated `docs/knowledge_graph/design.md` with
+  valid_from sentinel rationale
+
+
 ### v0.11.28 - 3rd April 2026
 
 - `.claude/`:
