@@ -588,6 +588,47 @@ class KnowledgeStore:
         ).fetchall()
         return [_row_to_relationship(r) for r in rows]
 
+    def find_active_relationships(
+        self,
+        entity_id: str,
+        as_source: bool = True,
+        as_target: bool = True,
+    ) -> list[Relationship]:
+        """Fetch currently active relationships.
+
+        Returns relationships where ``valid_until`` is
+        ``None`` (unbounded) or in the future. Useful for
+        "current state" queries like "who is the current
+        CEO?" or "which sanctions are in effect?"
+
+        :param entity_id: The entity's unique identifier.
+        :param as_source: Include relationships where the
+            entity is the source.
+        :param as_target: Include relationships where the
+            entity is the target.
+        :return: Active relationships.
+        """
+        now = _now_iso()
+        results: list[Relationship] = []
+        for col, include in (
+            ("source_id", as_source),
+            ("target_id", as_target),
+        ):
+            if not include:
+                continue
+            rows = self._conn.execute(
+                _REL_SELECT
+                + f"WHERE {col} = ? "
+                "AND (valid_until IS NULL "
+                "OR valid_until = '' "
+                "OR valid_until > ?)",
+                (entity_id, now),
+            ).fetchall()
+            results.extend(
+                _row_to_relationship(r) for r in rows
+            )
+        return results
+
     def find_entities_by_type(
         self, entity_type: EntityType
     ) -> list[Entity]:

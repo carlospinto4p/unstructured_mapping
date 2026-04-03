@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.11.36 - 3rd April 2026
+
+- Fixed `triggers` alias overlap — removed `triggered` from
+  `causality` RELATION_KIND; `triggers` now only in
+  `event_trigger`
+- Added `KnowledgeStore.find_active_relationships()` — returns
+  relationships where `valid_until` is unbounded or in the
+  future, for current-state queries
+- Updated `docs/knowledge_graph/design.md` with
+  `find_active_relationships` documentation
+
+
 ### v0.11.35 - 3rd April 2026
 
 - `.claude/`:

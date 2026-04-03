@@ -268,7 +268,7 @@ Recommended RELATION_KIND entities for financial analysis:
 | policy         | enforces, sets, set_by, sponsored_by, applies_to  |
 | classification | classified_as, belongs_to, measures,               |
 |                | categorized_as                                     |
-| causality      | affects, triggered                                  |
+| causality      | affects                                              |
 | partnership    | partners_with, collaborates_with, allied_with      |
 | analyst_coverage | covers, initiates_coverage, drops_coverage        |
 | product        | manufactured_by, produced_by, made_by,               |

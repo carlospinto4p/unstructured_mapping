@@ -266,6 +266,12 @@ future queries to the surviving entity.
   Any consumer listing entities should filter to ACTIVE to exclude
   stale or merged records.
 
+- **Active relationships**: `find_active_relationships(entity_id)`
+  returns relationships where `valid_until` is unbounded or in the
+  future. Answers "current state" queries like "who is the current
+  CEO?" or "which sanctions are in effect?" without client-side
+  filtering.
+
 
 ## Relationship — open-ended and temporal
 

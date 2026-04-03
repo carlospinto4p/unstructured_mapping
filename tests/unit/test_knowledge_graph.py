@@ -530,6 +530,86 @@ def test_find_relationships_by_type(tmp_path):
     assert none == []
 
 
+# -- KnowledgeStore: find_active_relationships --
+
+
+def test_find_active_relationships(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Company A")
+    e2 = _make_entity(canonical_name="Company B")
+    e3 = _make_entity(canonical_name="Person X")
+    past = datetime(2020, 1, 1, tzinfo=timezone.utc)
+    future = datetime(2099, 12, 31, tzinfo=timezone.utc)
+    rel_active = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="A supplies B.",
+    )
+    rel_ended = Relationship(
+        source_id=e3.entity_id,
+        target_id=e1.entity_id,
+        relation_type="works_at",
+        description="X worked at A.",
+        valid_from=past,
+        valid_until=past,
+    )
+    rel_future = Relationship(
+        source_id=e3.entity_id,
+        target_id=e2.entity_id,
+        relation_type="works_at",
+        description="X works at B.",
+        valid_from=past,
+        valid_until=future,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        store.save_relationship(rel_active)
+        store.save_relationship(rel_ended)
+        store.save_relationship(rel_future)
+        active = store.find_active_relationships(
+            e3.entity_id
+        )
+        active_src = store.find_active_relationships(
+            e3.entity_id, as_target=False
+        )
+        active_tgt = store.find_active_relationships(
+            e3.entity_id, as_source=False
+        )
+
+    types = {r.relation_type for r in active}
+    assert len(active) == 1
+    assert active[0].target_id == e2.entity_id
+    assert "works_at" in types
+    assert len(active_src) == 1
+    assert active_tgt == []
+
+
+def test_find_active_relationships_unbounded(tmp_path):
+    """Relationships with no valid_until are active."""
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="A")
+    e2 = _make_entity(canonical_name="B")
+    rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="competes_with",
+        description="A competes with B.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(rel)
+        active = store.find_active_relationships(
+            e1.entity_id
+        )
+
+    assert len(active) == 1
+    assert active[0].relation_type == "competes_with"
+
+
 # -- KnowledgeStore: find_entities_by_status --
 
 
