@@ -111,8 +111,8 @@
 - [x] **HIGH** — Add IPO/listing event pattern to `relationships.md` — `ORGANIZATION/company → ipo_on → ORGANIZATION/exchange` with temporal bounds; add `ipo_on` alias to `market_structure` RELATION_KIND
 - [x] **MEDIUM** — Fix `triggers` alias overlap between `causality` and `event_trigger` RELATION_KINDs — remove `triggered` from `causality`, keep `triggers` only in `event_trigger`
 - [x] **MEDIUM** — Add `find_active_relationships(entity_id)` query method — filter on `valid_until IS NULL OR valid_until > now` for current-state queries
-- [ ] **LOW** — Remove duplicate `spun_off` pattern from Corporate structure section — keep in Corporate actions, add cross-reference
-- [ ] **LOW** — Move `measures` from `classification` RELATION_KIND to a `scope` kind or add doc note explaining the semantic stretch
+- [x] **LOW** — Remove duplicate `spun_off` pattern from Corporate structure section — keep in Corporate actions, add cross-reference
+- [x] **LOW** — Move `measures` from `classification` RELATION_KIND to a `scope` kind or add doc note explaining the semantic stretch
 
 #### Pipeline foundation (detection → resolution → extraction)
 

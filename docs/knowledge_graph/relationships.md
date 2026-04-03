@@ -186,11 +186,11 @@ understanding which brands belong to which parent.
 |---------|---------|
 | `ORGANIZATION/company → subsidiary_of → ORGANIZATION/company` | Google → subsidiary_of → Alphabet |
 | `ORGANIZATION/company → parent_of → ORGANIZATION/company` | Berkshire Hathaway → parent_of → GEICO |
-| `ORGANIZATION/company → spun_off → ORGANIZATION/company` | GE → spun_off → GE Vernova |
 
 Use temporal bounds when ownership changes (e.g. an
 acquisition creates a new subsidiary_of relationship with
-`valid_from`).
+`valid_from`). For `spun_off` and `merged_with`, see
+Corporate actions and events above.
 
 
 ## Location
@@ -266,7 +266,7 @@ Recommended RELATION_KIND entities for financial analysis:
 | market_structure | listed_on, ipo_on, managed_by, tracks,            |
 |                  | derived_from                                       |
 | policy         | enforces, sets, set_by, sponsored_by, applies_to  |
-| classification | classified_as, belongs_to, measures,               |
+| classification | classified_as, belongs_to, measures*,              |
 |                | categorized_as                                     |
 | causality      | affects                                              |
 | partnership    | partners_with, collaborates_with, allied_with      |
@@ -274,3 +274,8 @@ Recommended RELATION_KIND entities for financial analysis:
 | product        | manufactured_by, produced_by, made_by,               |
 |                | approved, grounded, recalled                         |
 | event_trigger  | triggers, hosts, schedules                          |
+
+\* `measures` is a semantic stretch — `METRIC → measures →
+PLACE` describes geographic scope, not classification — but
+creating a dedicated kind for a single alias adds overhead
+without practical benefit.

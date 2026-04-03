@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.11.37 - 3rd April 2026
+
+- Removed duplicate `spun_off` pattern from Corporate
+  structure section in `relationships.md` — kept in
+  Corporate actions, added cross-reference
+- Added doc note for `measures` in `classification`
+  RELATION_KIND explaining the semantic stretch
+
+
 ### v0.11.36 - 3rd April 2026
 
 - Fixed `triggers` alias overlap — removed `triggered` from
