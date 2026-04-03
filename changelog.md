@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.11.24 - 3rd April 2026
+
+- Added `knowledge_graph/exceptions.py` with domain-specific
+  exceptions:
+  - `KnowledgeGraphError` — base exception
+  - `EntityNotFound` — replaces `ValueError` in
+    `merge_entities()`
+  - `RevisionNotFound` — replaces `ValueError` in
+    `revert_entity()`
+  - `ResolutionAmbiguous` — for future pipeline use
+  - `ValidationError` — for future KG validation
+- Removed example scripts backlog item
+
+
 ### v0.11.23 - 3rd April 2026
 
 - Added `KnowledgeStore.find_relationships_by_type()` —

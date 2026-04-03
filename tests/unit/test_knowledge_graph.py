@@ -6,11 +6,13 @@ import pytest
 
 from unstructured_mapping.knowledge_graph import (
     Entity,
+    EntityNotFound,
     EntityStatus,
     EntityType,
     KnowledgeStore,
     Provenance,
     Relationship,
+    RevisionNotFound,
 )
 
 
@@ -486,7 +488,7 @@ def test_store_merge_nonexistent_raises(tmp_path):
     e = _make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
-        with pytest.raises(ValueError):
+        with pytest.raises(EntityNotFound):
             store.merge_entities("fake", e.entity_id)
 
 
@@ -1019,7 +1021,7 @@ def test_revert_entity_bad_revision(tmp_path):
     e = _make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
-        with pytest.raises(ValueError):
+        with pytest.raises(RevisionNotFound):
             store.revert_entity(e.entity_id, 9999)
 
 

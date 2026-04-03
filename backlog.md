@@ -90,9 +90,7 @@
 - [ ] **MEDIUM** — LLM-based entity resolver using Claude API — reads entity descriptions + context snippets to disambiguate when alias lookup returns multiple candidates
 - [ ] **MEDIUM** — Relationship extraction module: `RelationshipExtractor` ABC + `LLMExtractor` — extract relationships between resolved entities from article text
 - [ ] **MEDIUM** — KG validation: temporal consistency (valid_until >= valid_from), alias collision detection across entities, entity-type relationship constraints
-- [ ] **LOW** — Custom exceptions module (`exceptions.py`) — `EntityNotFound`, `ResolutionAmbiguous`, `ValidationError` replacing generic `ValueError`
-- [ ] **LOW** — Example scripts in `examples/` — basic detection, full pipeline, KG population walkthrough
-
+- [x] **LOW** — Custom exceptions module (`exceptions.py`) — `EntityNotFound`, `ResolutionAmbiguous`, `ValidationError` replacing generic `ValueError`
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG

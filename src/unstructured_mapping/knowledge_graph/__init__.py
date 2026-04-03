@@ -4,6 +4,13 @@ See ``docs/knowledge_graph/`` for detailed rationale
 behind the data model, enum values, and deferred features.
 """
 
+from unstructured_mapping.knowledge_graph.exceptions import (
+    EntityNotFound,
+    KnowledgeGraphError,
+    ResolutionAmbiguous,
+    RevisionNotFound,
+    ValidationError,
+)
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityRevision,
@@ -19,11 +26,16 @@ from unstructured_mapping.knowledge_graph.storage import (
 
 __all__ = [
     "Entity",
+    "EntityNotFound",
     "EntityRevision",
     "EntityStatus",
     "EntityType",
+    "KnowledgeGraphError",
     "KnowledgeStore",
     "Provenance",
     "Relationship",
     "RelationshipRevision",
+    "ResolutionAmbiguous",
+    "RevisionNotFound",
+    "ValidationError",
 ]

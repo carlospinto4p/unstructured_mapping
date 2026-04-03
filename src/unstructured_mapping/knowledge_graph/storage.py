@@ -14,6 +14,10 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
+from unstructured_mapping.knowledge_graph.exceptions import (
+    EntityNotFound,
+    RevisionNotFound,
+)
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityRevision,
@@ -675,17 +679,17 @@ class KnowledgeStore:
         :param deprecated_id: Entity to deprecate.
         :param surviving_id: Entity that absorbs the
             deprecated one.
-        :raises ValueError: If either entity is not found.
+        :raises EntityNotFound: If either entity is not
+            found.
         """
         dep = self.get_entity(deprecated_id)
         surv = self.get_entity(surviving_id)
-        for entity, label in (
-            (dep, "deprecated_id"),
-            (surv, "surviving_id"),
+        for entity, eid in (
+            (dep, deprecated_id),
+            (surv, surviving_id),
         ):
             if entity is None:
-                msg = f"{label} not found"
-                raise ValueError(msg)
+                raise EntityNotFound(eid)
 
         merge_reason = (
             f"merged {deprecated_id} into "
@@ -783,8 +787,8 @@ class KnowledgeStore:
         :param entity_id: The entity to revert.
         :param revision_id: The revision to restore.
         :return: The restored entity.
-        :raises ValueError: If the revision is not found
-            or belongs to a different entity.
+        :raises RevisionNotFound: If the revision is not
+            found or belongs to a different entity.
         """
         row = self._conn.execute(
             "SELECT revision_id, entity_id, operation,"
@@ -798,11 +802,9 @@ class KnowledgeStore:
             (revision_id, entity_id),
         ).fetchone()
         if row is None:
-            msg = (
-                f"revision {revision_id} not found "
-                f"for entity '{entity_id}'"
+            raise RevisionNotFound(
+                revision_id, entity_id
             )
-            raise ValueError(msg)
         rev = _row_to_entity_rev(row)
         restored = Entity(
             entity_id=rev.entity_id,
