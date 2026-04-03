@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.32 - 3rd April 2026
+
+- `.claude/`:
+  - Migrated `/improvements` from command to skill (v1.0.0)
+    for version tracking.
+
+
 ### v0.11.31 - 3rd April 2026
 
 - Fixed sentinel inconsistency in `_log_relationship()` —
