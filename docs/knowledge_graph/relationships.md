@@ -202,3 +202,9 @@ Recommended RELATION_KIND entities for financial analysis:
 | corporate_structure | subsidiary_of, parent_of, controlled_by     |
 | location       | headquartered_in, located_in, based_in            |
 | membership     | member_of, belongs_to, joined                     |
+| governance     | leads, founded, governs                            |
+| market_structure | listed_on, managed_by, tracks, derived_from      |
+| policy         | enforces, sets, set_by, sponsored_by, applies_to  |
+| classification | classified_as, measures, categorized_as            |
+| causality      | affects, spun_off, merged_with, triggered          |
+| partnership    | partners_with, collaborates_with, allied_with      |

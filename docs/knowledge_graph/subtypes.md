@@ -175,8 +175,9 @@ urban consumers").
 | Subtype       | Covers                                          | Examples                               |
 |---------------|-------------------------------------------------|----------------------------------------|
 | country       | Sovereign nations                                | United States, China, Germany          |
+| city          | Cities, especially financial hubs and capitals   | Tokyo, Frankfurt, Hong Kong, Singapore |
 | economic_zone | Trade blocs and monetary unions                  | Eurozone, ASEAN, BRICS                 |
-| market        | Financial centers and exchange locations          | Wall Street, City of London, Shanghai  |
+| market        | Financial centers and exchange locations          | Wall Street, City of London            |
 | region        | Sub-national regions with economic significance  | Silicon Valley, Shenzhen, Ruhr Valley  |
 
 

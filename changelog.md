@@ -1,5 +1,21 @@
 ## Changelog
 
+### v0.11.27 - 3rd April 2026
+
+- Added 6 RELATION_KIND entries in
+  `docs/knowledge_graph/relationships.md`:
+  governance, market_structure, policy, classification,
+  causality, partnership — covers 11 previously unmapped
+  relation_types across documented patterns
+- Added PLACE/city subtype in
+  `docs/knowledge_graph/subtypes.md` — financial hubs
+  (Tokyo, Frankfurt, Hong Kong, Singapore) distinct from
+  markets and regions
+- Updated `docs/knowledge_graph/design.md` query section
+  with `find_relationships_by_type` and
+  `find_entities_by_status` (added in v0.11.23–v0.11.25)
+
+
 ### v0.11.26 - 3rd April 2026
 
 - `.claude/`:

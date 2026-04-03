@@ -87,6 +87,12 @@
 - [x] **MEDIUM** — Add corporate structure, location, and membership relationship patterns to `relationships.md` — `subsidiary_of`/`parent_of`, `headquartered_in`, `member_of` with corresponding RELATION_KIND entries
 - [x] **LOW** — Add `KnowledgeStore.find_entities_by_status()` query method — filter by `EntityStatus` (e.g. all ACTIVE entities)
 
+#### KG design review (v0.11.27)
+
+- [x] **MEDIUM** — Add missing RELATION_KINDs: governance, market_structure, policy, classification, causality, partnership — covers 11 previously unmapped relation_types
+- [x] **LOW** — Add PLACE/city subtype in `subtypes.md` — financial hubs (Tokyo, Frankfurt, Hong Kong) are distinct from markets and regions
+- [x] **LOW** — Update design.md query section with methods added in v0.11.23–v0.11.25: `find_relationships_by_type`, `find_entities_by_status`
+
 #### Pipeline foundation (detection → resolution → extraction)
 
 - [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases

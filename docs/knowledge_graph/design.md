@@ -254,6 +254,19 @@ future queries to the surviving entity.
   of the Federal Reserve in the last 24 hours."
 
 
+## Entity and relationship filtering
+
+- **By relation type**: `find_relationships_by_type(relation_type)`
+  filters on the raw free-form string before any RELATION_KIND
+  normalization — e.g. "all `acquired` relationships." Indexed on
+  `relation_type`.
+
+- **By lifecycle status**: `find_entities_by_status(status)` returns
+  entities filtered by `EntityStatus` (ACTIVE, MERGED, DEPRECATED).
+  Any consumer listing entities should filter to ACTIVE to exclude
+  stale or merged records.
+
+
 ## Relationship — open-ended and temporal
 
 - **relation_type is a string, not an enum**: The space of
