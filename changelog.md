@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.12.4 - 4th April 2026
+
+- `.claude/rules/`:
+  - Normalized `versioning.md` to canonical template.
+
+
 ### v0.12.3 - 3rd April 2026
 
 - `.claude/rules/`:
