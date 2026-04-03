@@ -82,6 +82,11 @@
 - [x] **LOW** — Add `find_relationships_by_type(relation_type)` query method — filter relationships by raw string before RELATION_KIND normalization
 - [x] **LOW** — Fix "other six" → "other eight" in design.md ROLE/RELATION_KIND section (line 93)
 
+#### KG design review (v0.11.25)
+
+- [x] **MEDIUM** — Add corporate structure, location, and membership relationship patterns to `relationships.md` — `subsidiary_of`/`parent_of`, `headquartered_in`, `member_of` with corresponding RELATION_KIND entries
+- [x] **LOW** — Add `KnowledgeStore.find_entities_by_status()` query method — filter by `EntityStatus` (e.g. all ACTIVE entities)
+
 #### Pipeline foundation (detection → resolution → extraction)
 
 - [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases

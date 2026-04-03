@@ -438,6 +438,44 @@ def test_find_relationships_by_type(tmp_path):
     assert none == []
 
 
+# -- KnowledgeStore: find_entities_by_status --
+
+
+def test_find_entities_by_status(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Active Entity")
+    e2 = _make_entity(canonical_name="To Merge")
+    e3 = _make_entity(canonical_name="Surviving")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        store.merge_entities(
+            e2.entity_id, e3.entity_id
+        )
+        active = store.find_entities_by_status(
+            EntityStatus.ACTIVE
+        )
+        merged = store.find_entities_by_status(
+            EntityStatus.MERGED
+        )
+
+    active_names = {e.canonical_name for e in active}
+    assert "Active Entity" in active_names
+    assert "Surviving" in active_names
+    assert len(merged) == 1
+    assert merged[0].canonical_name == "To Merge"
+
+
+def test_find_entities_by_status_empty(tmp_path):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        result = store.find_entities_by_status(
+            EntityStatus.DEPRECATED
+        )
+    assert result == []
+
+
 # -- KnowledgeStore: merge operation --
 
 

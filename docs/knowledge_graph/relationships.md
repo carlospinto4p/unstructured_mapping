@@ -117,6 +117,47 @@ that is quantitative data belonging in external tables.
 | `ORGANIZATION/company → invests_in → ORGANIZATION/company` | SoftBank → invests_in → ARM Holdings |
 
 
+## Corporate structure
+
+Holding company and subsidiary relationships are critical
+for earnings consolidation, regulatory exposure, and
+understanding which brands belong to which parent.
+
+| Pattern | Example |
+|---------|---------|
+| `ORGANIZATION/company → subsidiary_of → ORGANIZATION/company` | Google → subsidiary_of → Alphabet |
+| `ORGANIZATION/company → parent_of → ORGANIZATION/company` | Berkshire Hathaway → parent_of → GEICO |
+| `ORGANIZATION/company → spun_off → ORGANIZATION/company` | GE → spun_off → GE Vernova |
+
+Use temporal bounds when ownership changes (e.g. an
+acquisition creates a new subsidiary_of relationship with
+`valid_from`).
+
+
+## Location
+
+Geographic links drive regulatory jurisdiction analysis
+and geopolitical exposure filtering.
+
+| Pattern | Example |
+|---------|---------|
+| `ORGANIZATION/company → headquartered_in → PLACE/country` | Apple Inc. → headquartered_in → United States |
+| `ORGANIZATION/company → headquartered_in → PLACE/market` | HSBC → headquartered_in → City of London |
+| `ORGANIZATION/exchange → located_in → PLACE/country` | NYSE → located_in → United States |
+
+
+## Membership
+
+Bloc and cartel membership drives coordinated policy
+actions, commodity supply decisions, and macro analysis.
+
+| Pattern | Example |
+|---------|---------|
+| `ORGANIZATION/company → member_of → ORGANIZATION/multilateral` | Saudi Aramco → member_of → OPEC |
+| `PLACE/country → member_of → PLACE/economic_zone` | Germany → member_of → Eurozone |
+| `PLACE/country → member_of → ORGANIZATION/multilateral` | Japan → member_of → G7 |
+
+
 ## Sector and topic linkage
 
 | Pattern | Example |
@@ -158,3 +199,6 @@ Recommended RELATION_KIND entities for financial analysis:
 | appointment    | appointed_at, named_to, elected_to               |
 | departure      | departed_from, resigned_from, fired_from         |
 | rating         | rated, upgraded, downgraded, affirmed             |
+| corporate_structure | subsidiary_of, parent_of, controlled_by     |
+| location       | headquartered_in, located_in, based_in            |
+| membership     | member_of, belongs_to, joined                     |

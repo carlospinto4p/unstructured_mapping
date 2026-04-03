@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.11.25 - 3rd April 2026
+
+- Added relationship pattern sections in
+  `docs/knowledge_graph/relationships.md`:
+  - Corporate structure: `subsidiary_of`, `parent_of`
+  - Location: `headquartered_in`, `located_in`
+  - Membership: `member_of` for blocs and cartels
+- Added three RELATION_KIND entries:
+  `corporate_structure`, `location`, `membership`
+- Added `KnowledgeStore.find_entities_by_status()` —
+  filters entities by `EntityStatus` (ACTIVE, MERGED,
+  DEPRECATED)
+
+
 ### v0.11.24 - 3rd April 2026
 
 - Added `knowledge_graph/exceptions.py` with domain-specific

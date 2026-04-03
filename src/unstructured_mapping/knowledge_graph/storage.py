@@ -595,6 +595,23 @@ class KnowledgeStore:
         ).fetchall()
         return self._rows_to_entities(rows)
 
+    def find_entities_by_status(
+        self, status: EntityStatus
+    ) -> list[Entity]:
+        """Find all entities with a given status.
+
+        Useful for listing only ACTIVE entities or finding
+        all MERGED/DEPRECATED ones.
+
+        :param status: The status to filter by.
+        :return: Matching entities.
+        """
+        rows = self._conn.execute(
+            _ENTITY_SELECT + "WHERE status = ?",
+            (status.value,),
+        ).fetchall()
+        return self._rows_to_entities(rows)
+
     # -- Co-mention query --
 
     def find_co_mentioned(
