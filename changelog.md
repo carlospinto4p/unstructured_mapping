@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.11.23 - 3rd April 2026
+
+- Added `KnowledgeStore.find_relationships_by_type()` —
+  filters relationships by raw `relation_type` string
+  before RELATION_KIND normalization
+- Added `relation_type` index on `relationships` table
+- Fixed "other six" → "other eight" in
+  `docs/knowledge_graph/design.md` ROLE/RELATION_KIND
+  section
+- Updated `docs/knowledge_graph/schema.md` with new index
+
+
 ### v0.11.22 - 3rd April 2026
 
 - Added `rating` RELATION_KIND to

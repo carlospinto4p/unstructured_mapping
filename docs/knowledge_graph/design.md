@@ -90,7 +90,7 @@ for structured querying and synonym resolution:
   kind. This enables querying all relationships of a kind
   regardless of surface form.
 
-Neither meta-type has a blurry boundary with the other six.
+Neither meta-type has a blurry boundary with the other eight.
 A role is never confused with a person, organization, place,
 or topic. They were added in v0.8.0.
 

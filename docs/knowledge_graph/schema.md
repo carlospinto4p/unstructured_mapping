@@ -85,7 +85,7 @@ temporal bounds rather than as a separate entity type.
 
 Primary key: `(source_id, target_id, relation_type, valid_from)`.
 Indexes: `source_id`, `target_id`, `qualifier_id`,
-`relation_kind_id`.
+`relation_kind_id`, `relation_type`.
 
 
 ## `entity_history`

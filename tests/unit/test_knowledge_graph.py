@@ -396,6 +396,46 @@ def test_store_save_and_get_relationships(tmp_path):
     assert from_target[0].source_id == e1.entity_id
 
 
+# -- KnowledgeStore: find_relationships_by_type --
+
+
+def test_find_relationships_by_type(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="Entity A")
+    e2 = _make_entity(canonical_name="Entity B")
+    e3 = _make_entity(canonical_name="Entity C")
+    rel_acq = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="acquired",
+        description="A acquired B.",
+    )
+    rel_comp = Relationship(
+        source_id=e1.entity_id,
+        target_id=e3.entity_id,
+        relation_type="competes_with",
+        description="A competes with C.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        store.save_relationship(rel_acq)
+        store.save_relationship(rel_comp)
+        found = store.find_relationships_by_type(
+            "acquired"
+        )
+        none = store.find_relationships_by_type(
+            "nonexistent"
+        )
+
+    assert len(found) == 1
+    assert found[0].relation_type == "acquired"
+    assert found[0].source_id == e1.entity_id
+    assert found[0].target_id == e2.entity_id
+    assert none == []
+
+
 # -- KnowledgeStore: merge operation --
 
 

@@ -155,6 +155,8 @@ _CREATE_INDEXES = [
     "ON relationships (qualifier_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_kind "
     "ON relationships (relation_kind_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_type "
+    "ON relationships (relation_type)",
     "CREATE INDEX IF NOT EXISTS idx_entity_hist "
     "ON entity_history (entity_id, changed_at)",
     "CREATE INDEX IF NOT EXISTS idx_rel_hist_source "
@@ -535,6 +537,25 @@ class KnowledgeStore:
             _REL_SELECT
             + "WHERE relation_kind_id = ?",
             (relation_kind_id,),
+        ).fetchall()
+        return [_row_to_relationship(r) for r in rows]
+
+    def find_relationships_by_type(
+        self, relation_type: str
+    ) -> list[Relationship]:
+        """Find relationships by raw ``relation_type``.
+
+        Filters on the free-form string before any
+        RELATION_KIND normalization. Case-sensitive match.
+
+        :param relation_type: The relation type string to
+            filter by (e.g. ``"acquired"``, ``"works_at"``).
+        :return: Matching relationships.
+        """
+        rows = self._conn.execute(
+            _REL_SELECT
+            + "WHERE relation_type = ?",
+            (relation_type,),
         ).fetchall()
         return [_row_to_relationship(r) for r in rows]
 
