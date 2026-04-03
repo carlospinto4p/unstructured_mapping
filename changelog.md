@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.11.26 - 3rd April 2026
+
+- `.claude/`:
+  - Updated hooks to v2: read stdin JSON instead of
+    broken `$CLAUDE_TOOL_INPUT`/`$CLAUDE_FILE` env vars.
+  - Added script files in `.claude/hooks/`.
+
+
 ### v0.11.25 - 3rd April 2026
 
 - Added relationship pattern sections in
