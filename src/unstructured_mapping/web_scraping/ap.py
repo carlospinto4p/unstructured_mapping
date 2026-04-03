@@ -71,10 +71,7 @@ class APScraper(Scraper):
                 "falling back to RSS summaries"
             )
 
-    @property
-    def source(self) -> str:
-        """Return ``"ap"``."""
-        return "ap"
+    source = "ap"
 
     def _extract_body(
         self, gnews_url: str

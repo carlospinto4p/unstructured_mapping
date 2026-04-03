@@ -1,16 +1,13 @@
 """SQLite storage for the knowledge graph.
 
-Follows the same pattern as
-:class:`~unstructured_mapping.web_scraping.storage.ArticleStore`:
-constructor takes a :class:`~pathlib.Path`, creates tables and
-indexes, and supports context-manager usage.
+Extends :class:`~unstructured_mapping.storage_base.SQLiteStore`
+with knowledge-graph-specific tables, migrations, and queries.
 
 See ``docs/knowledge_graph/`` for table schema rationale.
 """
 
 import json
 import logging
-import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -27,6 +24,7 @@ from unstructured_mapping.knowledge_graph.models import (
     Relationship,
     RelationshipRevision,
 )
+from unstructured_mapping.storage_base import SQLiteStore
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +134,7 @@ CREATE TABLE IF NOT EXISTS relationship_history (
 )
 """
 
-_CREATE_INDEXES = [
+_CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_entity_type "
     "ON entities (entity_type)",
     "CREATE INDEX IF NOT EXISTS idx_entity_type_subtype "
@@ -167,7 +165,7 @@ _CREATE_INDEXES = [
     "ON relationship_history (source_id, changed_at)",
     "CREATE INDEX IF NOT EXISTS idx_rel_hist_target "
     "ON relationship_history (target_id, changed_at)",
-]
+)
 
 
 _ENTITY_SELECT = (
@@ -194,33 +192,30 @@ _REL_SELECT = (
 )
 
 
-class KnowledgeStore:
+class KnowledgeStore(SQLiteStore):
     """SQLite-backed store for knowledge graph data.
 
     :param db_path: Path to the SQLite database file.
         Parent directories are created automatically.
     """
 
+    _ddl_statements = (
+        _CREATE_ENTITIES,
+        _CREATE_ALIASES,
+        _CREATE_PROVENANCE,
+        _CREATE_RELATIONSHIPS,
+        _CREATE_ENTITY_HISTORY,
+        _CREATE_RELATIONSHIP_HISTORY,
+    )
+    _index_statements = _CREATE_INDEXES
+
     def __init__(
         self, db_path: Path = _DEFAULT_DB_PATH
     ) -> None:
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._conn = sqlite3.connect(str(db_path))
-        self._conn.execute("PRAGMA foreign_keys = ON")
-        for ddl in (
-            _CREATE_ENTITIES,
-            _CREATE_ALIASES,
-            _CREATE_PROVENANCE,
-            _CREATE_RELATIONSHIPS,
-            _CREATE_ENTITY_HISTORY,
-            _CREATE_RELATIONSHIP_HISTORY,
-        ):
-            self._conn.execute(ddl)
-        self._migrate_relationships()
-        self._migrate_entities()
-        for idx in _CREATE_INDEXES:
-            self._conn.execute(idx)
-        self._conn.commit()
+        super().__init__(
+            db_path,
+            pragmas=("foreign_keys = ON",),
+        )
 
     # -- Entity operations --
 
@@ -933,23 +928,12 @@ class KnowledgeStore:
         ).fetchall()
         return [_row_to_relationship_rev(r) for r in rows]
 
-    # -- Lifecycle --
-
-    def close(self) -> None:
-        """Close the database connection."""
-        self._conn.close()
-
-    def __enter__(self) -> "KnowledgeStore":
-        return self
-
-    def __exit__(
-        self, exc_type: type | None,
-        exc_val: BaseException | None,
-        exc_tb: object,
-    ) -> None:
-        self.close()
-
     # -- Internal helpers --
+
+    def _migrate(self) -> None:
+        """Run knowledge graph schema migrations."""
+        self._migrate_relationships()
+        self._migrate_entities()
 
     def _migrate_relationships(self) -> None:
         """Add columns and fix NULLs from prior versions."""

@@ -1,6 +1,6 @@
 """Base scraper interface."""
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
@@ -70,10 +70,20 @@ class Scraper(ABC):
             headers={"User-Agent": USER_AGENT},
         )
 
-    @property
-    @abstractmethod
-    def source(self) -> str:
-        """Short identifier for this news source."""
+    source: str
+    """Short identifier for this news source.
+
+    Subclasses must set this as a class variable
+    (e.g. ``source = "bbc"``).
+    """
+
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        super().__init_subclass__(**kwargs)
+        if not getattr(cls, "source", None):
+            raise TypeError(
+                f"{cls.__name__} must define a "
+                f"'source' class variable"
+            )
 
     def _parse_feed(self, xml: str) -> list[Article]:
         """Parse raw RSS XML into articles.

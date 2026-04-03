@@ -31,7 +31,4 @@ class ReutersScraper(Scraper):
             feed_urls=feed_urls, timeout=timeout
         )
 
-    @property
-    def source(self) -> str:
-        """Return ``"reuters"``."""
-        return "reuters"
+    source = "reuters"

@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.11.39 - 3rd April 2026
+
+- Refactoring pass (v0.11.37 review):
+  - Extracted `SQLiteStore` base class in `storage_base.py`
+    — both `ArticleStore` and `KnowledgeStore` now inherit
+    shared init/lifecycle logic (mkdir, connect, DDL,
+    migrate, indexes, commit, close, context manager)
+  - Extracted `_data_quality_count()` helper and
+    `_QUALITY_CHECKS` table in `db_health.py` — five
+    near-identical COUNT queries replaced with a loop
+  - Replaced `source` property boilerplate in scrapers
+    with class variable + `__init_subclass__` validation
+
+
 ### v0.11.38 - 3rd April 2026
 
 - `.claude/`:

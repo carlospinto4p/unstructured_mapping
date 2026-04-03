@@ -1,11 +1,11 @@
 """SQLite storage for scraped articles."""
 
 import logging
-import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from unstructured_mapping.storage_base import SQLiteStore
 from unstructured_mapping.web_scraping.models import Article
 
 logger = logging.getLogger(__name__)
@@ -24,33 +24,30 @@ CREATE TABLE IF NOT EXISTS articles (
 )
 """
 
-_CREATE_INDEXES = [
+_CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_source_scraped "
     "ON articles (source, scraped_at DESC)",
     "CREATE INDEX IF NOT EXISTS idx_scraped_at "
     "ON articles (scraped_at)",
     "CREATE INDEX IF NOT EXISTS idx_document_id "
     "ON articles (document_id)",
-]
+)
 
 
-class ArticleStore:
+class ArticleStore(SQLiteStore):
     """SQLite-backed store for scraped articles.
 
     :param db_path: Path to the SQLite database file.
         Parent directories are created automatically.
     """
 
+    _ddl_statements = (_CREATE_TABLE,)
+    _index_statements = _CREATE_INDEXES
+
     def __init__(
         self, db_path: Path = _DEFAULT_DB_PATH
     ) -> None:
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._conn = sqlite3.connect(str(db_path))
-        self._migrate()
-        self._conn.execute(_CREATE_TABLE)
-        for idx in _CREATE_INDEXES:
-            self._conn.execute(idx)
-        self._conn.commit()
+        super().__init__(db_path)
 
     def _migrate(self) -> None:
         """Migrate legacy databases to current schema.
@@ -259,16 +256,6 @@ class ArticleStore:
             "GROUP BY source"
         ).fetchall()
         return {src: cnt for src, cnt in rows}
-
-    def close(self) -> None:
-        """Close the database connection."""
-        self._conn.close()
-
-    def __enter__(self) -> "ArticleStore":
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
-        self.close()
 
     @staticmethod
     def _row_to_article(

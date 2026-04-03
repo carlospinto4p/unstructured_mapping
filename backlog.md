@@ -123,6 +123,12 @@
 - [ ] **MEDIUM** — Relationship extraction module: `RelationshipExtractor` ABC + `LLMExtractor` — extract relationships between resolved entities from article text
 - [ ] **MEDIUM** — KG validation: temporal consistency (valid_until >= valid_from), alias collision detection across entities, entity-type relationship constraints
 - [x] **LOW** — Custom exceptions module (`exceptions.py`) — `EntityNotFound`, `ResolutionAmbiguous`, `ValidationError` replacing generic `ValueError`
+#### Refactoring (v0.11.37 review)
+
+- [x] **MEDIUM** — Extract `_data_quality_check()` helper from `_section_data_quality()` in `db_health.py` — five near-identical COUNT queries with only the WHERE clause differing; a loop over `(label, condition)` tuples would halve the code
+- [x] **MEDIUM** — Unify storage init pattern — both `ArticleStore` and `KnowledgeStore` repeat `mkdir` + `connect` + DDL loop + migrate + index loop + commit; extract shared `_init_db()` or a base `SQLiteStore` class
+- [x] **LOW** — Replace `source` property boilerplate in scrapers with a class variable — three identical 3-line `@property` overrides return a hardcoded string; a `source: str` class var on the ABC with `__init_subclass__` validation is cleaner
+
 #### Post-population (after KG is defined and populated)
 
 - [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG

@@ -105,10 +105,7 @@ class BBCScraper(Scraper):
             max_workers=max_workers,
         )
 
-    @property
-    def source(self) -> str:
-        """Return ``"bbc"``."""
-        return "bbc"
+    source = "bbc"
 
     def _extract_body(
         self, url: str

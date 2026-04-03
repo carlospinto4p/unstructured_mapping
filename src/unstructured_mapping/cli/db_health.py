@@ -110,39 +110,45 @@ def _section_daily_coverage(
     return lines
 
 
+_QUALITY_CHECKS: list[tuple[str, str]] = [
+    (
+        "Empty bodies",
+        "body = '' OR body IS NULL",
+    ),
+    (
+        "Empty titles",
+        "title = '' OR title IS NULL",
+    ),
+    (
+        "Missing published",
+        "published IS NULL",
+    ),
+    (
+        "Short bodies (<50)",
+        "LENGTH(body) < 50 AND body != ''",
+    ),
+]
+
+
+def _data_quality_count(
+    conn: sqlite3.Connection,
+    where: str,
+) -> int:
+    """Count articles matching a WHERE clause."""
+    return conn.execute(
+        f"SELECT COUNT(*) FROM articles "
+        f"WHERE {where}"
+    ).fetchone()[0]
+
+
 def _section_data_quality(
     conn: sqlite3.Connection,
 ) -> list[str]:
     """Data quality checks on articles."""
     lines = ["", "Data quality:"]
-
-    empty_body = conn.execute(
-        "SELECT COUNT(*) FROM articles "
-        "WHERE body = '' OR body IS NULL"
-    ).fetchone()[0]
-    lines.append(f"  Empty bodies:      {empty_body}")
-
-    empty_title = conn.execute(
-        "SELECT COUNT(*) FROM articles "
-        "WHERE title = '' OR title IS NULL"
-    ).fetchone()[0]
-    lines.append(f"  Empty titles:      {empty_title}")
-
-    no_date = conn.execute(
-        "SELECT COUNT(*) FROM articles "
-        "WHERE published IS NULL"
-    ).fetchone()[0]
-    lines.append(
-        f"  Missing published: {no_date}"
-    )
-
-    short_body = conn.execute(
-        "SELECT COUNT(*) FROM articles "
-        "WHERE LENGTH(body) < 50 AND body != ''"
-    ).fetchone()[0]
-    lines.append(
-        f"  Short bodies (<50): {short_body}"
-    )
+    for label, where in _QUALITY_CHECKS:
+        cnt = _data_quality_count(conn, where)
+        lines.append(f"  {label + ':':<18s} {cnt}")
 
     col_names = {
         row[1]
@@ -151,12 +157,11 @@ def _section_data_quality(
         )
     }
     if "document_id" in col_names:
-        null_ids = conn.execute(
-            "SELECT COUNT(*) FROM articles "
-            "WHERE document_id IS NULL"
-        ).fetchone()[0]
+        null_ids = _data_quality_count(
+            conn, "document_id IS NULL"
+        )
         lines.append(
-            f"  Null document_ids: {null_ids}"
+            f"  {'Null document_ids:':<18s} {null_ids}"
         )
         dupe_ids = conn.execute(
             "SELECT COUNT(*) FROM ("
@@ -166,7 +171,7 @@ def _section_data_quality(
             ")"
         ).fetchone()[0]
         lines.append(
-            f"  Dupe document_ids: {dupe_ids}"
+            f"  {'Dupe document_ids:':<18s} {dupe_ids}"
         )
     else:
         lines.append(
