@@ -15,8 +15,17 @@ The pipeline processes each article through four stages:
 
 1. **Detection** — find entity mentions in text using
    rule-based alias matching against the KG.
-2. **Resolution** — resolve mentions to existing KG
-   entities, or identify new entity candidates.
+2. **Resolution** — resolve detected mentions to
+   structured KG entities, or identify new entity
+   candidates. This is the core *unstructured mapping*
+   that gives the library its name: bridging a free-text
+   mention ("the Fed") to its canonical entity
+   (Federal Reserve, ORGANIZATION/central_bank). It is
+   also the hardest stage — the same surface form can
+   refer to different entities depending on context,
+   entities can appear under names not in the KG, and
+   the model must decide whether a mention is a known
+   entity or a genuinely new one.
 3. **Extraction** — extract relationships between
    resolved entities from the article text.
 4. **Persistence** — write provenance, new entities, and
