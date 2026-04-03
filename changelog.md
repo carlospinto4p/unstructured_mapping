@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.43 - 3rd April 2026
+
+- `CLAUDE.md`:
+  - Normalized to canonical template: added missing
+    shared sections, removed low-value sections.
+
+
 ### v0.11.42 - 3rd April 2026
 
 - Added `KnowledgeStore.find_entities_since()` — returns
