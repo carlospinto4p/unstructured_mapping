@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.11.33 - 3rd April 2026
+
+- Added scope warning to ownership/investment patterns in
+  `relationships.md` — clarifies that stake sizes and
+  percentages belong in external tables, not the KG
+
+
 ### v0.11.32 - 3rd April 2026
 
 - `.claude/`:

@@ -147,6 +147,12 @@ that is quantitative data belonging in external tables.
 | `ORGANIZATION/company → partners_with → ORGANIZATION/company` | Microsoft → partners_with → OpenAI |
 | `ORGANIZATION/company → invests_in → ORGANIZATION/company` | SoftBank → invests_in → ARM Holdings |
 
+The KG tracks *that* an ownership or investment relationship
+exists, not the percentage or stake size — those belong in
+external tables joined via `entity_id`. For example, "BlackRock
+owns a stake in Apple" is in scope; "BlackRock owns 7.2% of
+Apple" stores the 7.2% externally.
+
 
 ## Corporate structure
 
