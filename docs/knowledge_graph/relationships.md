@@ -71,6 +71,27 @@ RELATION_KIND — analyst coverage here refers to the
 ongoing coverage relationship, not individual actions.
 
 
+## Products
+
+Products appear as standalone entities in news (launches,
+recalls, regulatory approvals, groundings). These patterns
+link products to their manufacturers and regulators.
+
+| Pattern | Example |
+|---------|---------|
+| `PRODUCT → manufactured_by → ORGANIZATION/company` | iPhone → manufactured_by → Apple Inc. |
+| `PRODUCT → manufactured_by → ORGANIZATION/company` | Ozempic → manufactured_by → Novo Nordisk |
+| `ORGANIZATION/regulator → approved → PRODUCT/pharma` | FDA → approved → Ozempic (valid_from=2017-12-05) |
+| `ORGANIZATION/regulator → grounded → PRODUCT/hardware` | FAA → grounded → Boeing 737 MAX (valid_from=2019-03-13, valid_until=2020-11-18) |
+| `PRODUCT → competes_with → PRODUCT` | ChatGPT → competes_with → Gemini |
+| `PRODUCT → runs_on → PRODUCT/hardware` | iOS → runs_on → iPhone |
+
+Use temporal bounds for regulatory actions (approvals,
+bans, recalls). The `product` RELATION_KIND normalizes
+`manufactured_by`, `produced_by`, and `made_by` to the
+same canonical kind.
+
+
 ## Sector events
 
 TOPIC/sector_event entities represent recurring events
@@ -118,6 +139,7 @@ Events are modeled as relationships with temporal bounds
 | `ORGANIZATION/company → spun_off → ORGANIZATION/company` | GE → spun_off → GE Vernova |
 | `PERSON/executive → appointed_at → ORGANIZATION/company` (qualified by ROLE) | New CEO → appointed_at → Company (CEO, valid_from=2024-01-15) |
 | `PERSON/executive → departed_from → ORGANIZATION/company` (qualified by ROLE) | Old CEO → departed_from → Company (CEO, valid_until=2024-01-14) |
+| `ORGANIZATION/company → ipo_on → ORGANIZATION/exchange` | ARM Holdings → ipo_on → Nasdaq (valid_from=2023-09-14) |
 
 
 ## Credit ratings
@@ -241,11 +263,14 @@ Recommended RELATION_KIND entities for financial analysis:
 | location       | headquartered_in, located_in, based_in            |
 | membership     | member_of, joined                                  |
 | governance     | leads, governs                                     |
-| market_structure | listed_on, managed_by, tracks, derived_from      |
+| market_structure | listed_on, ipo_on, managed_by, tracks,            |
+|                  | derived_from                                       |
 | policy         | enforces, sets, set_by, sponsored_by, applies_to  |
 | classification | classified_as, belongs_to, measures,               |
 |                | categorized_as                                     |
 | causality      | affects, triggered                                  |
 | partnership    | partners_with, collaborates_with, allied_with      |
 | analyst_coverage | covers, initiates_coverage, drops_coverage        |
+| product        | manufactured_by, produced_by, made_by,               |
+|                | approved, grounded, recalled                         |
 | event_trigger  | triggers, hosts, schedules                          |

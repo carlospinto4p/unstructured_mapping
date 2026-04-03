@@ -105,6 +105,15 @@
 - [x] **MEDIUM** — Fix RELATION_KIND semantic groupings: move `belongs_to` to `classification`; move `spun_off`/`merged_with`/`founded` to `corporate_structure`; keep `causality` for macro patterns only
 - [x] **LOW** — Update `schema.md` valid_from column with `""` sentinel note for NULL-safe PK dedup
 
+#### KG design review (v0.11.33)
+
+- [x] **HIGH** — Add PRODUCT relationship patterns to `relationships.md` — `manufactured_by`, `approved` (regulatory), `competes_with` between products; add `product` RELATION_KIND with aliases
+- [x] **HIGH** — Add IPO/listing event pattern to `relationships.md` — `ORGANIZATION/company → ipo_on → ORGANIZATION/exchange` with temporal bounds; add `ipo_on` alias to `market_structure` RELATION_KIND
+- [ ] **MEDIUM** — Fix `triggers` alias overlap between `causality` and `event_trigger` RELATION_KINDs — remove `triggered` from `causality`, keep `triggers` only in `event_trigger`
+- [ ] **MEDIUM** — Add `find_active_relationships(entity_id)` query method — filter on `valid_until IS NULL OR valid_until > now` for current-state queries
+- [ ] **LOW** — Remove duplicate `spun_off` pattern from Corporate structure section — keep in Corporate actions, add cross-reference
+- [ ] **LOW** — Move `measures` from `classification` RELATION_KIND to a `scope` kind or add doc note explaining the semantic stretch
+
 #### Pipeline foundation (detection → resolution → extraction)
 
 - [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases
