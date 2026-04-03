@@ -99,6 +99,12 @@
 - [x] **MEDIUM** — Add analyst coverage and sector_event relationship patterns to `relationships.md` — `PERSON/analyst → covers → ASSET/equity`, `TOPIC/sector_event → triggers → METRIC`, add `analyst_coverage` and `event_trigger` RELATION_KINDs
 - [x] **LOW** — Add `KnowledgeStore.get_relationships_between(source_id, target_id)` query method — direct two-entity relationship lookup
 
+#### KG design review (v0.11.31)
+
+- [x] **HIGH** — Fix sentinel inconsistency in `_log_relationship()` — use `""` sentinel for valid_from in relationship_history matching relationships table
+- [x] **MEDIUM** — Fix RELATION_KIND semantic groupings: move `belongs_to` to `classification`; move `spun_off`/`merged_with`/`founded` to `corporate_structure`; keep `causality` for macro patterns only
+- [x] **LOW** — Update `schema.md` valid_from column with `""` sentinel note for NULL-safe PK dedup
+
 #### Pipeline foundation (detection → resolution → extraction)
 
 - [ ] **HIGH** — Entity detection module: `EntityDetector` ABC + `RuleBasedDetector` using alias trie matching — baseline detector that finds entity mentions in text by matching against KG aliases

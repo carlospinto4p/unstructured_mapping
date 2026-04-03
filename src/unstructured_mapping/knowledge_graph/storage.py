@@ -1062,7 +1062,7 @@ class KnowledgeStore:
                 rel.description,
                 rel.qualifier_id,
                 rel.relation_kind_id,
-                _dt_to_iso(rel.valid_from),
+                _dt_to_iso(rel.valid_from) or "",
                 _dt_to_iso(rel.valid_until),
                 rel.document_id,
                 reason,

@@ -78,12 +78,18 @@ temporal bounds rather than as a separate entity type.
 | description      | TEXT | NOT NULL                  | Natural-language context              |
 | qualifier_id     | TEXT | FK -> entities             | Qualifies the relationship (e.g. ROLE)|
 | relation_kind_id | TEXT | FK -> entities             | Canonical kind (e.g. "employment")   |
-| valid_from       | TEXT | Part of PK                | When the relationship started         |
+| valid_from       | TEXT | Part of PK, `""` if unset | When the relationship started         |
 | valid_until      | TEXT |                           | When the relationship ended           |
 | document_id      | TEXT |                           | Where this relationship was discovered|
 | discovered_at    | TEXT |                           | When this relationship was detected   |
 
 Primary key: `(source_id, target_id, relation_type, valid_from)`.
+Note: `valid_from` stores `""` (empty string) instead of NULL
+when no temporal bound is set — SQLite treats `NULL != NULL`,
+which would allow silent duplicate rows with the same
+composite key. The storage layer converts `""` back to `None`
+on read.
+
 Indexes: `source_id`, `target_id`, `qualifier_id`,
 `relation_kind_id`, `relation_type`.
 

@@ -230,14 +230,16 @@ Recommended RELATION_KIND entities for financial analysis:
 | appointment    | appointed_at, named_to, elected_to               |
 | departure      | departed_from, resigned_from, fired_from         |
 | rating         | rated, upgraded, downgraded, affirmed             |
-| corporate_structure | subsidiary_of, parent_of, controlled_by     |
+| corporate_structure | subsidiary_of, parent_of, controlled_by,    |
+|                     | spun_off, merged_with, founded               |
 | location       | headquartered_in, located_in, based_in            |
-| membership     | member_of, belongs_to, joined                     |
-| governance     | leads, founded, governs                            |
+| membership     | member_of, joined                                  |
+| governance     | leads, governs                                     |
 | market_structure | listed_on, managed_by, tracks, derived_from      |
 | policy         | enforces, sets, set_by, sponsored_by, applies_to  |
-| classification | classified_as, measures, categorized_as            |
-| causality      | affects, spun_off, merged_with, triggered          |
+| classification | classified_as, belongs_to, measures,               |
+|                | categorized_as                                     |
+| causality      | affects, triggered                                  |
 | partnership    | partners_with, collaborates_with, allied_with      |
 | analyst_coverage | covers, initiates_coverage, drops_coverage        |
 | event_trigger  | triggers, hosts, schedules                          |

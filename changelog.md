@@ -1,5 +1,24 @@
 ## Changelog
 
+### v0.11.31 - 3rd April 2026
+
+- Fixed sentinel inconsistency in `_log_relationship()` —
+  `valid_from` now uses `""` sentinel in
+  `relationship_history` matching `relationships` table
+- Fixed RELATION_KIND semantic groupings in
+  `docs/knowledge_graph/relationships.md`:
+  - Moved `belongs_to` from `membership` to
+    `classification` (sector grouping ≠ membership)
+  - Moved `spun_off`, `merged_with`, `founded` from
+    `causality`/`governance` to `corporate_structure`
+  - `causality` now only contains macro-signal patterns
+    (`affects`, `triggered`)
+  - `governance` now only contains active leadership
+    (`leads`, `governs`)
+- Updated `docs/knowledge_graph/schema.md` with `""`
+  sentinel documentation on `valid_from` column
+
+
 ### v0.11.30 - 3rd April 2026
 
 - `.claude/`:
