@@ -1,5 +1,26 @@
 ## Changelog
 
+### v0.14.0 - 4th April 2026
+
+- `docs/pipeline/`:
+  - Added `models.md`: pipeline data models design — stage
+    contracts for `IngestionRun`, `Chunk`, `Mention`,
+    `EntityProposal`, `ResolvedMention`,
+    `ExtractedRelationship`, `ChunkResult`, and
+    `DocumentResult`, plus ingestion run table schema.
+  - Added `llm_interface.md`: LLM interface design — JSON
+    response schemas for entity resolution (pass 1) and
+    relationship extraction (pass 2), prompt architecture,
+    token budget allocation, retry strategy, and
+    `LLMProvider` ABC contract.
+  - Updated `design.md`: added cross-references to
+    `models.md` and `llm_interface.md`.
+- `docs/knowledge_graph/`:
+  - Updated `schema.md`: added `section_name` column to
+    `provenance` and `relationships` tables for
+    section-level queries on long-form documents.
+
+
 ### v0.13.0 - 4th April 2026
 
 - `docs/pipeline/`:

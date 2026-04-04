@@ -57,11 +57,31 @@ Links the knowledge graph to the articles database via
 | mention_text    | TEXT | Part of PK                | Exact surface form found in text     |
 | context_snippet | TEXT | NOT NULL                  | Surrounding text for LLM disambiguation|
 | detected_at     | TEXT |                           | When the detection occurred           |
+| section_name    | TEXT |                           | Document section (e.g. "Risk Factors")|
 
 Primary key: `(entity_id, document_id, mention_text)`.
 Indexes: `document_id`, `(document_id, entity_id)` for
 co-mention joins, `(entity_id, detected_at)` for temporal
 queries.
+
+### `section_name` column
+
+Added to support long-form document processing (research
+reports, earnings transcripts, regulatory filings). Where
+in a document an entity is mentioned carries analytical
+signal — an entity in "Risk Factors" means something
+different from one in "Executive Summary."
+
+Nullable — news articles and other unsegmented documents
+leave this as NULL. Only populated when the pipeline
+processes a chunked document with section-aware
+segmentation. See
+[pipeline/chunking.md](../pipeline/chunking.md) for the
+segmentation design.
+
+Enables section-level queries:
+- "Which entities appear in Risk Factors across filings?"
+- "Compare entity mentions in prepared remarks vs Q&A."
 
 
 ## `relationships`
@@ -83,8 +103,17 @@ temporal bounds rather than as a separate entity type.
 | valid_until      | TEXT |                           | When the relationship ended           |
 | document_id      | TEXT |                           | Where this relationship was discovered|
 | discovered_at    | TEXT |                           | When this relationship was detected   |
+| section_name     | TEXT |                           | Document section (e.g. "Q&A")        |
 
 Primary key: `(source_id, target_id, relation_type, valid_from)`.
+
+### `section_name` column
+
+Same rationale as on `provenance` — a relationship
+discovered in the Q&A section of an earnings call carries
+different context than one in prepared remarks. Nullable
+for the same reasons. See
+[pipeline/chunking.md](../pipeline/chunking.md).
 Note: `valid_from` stores `""` (empty string) instead of NULL
 when no temporal bound is set — SQLite treats `NULL != NULL`,
 which would allow silent duplicate rows with the same

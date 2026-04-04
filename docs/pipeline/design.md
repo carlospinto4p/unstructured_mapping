@@ -264,6 +264,12 @@ and block the pipeline.
    article is logged as failed and skipped. The pipeline
    does not crash.
 
+For the concrete JSON schemas, validation rules, prompt
+structure, and token budget allocation, see
+[llm_interface.md](llm_interface.md). For the data models
+that carry LLM responses between pipeline stages, see
+[models.md](models.md).
+
 
 ## Already-processed tracking
 
