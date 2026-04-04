@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.14.1 - 4th April 2026
+
+- `.claude/`:
+  - Added `hooks/block-raw-python.sh`: enforces `uv run python` over bare `python`.
+
+
 ### v0.14.0 - 4th April 2026
 
 - `docs/pipeline/`:
