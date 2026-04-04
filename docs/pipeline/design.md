@@ -225,12 +225,21 @@ to relevant candidates:
 This keeps prompts compact — typically 20-50 candidate
 entities, not thousands.
 
-### Long articles
+### Long documents
 
-If the article itself exceeds the budget, it is truncated
-to the leading paragraphs. News articles front-load key
-information (inverted pyramid structure), so truncation
-loses detail but not the core signal.
+News articles that exceed the budget are truncated to
+their leading paragraphs — the inverted-pyramid structure
+front-loads key information, so truncation loses detail
+but not the core signal.
+
+For long-form documents (research reports, earnings call
+transcripts, regulatory filings), truncation is not
+sufficient — key entities and relationships are distributed
+throughout the document, not front-loaded. These documents
+are segmented into chunks that each flow through the
+pipeline independently, with results aggregated before
+persistence. See [chunking.md](chunking.md) for the full
+segmentation and aggregation design.
 
 
 ## Structured output
@@ -322,11 +331,15 @@ logic in separate focused files. Key modules:
 
 - **models** — data classes for ingestion runs, mentions,
   and intermediate pipeline state.
+- **segmentation** — document segmenter ABC and per-type
+  implementations. See [chunking.md](chunking.md).
 - **detection** — entity detector ABC and rule-based
   implementation.
 - **resolution** — entity resolver ABC and alias-based
   implementation.
 - **extraction** — relationship extractor ABC.
+- **aggregation** — cross-chunk deduplication and merge
+  logic. See [chunking.md](chunking.md).
 - **llm_provider** — LLM provider ABC and Ollama
   implementation.
 - **orchestrator** — pipeline class wiring the stages.
@@ -347,6 +360,9 @@ or KG storage don't pull in LLM dependencies.
 - **Embedding-based detection** — the rule-based alias
   scan + LLM resolution is the baseline. Embeddings can
   be added later as an alternative detector.
+- **Document chunking** — long-form documents (research
+  reports, transcripts, filings) require segmentation.
+  Covered in [chunking.md](chunking.md).
 - **Batch/parallel processing** — articles are processed
   sequentially. Parallelism adds complexity without
   benefit at the current scale.

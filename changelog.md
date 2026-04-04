@@ -1,5 +1,22 @@
 ## Changelog
 
+### v0.13.0 - 4th April 2026
+
+- `docs/pipeline/`:
+  - Added `chunking.md`: document chunking design covering
+    segmentation strategies, cross-chunk entity tracking,
+    aggregation, provenance granularity, and cost
+    mitigations for long-form documents (research reports,
+    earnings transcripts, regulatory filings).
+  - Updated `design.md`:
+    - Replaced truncation-only "Long articles" section
+      with "Long documents" referencing chunking design.
+    - Added `segmentation` and `aggregation` to module
+      structure.
+    - Added chunking to "What this design does NOT cover"
+      with cross-reference.
+
+
 ### v0.12.5 - 4th April 2026
 
 - `.claude/rules/`:
