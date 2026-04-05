@@ -1,6 +1,6 @@
 ---
 name: backlog
-version: 1.3.0
+version: 1.4.0
 description: >-
   Display open backlog items and periodic pass
   reminders. Use when the user wants to see pending
@@ -32,7 +32,13 @@ backlog is empty.
    all sections so the user can pick by number.
 2. **If fewer than 8 open items** in the entire backlog,
    use tables; otherwise, use numbered lists.
-3. **If the backlog has multiple sections** (`###`
+3. **Tables MUST always have 4 columns**:
+   `| # | Description | Priority | Effort |`
+   If the item text doesn't state priority/effort
+   explicitly, infer from context (e.g. "HIGH impact,
+   small effort" → Priority: HIGH, Effort: Small).
+   Never omit these columns.
+4. **If the backlog has multiple sections** (`###`
    headers), show one table (or list) per section with
    the section header above it. This helps the user
    distinguish different batches of tasks.

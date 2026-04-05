@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.14.5 - 5th April 2026
+
+- `.claude/`:
+  - Updated `backlog` skill (v1.4.0): tables now
+    always include Priority and Effort columns.
+
+
 ### v0.14.4 - 5th April 2026
 
 - `.claude/hooks/`:
