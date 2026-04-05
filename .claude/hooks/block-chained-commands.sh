@@ -1,7 +1,8 @@
 #!/bin/bash
 # Block compound shell commands (&&, ;) that involve git or cd.
 # Hooks receive JSON on stdin with tool_input.command.
-python -c "
+INPUT=$(cat)
+echo "$INPUT" | python -c "
 import sys, json
 data = json.load(sys.stdin)
 cmd = data.get('tool_input', {}).get('command', '')

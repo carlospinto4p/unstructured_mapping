@@ -2,7 +2,8 @@
 # Block raw python commands — must use "uv run" instead.
 # Allows python inside .venv/ paths (e.g. pytest runner).
 # Hooks receive JSON on stdin with tool_input.command.
-python -c "
+INPUT=$(cat)
+echo "$INPUT" | python -c "
 import sys, json, re
 data = json.load(sys.stdin)
 cmd = data.get('tool_input', {}).get('command', '')

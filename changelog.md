@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.14.4 - 5th April 2026
+
+- `.claude/hooks/`:
+  - Fixed stdin consumption: all hooks now
+    capture stdin before piping to python.
+
+
 ### v0.14.3 - 5th April 2026
 
 - `.claude/`:

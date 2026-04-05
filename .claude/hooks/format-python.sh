@@ -1,7 +1,8 @@
 #!/bin/bash
 # Auto-format Python files after Write/Edit.
 # Hooks receive JSON on stdin with tool_input.file_path.
-FILE=$(python -c "
+INPUT=$(cat)
+FILE=$(echo "$INPUT" | python -c "
 import sys, json
 data = json.load(sys.stdin)
 print(data.get('tool_input', {}).get('file_path', ''))
