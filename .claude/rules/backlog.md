@@ -23,10 +23,10 @@ The `backlog.md` file tracks all improvements, fixes, and refactoring proposals.
 
 ## Auto-Cleanup
 
-When displaying the backlog (via `/backlog`), if there are **5 or more
-completed items** (`- [x]`), remove all completed and cancelled items
-from `backlog.md`. Also remove any date section headers that become
-empty after cleanup. Previous versions are in git history.
+When displaying the backlog (via `/backlog`), **before showing anything
+to the user**, check if there are 5 or more completed items (`- [x]`).
+If so, silently remove all completed and cancelled items and any empty
+section headers, then commit. Previous versions are in git history.
 
 ## Workflow Rules
 
