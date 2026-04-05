@@ -83,6 +83,17 @@ After making significant changes, proactively update the version and changelog a
 
 **IMPORTANT**: Always include changes to `.claude/rules/` and `CLAUDE.md` in the changelog. These are project configuration changes that affect development workflow and must be tracked like any other change.
 
+## Reading the Changelog
+
+**Never read the full changelog.** It wastes tokens.
+
+- **To add a new entry**: read only the first 5 lines
+  (`limit: 5`) to find the header, then prepend after it.
+- **To find a specific entry**: use Grep with the version
+  or keyword — never read the whole file to search.
+- **To count versions** (e.g., for periodic pass cadence):
+  use Grep with pattern `^### v` in `count` mode.
+
 ## Changelog Rotation
 
 `changelog.md` holds only the **last 30 versions**. Older
@@ -92,7 +103,7 @@ entries live in `changelog/YYYY.md` yearly archive files.
   write directly to archive files.
 - **Do not read archive files directly** — they can be
   very large. If you need to find an old entry, use
-  `grep` on the archive files or ask the user.
+  Grep on the archive files or ask the user.
 - **Rotation happens periodically** via
   `/rotate-changelog`. You do not need to rotate manually
   after each version bump — just keep adding to
