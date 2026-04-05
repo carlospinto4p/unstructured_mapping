@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.14.2 - 5th April 2026
+
+- `.claude/`:
+  - Updated `backlog` skill (v1.1.0): auto-cleans
+    completed items when 5+ accumulate.
+  - Updated `backlog` rule: added auto-cleanup
+    section.
+
+
 ### v0.14.1 - 4th April 2026
 
 - `.claude/`:
