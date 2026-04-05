@@ -82,3 +82,18 @@ After making significant changes, proactively update the version and changelog a
 **IMPORTANT**: Always leave **two blank lines** between version entries in the changelog for readability.
 
 **IMPORTANT**: Always include changes to `.claude/rules/` and `CLAUDE.md` in the changelog. These are project configuration changes that affect development workflow and must be tracked like any other change.
+
+## Changelog Rotation
+
+`changelog.md` holds only the **last 30 versions**. Older
+entries live in `changelog/YYYY.md` yearly archive files.
+
+- **Always add new entries to `changelog.md`** — never
+  write directly to archive files.
+- **Do not read archive files directly** — they can be
+  very large. If you need to find an old entry, use
+  `grep` on the archive files or ask the user.
+- **Rotation happens periodically** via
+  `/rotate-changelog`. You do not need to rotate manually
+  after each version bump — just keep adding to
+  `changelog.md`.

@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.14.7 - 5th April 2026
+
+- `.claude/rules/`:
+  - Updated `versioning.md`: added changelog
+    rotation section (30-version limit, yearly
+    archives in `changelog/YYYY.md`).
+
+
 ### v0.14.6 - 5th April 2026
 
 - Rotated changelog: archived 62 old
