@@ -310,6 +310,44 @@ def test_bbc_fallback_on_extraction_failure(mock_get):
     assert articles[0].body == "BBC summary."
 
 
+BBC_RSS_WITH_PODCAST = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>BBC News</title>
+    <item>
+      <title>BBC headline</title>
+      <link>https://www.bbc.com/news/test-article</link>
+      <description>BBC summary.</description>
+      <pubDate>Mon, 30 Mar 2026 10:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Podcast Episode</title>
+      <link>https://www.bbc.co.uk/sounds/play/p0nb9l78</link>
+      <description>Short podcast desc.</description>
+      <pubDate>Mon, 30 Mar 2026 11:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
+"""
+
+
+@patch("httpx.Client.get")
+def test_bbc_skips_podcast_urls(mock_get):
+    """Non-article URLs (BBC Sounds) are filtered out."""
+    mock_get.return_value = _mock_response(
+        BBC_RSS_WITH_PODCAST
+    )
+    with BBCScraper(
+        feed_urls="https://fake.feed/rss",
+        fetch_full_text=False,
+    ) as scraper:
+        articles = scraper.fetch()
+
+    assert len(articles) == 1
+    assert articles[0].title == "BBC headline"
+
+
 # -- ArticleStore --
 
 

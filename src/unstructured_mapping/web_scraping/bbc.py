@@ -1,6 +1,7 @@
 """BBC News RSS scraper with full-text extraction."""
 
 import logging
+import re
 
 import httpx
 from bs4 import BeautifulSoup
@@ -11,6 +12,7 @@ from unstructured_mapping.web_scraping.config import (
     DEFAULT_TIMEOUT,
 )
 from unstructured_mapping.web_scraping.models import (
+    Article,
     ExtractionResult,
 )
 
@@ -73,12 +75,24 @@ BBC_FEEDS: dict[str, str] = {
 }
 
 
+_SKIP_URL_RE = re.compile(
+    r"bbc\.co\.uk/sounds/",
+)
+"""URLs matching this pattern are non-article content
+(podcasts, audio clips) that the parser cannot extract
+meaningful text from.  They are silently dropped during
+feed parsing."""
+
+
 class BBCScraper(Scraper):
     """Scraper that fetches articles from BBC News RSS.
 
     Parses one or more RSS feeds for article metadata, then
     optionally fetches each article page for the full text
     using parallel requests.
+
+    Non-article URLs (e.g. BBC Sounds podcast pages) are
+    filtered out automatically — see ``_SKIP_URL_RE``.
 
     :param feed_urls: RSS feed URLs. Pass a single string or
         a list. Defaults to BBC News top stories only. Use
@@ -106,6 +120,44 @@ class BBCScraper(Scraper):
         )
 
     source = "bbc"
+
+    def _parse_feed(
+        self, xml: str
+    ) -> list[Article]:
+        """Parse RSS and filter non-article URLs.
+
+        Drops entries whose URL matches ``_SKIP_URL_RE``
+        (e.g. BBC Sounds podcast pages) **before** full-text
+        enrichment, avoiding wasted HTTP requests.
+
+        :param xml: Raw RSS XML string.
+        :return: Filtered and enriched articles.
+        """
+        import feedparser as _fp
+
+        from unstructured_mapping.web_scraping.parsing import (
+            parse_feed_date,
+        )
+
+        feed = _fp.parse(xml)
+        articles: list[Article] = []
+        for entry in feed.entries:
+            url = entry.get("link", "")
+            if _SKIP_URL_RE.search(url):
+                logger.info(
+                    "Skipped non-article URL: %s", url
+                )
+                continue
+            articles.append(
+                Article(
+                    title=entry.get("title", ""),
+                    body=entry.get("summary", ""),
+                    url=url,
+                    source=self.source,
+                    published=parse_feed_date(entry),
+                )
+            )
+        return self._enrich(articles)
 
     def _extract_body(
         self, url: str

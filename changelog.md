@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.14.9 - 6th April 2026
+
+- `web_scraping/bbc.py`:
+  - Added `_SKIP_URL_RE` filter to skip non-article URLs (BBC Sounds podcasts) during feed parsing, before full-text enrichment
+  - Overrode `_parse_feed()` to apply URL filtering
+- `tests/unit/test_web_scraping.py`:
+  - Added `test_bbc_skips_podcast_urls` test
+- `backlog.md`:
+  - Added podcast transcription pipeline as future enhancement
+
+
 ### v0.14.8 - 5th April 2026
 
 - `.claude/rules/`:
