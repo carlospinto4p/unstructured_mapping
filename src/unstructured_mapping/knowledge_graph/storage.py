@@ -21,9 +21,11 @@ from unstructured_mapping.knowledge_graph.models import (
     EntityRevision,
     EntityStatus,
     EntityType,
+    IngestionRun,
     Provenance,
     Relationship,
     RelationshipRevision,
+    RunStatus,
 )
 from unstructured_mapping.storage_base import SQLiteStore
 
@@ -135,6 +137,19 @@ CREATE TABLE IF NOT EXISTS relationship_history (
 )
 """
 
+_CREATE_INGESTION_RUNS = """
+CREATE TABLE IF NOT EXISTS ingestion_runs (
+    run_id             TEXT PRIMARY KEY,
+    started_at         TEXT NOT NULL,
+    finished_at        TEXT,
+    status             TEXT NOT NULL DEFAULT 'running',
+    document_count     INTEGER NOT NULL DEFAULT 0,
+    entity_count       INTEGER NOT NULL DEFAULT 0,
+    relationship_count INTEGER NOT NULL DEFAULT 0,
+    error_message      TEXT
+)
+"""
+
 _CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_entity_type "
     "ON entities (entity_type)",
@@ -164,6 +179,12 @@ _CREATE_INDEXES = (
     "ON relationships (relation_kind_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_type "
     "ON relationships (relation_type)",
+    "CREATE INDEX IF NOT EXISTS idx_prov_run "
+    "ON provenance (run_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_run "
+    "ON relationships (run_id)",
+    "CREATE INDEX IF NOT EXISTS idx_run_status "
+    "ON ingestion_runs (status)",
     "CREATE INDEX IF NOT EXISTS idx_entity_hist "
     "ON entity_history (entity_id, changed_at)",
     "CREATE INDEX IF NOT EXISTS idx_rel_hist_source "
@@ -193,7 +214,7 @@ _REL_SELECT = (
     "SELECT source_id, target_id, relation_type, "
     "description, qualifier_id, relation_kind_id, "
     "valid_from, valid_until, document_id, "
-    "discovered_at FROM relationships "
+    "discovered_at, run_id FROM relationships "
 )
 
 
@@ -211,6 +232,7 @@ class KnowledgeStore(SQLiteStore):
         _CREATE_RELATIONSHIPS,
         _CREATE_ENTITY_HISTORY,
         _CREATE_RELATIONSHIP_HISTORY,
+        _CREATE_INGESTION_RUNS,
     )
     _index_statements = _CREATE_INDEXES
 
@@ -343,7 +365,8 @@ class KnowledgeStore(SQLiteStore):
             "INSERT OR IGNORE INTO provenance "
             "(entity_id, document_id, source, "
             "mention_text, context_snippet, "
-            "detected_at) VALUES (?, ?, ?, ?, ?, ?)",
+            "detected_at, run_id) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
             (
                 provenance.entity_id,
                 provenance.document_id,
@@ -351,6 +374,7 @@ class KnowledgeStore(SQLiteStore):
                 provenance.mention_text,
                 provenance.context_snippet,
                 _dt_to_iso(provenance.detected_at),
+                provenance.run_id,
             ),
         )
         self._conn.commit()
@@ -370,7 +394,8 @@ class KnowledgeStore(SQLiteStore):
             "INSERT OR IGNORE INTO provenance "
             "(entity_id, document_id, source, "
             "mention_text, context_snippet, "
-            "detected_at) VALUES (?, ?, ?, ?, ?, ?)",
+            "detected_at, run_id) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
             [
                 (
                     p.entity_id,
@@ -379,6 +404,7 @@ class KnowledgeStore(SQLiteStore):
                     p.mention_text,
                     p.context_snippet,
                     _dt_to_iso(p.detected_at),
+                    p.run_id,
                 )
                 for p in provenances
             ],
@@ -396,7 +422,8 @@ class KnowledgeStore(SQLiteStore):
         """
         rows = self._conn.execute(
             "SELECT entity_id, document_id, source, "
-            "mention_text, context_snippet, detected_at "
+            "mention_text, context_snippet, "
+            "detected_at, run_id "
             "FROM provenance WHERE entity_id = ?",
             (entity_id,),
         ).fetchall()
@@ -420,13 +447,96 @@ class KnowledgeStore(SQLiteStore):
         rows = self._conn.execute(
             "SELECT entity_id, document_id, source, "
             "mention_text, context_snippet, "
-            "detected_at FROM provenance "
+            "detected_at, run_id FROM provenance "
             "WHERE entity_id = ? "
             "AND detected_at >= ? "
             "ORDER BY detected_at DESC",
             (entity_id, _dt_to_iso(since)),
         ).fetchall()
         return [_row_to_provenance(r) for r in rows]
+
+    # -- Ingestion run operations --
+
+    def save_run(self, run: IngestionRun) -> None:
+        """Insert an ingestion run record.
+
+        :param run: The run to save.
+        """
+        self._conn.execute(
+            "INSERT INTO ingestion_runs "
+            "(run_id, started_at, finished_at, "
+            "status, document_count, entity_count, "
+            "relationship_count, error_message) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                run.run_id,
+                _dt_to_iso(run.started_at),
+                _dt_to_iso(run.finished_at),
+                run.status.value,
+                run.document_count,
+                run.entity_count,
+                run.relationship_count,
+                run.error_message,
+            ),
+        )
+        self._conn.commit()
+
+    def finish_run(
+        self,
+        run_id: str,
+        *,
+        status: RunStatus = RunStatus.COMPLETED,
+        document_count: int = 0,
+        entity_count: int = 0,
+        relationship_count: int = 0,
+        error_message: str | None = None,
+    ) -> None:
+        """Mark a run as finished, updating its counters.
+
+        :param run_id: The run to finish.
+        :param status: Final status (completed or failed).
+        :param document_count: Documents processed.
+        :param entity_count: Entity mentions found.
+        :param relationship_count: Relationships extracted.
+        :param error_message: Error details if failed.
+        """
+        self._conn.execute(
+            "UPDATE ingestion_runs SET "
+            "finished_at = ?, status = ?, "
+            "document_count = ?, entity_count = ?, "
+            "relationship_count = ?, "
+            "error_message = ? "
+            "WHERE run_id = ?",
+            (
+                _now_iso(),
+                status.value,
+                document_count,
+                entity_count,
+                relationship_count,
+                error_message,
+                run_id,
+            ),
+        )
+        self._conn.commit()
+
+    def get_run(
+        self, run_id: str
+    ) -> IngestionRun | None:
+        """Fetch an ingestion run by ID.
+
+        :param run_id: The run's unique identifier.
+        :return: The run, or ``None`` if not found.
+        """
+        row = self._conn.execute(
+            "SELECT run_id, started_at, finished_at, "
+            "status, document_count, entity_count, "
+            "relationship_count, error_message "
+            "FROM ingestion_runs WHERE run_id = ?",
+            (run_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return _row_to_run(row)
 
     # -- Relationship operations --
 
@@ -452,8 +562,10 @@ class KnowledgeStore(SQLiteStore):
             "(source_id, target_id, relation_type, "
             "description, qualifier_id, "
             "relation_kind_id, valid_from, "
-            "valid_until, document_id, discovered_at)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "valid_until, document_id, "
+            "discovered_at, run_id)"
+            " VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 relationship.source_id,
                 relationship.target_id,
@@ -466,6 +578,7 @@ class KnowledgeStore(SQLiteStore):
                 _dt_to_iso(relationship.valid_until),
                 relationship.document_id,
                 _dt_to_iso(relationship.discovered_at),
+                relationship.run_id,
             ),
         )
         inserted = self._conn.total_changes - before
@@ -1001,6 +1114,19 @@ class KnowledgeStore(SQLiteStore):
         """Run knowledge graph schema migrations."""
         self._migrate_relationships()
         self._migrate_entities()
+        self._migrate_provenance()
+
+    def _migrate_provenance(self) -> None:
+        """Add ``run_id`` column introduced in v0.15.0."""
+        cursor = self._conn.execute(
+            "PRAGMA table_info(provenance)"
+        )
+        cols = {row[1] for row in cursor.fetchall()}
+        if "run_id" not in cols:
+            self._conn.execute(
+                "ALTER TABLE provenance "
+                "ADD COLUMN run_id TEXT"
+            )
 
     def _migrate_relationships(self) -> None:
         """Add columns and fix NULLs from prior versions."""
@@ -1015,6 +1141,11 @@ class KnowledgeStore(SQLiteStore):
                     f"ADD COLUMN {col} TEXT "
                     f"REFERENCES entities(entity_id)"
                 )
+        if "run_id" not in cols:
+            self._conn.execute(
+                "ALTER TABLE relationships "
+                "ADD COLUMN run_id TEXT"
+            )
         # v0.11.29: coalesce NULL valid_from to "" so
         # the PK dedup works (NULL != NULL in SQLite).
         self._conn.execute(
@@ -1240,7 +1371,8 @@ def _row_to_entity(
 
 def _row_to_provenance(
     row: tuple[
-        str, str, str, str, str, str | None
+        str, str, str, str, str,
+        str | None, str | None,
     ],
 ) -> Provenance:
     return Provenance(
@@ -1250,6 +1382,7 @@ def _row_to_provenance(
         mention_text=row[3],
         context_snippet=row[4],
         detected_at=_iso_to_dt(row[5]),
+        run_id=row[6],
     )
 
 
@@ -1259,6 +1392,7 @@ def _row_to_relationship(
         str | None, str | None,
         str | None, str | None,
         str | None, str | None,
+        str | None,
     ],
 ) -> Relationship:
     return Relationship(
@@ -1272,6 +1406,7 @@ def _row_to_relationship(
         valid_until=_iso_to_dt(row[7]),
         document_id=row[8],
         discovered_at=_iso_to_dt(row[9]),
+        run_id=row[10],
     )
 
 
@@ -1300,6 +1435,24 @@ def _row_to_entity_rev(
         status=EntityStatus(row[11]),
         merged_into=row[12],
         reason=row[13],
+    )
+
+
+def _row_to_run(
+    row: tuple[
+        str, str, str | None, str,
+        int, int, int, str | None,
+    ],
+) -> IngestionRun:
+    return IngestionRun(
+        run_id=row[0],
+        started_at=datetime.fromisoformat(row[1]),
+        finished_at=_iso_to_dt(row[2]),
+        status=RunStatus(row[3]),
+        document_count=row[4],
+        entity_count=row[5],
+        relationship_count=row[6],
+        error_message=row[7],
     )
 
 

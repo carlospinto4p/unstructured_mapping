@@ -13,7 +13,7 @@
 
 #### Pipeline deferred decisions
 
-- [ ] Add `run_id` FK to provenance and relationships — explicit link to the ingestion run that created each record, replacing timestamp-based correlation
+- [x] Add `run_id` FK to provenance and relationships — explicit link to the ingestion run that created each record, replacing timestamp-based correlation
 
 #### Post-population (after KG is defined and populated)
 

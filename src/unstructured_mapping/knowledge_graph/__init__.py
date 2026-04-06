@@ -16,9 +16,11 @@ from unstructured_mapping.knowledge_graph.models import (
     EntityRevision,
     EntityStatus,
     EntityType,
+    IngestionRun,
     Provenance,
     Relationship,
     RelationshipRevision,
+    RunStatus,
 )
 from unstructured_mapping.knowledge_graph.storage import (
     KnowledgeStore,
@@ -30,6 +32,7 @@ __all__ = [
     "EntityRevision",
     "EntityStatus",
     "EntityType",
+    "IngestionRun",
     "KnowledgeGraphError",
     "KnowledgeStore",
     "Provenance",
@@ -37,5 +40,6 @@ __all__ = [
     "RelationshipRevision",
     "ResolutionAmbiguous",
     "RevisionNotFound",
+    "RunStatus",
     "ValidationError",
 ]

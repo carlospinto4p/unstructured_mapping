@@ -1,5 +1,23 @@
 ## Changelog
 
+### v0.15.0 - 6th April 2026
+
+- `knowledge_graph/models.py`:
+  - Added `IngestionRun` dataclass with `RunStatus` enum for tracking pipeline executions
+  - Added `run_id` field to `Provenance` and `Relationship` dataclasses
+- `knowledge_graph/storage.py`:
+  - Added `ingestion_runs` table with status, counters, and error tracking
+  - Added `run_id` column to `provenance` and `relationships` tables (nullable, with migration for existing DBs)
+  - Added `save_run()`, `finish_run()`, `get_run()` methods to `KnowledgeStore`
+  - Added `run_id` indexes on `provenance` and `relationships`
+- `knowledge_graph/__init__.py`:
+  - Exported `IngestionRun` and `RunStatus`
+- `docs/knowledge_graph/schema.md`:
+  - Documented `ingestion_runs` table and `run_id` columns
+- `tests/unit/test_knowledge_graph.py`:
+  - Added 10 tests: model defaults, CRUD operations, run_id round-trips, migration
+
+
 ### v0.14.9 - 6th April 2026
 
 - `web_scraping/bbc.py`:

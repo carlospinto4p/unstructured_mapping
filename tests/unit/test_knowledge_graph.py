@@ -9,10 +9,12 @@ from unstructured_mapping.knowledge_graph import (
     EntityNotFound,
     EntityStatus,
     EntityType,
+    IngestionRun,
     KnowledgeStore,
     Provenance,
     Relationship,
     RevisionNotFound,
+    RunStatus,
 )
 
 
@@ -1545,3 +1547,250 @@ def test_find_co_mentioned_empty(tmp_path):
         results = store.find_co_mentioned(e.entity_id)
 
     assert len(results) == 0
+
+
+# -- IngestionRun model --
+
+
+def test_ingestion_run_defaults():
+    run = IngestionRun()
+    assert run.status == RunStatus.RUNNING
+    assert run.run_id
+    assert run.started_at is not None
+    assert run.finished_at is None
+    assert run.document_count == 0
+    assert run.entity_count == 0
+    assert run.relationship_count == 0
+    assert run.error_message is None
+
+
+def test_run_status_values():
+    assert RunStatus.RUNNING == "running"
+    assert RunStatus.COMPLETED == "completed"
+    assert RunStatus.FAILED == "failed"
+
+
+# -- KnowledgeStore: ingestion run operations --
+
+
+def test_store_save_and_get_run(tmp_path):
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        loaded = store.get_run(run.run_id)
+
+    assert loaded is not None
+    assert loaded.run_id == run.run_id
+    assert loaded.status == RunStatus.RUNNING
+    assert loaded.document_count == 0
+
+
+def test_store_finish_run(tmp_path):
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        store.finish_run(
+            run.run_id,
+            status=RunStatus.COMPLETED,
+            document_count=10,
+            entity_count=42,
+            relationship_count=7,
+        )
+        loaded = store.get_run(run.run_id)
+
+    assert loaded is not None
+    assert loaded.status == RunStatus.COMPLETED
+    assert loaded.finished_at is not None
+    assert loaded.document_count == 10
+    assert loaded.entity_count == 42
+    assert loaded.relationship_count == 7
+
+
+def test_store_finish_run_failed(tmp_path):
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        store.finish_run(
+            run.run_id,
+            status=RunStatus.FAILED,
+            error_message="Timeout",
+        )
+        loaded = store.get_run(run.run_id)
+
+    assert loaded is not None
+    assert loaded.status == RunStatus.FAILED
+    assert loaded.error_message == "Timeout"
+
+
+def test_store_get_run_not_found(tmp_path):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        loaded = store.get_run("nonexistent")
+
+    assert loaded is None
+
+
+# -- run_id on provenance and relationships --
+
+
+def test_provenance_run_id_round_trip(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    run = IngestionRun()
+    p = Provenance(
+        entity_id=e.entity_id,
+        document_id="doc1",
+        source="bbc",
+        mention_text="Test",
+        context_snippet="ctx",
+        run_id=run.run_id,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        store.save_run(run)
+        store.save_provenance(p)
+        records = store.get_provenance(e.entity_id)
+
+    assert len(records) == 1
+    assert records[0].run_id == run.run_id
+
+
+def test_provenance_run_id_none_by_default(tmp_path):
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    p = Provenance(
+        entity_id=e.entity_id,
+        document_id="doc1",
+        source="bbc",
+        mention_text="Test",
+        context_snippet="ctx",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        store.save_provenance(p)
+        records = store.get_provenance(e.entity_id)
+
+    assert records[0].run_id is None
+
+
+def test_relationship_run_id_round_trip(tmp_path):
+    db = tmp_path / "kg.db"
+    e1 = _make_entity()
+    e2 = _make_entity(
+        canonical_name="Entity 2",
+        entity_type=EntityType.ORGANIZATION,
+    )
+    run = IngestionRun()
+    rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="acquired",
+        description="E1 acquired E2.",
+        run_id=run.run_id,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_run(run)
+        store.save_relationship(rel)
+        rels = store.get_relationships(e1.entity_id)
+
+    assert len(rels) == 1
+    assert rels[0].run_id == run.run_id
+
+
+def test_migration_adds_run_id(tmp_path):
+    """Existing DBs without run_id get it via migration."""
+    import sqlite3
+
+    db = tmp_path / "kg.db"
+    conn = sqlite3.connect(str(db))
+    conn.execute(
+        "CREATE TABLE entities ("
+        "entity_id TEXT PRIMARY KEY, "
+        "canonical_name TEXT NOT NULL, "
+        "entity_type TEXT NOT NULL, "
+        "description TEXT NOT NULL, "
+        "valid_from TEXT, valid_until TEXT, "
+        "status TEXT NOT NULL DEFAULT 'active', "
+        "merged_into TEXT, created_at TEXT)"
+    )
+    conn.execute(
+        "CREATE TABLE provenance ("
+        "entity_id TEXT NOT NULL, "
+        "document_id TEXT NOT NULL, "
+        "source TEXT NOT NULL, "
+        "mention_text TEXT NOT NULL, "
+        "context_snippet TEXT NOT NULL, "
+        "detected_at TEXT, "
+        "PRIMARY KEY (entity_id, document_id, "
+        "mention_text))"
+    )
+    conn.execute(
+        "CREATE TABLE relationships ("
+        "source_id TEXT NOT NULL, "
+        "target_id TEXT NOT NULL, "
+        "relation_type TEXT NOT NULL, "
+        "description TEXT NOT NULL, "
+        "valid_from TEXT, valid_until TEXT, "
+        "document_id TEXT, discovered_at TEXT, "
+        "PRIMARY KEY (source_id, target_id, "
+        "relation_type, valid_from))"
+    )
+    conn.execute(
+        "CREATE TABLE entity_aliases ("
+        "entity_id TEXT NOT NULL, "
+        "alias TEXT NOT NULL, "
+        "PRIMARY KEY (entity_id, alias))"
+    )
+    conn.execute(
+        "CREATE TABLE entity_history ("
+        "revision_id INTEGER PRIMARY KEY "
+        "AUTOINCREMENT, "
+        "entity_id TEXT NOT NULL, "
+        "operation TEXT NOT NULL, "
+        "changed_at TEXT NOT NULL, "
+        "canonical_name TEXT NOT NULL, "
+        "entity_type TEXT NOT NULL, "
+        "subtype TEXT, description TEXT NOT NULL, "
+        "aliases TEXT, valid_from TEXT, "
+        "valid_until TEXT, status TEXT NOT NULL, "
+        "merged_into TEXT, reason TEXT)"
+    )
+    conn.execute(
+        "CREATE TABLE relationship_history ("
+        "revision_id INTEGER PRIMARY KEY "
+        "AUTOINCREMENT, "
+        "operation TEXT NOT NULL, "
+        "changed_at TEXT NOT NULL, "
+        "source_id TEXT NOT NULL, "
+        "target_id TEXT NOT NULL, "
+        "relation_type TEXT NOT NULL, "
+        "description TEXT NOT NULL, "
+        "qualifier_id TEXT, "
+        "relation_kind_id TEXT, "
+        "valid_from TEXT, valid_until TEXT, "
+        "document_id TEXT, reason TEXT)"
+    )
+    conn.commit()
+    conn.close()
+
+    with KnowledgeStore(db_path=db) as store:
+        cols_prov = {
+            r[1]
+            for r in store._conn.execute(
+                "PRAGMA table_info(provenance)"
+            ).fetchall()
+        }
+        cols_rel = {
+            r[1]
+            for r in store._conn.execute(
+                "PRAGMA table_info(relationships)"
+            ).fetchall()
+        }
+
+    assert "run_id" in cols_prov
+    assert "run_id" in cols_rel

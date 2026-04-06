@@ -57,6 +57,7 @@ Links the knowledge graph to the articles database via
 | mention_text    | TEXT | Part of PK                | Exact surface form found in text     |
 | context_snippet | TEXT | NOT NULL                  | Surrounding text for LLM disambiguation|
 | detected_at     | TEXT |                           | When the detection occurred           |
+| run_id          | TEXT |                           | FK -> ingestion_runs. Pipeline run that created this record |
 | section_name    | TEXT |                           | Document section (e.g. "Risk Factors")|
 
 Primary key: `(entity_id, document_id, mention_text)`.
@@ -103,6 +104,7 @@ temporal bounds rather than as a separate entity type.
 | valid_until      | TEXT |                           | When the relationship ended           |
 | document_id      | TEXT |                           | Where this relationship was discovered|
 | discovered_at    | TEXT |                           | When this relationship was detected   |
+| run_id           | TEXT |                           | FK -> ingestion_runs. Pipeline run that created this record |
 | section_name     | TEXT |                           | Document section (e.g. "Q&A")        |
 
 Primary key: `(source_id, target_id, relation_type, valid_from)`.
@@ -170,3 +172,28 @@ Append-only audit log for relationship mutations.
 | reason           | TEXT    |                       | Free-text explanation                 |
 
 Indexes: `(source_id, changed_at)`, `(target_id, changed_at)`.
+
+
+## `ingestion_runs`
+
+Metadata for pipeline executions. Each row represents one
+invocation of the ingestion pipeline, grouping the provenance
+and relationship records it created via `run_id` foreign keys.
+
+Replaces timestamp-based correlation with an explicit link:
+instead of inferring "which records came from the same run"
+by matching `detected_at`/`discovered_at` windows, consumers
+can filter directly on `run_id`.
+
+| Column             | Type    | Constraint  | Purpose                                    |
+|--------------------|---------|-------------|--------------------------------------------|
+| run_id             | TEXT    | PRIMARY KEY | UUID hex (32 chars), auto-generated        |
+| started_at         | TEXT    | NOT NULL    | When the run began (UTC ISO 8601)          |
+| finished_at        | TEXT    |             | When the run ended (NULL while running)    |
+| status             | TEXT    | NOT NULL, DEFAULT 'running' | running, completed, failed |
+| document_count     | INTEGER | NOT NULL, DEFAULT 0 | Documents processed in this run       |
+| entity_count       | INTEGER | NOT NULL, DEFAULT 0 | Entity mentions found                 |
+| relationship_count | INTEGER | NOT NULL, DEFAULT 0 | Relationships extracted                |
+| error_message      | TEXT    |             | Error details if status is 'failed'        |
+
+Index: `status`.

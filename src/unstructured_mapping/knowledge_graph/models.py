@@ -11,7 +11,7 @@ behind every enum value, field choice, and deferred feature.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import StrEnum
 from uuid import uuid4
 
@@ -140,6 +140,9 @@ class Provenance:
         names.
     :param detected_at: When the detection occurred.
         ``None`` if not tracked.
+    :param run_id: Optional FK to ``ingestion_runs.run_id``.
+        Links this record to the pipeline run that created
+        it, replacing timestamp-based correlation.
     """
 
     entity_id: str
@@ -148,6 +151,7 @@ class Provenance:
     mention_text: str
     context_snippet: str
     detected_at: datetime | None = None
+    run_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -190,6 +194,9 @@ class Relationship:
         manually curated.
     :param discovered_at: When this relationship was
         first detected. ``None`` if not tracked.
+    :param run_id: Optional FK to ``ingestion_runs.run_id``.
+        Links this record to the pipeline run that created
+        it, replacing timestamp-based correlation.
     """
 
     source_id: str
@@ -202,6 +209,7 @@ class Relationship:
     valid_until: datetime | None = None
     document_id: str | None = None
     discovered_at: datetime | None = None
+    run_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -283,3 +291,54 @@ class RelationshipRevision:
     valid_until: datetime | None = None
     document_id: str | None = None
     reason: str | None = None
+
+
+class RunStatus(StrEnum):
+    """Lifecycle state of an ingestion run.
+
+    :cvar RUNNING: Run is currently in progress.
+    :cvar COMPLETED: Run finished successfully.
+    :cvar FAILED: Run terminated with an error.
+    """
+
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+@dataclass(frozen=True, slots=True)
+class IngestionRun:
+    """Metadata for a single pipeline execution.
+
+    Groups provenance and relationship records created
+    during one invocation of the ingestion pipeline,
+    replacing timestamp-based correlation with an
+    explicit foreign key.
+
+    :param run_id: Unique identifier (UUID hex).
+        Auto-generated when not provided.
+    :param started_at: When the run began. Auto-populated
+        with the current UTC time when not provided.
+    :param finished_at: When the run ended. ``None`` while
+        the run is in progress.
+    :param status: Lifecycle state of the run.
+    :param document_count: Number of documents processed.
+    :param entity_count: Number of entity mentions found.
+    :param relationship_count: Number of relationships
+        extracted.
+    :param error_message: Error details if the run failed.
+        ``None`` on success.
+    """
+
+    status: RunStatus = RunStatus.RUNNING
+    run_id: str = field(
+        default_factory=lambda: uuid4().hex
+    )
+    started_at: datetime = field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+    finished_at: datetime | None = None
+    document_count: int = 0
+    entity_count: int = 0
+    relationship_count: int = 0
+    error_message: str | None = None
