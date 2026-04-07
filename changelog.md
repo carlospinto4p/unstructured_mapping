@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.16.1 - 7th April 2026
+
+- Added `docs/pipeline/detection.md`: Aho-Corasick algorithm
+  explanation, complexity analysis, design decisions
+  (case-insensitive matching, word-boundary enforcement,
+  canonical name indexing, output ordering), and future
+  extensions.
+
+
 ### v0.16.0 - 7th April 2026
 
 - Added `pipeline` package:
