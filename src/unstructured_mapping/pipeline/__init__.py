@@ -12,11 +12,21 @@ from unstructured_mapping.pipeline.detection import (
 from unstructured_mapping.pipeline.models import (
     Chunk,
     Mention,
+    ResolvedMention,
+    ResolutionResult,
+)
+from unstructured_mapping.pipeline.resolution import (
+    AliasResolver,
+    EntityResolver,
 )
 
 __all__ = [
+    "AliasResolver",
     "Chunk",
     "EntityDetector",
+    "EntityResolver",
     "Mention",
+    "ResolvedMention",
+    "ResolutionResult",
     "RuleBasedDetector",
 ]

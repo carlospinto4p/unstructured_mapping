@@ -182,6 +182,39 @@ The detector builds a case-insensitive trie from entity
 aliases and canonical names, then scans text in O(n) time
 with word-boundary enforcement to avoid partial matches.
 
+## Entity Resolution (Pipeline)
+
+The `AliasResolver` resolves unambiguous mentions (single
+candidate) directly, leaving ambiguous ones for a future
+LLM-based resolver:
+
+```python
+from unstructured_mapping.pipeline import (
+    AliasResolver,
+    Chunk,
+    RuleBasedDetector,
+)
+
+# Detection (from above)
+detector = RuleBasedDetector(entities)
+chunk = Chunk(
+    document_id="article-1",
+    chunk_index=0,
+    text="The Fed raised rates as Apple reported earnings.",
+)
+mentions = detector.detect(chunk)
+
+# Resolution
+resolver = AliasResolver()
+result = resolver.resolve(chunk, mentions)
+
+for rm in result.resolved:
+    print(f"{rm.surface_form} -> {rm.entity_id}")
+
+for um in result.unresolved:
+    print(f"{um.surface_form} needs LLM ({um.candidate_ids})")
+```
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

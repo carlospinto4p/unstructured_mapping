@@ -1,5 +1,23 @@
 ## Changelog
 
+### v0.17.0 - 7th April 2026
+
+- Added `pipeline/resolution.py`:
+  - `EntityResolver` ABC with `resolve(chunk, mentions)`
+    interface.
+  - `AliasResolver`: baseline resolver that resolves
+    single-candidate mentions directly and leaves
+    zero/multi-candidate mentions for LLM disambiguation.
+  - `_extract_snippet()`: context window extraction with
+    word-boundary trimming and ellipsis indicators.
+- Added `pipeline/models.py`:
+  - `ResolvedMention`: mention matched to a KG entity.
+  - `ResolutionResult`: separates resolved from unresolved
+    mentions.
+- Added `tests/unit/test_resolution.py`: 24 tests covering
+  models, snippet extraction, and resolver logic.
+
+
 ### v0.16.1 - 7th April 2026
 
 - Added `docs/pipeline/detection.md`: Aho-Corasick algorithm

@@ -64,3 +64,43 @@ class Mention:
     span_start: int
     span_end: int
     candidate_ids: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ResolvedMention:
+    """A mention matched to an existing KG entity.
+
+    Produced by the resolution stage when a mention can
+    be confidently linked to a single entity. Becomes a
+    ``Provenance`` record during persistence.
+
+    :param entity_id: The matched KG entity.
+    :param surface_form: Original text that was resolved.
+    :param context_snippet: Surrounding text for
+        provenance and future disambiguation.
+    :param section_name: Inherited from the chunk.
+        ``None`` for unsegmented documents.
+    """
+
+    entity_id: str
+    surface_form: str
+    context_snippet: str
+    section_name: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ResolutionResult:
+    """Output of the resolution stage for one chunk.
+
+    Separates resolved mentions (ready for provenance)
+    from unresolved mentions (need LLM disambiguation
+    or represent unknown entities).
+
+    :param resolved: Mentions matched to KG entities.
+    :param unresolved: Mentions that could not be
+        resolved — either zero candidates (unknown
+        entity) or multiple candidates (ambiguous).
+    """
+
+    resolved: tuple[ResolvedMention, ...] = ()
+    unresolved: tuple[Mention, ...] = ()
