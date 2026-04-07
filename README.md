@@ -143,6 +143,45 @@ Entity types: `PERSON`, `ORGANIZATION`, `PLACE`, `TOPIC`,
 `PRODUCT`, `LEGISLATION`, `ASSET`, `METRIC`.
 See `docs/knowledge_graph/` for rationale.
 
+## Entity Detection (Pipeline)
+
+The `pipeline` module provides entity detection against the
+knowledge graph using Aho-Corasick trie matching:
+
+```python
+from unstructured_mapping.knowledge_graph import (
+    EntityStatus,
+    KnowledgeStore,
+)
+from unstructured_mapping.pipeline import (
+    Chunk,
+    RuleBasedDetector,
+)
+
+with KnowledgeStore() as store:
+    entities = store.find_entities_by_status(
+        EntityStatus.ACTIVE
+    )
+
+detector = RuleBasedDetector(entities)
+chunk = Chunk(
+    document_id="article-1",
+    chunk_index=0,
+    text="The Fed raised rates as Apple reported earnings.",
+)
+
+for mention in detector.detect(chunk):
+    print(
+        f"{mention.surface_form} "
+        f"[{mention.span_start}:{mention.span_end}] "
+        f"-> {mention.candidate_ids}"
+    )
+```
+
+The detector builds a case-insensitive trie from entity
+aliases and canonical names, then scans text in O(n) time
+with word-boundary enforcement to avoid partial matches.
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

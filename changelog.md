@@ -1,5 +1,18 @@
 ## Changelog
 
+### v0.16.0 - 7th April 2026
+
+- Added `pipeline` package:
+  - `models.py`: `Chunk` and `Mention` dataclasses for
+    pipeline stage communication.
+  - `detection.py`: `EntityDetector` ABC and
+    `RuleBasedDetector` using Aho-Corasick trie for
+    O(n) alias matching with word-boundary enforcement.
+- Added `tests/unit/test_detection.py`: 33 tests covering
+  models, trie construction, scanning, word boundaries,
+  and detector integration.
+
+
 ### v0.15.0 - 6th April 2026
 
 - `knowledge_graph/models.py`:
