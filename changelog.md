@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.17.1 - 7th April 2026
+
+- Added `docs/pipeline/resolution.md`: two-tier resolution
+  strategy, AliasResolver decision logic, context snippet
+  extraction algorithm, data flow diagram, design decisions
+  (conservative resolution, section_name propagation,
+  configurable context window), and future extensions.
+
+
 ### v0.17.0 - 7th April 2026
 
 - Added `pipeline/resolution.py`:
