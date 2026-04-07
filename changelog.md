@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.17.2 - 7th April 2026
+
+- Updated `docs/pipeline/`: replaced ASCII art diagrams with
+  Mermaid across all pipeline documentation:
+  - `chunking.md`: pipeline flow diagram.
+  - `detection.md`: pipeline position diagram.
+  - `llm_interface.md`: token budget allocation diagram.
+  - `models.md`: data flow summary diagram.
+  - `resolution.md`: pipeline position and resolution
+    decision flow diagrams.
+
+
 ### v0.17.1 - 7th April 2026
 
 - Added `docs/pipeline/resolution.md`: two-tier resolution

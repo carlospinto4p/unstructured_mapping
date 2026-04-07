@@ -312,29 +312,29 @@ and can be surfaced for manual review.
 
 ## Data flow summary
 
+```mermaid
+flowchart TD
+    A[Article] --> B["Segmentation → tuple[Chunk, ...]"]
+    B --> C["Detection (per chunk) → tuple[Mention, ...]"]
+    C --> D["Resolution (per chunk, LLM pass 1)"]
+    D --> E["Extraction (per chunk, LLM pass 2)"]
+    E --> F[ChunkResult]
+    F --> G["Aggregation → DocumentResult"]
+    G --> H[Persistence]
+
+    subgraph "Per chunk"
+        C
+        D
+        E
+        F
+    end
 ```
-Article
-  │
-  ├── Segmentation ──→ tuple[Chunk, ...]
-  │
-  ├── Detection (per chunk) ──→ tuple[Mention, ...]
-  │     uses: alias trie + KG aliases
-  │
-  ├── Resolution (per chunk, LLM pass 1)
-  │     input:  Chunk.text + Mentions + KG candidates
-  │     output: ResolvedMention(s) + EntityProposal(s)
-  │
-  ├── Extraction (per chunk, LLM pass 2)
-  │     input:  Chunk.text + resolved entities
-  │     output: ExtractedRelationship(s)
-  │
-  ├── ──→ ChunkResult (per chunk)
-  │
-  ├── Aggregation ──→ DocumentResult
-  │     dedup entities, merge relationships,
-  │     flag conflicts
-  │
-  └── Persistence
-        input:  DocumentResult
-        writes: Entity, Provenance, Relationship
-```
+
+| Stage | Input | Output |
+|-------|-------|--------|
+| Segmentation | Article | `tuple[Chunk, ...]` |
+| Detection | Chunk + KG aliases | `tuple[Mention, ...]` |
+| Resolution (LLM pass 1) | Chunk.text + Mentions + KG candidates | ResolvedMention(s) + EntityProposal(s) |
+| Extraction (LLM pass 2) | Chunk.text + resolved entities | ExtractedRelationship(s) |
+| Aggregation | ChunkResult(s) | DocumentResult (dedup entities, merge relationships) |
+| Persistence | DocumentResult | Entity, Provenance, Relationship |

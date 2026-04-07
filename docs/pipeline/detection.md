@@ -9,10 +9,14 @@ an entity be mentioned?", not "which entity is it?".
 
 ## Role in the pipeline
 
-```
-Article → Segmentation → [Detection → Resolution → Extraction]
-                              ▲
-                          you are here
+```mermaid
+flowchart LR
+    A[Article] --> B[Segmentation]
+    B --> C[Detection]
+    C --> D[Resolution]
+    D --> E[Extraction]
+
+    style C fill:#f9f,stroke:#333,stroke-width:3px
 ```
 
 Detection runs once per chunk and produces `Mention` objects

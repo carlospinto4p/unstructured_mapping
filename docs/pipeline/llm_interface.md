@@ -250,17 +250,13 @@ response.
 
 The total context window is split into four regions:
 
-```
-┌─────────────────────────────┐
-│  System prompt (fixed)      │  ~300-500 tokens
-├─────────────────────────────┤
-│  KG context                 │  flexible
-│  + running entity header    │
-├─────────────────────────────┤
-│  Chunk text                 │  flexible
-├─────────────────────────────┤
-│  Response headroom          │  ~500-1000 tokens
-└─────────────────────────────┘
+```mermaid
+flowchart TB
+    A["System prompt (fixed) — ~300–500 tokens"]
+    B["KG context + running entity header — flexible"]
+    C["Chunk text — flexible, gets priority"]
+    D["Response headroom — ~500–1000 tokens"]
+    A --- B --- C --- D
 ```
 
 **Fixed regions**:

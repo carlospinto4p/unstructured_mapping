@@ -7,10 +7,14 @@ to?" — the core disambiguation problem of the pipeline.
 
 ## Role in the pipeline
 
-```
-Article → Segmentation → [Detection → Resolution → Extraction]
-                                          ▲
-                                      you are here
+```mermaid
+flowchart LR
+    A[Article] --> B[Segmentation]
+    B --> C[Detection]
+    C --> D[Resolution]
+    D --> E[Extraction]
+
+    style D fill:#f9f,stroke:#333,stroke-width:3px
 ```
 
 Resolution consumes `Mention` objects from the detection
@@ -99,21 +103,13 @@ provenance but consume more storage.
 
 ## Data flow
 
-```
-Detection output          Resolution output
-─────────────────         ───────────────────────
-
-Mention                   ┌─► ResolvedMention
-  surface_form ──────────►│     entity_id
-  span_start              │     surface_form
-  span_end                │     context_snippet
-  candidate_ids ──┐       │     section_name
-                  │       │
-         ┌────────┘       │
-         │                │
-    len == 1 ─────────────┘
-    len == 0 ─────────────────► unresolved Mention
-    len >= 2 ─────────────────► unresolved Mention
+```mermaid
+flowchart LR
+    M[Mention<br/>surface_form<br/>span_start / span_end<br/>candidate_ids]
+    M --> Check{candidate_ids<br/>count?}
+    Check -- "exactly 1" --> R[ResolvedMention<br/>entity_id<br/>surface_form<br/>context_snippet<br/>section_name]
+    Check -- "0" --> U[Unresolved Mention]
+    Check -- "2+" --> U
 ```
 
 The `ResolutionResult` groups these into two tuples:

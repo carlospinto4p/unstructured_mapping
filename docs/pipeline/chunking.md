@@ -52,9 +52,20 @@ executive summary barely scratches the surface.
 
 Chunking adds two stages that bracket the existing four:
 
-```
-Document → Segmentation → [Detection → Resolution →
-  Extraction] per chunk → Aggregation → Persistence
+```mermaid
+flowchart LR
+    A[Document] --> B[Segmentation]
+    B --> C[Detection]
+    C --> D[Resolution]
+    D --> E[Extraction]
+    E --> F[Aggregation]
+    F --> G[Persistence]
+
+    subgraph per chunk
+        C
+        D
+        E
+    end
 ```
 
 - **Segmentation** runs before detection. It produces
