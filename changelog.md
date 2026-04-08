@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.17.3 - 8th April 2026
+
+- Refactored `tests/unit/`:
+  - Split `test_knowledge_graph.py` (1796 lines) into 4 focused modules:
+    - `test_kg_models.py`: data model and enum tests
+    - `test_kg_entities.py`: entity CRUD, search, merge, subtypes, history
+    - `test_kg_provenance.py`: provenance, co-mentions, ingestion runs, migration
+    - `test_kg_relationships.py`: relationship CRUD, qualifiers, history
+  - Moved shared `_make_entity()` helper to `conftest.py`
+
+
 ### v0.17.2 - 7th April 2026
 
 - Updated `docs/pipeline/`: replaced ASCII art diagrams with
