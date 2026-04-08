@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.17.4 - 8th April 2026
+
+- Refactored `knowledge_graph/storage.py` (1482 lines) into domain-focused mixins:
+  - `_helpers.py`: shared SQL fragments, datetime utilities, row converters
+  - `_entity_mixin.py`: entity CRUD, search, merge, audit history
+  - `_provenance_mixin.py`: provenance CRUD, co-mention queries
+  - `_relationship_mixin.py`: relationship CRUD, qualifiers, history
+  - `_run_mixin.py`: ingestion run tracking
+  - `storage.py`: DDL, migrations, and `KnowledgeStore` class composing all mixins
+
+
 ### v0.17.3 - 8th April 2026
 
 - Refactored `tests/unit/`:
