@@ -21,6 +21,6 @@
 
 ### 2026 April 8th (v0.17.2 refactor review)
 
-- [ ] **MEDIUM** — Replace fragile tuple-index row converters in `knowledge_graph/_helpers.py` with `sqlite3.Row`-based access — 6 converter functions use positional indexing that breaks silently if SELECT column order changes
-- [ ] **LOW** — Simplify nested comprehension in `Scraper._enrich()` (`web_scraping/base.py:133-143`) — the `for ex in (result,)` single-element tuple idiom is hard to read; replace with a plain loop or walrus operator
-- [ ] **LOW** — Narrow exception handling in `cli/scheduler.py:77` — `ValueError` is too broad alongside `OSError`/`httpx.HTTPError`; replace with the specific errors that can actually occur during a scrape cycle
+- [x] **MEDIUM** — Replace fragile tuple-index row converters in `knowledge_graph/_helpers.py` with `sqlite3.Row`-based access — 6 converter functions use positional indexing that breaks silently if SELECT column order changes
+- [x] **LOW** — Simplify nested comprehension in `Scraper._enrich()` (`web_scraping/base.py:133-143`) — the `for ex in (result,)` single-element tuple idiom is hard to read; replace with a plain loop or walrus operator
+- [x] **LOW** — Narrow exception handling in `cli/scheduler.py:77` — `ValueError` is too broad alongside `OSError`/`httpx.HTTPError`; replace with the specific errors that can actually occur during a scrape cycle

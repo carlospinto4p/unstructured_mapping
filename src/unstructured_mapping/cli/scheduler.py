@@ -23,6 +23,7 @@ Environment variables:
 
 import logging
 import os
+import sqlite3
 import time
 
 import httpx
@@ -74,7 +75,7 @@ def run() -> None:
         logger.info("Starting scrape cycle...")
         try:
             scrape(argv)
-        except (OSError, httpx.HTTPError, ValueError):
+        except (OSError, httpx.HTTPError, sqlite3.Error):
             logger.exception("Scrape cycle failed")
         logger.info(
             "Cycle complete. Sleeping %.1f hours...",

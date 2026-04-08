@@ -437,11 +437,11 @@ class EntityMixin:
         """Convert entity rows with batch alias loading."""
         if not rows:
             return []
-        eids = [r[0] for r in rows]
+        eids = [r["entity_id"] for r in rows]
         alias_map = self._load_aliases_batch(eids)
         return [
             row_to_entity(
-                r, alias_map.get(r[0], ())
+                r, alias_map.get(r["entity_id"], ())
             )
             for r in rows
         ]
@@ -529,7 +529,7 @@ class EntityMixin:
             "WHERE entity_id = ?",
             (entity_id,),
         ).fetchall()
-        return tuple(r[0] for r in rows)
+        return tuple(r["alias"] for r in rows)
 
     def _load_aliases_batch(
         self, entity_ids: list[str]

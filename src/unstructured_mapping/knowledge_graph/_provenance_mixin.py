@@ -177,14 +177,14 @@ class ProvenanceMixin:
         ).fetchall()
         if not rows:
             return []
-        eids = [r[0] for r in rows]
+        eids = [r["entity_id"] for r in rows]
         alias_map = self._load_aliases_batch(eids)  # type: ignore[attr-defined]
         results: list[tuple[Entity, int]] = []
         for row in rows:
-            eid, cnt = row[0], row[1]
+            eid = row["entity_id"]
             entity = row_to_entity(
-                (eid, *row[2:]),
+                row,
                 alias_map.get(eid, ()),
             )
-            results.append((entity, cnt))
+            results.append((entity, row["cnt"]))
         return results

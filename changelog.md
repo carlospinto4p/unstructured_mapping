@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.17.5 - 8th April 2026
+
+- Refactored `knowledge_graph/_helpers.py`:
+  - Replaced 6 fragile tuple-index row converters with `sqlite3.Row`-based named column access
+  - Set `row_factory = sqlite3.Row` in `storage_base.py` for all stores
+  - Fixed `find_co_mentioned()` row slicing to use named access
+- Refactored `web_scraping/base.py`:
+  - Simplified nested comprehension in `Scraper._enrich()` to a plain loop
+- Fixed `cli/scheduler.py`:
+  - Narrowed exception handling from `ValueError` to `sqlite3.Error`
+
+
 ### v0.17.4 - 8th April 2026
 
 - Refactored `knowledge_graph/storage.py` (1482 lines) into domain-focused mixins:

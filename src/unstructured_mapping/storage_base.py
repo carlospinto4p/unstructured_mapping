@@ -38,6 +38,7 @@ class SQLiteStore:
     ) -> None:
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(str(db_path))
+        self._conn.row_factory = sqlite3.Row
         for pragma in pragmas:
             self._conn.execute(f"PRAGMA {pragma}")
         for ddl in self._ddl_statements:

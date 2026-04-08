@@ -130,17 +130,15 @@ class Scraper(ABC):
             [a.url for a in articles],
             self._max_workers,
         )
-        return [
-            replace(
+        enriched: list[Article] = []
+        for a in articles:
+            ex = results.get(a.url, _empty)
+            enriched.append(replace(
                 a,
                 body=ex.body or a.body,
                 url=ex.url or a.url,
-            )
-            for a in articles
-            for ex in (
-                results.get(a.url, _empty),
-            )
-        ]
+            ))
+        return enriched
 
     def _extract_body(
         self, url: str
