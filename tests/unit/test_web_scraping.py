@@ -348,6 +348,61 @@ def test_bbc_skips_podcast_urls(mock_get):
     assert articles[0].title == "BBC headline"
 
 
+# -- Cross-feed URL dedup --
+
+
+BBC_RSS_DUP_FEED = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>BBC News (dup)</title>
+    <item>
+      <title>BBC headline</title>
+      <link>https://www.bbc.com/news/test-article</link>
+      <description>Duplicate copy.</description>
+      <pubDate>Mon, 30 Mar 2026 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
+"""
+
+
+@patch(
+    "unstructured_mapping.web_scraping.bbc"
+    ".BBCScraper._extract_body"
+)
+@patch("httpx.Client.get")
+def test_fetch_enriches_duplicate_url_once(
+    mock_get, mock_extract
+):
+    """Duplicate URLs across feeds trigger one extraction."""
+
+    def side_effect(url, **kwargs):
+        if url == "https://feed1/rss":
+            return _mock_response(BBC_RSS)
+        if url == "https://feed2/rss":
+            return _mock_response(BBC_RSS_DUP_FEED)
+        return _mock_response("<html></html>")
+
+    mock_get.side_effect = side_effect
+    mock_extract.return_value = ExtractionResult(
+        body="Full body.",
+    )
+    with BBCScraper(
+        feed_urls=[
+            "https://feed1/rss",
+            "https://feed2/rss",
+        ],
+        fetch_full_text=True,
+    ) as scraper:
+        articles = scraper.fetch()
+
+    assert len(articles) == 1
+    assert articles[0].body == "Full body."
+    # One extraction despite two feeds carrying the same URL
+    assert mock_extract.call_count == 1
+
+
 # -- ArticleStore --
 
 

@@ -89,11 +89,14 @@ class Scraper(ABC):
         """Parse raw RSS XML into articles.
 
         Extracts title, summary, URL, and publication date
-        from each feed entry, then passes the list through
-        :meth:`_enrich` for optional enrichment.
+        from each feed entry. Enrichment (full-text
+        extraction) is applied once in :meth:`fetch` after
+        cross-feed URL deduplication, so subclasses should
+        override this method only for source-specific
+        parsing or filtering -- not for enrichment.
 
         :param xml: Raw RSS XML string.
-        :return: Parsed (and possibly enriched) articles.
+        :return: Parsed (unenriched) articles.
         """
         feed = feedparser.parse(xml)
         articles: list[Article] = []
@@ -107,7 +110,7 @@ class Scraper(ABC):
                     published=parse_feed_date(entry),
                 )
             )
-        return self._enrich(articles)
+        return articles
 
     def _enrich(
         self, articles: list[Article]
@@ -168,7 +171,10 @@ class Scraper(ABC):
         """Fetch articles from all configured RSS feeds.
 
         Feeds are fetched in parallel when there are
-        multiple URLs. Deduplicates by URL across feeds.
+        multiple URLs. Articles are deduplicated by URL
+        across feeds *before* :meth:`_enrich` runs, so a
+        URL appearing in multiple feeds triggers at most
+        one full-text extraction.
 
         :return: List of scraped articles.
         :raises httpx.HTTPStatusError: If any feed request
@@ -189,7 +195,7 @@ class Scraper(ABC):
                 if article.url not in seen_urls:
                     seen_urls.add(article.url)
                     articles.append(article)
-        return articles
+        return self._enrich(articles)
 
     @staticmethod
     def _parallel_map(

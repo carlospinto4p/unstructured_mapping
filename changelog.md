@@ -1,5 +1,21 @@
 ## Changelog
 
+### v0.18.2 - 9th April 2026
+
+- Updated `web_scraping/`:
+  - `base.py`: split parsing from enrichment.
+    `Scraper._parse_feed()` now returns unenriched
+    articles; `Scraper.fetch()` dedupes URLs across
+    feeds first and calls `_enrich()` exactly once on
+    the deduped list, so a URL appearing in multiple
+    feeds triggers at most one full-text extraction.
+  - `bbc.py`: `BBCScraper._parse_feed()` matches the
+    new contract (drops `_SKIP_URL_RE` entries but no
+    longer enriches).
+- Added `tests/unit/test_web_scraping.py`:
+  - `test_fetch_enriches_duplicate_url_once`
+
+
 ### v0.18.1 - 9th April 2026
 
 - Updated `knowledge_graph/_entity_mixin.py`: added

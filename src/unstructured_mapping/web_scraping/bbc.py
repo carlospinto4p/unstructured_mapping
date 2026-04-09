@@ -127,11 +127,12 @@ class BBCScraper(Scraper):
         """Parse RSS and filter non-article URLs.
 
         Drops entries whose URL matches ``_SKIP_URL_RE``
-        (e.g. BBC Sounds podcast pages) **before** full-text
-        enrichment, avoiding wasted HTTP requests.
+        (e.g. BBC Sounds podcast pages) so the cross-feed
+        dedup and enrichment step in
+        :meth:`Scraper.fetch` never sees them.
 
         :param xml: Raw RSS XML string.
-        :return: Filtered and enriched articles.
+        :return: Filtered (unenriched) articles.
         """
         import feedparser as _fp
 
@@ -157,7 +158,7 @@ class BBCScraper(Scraper):
                     published=parse_feed_date(entry),
                 )
             )
-        return self._enrich(articles)
+        return articles
 
     def _extract_body(
         self, url: str
