@@ -219,6 +219,55 @@ def test_find_entities_since_empty(tmp_path):
     assert found == []
 
 
+# -- KnowledgeStore: limit parameter on find methods --
+
+
+def test_entity_search_limit(tmp_path):
+    """limit= caps result size on entity search methods."""
+    db = tmp_path / "kg.db"
+    t_base = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    persons = [
+        _make_entity(
+            canonical_name=f"Person {i}",
+            entity_type=EntityType.PERSON,
+            subtype="executive",
+            created_at=t_base,
+        )
+        for i in range(5)
+    ]
+    with KnowledgeStore(db_path=db) as store:
+        for p in persons:
+            store.save_entity(p)
+        by_type = store.find_entities_by_type(
+            EntityType.PERSON, limit=2
+        )
+        by_subtype = store.find_entities_by_subtype(
+            EntityType.PERSON,
+            "executive",
+            limit=3,
+        )
+        by_status = store.find_entities_by_status(
+            EntityStatus.ACTIVE, limit=1
+        )
+        by_prefix = store.find_by_name_prefix(
+            "Person", limit=2
+        )
+        since_limited = store.find_entities_since(
+            t_base, limit=4
+        )
+        # limit=None returns everything.
+        all_persons = store.find_entities_by_type(
+            EntityType.PERSON
+        )
+
+    assert len(by_type) == 2
+    assert len(by_subtype) == 3
+    assert len(by_status) == 1
+    assert len(by_prefix) == 2
+    assert len(since_limited) == 4
+    assert len(all_persons) == 5
+
+
 # -- KnowledgeStore: merge operation --
 
 

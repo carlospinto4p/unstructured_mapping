@@ -151,16 +151,27 @@ class EntityMixin:
     # -- Entity search --
 
     def find_entities_by_type(
-        self, entity_type: EntityType
+        self,
+        entity_type: EntityType,
+        limit: int | None = None,
     ) -> list[Entity]:
         """Find all entities of a given type.
 
         :param entity_type: The type to filter by.
+        :param limit: Maximum number of rows to return.
+            When ``None`` (the default), all matches are
+            returned. Large KGs should pass a bound to
+            avoid loading unbounded result sets and
+            unnecessary alias lookups.
         :return: Matching entities.
         """
+        query = ENTITY_SELECT + "WHERE entity_type = ?"
+        params: list[str | int] = [entity_type.value]
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
         rows = self._conn.execute(
-            ENTITY_SELECT + "WHERE entity_type = ?",
-            (entity_type.value,),
+            query, params
         ).fetchall()
         return self._rows_to_entities(rows)
 
@@ -168,22 +179,37 @@ class EntityMixin:
         self,
         entity_type: EntityType,
         subtype: str,
+        limit: int | None = None,
     ) -> list[Entity]:
         """Find entities by type and subtype.
 
         :param entity_type: The type to filter by.
         :param subtype: The subtype to filter by.
+        :param limit: Maximum number of rows to return.
+            When ``None`` (the default), all matches are
+            returned.
         :return: Matching entities.
         """
-        rows = self._conn.execute(
+        query = (
             ENTITY_SELECT
-            + "WHERE entity_type = ? AND subtype = ?",
-            (entity_type.value, subtype),
+            + "WHERE entity_type = ? AND subtype = ?"
+        )
+        params: list[str | int] = [
+            entity_type.value,
+            subtype,
+        ]
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
+        rows = self._conn.execute(
+            query, params
         ).fetchall()
         return self._rows_to_entities(rows)
 
     def find_entities_by_status(
-        self, status: EntityStatus
+        self,
+        status: EntityStatus,
+        limit: int | None = None,
     ) -> list[Entity]:
         """Find all entities with a given status.
 
@@ -191,16 +217,25 @@ class EntityMixin:
         all MERGED/DEPRECATED ones.
 
         :param status: The status to filter by.
+        :param limit: Maximum number of rows to return.
+            When ``None`` (the default), all matches are
+            returned.
         :return: Matching entities.
         """
+        query = ENTITY_SELECT + "WHERE status = ?"
+        params: list[str | int] = [status.value]
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
         rows = self._conn.execute(
-            ENTITY_SELECT + "WHERE status = ?",
-            (status.value,),
+            query, params
         ).fetchall()
         return self._rows_to_entities(rows)
 
     def find_by_name_prefix(
-        self, prefix: str
+        self,
+        prefix: str,
+        limit: int | None = None,
     ) -> list[Entity]:
         """Find entities whose name starts with a prefix.
 
@@ -209,13 +244,23 @@ class EntityMixin:
 
         :param prefix: The prefix to match against
             ``canonical_name``.
+        :param limit: Maximum number of rows to return.
+            When ``None`` (the default), all matches are
+            returned. Typeahead callers typically pass a
+            small bound (e.g. 10).
         :return: Matching entities.
         """
-        rows = self._conn.execute(
+        query = (
             ENTITY_SELECT
             + "WHERE canonical_name "
-            "COLLATE NOCASE LIKE ? || '%'",
-            (prefix,),
+            "COLLATE NOCASE LIKE ? || '%'"
+        )
+        params: list[str | int] = [prefix]
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
+        rows = self._conn.execute(
+            query, params
         ).fetchall()
         return self._rows_to_entities(rows)
 
@@ -237,7 +282,9 @@ class EntityMixin:
         return {t: c for t, c in rows}
 
     def find_entities_since(
-        self, since: datetime
+        self,
+        since: datetime,
+        limit: int | None = None,
     ) -> list[Entity]:
         """Find entities created after a given time.
 
@@ -247,13 +294,24 @@ class EntityMixin:
 
         :param since: Only return entities created at or
             after this datetime.
+        :param limit: Maximum number of rows to return.
+            When ``None`` (the default), all matches are
+            returned.
         :return: Matching entities, newest first.
         """
-        rows = self._conn.execute(
+        query = (
             ENTITY_SELECT
             + "WHERE created_at >= ? "
-            "ORDER BY created_at DESC",
-            (dt_to_iso(since),),
+            "ORDER BY created_at DESC"
+        )
+        params: list[str | int | None] = [
+            dt_to_iso(since)
+        ]
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
+        rows = self._conn.execute(
+            query, params
         ).fetchall()
         return self._rows_to_entities(rows)
 

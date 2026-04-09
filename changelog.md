@@ -1,5 +1,23 @@
 ## Changelog
 
+### v0.18.1 - 9th April 2026
+
+- Updated `knowledge_graph/_entity_mixin.py`: added
+  optional `limit` parameter to entity search methods:
+  - `find_entities_by_type()`
+  - `find_entities_by_subtype()`
+  - `find_entities_by_status()`
+  - `find_by_name_prefix()`
+  - `find_entities_since()`
+- Updated `knowledge_graph/_provenance_mixin.py`: added
+  optional `limit` parameter to `find_co_mentioned()`.
+  Caps the result set before alias batch-loading,
+  avoiding unbounded memory use on large KGs.
+- Added `tests/unit/`:
+  - `test_kg_entities.py::test_entity_search_limit`
+  - `test_kg_provenance.py::test_find_co_mentioned_limit`
+
+
 ### v0.18.0 - 9th April 2026
 
 - Added `knowledge_graph/_relationship_mixin.py`:

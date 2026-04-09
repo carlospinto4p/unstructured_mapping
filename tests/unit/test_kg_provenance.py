@@ -349,6 +349,43 @@ def test_find_co_mentioned_empty(tmp_path):
     assert len(results) == 0
 
 
+def test_find_co_mentioned_limit(tmp_path):
+    """limit= caps the number of co-mentioned entities."""
+    db = tmp_path / "kg.db"
+    hub = _make_entity(canonical_name="Hub")
+    others = [
+        _make_entity(canonical_name=f"Other {i}")
+        for i in range(4)
+    ]
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(hub)
+        for o in others:
+            store.save_entity(o)
+        for i, o in enumerate(others):
+            doc = f"doc{i}"
+            store.save_provenance(Provenance(
+                entity_id=hub.entity_id,
+                document_id=doc, source="bbc",
+                mention_text="Hub",
+                context_snippet="ctx",
+            ))
+            store.save_provenance(Provenance(
+                entity_id=o.entity_id,
+                document_id=doc, source="bbc",
+                mention_text=f"Other {i}",
+                context_snippet="ctx",
+            ))
+        all_results = store.find_co_mentioned(
+            hub.entity_id
+        )
+        limited = store.find_co_mentioned(
+            hub.entity_id, limit=2
+        )
+
+    assert len(all_results) == 4
+    assert len(limited) == 2
+
+
 # -- KnowledgeStore: ingestion run operations --
 
 

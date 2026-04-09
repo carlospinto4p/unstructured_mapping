@@ -132,6 +132,7 @@ class ProvenanceMixin:
         self,
         entity_id: str,
         since: datetime | None = None,
+        limit: int | None = None,
     ) -> list[tuple[Entity, int]]:
         """Find entities co-mentioned with the given entity.
 
@@ -144,6 +145,11 @@ class ProvenanceMixin:
             for.
         :param since: If set, only consider provenance
             records with ``detected_at >= since``.
+        :param limit: Maximum number of co-mentioned
+            entities to return. When ``None`` (the
+            default), all are returned. Passing a bound
+            avoids fetching and batch-loading aliases for
+            unbounded result sets on large KGs.
         :return: List of (entity, document_count) tuples.
         """
         query = (
@@ -162,7 +168,7 @@ class ProvenanceMixin:
             "WHERE p1.entity_id = ? "
             "AND p2.entity_id != ? "
         )
-        params: list[str | None] = [
+        params: list[str | int | None] = [
             entity_id, entity_id,
         ]
         if since is not None:
@@ -172,6 +178,9 @@ class ProvenanceMixin:
             "GROUP BY p2.entity_id "
             "ORDER BY cnt DESC"
         )
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
         rows = self._conn.execute(
             query, params
         ).fetchall()
