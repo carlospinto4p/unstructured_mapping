@@ -21,7 +21,7 @@
 
 ### 2026 April 8th (v0.17.5 optimization review)
 
-- [ ] **HIGH** — Add `save_relationships()` batch method to `RelationshipMixin` — mirrors `save_provenances()`, avoids per-record commits when saving multiple relationships in a loop
+- [x] **HIGH** — Add `save_relationships()` batch method to `RelationshipMixin` — mirrors `save_provenances()`, avoids per-record commits when saving multiple relationships in a loop
 - [ ] **MEDIUM** — Add `limit` parameter to `find_co_mentioned()` and entity search methods (`find_entities_by_type`, `find_entities_by_status`, etc.) — prevents unbounded result sets and unnecessary alias loading for large KGs
 - [ ] **MEDIUM** — Deduplicate articles by URL before enrichment in `Scraper` — currently `_enrich()` runs per-feed inside `_parse_feed()`, so duplicate URLs across feeds trigger redundant full-text extractions
 - [ ] **LOW** — Remove unnecessary `list()` conversion in `_log_entity()` alias serialization (`_entity_mixin.py:497`) — `json.dumps()` accepts tuples directly, avoiding an intermediate list allocation

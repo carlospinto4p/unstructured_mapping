@@ -75,6 +75,104 @@ class RelationshipMixin:
             )
         self._conn.commit()
 
+    def save_relationships(
+        self,
+        relationships: list[Relationship],
+        *,
+        reason: str | None = None,
+    ) -> int:
+        """Bulk insert relationships, skipping duplicates.
+
+        Uses ``executemany`` to avoid the per-record commit
+        overhead of calling :meth:`save_relationship` in a
+        loop. Duplicates (same primary key:
+        ``source_id, target_id, relation_type, valid_from``)
+        are silently skipped, matching
+        :meth:`save_relationship` semantics. Each newly
+        inserted relationship is logged to
+        ``relationship_history``.
+
+        Input is also deduplicated against itself so the
+        same relationship appearing twice in the list is
+        inserted and logged once.
+
+        :param relationships: The relationships to save.
+        :param reason: Optional explanation logged in the
+            audit trail for every newly inserted record.
+        :return: Number of newly inserted records.
+        """
+        if not relationships:
+            return 0
+        # Dedupe input by PK, then filter out rows already
+        # present in the DB. This lets us insert + log only
+        # genuinely new rows, since executemany does not
+        # report per-row insertion status.
+        seen: set[tuple[str, str, str, str]] = set()
+        candidates: list[Relationship] = []
+        for rel in relationships:
+            key = (
+                rel.source_id,
+                rel.target_id,
+                rel.relation_type,
+                dt_to_iso(rel.valid_from) or "",
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            candidates.append(rel)
+        new_rels = [
+            rel
+            for rel in candidates
+            if self._conn.execute(
+                "SELECT 1 FROM relationships "
+                "WHERE source_id = ? "
+                "AND target_id = ? "
+                "AND relation_type = ? "
+                "AND valid_from = ?",
+                (
+                    rel.source_id,
+                    rel.target_id,
+                    rel.relation_type,
+                    dt_to_iso(rel.valid_from) or "",
+                ),
+            ).fetchone()
+            is None
+        ]
+        if not new_rels:
+            return 0
+        self._conn.executemany(
+            "INSERT INTO relationships "
+            "(source_id, target_id, relation_type, "
+            "description, qualifier_id, "
+            "relation_kind_id, valid_from, "
+            "valid_until, document_id, "
+            "discovered_at, run_id) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                (
+                    r.source_id,
+                    r.target_id,
+                    r.relation_type,
+                    r.description,
+                    r.qualifier_id,
+                    r.relation_kind_id,
+                    dt_to_iso(r.valid_from) or "",
+                    dt_to_iso(r.valid_until),
+                    r.document_id,
+                    dt_to_iso(r.discovered_at),
+                    r.run_id,
+                )
+                for r in new_rels
+            ],
+        )
+        for rel in new_rels:
+            self._log_relationship(
+                rel, "create", reason
+            )
+        self._conn.commit()
+        return len(new_rels)
+
     def get_relationships(
         self,
         entity_id: str,

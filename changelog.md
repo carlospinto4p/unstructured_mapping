@@ -1,5 +1,21 @@
 ## Changelog
 
+### v0.18.0 - 9th April 2026
+
+- Added `knowledge_graph/_relationship_mixin.py`:
+  - `RelationshipMixin.save_relationships()`: bulk insert
+    method mirroring `save_provenances()`. Dedupes input
+    against itself and the existing rows (by PK
+    `source_id, target_id, relation_type, valid_from`),
+    then uses `executemany` for a single batched INSERT
+    and logs only newly inserted rows to
+    `relationship_history`.
+- Added `tests/unit/test_kg_relationships.py`:
+  - `test_save_relationships_bulk_insert`
+  - `test_save_relationships_skips_duplicates`
+  - `test_save_relationships_empty`
+
+
 ### v0.17.5 - 8th April 2026
 
 - Refactored `knowledge_graph/_helpers.py`:

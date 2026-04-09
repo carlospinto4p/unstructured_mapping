@@ -42,6 +42,108 @@ def test_store_save_and_get_relationships(tmp_path):
     assert from_target[0].source_id == e1.entity_id
 
 
+# -- KnowledgeStore: save_relationships (bulk) --
+
+
+def test_save_relationships_bulk_insert(tmp_path):
+    """Bulk insert adds all new rows and logs history."""
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="A")
+    e2 = _make_entity(canonical_name="B")
+    e3 = _make_entity(canonical_name="C")
+    rel1 = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="A supplies B.",
+    )
+    rel2 = Relationship(
+        source_id=e1.entity_id,
+        target_id=e3.entity_id,
+        relation_type="supplies",
+        description="A supplies C.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        inserted = store.save_relationships(
+            [rel1, rel2], reason="batch load"
+        )
+        rels = store.get_relationships(
+            e1.entity_id, as_target=False
+        )
+        history = store.get_relationship_history(
+            e1.entity_id
+        )
+
+    assert inserted == 2
+    assert len(rels) == 2
+    assert len(history) == 2
+    assert all(
+        h.reason == "batch load" for h in history
+    )
+
+
+def test_save_relationships_skips_duplicates(tmp_path):
+    """Existing + input-duplicate rows are skipped."""
+    db = tmp_path / "kg.db"
+    e1 = _make_entity(canonical_name="A")
+    e2 = _make_entity(canonical_name="B")
+    existing = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="A supplies B.",
+    )
+    # Same PK as `existing` — should be skipped.
+    dup_in_db = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="supplies",
+        description="Different description.",
+    )
+    new_rel = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="competes_with",
+        description="A competes with B.",
+    )
+    # Duplicate of new_rel inside the same batch.
+    dup_in_batch = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="competes_with",
+        description="Also competes.",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(existing)
+        inserted = store.save_relationships(
+            [dup_in_db, new_rel, dup_in_batch]
+        )
+        rels = store.get_relationships(
+            e1.entity_id, as_target=False
+        )
+        history = store.get_relationship_history(
+            e1.entity_id
+        )
+
+    assert inserted == 1
+    assert len(rels) == 2
+    # One history entry for `existing`, one for
+    # `new_rel`; duplicates are not logged.
+    assert len(history) == 2
+
+
+def test_save_relationships_empty(tmp_path):
+    """Empty list is a no-op returning 0."""
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        assert store.save_relationships([]) == 0
+
+
 # -- KnowledgeStore: NULL valid_from dedup --
 
 
