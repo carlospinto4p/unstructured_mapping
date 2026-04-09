@@ -285,6 +285,39 @@ skipped by default. Pass `skip_processed=False` to the
 `Pipeline` constructor to force reprocessing.
 See `docs/pipeline/orchestration.md` for design notes.
 
+## LLM Providers
+
+The pipeline talks to LLM backends through the
+`LLMProvider` ABC so resolvers and extractors are
+backend-agnostic. `OllamaProvider` is the first
+concrete implementation and is available via the
+optional `llm` extras group:
+
+```bash
+pip install unstructured-mapping[llm]
+```
+
+```python
+from unstructured_mapping.pipeline import OllamaProvider
+
+provider = OllamaProvider(
+    model="llama3.1:8b",
+    context_window=8192,  # or omit to auto-detect
+)
+
+text = provider.generate(
+    "List the named entities in: Apple reported Q3.",
+    system="You extract entity mentions as JSON.",
+    json_mode=True,
+)
+```
+
+Providers report `model_name`, `provider_name`, and
+`context_window` for run tracking and token-budget
+calculations. See `docs/pipeline/llm_interface.md` for
+the full contract, JSON schemas, and prompt
+architecture.
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

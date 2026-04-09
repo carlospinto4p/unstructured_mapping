@@ -9,6 +9,16 @@ from unstructured_mapping.pipeline.detection import (
     EntityDetector,
     RuleBasedDetector,
 )
+from unstructured_mapping.pipeline.llm_ollama import (
+    OllamaProvider,
+)
+from unstructured_mapping.pipeline.llm_provider import (
+    LLMConnectionError,
+    LLMEmptyResponseError,
+    LLMProvider,
+    LLMProviderError,
+    LLMTimeoutError,
+)
 from unstructured_mapping.pipeline.models import (
     Chunk,
     Mention,
@@ -31,7 +41,13 @@ __all__ = [
     "Chunk",
     "EntityDetector",
     "EntityResolver",
+    "LLMConnectionError",
+    "LLMEmptyResponseError",
+    "LLMProvider",
+    "LLMProviderError",
+    "LLMTimeoutError",
     "Mention",
+    "OllamaProvider",
     "Pipeline",
     "PipelineResult",
     "ResolvedMention",

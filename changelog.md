@@ -1,5 +1,45 @@
 ## Changelog
 
+### v0.20.0 - 9th April 2026
+
+- Added `pipeline/llm_provider.py`:
+  - `LLMProvider` ABC: `generate()`, `model_name`,
+    `provider_name`, `context_window`,
+    `supports_json_mode`. Contract matches
+    `docs/pipeline/llm_interface.md`.
+  - Exception hierarchy: `LLMProviderError`,
+    `LLMConnectionError`, `LLMTimeoutError`,
+    `LLMEmptyResponseError`.
+- Added `pipeline/llm_ollama.py`:
+  - `OllamaProvider`: Ollama-first concrete
+    implementation. Uses the `ollama` Python package,
+    wraps `httpx.ConnectError`/`ConnectTimeout` as
+    `LLMConnectionError`, `httpx.TimeoutException` as
+    `LLMTimeoutError`, and empty responses as
+    `LLMEmptyResponseError`. Auto-detects
+    `context_window` via `/api/show` with a 4096-token
+    fallback; explicit override skips the lookup.
+    Optional import of `ollama` so the ABC module
+    stays slim.
+- Added `pyproject.toml`:
+  - `llm` optional dependency group pinning
+    `ollama>=0.4.0`. Added to `dev` too for tests.
+- Added `tests/unit/test_llm_provider.py`: 18 tests
+  covering the ABC contract, exception hierarchy,
+  OllamaProvider happy path (dict and attribute
+  response shapes), error translation
+  (connection/timeout/empty/generic), and context
+  window auto-detection.
+- Updated `README.md`: new "LLM Providers" section
+  with the OllamaProvider usage example.
+- Updated `pipeline/__init__.py`: export
+  `LLMProvider`, `OllamaProvider`, and the LLM
+  exception hierarchy.
+- Updated `backlog.md`: added `ClaudeProvider`
+  follow-up item so a second concrete provider can be
+  implemented once the baseline is exercised.
+
+
 ### v0.19.0 - 9th April 2026
 
 - Added `pipeline/orchestrator.py`:
