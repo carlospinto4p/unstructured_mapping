@@ -34,13 +34,34 @@ uv sync --all-extras
 ## Quick Start
 
 ```python
-from unstructured_mapping import Pipeline
+from unstructured_mapping.knowledge_graph import (
+    EntityStatus,
+    KnowledgeStore,
+)
+from unstructured_mapping.pipeline import (
+    AliasResolver,
+    Pipeline,
+    RuleBasedDetector,
+)
+from unstructured_mapping.web_scraping import BBCScraper
 
-pipeline = Pipeline(kg=my_knowledge_graph)
-result = pipeline.run("Some unstructured text mentioning entities.")
+with KnowledgeStore() as store:
+    entities = store.find_entities_by_status(
+        EntityStatus.ACTIVE
+    )
+    pipeline = Pipeline(
+        detector=RuleBasedDetector(entities),
+        resolver=AliasResolver(),
+        store=store,
+    )
+    articles = BBCScraper().fetch()
+    result = pipeline.run(articles)
 
-for mention in result.mentions:
-    print(f"{mention.text} -> {mention.entity}")
+print(
+    f"Run {result.run_id}: "
+    f"{result.documents_processed} articles, "
+    f"{result.provenances_saved} provenance rows"
+)
 ```
 
 *(API is provisional and will evolve as the PoC matures.)*
@@ -214,6 +235,55 @@ for rm in result.resolved:
 for um in result.unresolved:
     print(f"{um.surface_form} needs LLM ({um.candidate_ids})")
 ```
+
+## Pipeline Orchestration
+
+`Pipeline` wires detection, resolution, and provenance
+persistence into one call. Each invocation creates an
+`IngestionRun`, processes articles in isolation (a
+failure in one does not abort the run), and writes
+resolved mentions to the knowledge store.
+
+```python
+from unstructured_mapping.knowledge_graph import (
+    EntityStatus,
+    KnowledgeStore,
+)
+from unstructured_mapping.pipeline import (
+    AliasResolver,
+    Pipeline,
+    RuleBasedDetector,
+)
+
+with KnowledgeStore() as store:
+    entities = store.find_entities_by_status(
+        EntityStatus.ACTIVE
+    )
+    pipeline = Pipeline(
+        detector=RuleBasedDetector(entities),
+        resolver=AliasResolver(),
+        store=store,
+    )
+    result = pipeline.run(articles)
+
+    for article_result in result.results:
+        if article_result.error:
+            print(f"Failed: {article_result.error}")
+            continue
+        if article_result.skipped:
+            continue
+        unresolved = article_result.resolution.unresolved
+        if unresolved:
+            print(
+                f"{article_result.document_id}: "
+                f"{len(unresolved)} ambiguous mentions"
+            )
+```
+
+Articles whose `document_id` already has provenance are
+skipped by default. Pass `skip_processed=False` to the
+`Pipeline` constructor to force reprocessing.
+See `docs/pipeline/orchestration.md` for design notes.
 
 ## Project Status
 

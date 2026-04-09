@@ -100,6 +100,28 @@ class ProvenanceMixin:
         ).fetchall()
         return [row_to_provenance(r) for r in rows]
 
+    def has_document_provenance(
+        self, document_id: str
+    ) -> bool:
+        """Check whether a document has any provenance.
+
+        Used by the ingestion pipeline for idempotency:
+        articles whose ``document_id`` already appears in
+        provenance are treated as already processed and
+        skipped on re-runs. The ``idx_prov_document``
+        index keeps the lookup O(log n).
+
+        :param document_id: The document's string ID.
+        :return: ``True`` if at least one provenance row
+            references this document.
+        """
+        row = self._conn.execute(
+            "SELECT 1 FROM provenance "
+            "WHERE document_id = ? LIMIT 1",
+            (document_id,),
+        ).fetchone()
+        return row is not None
+
     def find_recent_mentions(
         self,
         entity_id: str,

@@ -15,6 +15,11 @@ from unstructured_mapping.pipeline.models import (
     ResolvedMention,
     ResolutionResult,
 )
+from unstructured_mapping.pipeline.orchestrator import (
+    ArticleResult,
+    Pipeline,
+    PipelineResult,
+)
 from unstructured_mapping.pipeline.resolution import (
     AliasResolver,
     EntityResolver,
@@ -22,10 +27,13 @@ from unstructured_mapping.pipeline.resolution import (
 
 __all__ = [
     "AliasResolver",
+    "ArticleResult",
     "Chunk",
     "EntityDetector",
     "EntityResolver",
     "Mention",
+    "Pipeline",
+    "PipelineResult",
     "ResolvedMention",
     "ResolutionResult",
     "RuleBasedDetector",

@@ -40,6 +40,33 @@ def test_store_save_and_get_provenance(tmp_path):
     )
 
 
+def test_has_document_provenance(tmp_path):
+    """has_document_provenance reports exact matches."""
+    db = tmp_path / "kg.db"
+    e = _make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        assert (
+            store.has_document_provenance("doc1")
+            is False
+        )
+        store.save_provenance(Provenance(
+            entity_id=e.entity_id,
+            document_id="doc1",
+            source="bbc",
+            mention_text="Test",
+            context_snippet="ctx",
+        ))
+        assert (
+            store.has_document_provenance("doc1")
+            is True
+        )
+        assert (
+            store.has_document_provenance("other")
+            is False
+        )
+
+
 def test_store_provenance_deduplication(tmp_path):
     db = tmp_path / "kg.db"
     e = _make_entity()

@@ -1,5 +1,37 @@
 ## Changelog
 
+### v0.19.0 - 9th April 2026
+
+- Added `pipeline/orchestrator.py`:
+  - `Pipeline`: wires detection, resolution, and
+    provenance persistence into a single callable.
+    `run(articles)` opens an `IngestionRun`, processes
+    each article in isolation (per-article failures
+    are recorded, run continues), and finalizes the
+    run with aggregated counts. `process_article()`
+    exposed as a lower-level entry point for callers
+    that don't need run tracking. `skip_processed`
+    constructor flag controls idempotency.
+  - `ArticleResult`: per-article outcome exposing the
+    raw `ResolutionResult`, provenance count, skip
+    flag, and error message.
+  - `PipelineResult`: aggregate outcome with the run
+    ID, per-article results, and totals.
+- Added `knowledge_graph/_provenance_mixin.py`:
+  - `KnowledgeStore.has_document_provenance()`: O(log
+    n) point lookup backing pipeline idempotency.
+- Added `tests/unit/`:
+  - `test_pipeline.py`: 11 tests (happy path, skip,
+    reprocess, per-article isolation, stub wiring).
+  - `test_kg_provenance.py::test_has_document_provenance`
+- Added `docs/pipeline/orchestration.md`: design notes
+  for the orchestrator (single-chunk articles,
+  per-article isolation, provenance-based idempotency,
+  constructor injection, deferred extraction stage).
+- Updated `README.md`: Quick Start and new
+  "Pipeline Orchestration" section use the real API.
+
+
 ### v0.18.3 - 9th April 2026
 
 - Updated `knowledge_graph/_entity_mixin.py`:
