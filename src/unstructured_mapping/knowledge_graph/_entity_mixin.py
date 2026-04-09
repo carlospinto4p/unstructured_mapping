@@ -552,7 +552,7 @@ class EntityMixin:
         operation: str,
         reason: str | None,
     ) -> None:
-        aliases_json = json.dumps(list(entity.aliases))
+        aliases_json = json.dumps(entity.aliases)
         self._conn.execute(
             "INSERT INTO entity_history "
             "(entity_id, operation, changed_at, "

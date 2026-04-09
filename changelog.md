@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.18.3 - 9th April 2026
+
+- Updated `knowledge_graph/_entity_mixin.py`:
+  `_log_entity()` now passes `entity.aliases` directly
+  to `json.dumps()` instead of converting the tuple to
+  a list first — `json.dumps()` accepts tuples, so the
+  intermediate allocation was wasted on every entity
+  save and history write.
+
+
 ### v0.18.2 - 9th April 2026
 
 - Updated `web_scraping/`:
