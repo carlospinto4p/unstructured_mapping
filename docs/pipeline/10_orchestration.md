@@ -74,7 +74,7 @@ segmented into semantic sections. Each article becomes
 one `Chunk` with `chunk_index=0` and
 `section_name=None`. Long-form documents (research
 reports, earnings call transcripts) need a chunker
-upstream — see [`chunking.md`](chunking.md) — before
+upstream — see [`09_chunking.md`](09_chunking.md) — before
 reaching the orchestrator. The orchestrator itself does
 not chunk.
 
@@ -87,7 +87,7 @@ The run continues with the next article. A run only
 ends in `RunStatus.FAILED` when an exception escapes
 the per-article handler — e.g. the store itself going
 away mid-run. This matches the policy in
-[`design.md`](design.md#error-handling).
+[`01_design.md`](01_design.md#error-handling).
 
 ### Provenance-based idempotency
 

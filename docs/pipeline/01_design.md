@@ -238,7 +238,7 @@ sufficient — key entities and relationships are distributed
 throughout the document, not front-loaded. These documents
 are segmented into chunks that each flow through the
 pipeline independently, with results aggregated before
-persistence. See [chunking.md](chunking.md) for the full
+persistence. See [09_chunking.md](09_chunking.md) for the full
 segmentation and aggregation design.
 
 
@@ -266,9 +266,9 @@ and block the pipeline.
 
 For the concrete JSON schemas, validation rules, prompt
 structure, and token budget allocation, see
-[llm_interface.md](llm_interface.md). For the data models
+[03_llm_interface.md](03_llm_interface.md). For the data models
 that carry LLM responses between pipeline stages, see
-[models.md](models.md).
+[02_models.md](02_models.md).
 
 
 ## Already-processed tracking
@@ -338,14 +338,14 @@ logic in separate focused files. Key modules:
 - **models** — data classes for ingestion runs, mentions,
   and intermediate pipeline state.
 - **segmentation** — document segmenter ABC and per-type
-  implementations. See [chunking.md](chunking.md).
+  implementations. See [09_chunking.md](09_chunking.md).
 - **detection** — entity detector ABC and rule-based
   implementation.
 - **resolution** — entity resolver ABC and alias-based
   implementation.
 - **extraction** — relationship extractor ABC.
 - **aggregation** — cross-chunk deduplication and merge
-  logic. See [chunking.md](chunking.md).
+  logic. See [09_chunking.md](09_chunking.md).
 - **llm_provider** — LLM provider ABC and Ollama
   implementation.
 - **orchestrator** — pipeline class wiring the stages.
@@ -368,7 +368,7 @@ or KG storage don't pull in LLM dependencies.
   be added later as an alternative detector.
 - **Document chunking** — long-form documents (research
   reports, transcripts, filings) require segmentation.
-  Covered in [chunking.md](chunking.md).
+  Covered in [09_chunking.md](09_chunking.md).
 - **Batch/parallel processing** — articles are processed
   sequentially. Parallelism adds complexity without
   benefit at the current scale.

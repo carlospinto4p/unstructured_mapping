@@ -10,7 +10,7 @@ how chunks flow through the pipeline, and how results are
 aggregated before persistence.
 
 For the core pipeline stages (detection, resolution,
-extraction, persistence), see [design.md](design.md).
+extraction, persistence), see [01_design.md](01_design.md).
 
 
 ## Why truncation is not enough
@@ -387,7 +387,7 @@ Chunking adds two modules to the pipeline package:
   flagging conflicts before persistence.
 
 These sit alongside the existing modules described in
-[design.md](design.md).
+[01_design.md](01_design.md).
 
 
 ## What this design does NOT cover

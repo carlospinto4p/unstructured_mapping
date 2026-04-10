@@ -2,7 +2,7 @@
 
 Builds the system and user prompts for pass 1 (entity
 resolution). Prompts follow the architecture defined in
-``docs/pipeline/llm_interface.md``:
+``docs/pipeline/03_llm_interface.md``:
 
 - **System prompt**: fixed task description, JSON output
   schema, and constraints. Sent once per pass, not
@@ -76,7 +76,7 @@ def build_kg_context_block(
     """Format candidate entities as a numbered text block.
 
     Produces the compact text format defined in
-    ``llm_interface.md`` § "KG context block format".
+    ``03_llm_interface.md`` § "KG context block format".
     Smaller models perform better with numbered text
     entries than with nested JSON.
 

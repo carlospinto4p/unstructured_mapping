@@ -10,8 +10,8 @@ these right before implementation prevents cascading
 refactors when a downstream stage needs a field that an
 upstream stage does not produce.
 
-For stage descriptions, see [design.md](design.md). For
-chunking-specific flow, see [chunking.md](chunking.md).
+For stage descriptions, see [01_design.md](01_design.md). For
+chunking-specific flow, see [09_chunking.md](09_chunking.md).
 
 
 ## Conventions
@@ -85,7 +85,7 @@ as text).
 
 The `ingestion_runs` table lives in the KG database (same
 SQLite file) because runs are tightly coupled to KG
-mutations. See [design.md](design.md) for the rationale.
+mutations. See [01_design.md](01_design.md) for the rationale.
 
 | Column                 | Type    | Constraint            | Purpose                    |
 |------------------------|---------|-----------------------|----------------------------|

@@ -1,5 +1,21 @@
 ## Changelog
 
+### v0.23.1 - 10th April 2026
+
+- Renamed `docs/pipeline/` files with numerical prefixes for reading order:
+  - `design.md` → `01_design.md`
+  - `models.md` → `02_models.md`
+  - `llm_interface.md` → `03_llm_interface.md`
+  - `detection.md` → `04_detection.md`
+  - `resolution.md` → `05_resolution.md`
+  - `prompts.md` → `06_prompts.md`
+  - `budget.md` → `07_budget.md`
+  - `llm_parsers.md` → `08_llm_parsers.md`
+  - `chunking.md` → `09_chunking.md`
+  - `orchestration.md` → `10_orchestration.md`
+- Updated all cross-references in docs, source docstrings, and `README.md`.
+
+
 ### v0.23.0 - 10th April 2026
 
 - Added `pipeline/llm_parsers.py`:

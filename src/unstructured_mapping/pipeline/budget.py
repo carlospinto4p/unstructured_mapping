@@ -5,7 +5,7 @@ chunk text, and response headroom into the model's
 context window. This module estimates token counts and
 truncates content when the budget is exceeded.
 
-Budget strategy (from ``docs/pipeline/llm_interface.md``):
+Budget strategy (from ``docs/pipeline/03_llm_interface.md``):
 
 1. **Fixed regions** — system prompt and response headroom
    are measured/configured once at pipeline startup.
@@ -51,7 +51,7 @@ def estimate_tokens(text: str) -> int:
     """Estimate the token count of a text string.
 
     Uses the ``ceil(char_count / 4)`` approximation from
-    ``llm_interface.md`` § "Token counting". Slightly
+    ``03_llm_interface.md`` § "Token counting". Slightly
     overestimates for structured text, slightly
     underestimates for non-Latin scripts — acceptable
     given the 10-20% margin built into response headroom.

@@ -19,14 +19,14 @@ Design notes
 - **Single-chunk articles.** News articles are short and
   not segmented, so each article becomes one ``Chunk``
   with ``chunk_index=0``. Long-form documents will need
-  a chunker upstream (see ``docs/pipeline/chunking.md``)
+  a chunker upstream (see ``docs/pipeline/09_chunking.md``)
   before reaching this orchestrator.
 - **Per-article isolation.** If one article raises during
   detection/resolution/persist, the error is logged, the
   article is skipped, and the run continues. A run only
   ends in :attr:`RunStatus.FAILED` for pipeline-level
   errors (e.g. the store going away). This matches the
-  policy in ``docs/pipeline/design.md``.
+  policy in ``docs/pipeline/01_design.md``.
 - **Provenance-based idempotency.** Articles whose
   ``document_id`` already has provenance in the KG are
   skipped. Callers that need reprocessing must delete

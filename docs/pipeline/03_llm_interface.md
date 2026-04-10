@@ -9,8 +9,8 @@ must produce, how prompts are structured to elicit those
 schemas, and how the token budget is managed.
 
 For the pipeline stages that consume these responses, see
-[design.md](design.md). For the data models that carry
-results between stages, see [models.md](models.md).
+[01_design.md](01_design.md). For the data models that carry
+results between stages, see [02_models.md](02_models.md).
 
 
 ## Pass 1 — Entity resolution

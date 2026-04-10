@@ -21,7 +21,7 @@ Why a baseline resolver?
     reducing cost and latency. The LLM resolver only needs
     to handle the ambiguous remainder.
 
-See ``docs/pipeline/design.md`` for how resolution fits
+See ``docs/pipeline/01_design.md`` for how resolution fits
 into the broader pipeline.
 """
 

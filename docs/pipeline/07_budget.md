@@ -8,7 +8,7 @@ space is available for KG context and chunk text, and
 truncates content when the budget is exceeded.
 
 For the budget allocation strategy and default values,
-see [llm_interface.md](llm_interface.md) § "Token budget".
+see [03_llm_interface.md](03_llm_interface.md) § "Token budget".
 This document covers implementation-level decisions.
 
 
@@ -27,7 +27,7 @@ This document covers implementation-level decisions.
 
 ### Why `ceil(chars / 4)`?
 
-The approximation from `llm_interface.md` — 1 token per
+The approximation from `03_llm_interface.md` — 1 token per
 4 characters for English text. It overestimates slightly
 for structured text and underestimates for non-Latin
 scripts. Both are acceptable because the response
@@ -98,7 +98,7 @@ scenario entirely by producing budget-respecting chunks.
 
 `DEFAULT_RESPONSE_HEADROOM` is 800 tokens. This sits
 between the 600 (Ollama 4K) and 1000 (API 32K+)
-defaults from `llm_interface.md`. The orchestrator
+defaults from `03_llm_interface.md`. The orchestrator
 can override this per provider when computing the
 budget.
 

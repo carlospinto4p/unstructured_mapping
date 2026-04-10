@@ -20,7 +20,7 @@ Why a trie and not regex?
     regardless of alias count, and supports incremental
     updates without recompilation.
 
-See ``docs/pipeline/design.md`` for how detection fits
+See ``docs/pipeline/01_design.md`` for how detection fits
 into the broader pipeline.
 """
 

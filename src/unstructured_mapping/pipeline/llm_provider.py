@@ -16,7 +16,7 @@ backend. This keeps the stages:
   :class:`~unstructured_mapping.knowledge_graph.models.IngestionRun`
   records capture "who produced this mention?".
 
-See ``docs/pipeline/llm_interface.md`` for the full
+See ``docs/pipeline/03_llm_interface.md`` for the full
 contract, JSON schemas, prompt architecture, and token
 budget rationale.
 
@@ -48,7 +48,7 @@ class LLMConnectionError(LLMProviderError):
     """The provider could not reach its backend.
 
     Treated as a pipeline-level failure in
-    ``docs/pipeline/design.md``: the run is marked
+    ``docs/pipeline/01_design.md``: the run is marked
     :attr:`RunStatus.FAILED` because no further article
     can be processed.
     """
@@ -58,7 +58,7 @@ class LLMTimeoutError(LLMProviderError):
     """A ``generate`` call exceeded its timeout.
 
     Treated as article-level: the pipeline retries once
-    per the policy in ``docs/pipeline/design.md``, then
+    per the policy in ``docs/pipeline/01_design.md``, then
     skips the article if the second attempt also times
     out.
     """
@@ -69,7 +69,7 @@ class LLMEmptyResponseError(LLMProviderError):
 
     The caller logs the failure and skips the current
     chunk, per the error policy in
-    ``docs/pipeline/design.md``.
+    ``docs/pipeline/01_design.md``.
     """
 
 
@@ -167,7 +167,7 @@ class LLMProvider(ABC):
         The orchestrator subtracts the system prompt and
         response headroom to compute the flexible budget
         (KG context + chunk text). See
-        ``docs/pipeline/llm_interface.md`` for the
+        ``docs/pipeline/03_llm_interface.md`` for the
         budget allocation strategy.
         """
 

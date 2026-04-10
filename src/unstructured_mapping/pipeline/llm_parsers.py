@@ -2,7 +2,7 @@
 
 Parses the raw JSON string returned by the LLM for
 entity resolution (pass 1) and validates it against the
-five rules from ``docs/pipeline/llm_interface.md``:
+five rules from ``docs/pipeline/03_llm_interface.md``:
 
 1. ``entities`` must be an array (may be empty).
 2. Each entry must have ``surface_form`` and
@@ -41,7 +41,7 @@ class Pass1ValidationError(ValueError):
     The ``message`` describes which rule was violated,
     suitable for inclusion in a retry prompt so the LLM
     can correct its output. See
-    ``docs/pipeline/llm_interface.md`` § "Retry and error
+    ``docs/pipeline/03_llm_interface.md`` § "Retry and error
     feedback".
     """
 
@@ -218,7 +218,7 @@ def parse_pass1_response(
     """Parse and validate a pass 1 LLM response.
 
     Applies the five validation rules from
-    ``llm_interface.md`` and separates the response into
+    ``03_llm_interface.md`` and separates the response into
     resolved mentions (matched to existing KG entities)
     and entity proposals (new entities to create).
 

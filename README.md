@@ -283,7 +283,7 @@ with KnowledgeStore() as store:
 Articles whose `document_id` already has provenance are
 skipped by default. Pass `skip_processed=False` to the
 `Pipeline` constructor to force reprocessing.
-See `docs/pipeline/orchestration.md` for design notes.
+See `docs/pipeline/10_orchestration.md` for design notes.
 
 ## LLM Providers
 
@@ -314,7 +314,7 @@ text = provider.generate(
 
 Providers report `model_name`, `provider_name`, and
 `context_window` for run tracking and token-budget
-calculations. See `docs/pipeline/llm_interface.md` for
+calculations. See `docs/pipeline/03_llm_interface.md` for
 the full contract, JSON schemas, and prompt
 architecture.
 
@@ -348,7 +348,7 @@ response = provider.generate(
 )
 ```
 
-See `docs/pipeline/prompts.md` for design decisions.
+See `docs/pipeline/06_prompts.md` for design decisions.
 
 ### Token Budget
 
@@ -375,7 +375,7 @@ fitted, chunk_text = fit_candidates(
 )
 ```
 
-See `docs/pipeline/budget.md` for design decisions.
+See `docs/pipeline/07_budget.md` for design decisions.
 
 ## Project Status
 

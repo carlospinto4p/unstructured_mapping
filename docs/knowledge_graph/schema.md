@@ -77,7 +77,7 @@ Nullable — news articles and other unsegmented documents
 leave this as NULL. Only populated when the pipeline
 processes a chunked document with section-aware
 segmentation. See
-[pipeline/chunking.md](../pipeline/chunking.md) for the
+[pipeline/09_chunking.md](../pipeline/09_chunking.md) for the
 segmentation design.
 
 Enables section-level queries:
@@ -115,7 +115,7 @@ Same rationale as on `provenance` — a relationship
 discovered in the Q&A section of an earnings call carries
 different context than one in prepared remarks. Nullable
 for the same reasons. See
-[pipeline/chunking.md](../pipeline/chunking.md).
+[pipeline/09_chunking.md](../pipeline/09_chunking.md).
 Note: `valid_from` stores `""` (empty string) instead of NULL
 when no temporal bound is set — SQLite treats `NULL != NULL`,
 which would allow silent duplicate rows with the same

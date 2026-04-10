@@ -1,6 +1,6 @@
 """Ollama concrete :class:`LLMProvider`.
 
-Ollama-first was chosen in ``docs/pipeline/design.md``
+Ollama-first was chosen in ``docs/pipeline/01_design.md``
 because it is free, local, and avoids API key
 management while the pipeline is still iterating.
 Users who need hosted-model quality can later swap in a
@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_CONTEXT_WINDOW = 4096
 
 #: Default per-call timeout in seconds. Matches the
-#: policy in ``docs/pipeline/design.md`` ("Timeout:
+#: policy in ``docs/pipeline/01_design.md`` ("Timeout:
 #: configurable, default 120 seconds per call").
 DEFAULT_TIMEOUT = 120.0
 

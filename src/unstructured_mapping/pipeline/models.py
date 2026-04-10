@@ -5,7 +5,7 @@ stages. All models follow the same conventions as the
 KG models: frozen dataclasses with slots, string FKs,
 and tuples for immutable sequences.
 
-See ``docs/pipeline/models.md`` for field rationale.
+See ``docs/pipeline/02_models.md`` for field rationale.
 """
 
 from dataclasses import dataclass
@@ -121,7 +121,7 @@ class EntityProposal:
     conflicts. The persistence stage creates the
     ``Entity`` after aggregation resolves any conflicts.
 
-    See ``docs/pipeline/models.md`` § "EntityProposal"
+    See ``docs/pipeline/02_models.md`` § "EntityProposal"
     for field rationale.
 
     :param canonical_name: Proposed authoritative name.

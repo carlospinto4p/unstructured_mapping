@@ -5,7 +5,7 @@
 `pipeline/prompts.py` builds the system and user prompts
 for LLM pass 1 (entity resolution). It implements the
 prompt architecture defined in
-[llm_interface.md](llm_interface.md) — this document
+[03_llm_interface.md](03_llm_interface.md) — this document
 covers the implementation-level decisions not covered
 there.
 
@@ -39,7 +39,7 @@ drift between the enum and the prompt is caught.
 ### No few-shot examples
 
 The system prompt does not include few-shot examples.
-`llm_interface.md` § "What this design does NOT cover"
+`03_llm_interface.md` § "What this design does NOT cover"
 defers few-shot examples until baseline quality is
 assessed with real articles. The schema example in the
 prompt serves as a structural reference, not a few-shot
@@ -52,7 +52,7 @@ The "Rules" section uses imperative short sentences
 have exactly one of..."). Local models in the 7B-13B
 range follow explicit constraints better than nuanced
 prose. The rules mirror the five validation rules from
-`llm_interface.md` so the LLM is told the same
+`03_llm_interface.md` so the LLM is told the same
 constraints the validator enforces.
 
 
@@ -107,7 +107,7 @@ a different name in the current chunk.
 
 ### Entity type omitted
 
-`llm_interface.md` shows entity type in the running
+`03_llm_interface.md` shows entity type in the running
 entity header (e.g. `Federal Reserve (organization,
 id=...)`). The current implementation omits the type
 because `ResolvedMention` does not carry `entity_type`

@@ -5,12 +5,12 @@
 `pipeline/llm_parsers.py` parses the raw JSON string
 returned by the LLM for entity resolution (pass 1) and
 validates it against the five rules from
-[llm_interface.md](llm_interface.md). Valid entries are
+[03_llm_interface.md](03_llm_interface.md). Valid entries are
 converted into `ResolvedMention` and `EntityProposal`
 objects for downstream stages.
 
 For the response schema and validation rules, see
-[llm_interface.md](llm_interface.md) § "Pass 1".
+[03_llm_interface.md](03_llm_interface.md) § "Pass 1".
 This document covers implementation-level decisions.
 
 
@@ -43,7 +43,7 @@ The `Pass1ValidationError` message is phrased to be
 useful in a retry prompt: it names the specific field
 and entry index (e.g. `Entity [2]: "entity_type" is not
 a valid entity type`). This follows
-`llm_interface.md` § "Retry and error feedback" — the
+`03_llm_interface.md` § "Retry and error feedback" — the
 error is appended to the user prompt so the LLM can
 self-correct.
 
@@ -74,7 +74,7 @@ no `valid_from/until`, no `created_at`. The proposal
 carries only what the LLM provided plus
 `source_chunk` for cross-chunk conflict resolution.
 
-See [models.md](models.md) § "EntityProposal" for the
+See [02_models.md](02_models.md) § "EntityProposal" for the
 field table and rationale.
 
 ### source_chunk field
