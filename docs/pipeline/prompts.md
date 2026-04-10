@@ -1,0 +1,155 @@
+# Prompt Construction — Design Decisions
+
+## Purpose
+
+`pipeline/prompts.py` builds the system and user prompts
+for LLM pass 1 (entity resolution). It implements the
+prompt architecture defined in
+[llm_interface.md](llm_interface.md) — this document
+covers the implementation-level decisions not covered
+there.
+
+
+## Public API
+
+| Symbol                     | Type     | Purpose                                              |
+|----------------------------|----------|------------------------------------------------------|
+| `PASS1_SYSTEM_PROMPT`      | str      | Fixed system prompt for entity resolution            |
+| `build_kg_context_block()` | function | Format `Entity` objects as numbered text blocks      |
+| `build_pass1_user_prompt()`| function | Assemble user prompt from KG block, header, and text |
+
+`_build_running_entity_header()` is internal — called by
+`build_pass1_user_prompt()` when `prev_entities` is
+non-empty.
+
+
+## System prompt decisions
+
+### Entity type list is hardcoded in the prompt
+
+The system prompt lists all ten `EntityType` values
+inline rather than generating the list from the enum at
+runtime. This is deliberate: the prompt wording around
+the types matters for LLM output quality (e.g. ordering,
+formatting), and auto-generating it would couple prompt
+wording to enum iteration order. The test suite verifies
+that every `EntityType` value appears in the prompt, so
+drift between the enum and the prompt is caught.
+
+### No few-shot examples
+
+The system prompt does not include few-shot examples.
+`llm_interface.md` § "What this design does NOT cover"
+defers few-shot examples until baseline quality is
+assessed with real articles. The schema example in the
+prompt serves as a structural reference, not a few-shot
+demonstration.
+
+### Constraint phrasing
+
+The "Rules" section uses imperative short sentences
+("Only extract named entities", "Each entity entry must
+have exactly one of..."). Local models in the 7B-13B
+range follow explicit constraints better than nuanced
+prose. The rules mirror the five validation rules from
+`llm_interface.md` so the LLM is told the same
+constraints the validator enforces.
+
+
+## KG context block decisions
+
+### Input type: `Entity` objects
+
+`build_kg_context_block()` accepts `Sequence[Entity]`
+directly rather than a lighter intermediate type. The
+`Entity` dataclass already has all needed fields
+(`entity_id`, `canonical_name`, `entity_type`, `subtype`,
+`aliases`, `description`), and introducing a separate
+"candidate" DTO would add a type with no new information.
+
+### Aliases omitted when empty
+
+If an entity has no aliases, the `aliases:` line is
+omitted entirely rather than showing `aliases: (none)`.
+Fewer lines means fewer tokens, and the absence is
+self-evident — the LLM does not need to be told there
+are no aliases.
+
+### Subtype shown inline with type
+
+Type and subtype are rendered as `type: organization /
+central_bank` on a single line rather than on separate
+lines. This mirrors how `EntityType` and subtypes are
+conceptually related (subtype refines type) and saves
+a line per candidate.
+
+
+## Running entity header decisions
+
+### Deduplication by entity ID
+
+When the same entity is resolved multiple times across
+earlier chunks (e.g. "the Fed" in chunk 1 and "Federal
+Reserve" in chunk 2), the header shows it once. The
+first `ResolvedMention` encountered for each entity ID
+wins — this is arbitrary but deterministic, and the
+header is only a recognition aid, not a re-resolution
+input.
+
+### Surface form, not canonical name
+
+The header shows the `surface_form` from the
+`ResolvedMention`, not the entity's `canonical_name`.
+This is because the header's purpose is recognition —
+the LLM sees what surface form was used in earlier
+chunks, which helps it recognize the same entity under
+a different name in the current chunk.
+
+### Entity type omitted
+
+`llm_interface.md` shows entity type in the running
+entity header (e.g. `Federal Reserve (organization,
+id=...)`). The current implementation omits the type
+because `ResolvedMention` does not carry `entity_type`
+— it only has the entity ID. Adding the type would
+require a KG lookup per entity or enriching
+`ResolvedMention` with the type field. Deferred until
+multi-chunk processing is implemented and we can assess
+whether the type aids LLM recognition in practice.
+
+
+## User prompt assembly
+
+### Section ordering
+
+The user prompt assembles sections in this order:
+
+1. KG context block (candidates)
+2. Running entity header (previous entities)
+3. Chunk text
+
+KG context comes first because it establishes the
+reference frame — the LLM reads the candidate list
+before encountering the text. The text comes last
+because it is the material to process, and placing it
+at the end means the LLM's attention is freshest on it
+(recency bias in attention mechanisms).
+
+### Blank-line separation
+
+Sections are joined by double newlines (`\n\n`). This
+visual separation helps the LLM distinguish the
+structural parts of the prompt. Single newlines are used
+within sections (e.g. between candidate entries).
+
+
+## What was deferred
+
+- **Pass 2 prompts** — relationship extraction prompts
+  will follow the same pattern but are not yet
+  implemented. They will be added when the extraction
+  stage is built.
+- **Few-shot examples** — see system prompt section above.
+- **Dynamic constraint injection** — e.g. "only extract
+  entities of type ORGANIZATION" for filtered runs. Not
+  needed until the pipeline supports filtered ingestion.

@@ -318,6 +318,38 @@ calculations. See `docs/pipeline/llm_interface.md` for
 the full contract, JSON schemas, and prompt
 architecture.
 
+### Prompt Construction
+
+The `prompts` module builds the system and user prompts
+for LLM entity resolution (pass 1):
+
+```python
+from unstructured_mapping.pipeline import (
+    PASS1_SYSTEM_PROMPT,
+    build_kg_context_block,
+    build_pass1_user_prompt,
+)
+
+# Format candidate entities as numbered text blocks
+kg_block = build_kg_context_block(candidates)
+
+# Assemble the user prompt
+user_prompt = build_pass1_user_prompt(
+    kg_block=kg_block,
+    chunk_text=chunk.text,
+    prev_entities=earlier_resolved,  # for multi-chunk
+)
+
+# Send to the LLM
+response = provider.generate(
+    user_prompt,
+    system=PASS1_SYSTEM_PROMPT,
+    json_mode=True,
+)
+```
+
+See `docs/pipeline/prompts.md` for design decisions.
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

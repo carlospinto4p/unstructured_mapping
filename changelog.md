@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.21.1 - 10th April 2026
+
+- Added `docs/pipeline/prompts.md`: design decisions for prompt construction (system prompt wording, KG context format, running entity header, deferred items).
+- Updated `README.md`: added prompt construction usage example under LLM Providers.
+
+
 ### v0.21.0 - 10th April 2026
 
 - Added `pipeline/prompts.py`:
