@@ -231,6 +231,47 @@ def _extract_response_text(response: object) -> str:
     return value.strip()
 
 
+def _ctx_from_model_info(
+    model_info: object,
+) -> int | None:
+    """Extract context length from ``model_info`` dict.
+
+    Looks for keys ending in ``".context_length"`` whose
+    value is an ``int`` (e.g. ``"llama.context_length"``).
+    """
+    if not isinstance(model_info, dict):
+        return None
+    for key, value in model_info.items():
+        if (
+            isinstance(key, str)
+            and key.endswith(".context_length")
+            and isinstance(value, int)
+        ):
+            return value
+    return None
+
+
+def _ctx_from_parameters(
+    parameters: object,
+) -> int | None:
+    """Extract ``num_ctx`` from plain-text parameters.
+
+    Parses lines like ``num_ctx 8192`` in the
+    plain-text ``parameters`` field.
+    """
+    if not isinstance(parameters, str):
+        return None
+    for line in parameters.splitlines():
+        parts = line.strip().split()
+        if (
+            len(parts) == 2
+            and parts[0] == "num_ctx"
+            and parts[1].isdigit()
+        ):
+            return int(parts[1])
+    return None
+
+
 def _find_num_ctx(info: object) -> int | None:
     """Search a ``show`` response for a ``num_ctx`` int.
 
@@ -246,23 +287,7 @@ def _find_num_ctx(info: object) -> int | None:
         model_info = getattr(info, "model_info", None)
         parameters = getattr(info, "parameters", None)
 
-    if isinstance(model_info, dict):
-        for key, value in model_info.items():
-            if (
-                isinstance(key, str)
-                and key.endswith(".context_length")
-                and isinstance(value, int)
-            ):
-                return value
-
-    if isinstance(parameters, str):
-        for line in parameters.splitlines():
-            parts = line.strip().split()
-            if (
-                len(parts) == 2
-                and parts[0] == "num_ctx"
-                and parts[1].isdigit()
-            ):
-                return int(parts[1])
-
-    return None
+    return (
+        _ctx_from_model_info(model_info)
+        or _ctx_from_parameters(parameters)
+    )

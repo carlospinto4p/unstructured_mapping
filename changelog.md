@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.23.3 - 10th April 2026
+
+- `.claude/rules/`:
+  - Decoupled `/improvements` rule: canonical
+    `improvements.md` is now procedural only.
+  - Added `improvement-areas.md` with
+    project-specific areas to watch.
+- `.claude/skills/improvements/`:
+  - Updated `SKILL.md` to read both canonical
+    procedure and per-project areas.
+
+
 ### v0.23.2 - 10th April 2026
 
 - Refactored `pipeline/budget.py`:

@@ -1,23 +1,27 @@
-# Periodic feature/improvement suggestions
+# Periodic Improvements
 
-## When to suggest
+Proactively suggest new capabilities, features, and design
+improvements for the project.
 
-- When backlog has < 3-4 open items.
-- During long sessions when multiple tasks complete.
-- When spotting gaps in the codebase.
+## When to Suggest
 
-## Areas to explore
+1. **When the backlog runs low**: If the backlog has fewer than
+   3-4 open items, suggest an `/improvements` pass to replenish
+   it with fresh ideas. Check the backlog after completing tasks.
 
-- Entity detection strategies (rule-based, embedding, LLM).
-- Entity resolution / disambiguation approaches.
-- Relationship extraction methods.
-- KG update and validation logic.
-- Pipeline configurability and pluggability.
-- Benchmarking and evaluation tooling.
-- Data model expressiveness.
-- Developer experience (logging, error reporting, examples).
+2. **During long sessions**: When wrapping up a session with
+   multiple completed tasks, suggest improvements before finishing.
 
-## Output
+3. **When noticing gaps**: If you spot gaps while working, flag
+   them. Check `.claude/rules/improvement-areas.md` (if it
+   exists) for project-specific areas to watch for.
 
-Prioritized list by impact/effort, added to `backlog.md` with the
-current date.
+## How to Suggest
+
+- Present suggestions as a prioritized list with clear rationale
+- Classify by impact (HIGH / MEDIUM / LOW) and effort
+- Don't auto-apply — always propose and let the user decide
+- Group related suggestions
+- After each proposal, add the items to `backlog.md` under a new
+  section with the current date as the title (see
+  `.claude/rules/backlog.md` for format)
