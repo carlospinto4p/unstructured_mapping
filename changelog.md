@@ -1,5 +1,31 @@
 ## Changelog
 
+### v0.24.2 - 11th April 2026
+
+- `.claude/rules/`:
+  - Decoupled `/optimize` rule: canonical
+    `optimization.md` is now procedural only.
+  - Added `optimization-areas.md` with
+    project-specific performance areas.
+- `.claude/skills/optimize/`:
+  - Updated `SKILL.md` to read both canonical
+    procedure and per-project areas.
+
+
+### v0.24.1 - 11th April 2026
+
+- Updated `pipeline/resolution.py`:
+  - `LLMEntityResolver.resolve()`: added retry with error feedback per `03_llm_interface.md` § "Retry and error feedback"
+  - On `Pass1ValidationError`, appends error message to user prompt and retries once (max 2 attempts)
+  - After two failures, raises `LLMProviderError` so the orchestrator can skip the chunk
+  - Added `_append_error()` static method for retry prompt formatting
+  - Added `MAX_ATTEMPTS` class constant
+- Added 3 unit tests for retry behavior:
+  - Two failures raise `LLMProviderError` with 2 LLM calls
+  - Retry succeeds on second attempt
+  - Retry prompt contains error feedback text
+
+
 ### v0.24.0 - 10th April 2026
 
 - Added `pipeline/resolution.py`:

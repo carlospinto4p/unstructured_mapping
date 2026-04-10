@@ -1,18 +1,28 @@
-# Performance optimization
+# Periodic Optimization
 
-## When to suggest
+Proactively suggest performance optimization opportunities in the
+following situations:
 
-- Every 6-7 versions.
-- During long sessions with multiple changes.
-- When spotting performance issues.
+## When to Suggest
 
-## What to look for
+1. **Every 6-7 versions released**: Same cadence as `/refactor` —
+   suggest an optimization pass alongside refactoring reviews.
 
-- Memory: unbounded caches, large object retention.
-- I/O: redundant reads, missing batching.
-- Data structures: inefficient lookups, repeated serialization.
-- Algorithm complexity: quadratic loops on large KGs/texts.
+2. **During long sessions**: When a session involves multiple features
+   or changes across several files, suggest optimizations before
+   wrapping up.
 
-## Output
+3. **When noticing performance issues**: If you spot perf
+   issues while working, flag them. Check
+   `.claude/rules/optimization-areas.md` (if it exists)
+   for project-specific areas to watch for.
 
-List by HIGH/MEDIUM/LOW impact, added to `backlog.md`.
+## How to Suggest
+
+- Present findings as a prioritized list with file, line, and rationale
+- Classify impact as HIGH / MEDIUM / LOW
+- Don’t auto-apply — always propose and let the user decide
+- Group related findings
+- After each optimization proposal, add the items to `backlog.md`
+  under a new section with the current date as the title (see
+  `.claude/rules/backlog.md` for format)

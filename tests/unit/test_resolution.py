@@ -8,11 +8,9 @@ from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityType,
 )
-from unstructured_mapping.pipeline.llm_parsers import (
-    Pass1ValidationError,
-)
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
+    LLMProviderError,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -336,15 +334,25 @@ def test_resolver_resolved_are_tuples():
 
 
 class _FakeProvider(LLMProvider):
-    """Fake LLM that returns a preset response."""
+    """Fake LLM that returns preset response(s).
+
+    Pass a single string for a fixed response, or a
+    list of strings to return different responses on
+    successive calls.
+    """
 
     provider_name = "fake"
     supports_json_mode = True
     model_name = "fake-1"
     context_window = 4096
 
-    def __init__(self, response: str = "{}"):
-        self._response = response
+    def __init__(
+        self, response: str | list[str] = "{}",
+    ):
+        if isinstance(response, list):
+            self._responses = list(response)
+        else:
+            self._responses = [response]
         self.calls: list[
             tuple[str, str | None, bool]
         ] = []
@@ -357,7 +365,9 @@ class _FakeProvider(LLMProvider):
         json_mode: bool = False,
     ) -> str:
         self.calls.append((prompt, system, json_mode))
-        return self._response
+        if len(self._responses) > 1:
+            return self._responses.pop(0)
+        return self._responses[0]
 
 
 def _make_kg_entity(
@@ -582,8 +592,8 @@ def test_llm_resolver_skips_missing_candidate():
     assert len(result.resolved) == 0
 
 
-def test_llm_resolver_validation_error_propagates():
-    """Invalid LLM response raises Pass1ValidationError."""
+def test_llm_resolver_raises_after_two_failures():
+    """Two validation failures raise LLMProviderError."""
     fed = _make_kg_entity("fed_id", "Federal Reserve")
     lookup = {"fed_id": fed}
     provider = _FakeProvider("not valid json")
@@ -595,8 +605,83 @@ def test_llm_resolver_validation_error_propagates():
     mentions = (
         make_mention("Fed", 4, 7, ("fed_id",)),
     )
-    with pytest.raises(Pass1ValidationError):
+    with pytest.raises(LLMProviderError):
         resolver.resolve(chunk, mentions)
+    assert len(provider.calls) == 2
+
+
+def test_llm_resolver_retry_succeeds_on_second():
+    """Retry with error feedback recovers."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    good = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(
+        ["not valid json", good]
+    )
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the Fed raised rates")
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert len(result.resolved) == 1
+    assert result.resolved[0].entity_id == "fed_id"
+    assert len(provider.calls) == 2
+
+
+def test_llm_resolver_retry_prompt_contains_error():
+    """Retry prompt includes the validation error."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    good = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(
+        ["not valid json", good]
+    )
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the Fed raised rates")
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+    )
+    resolver.resolve(chunk, mentions)
+    retry_prompt = provider.calls[1][0]
+    assert "previous response" in retry_prompt
+    assert "Please correct" in retry_prompt
+
+
+def test_llm_resolver_no_retry_on_success():
+    """Successful first attempt makes only one call."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the Fed raised rates")
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+    )
+    resolver.resolve(chunk, mentions)
+    assert len(provider.calls) == 1
 
 
 def test_llm_resolver_section_name_propagated():
@@ -678,7 +763,7 @@ def test_llm_resolver_proposals_reset_each_call():
     response2 = _llm_response(
         _resolved_entry("fed_id", "Fed")
     )
-    provider._response = response2
+    provider._responses = [response2]
     resolver.resolve(chunk, mentions)
     assert len(resolver.proposals) == 0
 

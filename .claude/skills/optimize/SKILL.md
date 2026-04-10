@@ -7,8 +7,12 @@ description: >-
   them to the backlog.
 ---
 
-Check your guidelines in `.claude/rules/optimization.md`,
-and review the whole codebase for performance optimization
+Check your procedural guidelines in
+`.claude/rules/optimization.md`, then check
+`.claude/rules/optimization-areas.md` for project-specific
+performance areas to focus on (if the file exists).
+
+Review the whole codebase for performance optimization
 opportunities (CPU, memory, I/O, async, rendering).
 Once you scan everything and sort findings by impact and
 effort, add them to the backlog (use
