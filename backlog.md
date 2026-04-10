@@ -21,6 +21,15 @@
 - [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources
 - [ ] Build sentiment/signal analysis layer — classify article stance toward entities (positive/negative/neutral), separate from KG provenance
 
+#### Refactoring (2026 April 10th review)
+
+- [x] **MEDIUM** — Extract `_count_occurrences()` helper in `budget.py` — two identical while-True substring-counting loops (aliases + canonical name) should be a single reusable function
+- [x] **MEDIUM** — Extract `_compute_run_stats()` helper in `orchestrator.py` — duplicated list comprehension filtering `skipped` results and summing `provenances_saved` in both the error and success paths
+- [x] **LOW** — Add missing `# noqa: BLE001` on `orchestrator.py:211` — the only broad `except Exception` without the suppression comment; all other occurrences already have it
+- [ ] **MEDIUM** — Decompose `_find_num_ctx()` in `llm_ollama.py` — high cyclomatic complexity; extract `_ctx_from_model_info()` and `_ctx_from_parameters()` sub-functions
+- [ ] **MEDIUM, Large effort** — Split `EntityMixin` (616 lines) into focused mixins: CRUD, search/filter, merge, and audit/history
+- [ ] **LOW** — Standardize test helper naming — inconsistent `_make_entity` vs `_entity` vs `_org`; adopt `make_*` convention and move shared helpers to `conftest.py`
+
 #### Scraping enhancements
 
 - [ ] **LOW** — Podcast transcription pipeline: download BBC Sounds audio and run speech-to-text (e.g. Whisper) to extract text content from podcast episodes — significant effort, but would expand coverage to audio sources

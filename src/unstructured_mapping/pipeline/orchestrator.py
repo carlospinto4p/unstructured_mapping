@@ -64,6 +64,16 @@ from unstructured_mapping.web_scraping.models import Article
 logger = logging.getLogger(__name__)
 
 
+def _compute_run_stats(
+    results: list["ArticleResult"],
+) -> tuple[int, int]:
+    """Return ``(document_count, provenance_count)``."""
+    processed = [r for r in results if not r.skipped]
+    return len(processed), sum(
+        r.provenances_saved for r in results
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class ArticleResult:
     """Outcome of processing a single article.
@@ -208,16 +218,15 @@ class Pipeline:
                         article, run.run_id
                     )
                 )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
+            doc_count, prov_count = _compute_run_stats(
+                results
+            )
             self._store.finish_run(
                 run.run_id,
                 status=RunStatus.FAILED,
-                document_count=len(
-                    [r for r in results if not r.skipped]
-                ),
-                entity_count=sum(
-                    r.provenances_saved for r in results
-                ),
+                document_count=doc_count,
+                entity_count=prov_count,
                 error_message=str(exc),
             )
             logger.exception(
@@ -225,29 +234,26 @@ class Pipeline:
             )
             raise
 
-        processed = [r for r in results if not r.skipped]
-        total_provenances = sum(
-            r.provenances_saved for r in results
-        )
+        doc_count, prov_count = _compute_run_stats(results)
         self._store.finish_run(
             run.run_id,
             status=RunStatus.COMPLETED,
-            document_count=len(processed),
-            entity_count=total_provenances,
+            document_count=doc_count,
+            entity_count=prov_count,
         )
         logger.info(
             "Pipeline run %s completed: %d processed, "
             "%d skipped, %d provenances",
             run.run_id,
-            len(processed),
-            len(results) - len(processed),
-            total_provenances,
+            doc_count,
+            len(results) - doc_count,
+            prov_count,
         )
         return PipelineResult(
             run_id=run.run_id,
             results=tuple(results),
-            documents_processed=len(processed),
-            provenances_saved=total_provenances,
+            documents_processed=doc_count,
+            provenances_saved=prov_count,
         )
 
     def process_article(

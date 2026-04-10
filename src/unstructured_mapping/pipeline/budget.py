@@ -124,6 +124,23 @@ def compute_budget(
     )
 
 
+def _count_occurrences(text: str, substring: str) -> int:
+    """Count overlapping occurrences of *substring* in *text*.
+
+    Both arguments must already be normalised (e.g.
+    lowercased) by the caller.
+    """
+    count = 0
+    start = 0
+    while True:
+        pos = text.find(substring, start)
+        if pos == -1:
+            break
+        count += 1
+        start = pos + 1
+    return count
+
+
 def _count_alias_matches(
     entity: Entity,
     chunk_text: str,
@@ -145,23 +162,12 @@ def _count_alias_matches(
     lower_text = chunk_text.lower()
     count = 0
     for alias in entity.aliases:
-        lower_alias = alias.lower()
-        start = 0
-        while True:
-            pos = lower_text.find(lower_alias, start)
-            if pos == -1:
-                break
-            count += 1
-            start = pos + 1
-    # Also check canonical name.
-    lower_name = entity.canonical_name.lower()
-    start = 0
-    while True:
-        pos = lower_text.find(lower_name, start)
-        if pos == -1:
-            break
-        count += 1
-        start = pos + 1
+        count += _count_occurrences(
+            lower_text, alias.lower()
+        )
+    count += _count_occurrences(
+        lower_text, entity.canonical_name.lower()
+    )
     return count
 
 

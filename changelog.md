@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.23.2 - 10th April 2026
+
+- Refactored `pipeline/budget.py`:
+  - Extracted `_count_occurrences()` helper to eliminate duplicated while-True substring-counting loops in `_count_alias_matches()`
+- Refactored `pipeline/orchestrator.py`:
+  - Extracted `_compute_run_stats()` helper to deduplicate result filtering in error and success paths
+  - Added missing `# noqa: BLE001` on broad `except Exception` for consistency
+
+
 ### v0.23.1 - 10th April 2026
 
 - Renamed `docs/pipeline/` files with numerical prefixes for reading order:
