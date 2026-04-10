@@ -5,6 +5,13 @@ extraction, and persistence stages. See
 ``docs/pipeline/`` for design rationale.
 """
 
+from unstructured_mapping.pipeline.budget import (
+    DEFAULT_RESPONSE_HEADROOM,
+    PromptBudget,
+    compute_budget,
+    estimate_tokens,
+    fit_candidates,
+)
 from unstructured_mapping.pipeline.detection import (
     EntityDetector,
     RuleBasedDetector,
@@ -42,6 +49,7 @@ from unstructured_mapping.pipeline.resolution import (
 
 __all__ = [
     "AliasResolver",
+    "DEFAULT_RESPONSE_HEADROOM",
     "ArticleResult",
     "Chunk",
     "EntityDetector",
@@ -56,9 +64,13 @@ __all__ = [
     "PASS1_SYSTEM_PROMPT",
     "Pipeline",
     "PipelineResult",
+    "PromptBudget",
     "ResolvedMention",
     "ResolutionResult",
     "RuleBasedDetector",
     "build_kg_context_block",
     "build_pass1_user_prompt",
+    "compute_budget",
+    "estimate_tokens",
+    "fit_candidates",
 ]

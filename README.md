@@ -350,6 +350,33 @@ response = provider.generate(
 
 See `docs/pipeline/prompts.md` for design decisions.
 
+### Token Budget
+
+The budget module ensures prompts fit the model's
+context window. Chunk text gets priority; KG context is
+truncated by dropping the least-relevant candidates:
+
+```python
+from unstructured_mapping.pipeline import (
+    PASS1_SYSTEM_PROMPT,
+    compute_budget,
+    fit_candidates,
+)
+
+budget = compute_budget(
+    context_window=provider.context_window,
+    system_prompt=PASS1_SYSTEM_PROMPT,
+)
+
+fitted, chunk_text = fit_candidates(
+    candidates=candidates,
+    chunk_text=chunk.text,
+    flexible_budget=budget.flexible,
+)
+```
+
+See `docs/pipeline/budget.md` for design decisions.
+
 ## Project Status
 
 This is an early-stage proof of concept. The API, data models, and

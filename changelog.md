@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.22.0 - 10th April 2026
+
+- Added `pipeline/budget.py`:
+  - `estimate_tokens()`: character-based token estimator (`ceil(chars / 4)`).
+  - `PromptBudget`: frozen dataclass with budget breakdown (system, response headroom, flexible).
+  - `compute_budget()`: compute flexible budget from context window, system prompt, and response headroom.
+  - `fit_candidates()`: rank candidates by alias match count, truncate KG context to fit budget, truncate chunk text as last resort.
+- Added `tests/unit/test_budget.py`: 27 tests covering token estimation, budget computation, alias ranking, candidate truncation, and paragraph-level text truncation.
+
+
 ### v0.21.1 - 10th April 2026
 
 - Added `docs/pipeline/prompts.md`: design decisions for prompt construction (system prompt wording, KG context format, running entity header, deferred items).
