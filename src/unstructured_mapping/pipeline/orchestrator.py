@@ -42,6 +42,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
 from unstructured_mapping.knowledge_graph.models import (
+    Entity,
+    EntityStatus,
     IngestionRun,
     Provenance,
     RunStatus,
@@ -54,10 +56,12 @@ from unstructured_mapping.pipeline.detection import (
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
+    EntityProposal,
     ResolutionResult,
 )
 from unstructured_mapping.pipeline.resolution import (
     EntityResolver,
+    LLMEntityResolver,
 )
 from unstructured_mapping.web_scraping.models import Article
 
@@ -87,6 +91,9 @@ class ArticleResult:
         inserted by this article. Duplicates already in
         the store are counted as zero, matching
         :meth:`KnowledgeStore.save_provenances`.
+    :param proposals_saved: Number of new entities
+        created from LLM proposals. Zero when no LLM
+        resolver is configured.
     :param skipped: ``True`` when the article was skipped
         because it already had provenance in the store.
     :param error: Error message if processing failed for
@@ -99,6 +106,7 @@ class ArticleResult:
         default_factory=ResolutionResult
     )
     provenances_saved: int = 0
+    proposals_saved: int = 0
     skipped: bool = False
     error: str | None = None
 
@@ -138,11 +146,15 @@ class Pipeline:
     :param resolver: Implementation of
         :class:`EntityResolver`. The default
         :class:`AliasResolver` handles unambiguous
-        single-candidate mentions; an LLM-based resolver
-        can be plugged in later for the ambiguous
-        remainder.
+        single-candidate mentions.
     :param store: The :class:`KnowledgeStore` receiving
         provenance rows and tracking ingestion runs.
+    :param llm_resolver: Optional LLM-based resolver
+        that cascades after the primary resolver.
+        Unresolved mentions from ``resolver`` are
+        passed to ``llm_resolver`` for a second pass.
+        When ``None`` (the default), unresolved mentions
+        are simply left unresolved.
     :param skip_processed: When ``True`` (the default),
         articles whose ``document_id`` already has any
         provenance row are skipped. Set ``False`` to
@@ -153,6 +165,8 @@ class Pipeline:
 
         from unstructured_mapping.pipeline import (
             AliasResolver,
+            LLMEntityResolver,
+            OllamaProvider,
             Pipeline,
             RuleBasedDetector,
         )
@@ -165,6 +179,10 @@ class Pipeline:
             detector=detector,
             resolver=AliasResolver(),
             store=store,
+            llm_resolver=LLMEntityResolver(
+                provider=OllamaProvider(model="..."),
+                entity_lookup=store.get_entity,
+            ),
         )
         result = pipeline.run(articles)
         print(result.provenances_saved)
@@ -176,11 +194,13 @@ class Pipeline:
         resolver: EntityResolver,
         store: KnowledgeStore,
         *,
+        llm_resolver: LLMEntityResolver | None = None,
         skip_processed: bool = True,
     ) -> None:
         self._detector = detector
         self._resolver = resolver
         self._store = store
+        self._llm_resolver = llm_resolver
         self._skip_processed = skip_processed
 
     # -- Public API -----------------------------------------
@@ -310,6 +330,26 @@ class Pipeline:
             resolution = self._resolver.resolve(
                 chunk, mentions
             )
+
+            # Cascade: pass unresolved to the LLM.
+            llm_resolved: tuple = ()
+            proposals: tuple[EntityProposal, ...] = ()
+            if (
+                self._llm_resolver is not None
+                and resolution.unresolved
+            ):
+                llm_result = self._llm_resolver.resolve(
+                    chunk, resolution.unresolved
+                )
+                llm_resolved = llm_result.resolved
+                proposals = self._llm_resolver.proposals
+                resolution = ResolutionResult(
+                    resolved=(
+                        resolution.resolved
+                        + llm_resolved
+                    ),
+                )
+
             detected_at = _utcnow()
             provenances = [
                 Provenance(
@@ -326,10 +366,18 @@ class Pipeline:
             inserted = self._store.save_provenances(
                 provenances
             )
+
+            # Persist LLM entity proposals.
+            saved_proposals = self._save_proposals(
+                proposals, doc_id, article.source,
+                detected_at, run_id,
+            )
+
             return ArticleResult(
                 document_id=doc_id,
                 resolution=resolution,
                 provenances_saved=inserted,
+                proposals_saved=saved_proposals,
             )
         except Exception as exc:  # noqa: BLE001
             # Per-article isolation: log and carry on.
@@ -343,3 +391,61 @@ class Pipeline:
                 document_id=doc_id,
                 error=str(exc),
             )
+
+    def _save_proposals(
+        self,
+        proposals: tuple[EntityProposal, ...],
+        doc_id: str,
+        source: str,
+        detected_at: datetime,
+        run_id: str | None,
+    ) -> int:
+        """Persist LLM entity proposals as new entities.
+
+        Creates an :class:`Entity` for each proposal and
+        a :class:`Provenance` linking it to the source
+        article.
+
+        :return: Number of entities created.
+        """
+        if not proposals:
+            return 0
+        count = 0
+        for proposal in proposals:
+            entity = Entity(
+                canonical_name=proposal.canonical_name,
+                entity_type=proposal.entity_type,
+                subtype=proposal.subtype,
+                description=proposal.description,
+                aliases=proposal.aliases,
+                status=EntityStatus.ACTIVE,
+            )
+            self._store.save_entity(
+                entity,
+                reason="proposed by LLM",
+            )
+            self._store.save_provenances(
+                [
+                    Provenance(
+                        entity_id=entity.entity_id,
+                        document_id=doc_id,
+                        source=source,
+                        mention_text=(
+                            proposal.canonical_name
+                        ),
+                        context_snippet=(
+                            proposal.context_snippet
+                        ),
+                        detected_at=detected_at,
+                        run_id=run_id,
+                    )
+                ]
+            )
+            count += 1
+            logger.info(
+                "Created entity %s (%s) from LLM "
+                "proposal",
+                entity.canonical_name,
+                entity.entity_id,
+            )
+        return count

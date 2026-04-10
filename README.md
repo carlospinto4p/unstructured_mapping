@@ -273,6 +273,11 @@ persistence into one call. Each invocation creates an
 failure in one does not abort the run), and writes
 resolved mentions to the knowledge store.
 
+Pass an optional `llm_resolver` to cascade LLM-based
+resolution after the alias resolver — ambiguous or
+unknown mentions are sent to the LLM, and any new
+entities it proposes are persisted automatically:
+
 ```python
 from unstructured_mapping.knowledge_graph import (
     EntityStatus,
@@ -280,6 +285,8 @@ from unstructured_mapping.knowledge_graph import (
 )
 from unstructured_mapping.pipeline import (
     AliasResolver,
+    LLMEntityResolver,
+    OllamaProvider,
     Pipeline,
     RuleBasedDetector,
 )
@@ -292,20 +299,20 @@ with KnowledgeStore() as store:
         detector=RuleBasedDetector(entities),
         resolver=AliasResolver(),
         store=store,
+        llm_resolver=LLMEntityResolver(
+            provider=OllamaProvider(model="llama3.1:8b"),
+            entity_lookup=store.get_entity,
+        ),
     )
     result = pipeline.run(articles)
 
-    for article_result in result.results:
-        if article_result.error:
-            print(f"Failed: {article_result.error}")
-            continue
-        if article_result.skipped:
-            continue
-        unresolved = article_result.resolution.unresolved
-        if unresolved:
+    for ar in result.results:
+        if ar.error:
+            print(f"Failed: {ar.error}")
+        elif not ar.skipped:
             print(
-                f"{article_result.document_id}: "
-                f"{len(unresolved)} ambiguous mentions"
+                f"{ar.provenances_saved} provenances, "
+                f"{ar.proposals_saved} new entities"
             )
 ```
 

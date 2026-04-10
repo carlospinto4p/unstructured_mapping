@@ -1,5 +1,32 @@
 ## Changelog
 
+### v0.25.1 - 11th April 2026
+
+- `.claude/rules/`:
+  - Decoupled `/refactor` rule: canonical
+    `refactoring.md` is now procedural only.
+  - Added `refactoring-areas.md` with
+    project-specific code smells to watch.
+- `.claude/skills/refactor/`:
+  - Updated `SKILL.md` to read both canonical
+    procedure and per-project areas.
+
+
+### v0.25.0 - 11th April 2026
+
+- Updated `pipeline/orchestrator.py`:
+  - `Pipeline` accepts optional `llm_resolver` parameter for LLM cascade after the primary resolver
+  - Unresolved mentions from the alias resolver are automatically passed to the LLM resolver
+  - Added `_save_proposals()`: persists `EntityProposal`s as new `Entity` objects (status=ACTIVE) with provenance linked to the run
+  - `ArticleResult` gains `proposals_saved` field tracking new entities created per article
+- Added 5 unit tests for LLM cascade:
+  - Ambiguous mentions resolved by LLM cascade
+  - LLM proposals persisted as new entities in KG
+  - Proposal provenance linked to ingestion run
+  - No-LLM fallback leaves unresolved mentions
+  - LLM resolver skipped when all mentions already resolved
+
+
 ### v0.24.2 - 11th April 2026
 
 - `.claude/rules/`:

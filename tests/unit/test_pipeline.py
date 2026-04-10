@@ -1,5 +1,7 @@
 """Tests for the pipeline orchestrator."""
 
+import json
+
 import pytest
 
 from unstructured_mapping.knowledge_graph import (
@@ -12,9 +14,13 @@ from unstructured_mapping.knowledge_graph import (
 from unstructured_mapping.pipeline import (
     AliasResolver,
     ArticleResult,
+    LLMEntityResolver,
     Pipeline,
     PipelineResult,
     RuleBasedDetector,
+)
+from unstructured_mapping.pipeline.llm_provider import (
+    LLMProvider,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -380,3 +386,282 @@ def test_pipeline_uses_injected_components(tmp_path):
     assert result.provenances_saved == 1
     assert prov[0].mention_text == "Apple"
     assert prov[0].context_snippet == "...Apple..."
+
+
+# -- LLM cascade tests --
+
+
+class _FakeLLMProvider(LLMProvider):
+    """Fake LLM provider for pipeline cascade tests."""
+
+    provider_name = "fake"
+    supports_json_mode = True
+    model_name = "fake-1"
+    context_window = 4096
+
+    def __init__(self, response: str = "{}"):
+        self._response = response
+
+    def generate(
+        self,
+        prompt: str,
+        *,
+        system: str | None = None,
+        json_mode: bool = False,
+    ) -> str:
+        return self._response
+
+
+def _llm_response(*entities):
+    return json.dumps({"entities": list(entities)})
+
+
+def _resolved_entry(eid, form, snippet="...ctx..."):
+    return {
+        "surface_form": form,
+        "entity_id": eid,
+        "new_entity": None,
+        "context_snippet": snippet,
+    }
+
+
+def _new_entry(
+    form, name, etype="organization",
+    desc="A new entity.",
+    snippet="...ctx...",
+):
+    return {
+        "surface_form": form,
+        "entity_id": None,
+        "new_entity": {
+            "canonical_name": name,
+            "entity_type": etype,
+            "description": desc,
+            "aliases": [],
+        },
+        "context_snippet": snippet,
+    }
+
+
+def test_pipeline_llm_cascade_resolves_ambiguous(
+    tmp_path,
+):
+    """LLM resolver handles mentions the alias resolver
+    leaves unresolved."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    fed = make_org(
+        "Federal Reserve", aliases=("the bank",)
+    )
+    ecb = make_org("ECB", aliases=("the bank",))
+
+    # "the bank" is ambiguous (2 candidates).
+    # LLM resolves it to "fed".
+    response = _llm_response(
+        _resolved_entry(
+            fed.entity_id, "the bank"
+        )
+    )
+    provider = _FakeLLMProvider(response)
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_entity(fed)
+        store.save_entity(ecb)
+        detector = RuleBasedDetector(
+            [apple, fed, ecb]
+        )
+        llm_resolver = LLMEntityResolver(
+            provider=provider,
+            entity_lookup=store.get_entity,
+        )
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+            llm_resolver=llm_resolver,
+        )
+        article = make_article(
+            body="Apple and the bank both grew."
+        )
+        result = pipeline.run([article])
+        prov_fed = store.get_provenance(
+            fed.entity_id
+        )
+
+    ar = result.results[0]
+    # Apple resolved by alias, bank resolved by LLM.
+    assert ar.provenances_saved == 2
+    assert len(prov_fed) == 1
+    assert prov_fed[0].mention_text == "the bank"
+
+
+def test_pipeline_llm_cascade_creates_proposal(
+    tmp_path,
+):
+    """LLM proposals are persisted as new entities."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+
+    # LLM proposes "Tim Cook" as a new person entity
+    # for the unresolved "Cook" mention.
+    response = _llm_response(
+        _new_entry(
+            "Cook", "Tim Cook", "person",
+            desc="CEO of Apple Inc.",
+            snippet="...CEO Cook announced...",
+        )
+    )
+    provider = _FakeLLMProvider(response)
+
+    # Use a detector that finds both "Apple" (resolvable)
+    # and "Cook" (unresolvable — no entity in KG).
+    apple_mention = Mention(
+        surface_form="Apple",
+        span_start=0,
+        span_end=5,
+        candidate_ids=(apple.entity_id,),
+    )
+    cook_mention = Mention(
+        surface_form="Cook",
+        span_start=10,
+        span_end=14,
+        candidate_ids=(),
+    )
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        llm_resolver = LLMEntityResolver(
+            provider=provider,
+            entity_lookup=store.get_entity,
+        )
+        pipeline = Pipeline(
+            detector=_StubDetector(
+                (apple_mention, cook_mention)
+            ),
+            resolver=AliasResolver(),
+            store=store,
+            llm_resolver=llm_resolver,
+        )
+        article = make_article(
+            body="Apple CEO Cook announced earnings."
+        )
+        result = pipeline.run([article])
+
+        # New entity should exist in the KG.
+        new_entities = store.find_by_name("Tim Cook")
+
+    ar = result.results[0]
+    assert ar.proposals_saved == 1
+    assert len(new_entities) == 1
+    assert (
+        new_entities[0].entity_type
+        == EntityType.PERSON
+    )
+    assert new_entities[0].description == (
+        "CEO of Apple Inc."
+    )
+
+
+def test_pipeline_llm_cascade_proposal_provenance(
+    tmp_path,
+):
+    """Proposed entities get provenance linked to the
+    run."""
+    db = tmp_path / "kg.db"
+    response = _llm_response(
+        _new_entry(
+            "Powell", "Jerome Powell", "person",
+        )
+    )
+    provider = _FakeLLMProvider(response)
+    mention = Mention(
+        surface_form="Powell",
+        span_start=0,
+        span_end=6,
+        candidate_ids=(),
+    )
+
+    with KnowledgeStore(db_path=db) as store:
+        llm_resolver = LLMEntityResolver(
+            provider=provider,
+            entity_lookup=store.get_entity,
+        )
+        pipeline = Pipeline(
+            detector=_StubDetector((mention,)),
+            resolver=AliasResolver(),
+            store=store,
+            llm_resolver=llm_resolver,
+        )
+        article = make_article(
+            body="Powell spoke at the Fed."
+        )
+        result = pipeline.run([article])
+
+        new_entities = store.find_by_name(
+            "Jerome Powell"
+        )
+        prov = store.get_provenance(
+            new_entities[0].entity_id
+        )
+
+    assert len(prov) == 1
+    assert prov[0].run_id == result.run_id
+    assert prov[0].mention_text == "Jerome Powell"
+    assert prov[0].source == "bbc"
+
+
+def test_pipeline_no_llm_resolver_leaves_unresolved(
+    tmp_path,
+):
+    """Without llm_resolver, unresolved stay unresolved."""
+    db = tmp_path / "kg.db"
+    mention = Mention(
+        surface_form="unknown",
+        span_start=0,
+        span_end=7,
+        candidate_ids=(),
+    )
+
+    with KnowledgeStore(db_path=db) as store:
+        pipeline = Pipeline(
+            detector=_StubDetector((mention,)),
+            resolver=AliasResolver(),
+            store=store,
+        )
+        article = make_article(body="unknown entity")
+        result = pipeline.run([article])
+
+    ar = result.results[0]
+    assert ar.provenances_saved == 0
+    assert ar.proposals_saved == 0
+
+
+def test_pipeline_llm_cascade_skips_when_all_resolved(
+    tmp_path,
+):
+    """LLM resolver is not called when all mentions are
+    resolved by the alias resolver."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    provider = _FakeLLMProvider("should not be called")
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        detector = RuleBasedDetector([apple])
+        llm_resolver = LLMEntityResolver(
+            provider=provider,
+            entity_lookup=store.get_entity,
+        )
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+            llm_resolver=llm_resolver,
+        )
+        article = make_article(body="Apple grew.")
+        result = pipeline.run([article])
+
+    ar = result.results[0]
+    assert ar.provenances_saved == 1
+    assert ar.proposals_saved == 0
