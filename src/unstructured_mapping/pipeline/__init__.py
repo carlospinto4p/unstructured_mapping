@@ -50,6 +50,7 @@ from unstructured_mapping.pipeline.prompts import (
 from unstructured_mapping.pipeline.resolution import (
     AliasResolver,
     EntityResolver,
+    LLMEntityResolver,
 )
 
 __all__ = [
@@ -60,6 +61,7 @@ __all__ = [
     "EntityDetector",
     "EntityProposal",
     "EntityResolver",
+    "LLMEntityResolver",
     "LLMConnectionError",
     "LLMEmptyResponseError",
     "LLMProvider",

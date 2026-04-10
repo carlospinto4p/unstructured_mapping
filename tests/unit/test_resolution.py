@@ -1,7 +1,19 @@
 """Tests for pipeline entity resolution."""
 
+import json
+
 import pytest
 
+from unstructured_mapping.knowledge_graph.models import (
+    Entity,
+    EntityType,
+)
+from unstructured_mapping.pipeline.llm_parsers import (
+    Pass1ValidationError,
+)
+from unstructured_mapping.pipeline.llm_provider import (
+    LLMProvider,
+)
 from unstructured_mapping.pipeline.models import (
     Chunk,
     Mention,
@@ -10,6 +22,7 @@ from unstructured_mapping.pipeline.models import (
 )
 from unstructured_mapping.pipeline.resolution import (
     AliasResolver,
+    LLMEntityResolver,
     _extract_snippet,
 )
 
@@ -317,3 +330,381 @@ def test_resolver_resolved_are_tuples():
     result = resolver.resolve(chunk, mentions)
     assert isinstance(result.resolved, tuple)
     assert isinstance(result.unresolved, tuple)
+
+
+# -- LLMEntityResolver helpers --
+
+
+class _FakeProvider(LLMProvider):
+    """Fake LLM that returns a preset response."""
+
+    provider_name = "fake"
+    supports_json_mode = True
+    model_name = "fake-1"
+    context_window = 4096
+
+    def __init__(self, response: str = "{}"):
+        self._response = response
+        self.calls: list[
+            tuple[str, str | None, bool]
+        ] = []
+
+    def generate(
+        self,
+        prompt: str,
+        *,
+        system: str | None = None,
+        json_mode: bool = False,
+    ) -> str:
+        self.calls.append((prompt, system, json_mode))
+        return self._response
+
+
+def _make_kg_entity(
+    entity_id: str,
+    name: str,
+    aliases: tuple[str, ...] = (),
+) -> Entity:
+    return Entity(
+        entity_id=entity_id,
+        canonical_name=name,
+        entity_type=EntityType.ORGANIZATION,
+        description=f"Test entity {name}",
+        aliases=aliases,
+    )
+
+
+def _llm_response(*entities):
+    """Build a valid pass 1 JSON response string."""
+    return json.dumps({"entities": list(entities)})
+
+
+def _resolved_entry(
+    entity_id, surface_form, snippet="...ctx..."
+):
+    return {
+        "surface_form": surface_form,
+        "entity_id": entity_id,
+        "new_entity": None,
+        "context_snippet": snippet,
+    }
+
+
+def _new_entry(
+    surface_form,
+    canonical_name,
+    entity_type="organization",
+    description="A new entity.",
+    snippet="...ctx...",
+):
+    return {
+        "surface_form": surface_form,
+        "entity_id": None,
+        "new_entity": {
+            "canonical_name": canonical_name,
+            "entity_type": entity_type,
+            "description": description,
+            "aliases": [],
+        },
+        "context_snippet": snippet,
+    }
+
+
+# -- LLMEntityResolver tests --
+
+
+def test_llm_resolver_resolves_entity():
+    """LLM response with entity_id produces resolved."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the Fed raised rates")
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert len(result.resolved) == 1
+    assert result.resolved[0].entity_id == "fed_id"
+    assert result.resolved[0].surface_form == "the Fed"
+
+
+def test_llm_resolver_proposes_new_entity():
+    """LLM new_entity response produces a proposal."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response = _llm_response(
+        _new_entry("Powell", "Jerome Powell", "person")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("Powell spoke at the Fed")
+    mentions = (
+        make_mention("Powell", 0, 6, ("fed_id",)),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert len(result.resolved) == 0
+    assert len(resolver.proposals) == 1
+    assert (
+        resolver.proposals[0].canonical_name
+        == "Jerome Powell"
+    )
+    assert (
+        resolver.proposals[0].entity_type
+        == EntityType.PERSON
+    )
+
+
+def test_llm_resolver_mixed_resolved_and_proposals():
+    """LLM can return both resolved and new entities."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response = _llm_response(
+        _resolved_entry("fed_id", "the Fed"),
+        _new_entry("Powell", "Jerome Powell", "person"),
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk(
+        "the Fed Chair Powell announced rates"
+    )
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+        make_mention("Powell", 14, 20),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert len(result.resolved) == 1
+    assert len(resolver.proposals) == 1
+
+
+def test_llm_resolver_empty_mentions():
+    """No mentions → empty result, no LLM call."""
+    provider = _FakeProvider()
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lambda _: None,
+    )
+    chunk = make_chunk("some text")
+    result = resolver.resolve(chunk, ())
+    assert result == ResolutionResult()
+    assert len(provider.calls) == 0
+
+
+def test_llm_resolver_calls_provider():
+    """Resolver passes system prompt and json_mode."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response = _llm_response(
+        _resolved_entry("fed_id", "Fed")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the Fed raised rates")
+    mentions = (
+        make_mention("Fed", 4, 7, ("fed_id",)),
+    )
+    resolver.resolve(chunk, mentions)
+    assert len(provider.calls) == 1
+    prompt, system, json_mode = provider.calls[0]
+    assert system is not None
+    assert "Fed" in prompt
+    assert json_mode is True
+
+
+def test_llm_resolver_deduplicates_candidates():
+    """Same entity_id from multiple mentions is fetched
+    only once."""
+    fed = _make_kg_entity(
+        "fed_id", "Federal Reserve",
+        aliases=("the Fed", "Fed"),
+    )
+    calls: list[str] = []
+
+    def tracking_lookup(eid):
+        calls.append(eid)
+        return {"fed_id": fed}.get(eid)
+
+    response = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=tracking_lookup,
+    )
+    chunk = make_chunk("the Fed and Fed again")
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+        make_mention(
+            "Fed", 12, 15, ("fed_id",)
+        ),
+    )
+    resolver.resolve(chunk, mentions)
+    assert calls.count("fed_id") == 1
+
+
+def test_llm_resolver_skips_missing_candidate():
+    """Missing entity in lookup is silently skipped."""
+    response = _llm_response()
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lambda _: None,
+    )
+    chunk = make_chunk("unknown entity text")
+    mentions = (
+        make_mention(
+            "unknown", 0, 7, ("missing_id",)
+        ),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert len(result.resolved) == 0
+
+
+def test_llm_resolver_validation_error_propagates():
+    """Invalid LLM response raises Pass1ValidationError."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    provider = _FakeProvider("not valid json")
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the Fed")
+    mentions = (
+        make_mention("Fed", 4, 7, ("fed_id",)),
+    )
+    with pytest.raises(Pass1ValidationError):
+        resolver.resolve(chunk, mentions)
+
+
+def test_llm_resolver_section_name_propagated():
+    """Section name from chunk appears on resolved."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk(
+        "the Fed raised rates",
+        section="Economy",
+    )
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert result.resolved[0].section_name == "Economy"
+
+
+def test_llm_resolver_prev_entities_in_prompt():
+    """Previous entities appear in the user prompt."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    prev = [
+        ResolvedMention(
+            entity_id="ecb_id",
+            surface_form="ECB",
+            context_snippet="...ECB...",
+        )
+    ]
+    response = _llm_response(
+        _resolved_entry("fed_id", "the Fed")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+        prev_entities=prev,
+    )
+    chunk = make_chunk("the Fed raised rates")
+    mentions = (
+        make_mention(
+            "the Fed", 0, 7, ("fed_id",)
+        ),
+    )
+    resolver.resolve(chunk, mentions)
+    prompt = provider.calls[0][0]
+    assert "ECB" in prompt
+
+
+def test_llm_resolver_proposals_reset_each_call():
+    """Proposals are cleared between resolve() calls."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    lookup = {"fed_id": fed}
+    response1 = _llm_response(
+        _new_entry("Powell", "Jerome Powell", "person")
+    )
+    provider = _FakeProvider(response1)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("Powell spoke")
+    mentions = (
+        make_mention("Powell", 0, 6, ("fed_id",)),
+    )
+    resolver.resolve(chunk, mentions)
+    assert len(resolver.proposals) == 1
+
+    # Second call returns only resolved, no proposals.
+    response2 = _llm_response(
+        _resolved_entry("fed_id", "Fed")
+    )
+    provider._response = response2
+    resolver.resolve(chunk, mentions)
+    assert len(resolver.proposals) == 0
+
+
+def test_llm_resolver_multiple_candidates():
+    """Multiple candidate entities are sent to LLM."""
+    fed = _make_kg_entity("fed_id", "Federal Reserve")
+    ecb = _make_kg_entity("ecb_id", "ECB")
+    lookup = {"fed_id": fed, "ecb_id": ecb}
+    response = _llm_response(
+        _resolved_entry("fed_id", "the bank")
+    )
+    provider = _FakeProvider(response)
+    resolver = LLMEntityResolver(
+        provider=provider,
+        entity_lookup=lookup.get,
+    )
+    chunk = make_chunk("the bank raised rates")
+    mentions = (
+        make_mention(
+            "the bank", 0, 8,
+            ("fed_id", "ecb_id"),
+        ),
+    )
+    result = resolver.resolve(chunk, mentions)
+    assert len(result.resolved) == 1
+    prompt = provider.calls[0][0]
+    assert "Federal Reserve" in prompt
+    assert "ECB" in prompt

@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.24.0 - 10th April 2026
+
+- Added `pipeline/resolution.py`:
+  - `LLMEntityResolver`: LLM-based entity resolver composing prompt builder, token budget manager, and response parser into a single `resolve()` call
+  - Accepts injectable `entity_lookup` callable to decouple from storage layer
+  - Supports `prev_entities` for running entity header across multi-chunk documents
+  - Exposes `proposals` property for new entity proposals from the LLM
+- Added 12 unit tests for `LLMEntityResolver`:
+  - Resolved entities, new entity proposals, mixed responses
+  - Candidate deduplication, missing candidate handling
+  - Validation error propagation, section name propagation
+  - Previous entities in prompt, proposals reset between calls
+- Exported `LLMEntityResolver` from `pipeline/__init__.py`
+
+
 ### v0.23.4 - 10th April 2026
 
 - Refactored `pipeline/llm_ollama.py`:

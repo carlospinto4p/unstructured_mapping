@@ -4,7 +4,7 @@
 
 #### Pipeline foundation (detection → resolution → extraction)
 
-- [ ] **HIGH** — LLM pass 1 (2d): `LLMEntityResolver` happy path — concrete `EntityResolver` in `pipeline/resolution.py` composing 2a + 2b + 2c: alias pre-scan → budget → build prompt → `LLMProvider.generate` → validate → emit `ResolvedMention`s + `ProposedEntity`s. Tests use a fake `LLMProvider`. No retry yet.
+- [x] **HIGH** — LLM pass 1 (2d): `LLMEntityResolver` happy path — concrete `EntityResolver` in `pipeline/resolution.py` composing 2a + 2b + 2c: alias pre-scan → budget → build prompt → `LLMProvider.generate` → validate → emit `ResolvedMention`s + `ProposedEntity`s. Tests use a fake `LLMProvider`. No retry yet.
 - [ ] **HIGH** — LLM pass 1 (2e): retry with error feedback — `LLMEntityResolver` appends the validation error to the user prompt and retries once per `llm_interface.md` § "Retry and error feedback". After two failures, raise `LLMProviderError` so orchestrator skips the chunk.
 - [ ] **HIGH** — LLM pass 1 (2f): orchestrator integration + `ProposedEntity` persistence — wire `LLMEntityResolver` into `Pipeline` as a cascade after `AliasResolver`, and route `ProposedEntity`s through `KnowledgeStore` entity creation with provenance linked to the run.
 - [ ] **MEDIUM** — `ClaudeProvider` (`anthropic` SDK) — second concrete `LLMProvider` implementation; enables quality/cost benchmarking against the Ollama baseline

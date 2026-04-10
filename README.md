@@ -206,8 +206,8 @@ with word-boundary enforcement to avoid partial matches.
 ## Entity Resolution (Pipeline)
 
 The `AliasResolver` resolves unambiguous mentions (single
-candidate) directly, leaving ambiguous ones for a future
-LLM-based resolver:
+candidate) directly, leaving ambiguous ones for the
+`LLMEntityResolver`:
 
 ```python
 from unstructured_mapping.pipeline import (
@@ -234,6 +234,35 @@ for rm in result.resolved:
 
 for um in result.unresolved:
     print(f"{um.surface_form} needs LLM ({um.candidate_ids})")
+```
+
+### LLM-Based Resolution
+
+The `LLMEntityResolver` sends ambiguous mentions to an LLM
+for resolution, producing both resolved entities and
+proposals for new entities not in the KG:
+
+```python
+from unstructured_mapping.pipeline import (
+    LLMEntityResolver,
+    OllamaProvider,
+)
+from unstructured_mapping.knowledge_graph import KnowledgeStore
+
+store = KnowledgeStore("data/knowledge.db")
+provider = OllamaProvider(model="llama3.1:8b")
+
+resolver = LLMEntityResolver(
+    provider=provider,
+    entity_lookup=store.get_entity,
+)
+result = resolver.resolve(chunk, mentions)
+
+for rm in result.resolved:
+    print(f"{rm.surface_form} -> {rm.entity_id}")
+
+for ep in resolver.proposals:
+    print(f"NEW: {ep.canonical_name} ({ep.entity_type})")
 ```
 
 ## Pipeline Orchestration
