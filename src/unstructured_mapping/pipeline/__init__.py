@@ -16,6 +16,10 @@ from unstructured_mapping.pipeline.detection import (
     EntityDetector,
     RuleBasedDetector,
 )
+from unstructured_mapping.pipeline.llm_parsers import (
+    Pass1ValidationError,
+    parse_pass1_response,
+)
 from unstructured_mapping.pipeline.llm_ollama import (
     OllamaProvider,
 )
@@ -28,6 +32,7 @@ from unstructured_mapping.pipeline.llm_provider import (
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
+    EntityProposal,
     Mention,
     ResolvedMention,
     ResolutionResult,
@@ -53,6 +58,7 @@ __all__ = [
     "ArticleResult",
     "Chunk",
     "EntityDetector",
+    "EntityProposal",
     "EntityResolver",
     "LLMConnectionError",
     "LLMEmptyResponseError",
@@ -62,6 +68,7 @@ __all__ = [
     "Mention",
     "OllamaProvider",
     "PASS1_SYSTEM_PROMPT",
+    "Pass1ValidationError",
     "Pipeline",
     "PipelineResult",
     "PromptBudget",
@@ -69,6 +76,7 @@ __all__ = [
     "ResolutionResult",
     "RuleBasedDetector",
     "build_kg_context_block",
+    "parse_pass1_response",
     "build_pass1_user_prompt",
     "compute_budget",
     "estimate_tokens",

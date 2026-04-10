@@ -10,6 +10,10 @@ See ``docs/pipeline/models.md`` for field rationale.
 
 from dataclasses import dataclass
 
+from unstructured_mapping.knowledge_graph.models import (
+    EntityType,
+)
+
 
 @dataclass(frozen=True, slots=True)
 class Chunk:
@@ -104,3 +108,39 @@ class ResolutionResult:
 
     resolved: tuple[ResolvedMention, ...] = ()
     unresolved: tuple[Mention, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class EntityProposal:
+    """A new entity proposed by the LLM during resolution.
+
+    Intermediate representation — not yet a full
+    :class:`~unstructured_mapping.knowledge_graph.models.Entity`
+    because it has not been validated against alias
+    collisions, type constraints, or cross-chunk
+    conflicts. The persistence stage creates the
+    ``Entity`` after aggregation resolves any conflicts.
+
+    See ``docs/pipeline/models.md`` § "EntityProposal"
+    for field rationale.
+
+    :param canonical_name: Proposed authoritative name.
+    :param entity_type: Proposed type classification.
+    :param description: LLM-generated context for future
+        resolution and disambiguation.
+    :param subtype: Optional finer classification within
+        the entity type.
+    :param aliases: Surface forms the LLM observed.
+    :param source_chunk: Chunk index where this entity
+        was first proposed.
+    :param context_snippet: Surrounding text from the
+        originating chunk.
+    """
+
+    canonical_name: str
+    entity_type: EntityType
+    description: str
+    subtype: str | None = None
+    aliases: tuple[str, ...] = ()
+    source_chunk: int = 0
+    context_snippet: str = ""

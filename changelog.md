@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.23.0 - 10th April 2026
+
+- Added `pipeline/llm_parsers.py`:
+  - `Pass1ValidationError`: exception for schema validation failures, message suitable for retry prompts.
+  - `parse_pass1_response()`: parse raw LLM JSON and validate against the 5 rules from `llm_interface.md`, returning `(ResolvedMention, ...), (EntityProposal, ...)`.
+- Added `EntityProposal` dataclass to `pipeline/models.py`: intermediate representation for LLM-proposed new entities before persistence validation.
+- Added `docs/pipeline/llm_parsers.md`: design decisions for parsing and validation.
+- Added `tests/unit/test_llm_parsers.py`: 31 tests covering valid responses, all 5 validation rules, edge cases, and the `EntityProposal` model.
+
+
 ### v0.22.0 - 10th April 2026
 
 - Added `pipeline/budget.py`:
