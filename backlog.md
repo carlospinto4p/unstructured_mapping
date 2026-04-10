@@ -4,10 +4,6 @@
 
 #### Pipeline foundation (detection → resolution → extraction)
 
-- [x] **HIGH** — `LLMProvider` ABC + `OllamaProvider` — pluggable LLM backend (ABC contract from `docs/pipeline/llm_interface.md`), Ollama-first per design.md, `llm` optional extras dependency group. Prerequisite for the LLM resolver and relationship extractor.
-- [x] **HIGH** — LLM pass 1 (2a): prompt builder — `pipeline/prompts.py` with system prompt for pass 1, `build_kg_context_block(candidates)` producing the numbered text format from `llm_interface.md` § "KG context block format", and `build_pass1_user_prompt(kg_block, chunk_text, prev_entities)`. Pure string construction, no LLM call.
-- [x] **HIGH** — LLM pass 1 (2b): token budget + KG context truncation — `pipeline/budget.py` with char-based token estimator, budget region calculator reading `LLMProvider.context_window`, and candidate truncation ranked by alias match count per `llm_interface.md` § "Token budget".
-- [x] **HIGH** — LLM pass 1 (2c): response parser + validator — `pipeline/llm_parsers.py` applying the 5 validation rules from `llm_interface.md` (array shape, exactly-one-of `entity_id`/`new_entity`, valid `EntityType`, candidate-ID membership check). Adds `ProposedEntity` data class to `pipeline/models.py`.
 - [ ] **HIGH** — LLM pass 1 (2d): `LLMEntityResolver` happy path — concrete `EntityResolver` in `pipeline/resolution.py` composing 2a + 2b + 2c: alias pre-scan → budget → build prompt → `LLMProvider.generate` → validate → emit `ResolvedMention`s + `ProposedEntity`s. Tests use a fake `LLMProvider`. No retry yet.
 - [ ] **HIGH** — LLM pass 1 (2e): retry with error feedback — `LLMEntityResolver` appends the validation error to the user prompt and retries once per `llm_interface.md` § "Retry and error feedback". After two failures, raise `LLMProviderError` so orchestrator skips the chunk.
 - [ ] **HIGH** — LLM pass 1 (2f): orchestrator integration + `ProposedEntity` persistence — wire `LLMEntityResolver` into `Pipeline` as a cascade after `AliasResolver`, and route `ProposedEntity`s through `KnowledgeStore` entity creation with provenance linked to the run.
@@ -23,9 +19,6 @@
 
 #### Refactoring (2026 April 10th review)
 
-- [x] **MEDIUM** — Extract `_count_occurrences()` helper in `budget.py` — two identical while-True substring-counting loops (aliases + canonical name) should be a single reusable function
-- [x] **MEDIUM** — Extract `_compute_run_stats()` helper in `orchestrator.py` — duplicated list comprehension filtering `skipped` results and summing `provenances_saved` in both the error and success paths
-- [x] **LOW** — Add missing `# noqa: BLE001` on `orchestrator.py:211` — the only broad `except Exception` without the suppression comment; all other occurrences already have it
 - [ ] **MEDIUM** — Decompose `_find_num_ctx()` in `llm_ollama.py` — high cyclomatic complexity; extract `_ctx_from_model_info()` and `_ctx_from_parameters()` sub-functions
 - [ ] **MEDIUM, Large effort** — Split `EntityMixin` (616 lines) into focused mixins: CRUD, search/filter, merge, and audit/history
 - [ ] **LOW** — Standardize test helper naming — inconsistent `_make_entity` vs `_entity` vs `_org`; adopt `make_*` convention and move shared helpers to `conftest.py`
