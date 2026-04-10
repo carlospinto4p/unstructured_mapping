@@ -34,7 +34,7 @@ from unstructured_mapping.web_scraping.models import Article
 # -- Helpers --
 
 
-def _article(
+def make_article(
     body: str = "Apple and Microsoft both grew.",
     title: str = "Tech news",
     source: str = "bbc",
@@ -47,7 +47,7 @@ def _article(
     )
 
 
-def _org(
+def make_org(
     name: str,
     aliases: tuple[str, ...] = (),
 ) -> Entity:
@@ -118,9 +118,9 @@ def test_article_result_frozen():
 def test_pipeline_run_end_to_end(tmp_path):
     """Real detector + resolver + store wiring works."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
-    msft = _org("Microsoft", aliases=("Microsoft",))
-    article = _article(
+    apple = make_org("Apple", aliases=("Apple",))
+    msft = make_org("Microsoft", aliases=("Microsoft",))
+    article = make_article(
         body=(
             "Apple reported earnings. "
             "Microsoft also reported."
@@ -163,9 +163,9 @@ def test_pipeline_run_end_to_end(tmp_path):
 def test_pipeline_run_multiple_articles(tmp_path):
     """Counts aggregate across articles."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
+    apple = make_org("Apple", aliases=("Apple",))
     articles = [
-        _article(body="Apple rose.", title=f"a{i}")
+        make_article(body="Apple rose.", title=f"a{i}")
         for i in range(3)
     ]
     with KnowledgeStore(db_path=db) as store:
@@ -188,8 +188,8 @@ def test_pipeline_run_multiple_articles(tmp_path):
 def test_pipeline_run_no_mentions(tmp_path):
     """Articles without matches still succeed."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
-    article = _article(body="Nothing interesting here.")
+    apple = make_org("Apple", aliases=("Apple",))
+    article = make_article(body="Nothing interesting here.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
         pipeline = Pipeline(
@@ -230,8 +230,8 @@ def test_pipeline_run_empty_list(tmp_path):
 def test_pipeline_skips_processed_articles(tmp_path):
     """Articles with existing provenance are skipped."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
-    article = _article(body="Apple rose.")
+    apple = make_org("Apple", aliases=("Apple",))
+    article = make_article(body="Apple rose.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
         # Pre-seed provenance as if a prior run saw it.
@@ -263,8 +263,8 @@ def test_pipeline_skip_processed_false_reprocesses(
 ):
     """skip_processed=False runs the pipeline anyway."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
-    article = _article(body="Apple rose again.")
+    apple = make_org("Apple", aliases=("Apple",))
+    article = make_article(body="Apple rose again.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
         store.save_provenance(Provenance(
@@ -297,9 +297,9 @@ def test_pipeline_skip_processed_false_reprocesses(
 def test_pipeline_isolates_article_failure(tmp_path):
     """One failing article does not kill the run."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
+    apple = make_org("Apple", aliases=("Apple",))
     articles = [
-        _article(body="Apple a.", title="good"),
+        make_article(body="Apple a.", title="good"),
     ]
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
@@ -325,8 +325,8 @@ def test_pipeline_isolates_article_failure(tmp_path):
 def test_process_article_direct(tmp_path):
     """process_article works without a run."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
-    article = _article(body="Apple rose.")
+    apple = make_org("Apple", aliases=("Apple",))
+    article = make_article(body="Apple rose.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
         pipeline = Pipeline(
@@ -350,8 +350,8 @@ def test_process_article_direct(tmp_path):
 def test_pipeline_uses_injected_components(tmp_path):
     """Stubs verify the orchestrator calls the stages."""
     db = tmp_path / "kg.db"
-    apple = _org("Apple", aliases=("Apple",))
-    article = _article(body="anything")
+    apple = make_org("Apple", aliases=("Apple",))
+    article = make_article(body="anything")
     mention = Mention(
         surface_form="Apple",
         span_start=0,

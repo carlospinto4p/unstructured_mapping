@@ -19,9 +19,9 @@
 
 #### Refactoring (2026 April 10th review)
 
-- [ ] **MEDIUM** — Decompose `_find_num_ctx()` in `llm_ollama.py` — high cyclomatic complexity; extract `_ctx_from_model_info()` and `_ctx_from_parameters()` sub-functions
-- [ ] **MEDIUM, Large effort** — Split `EntityMixin` (616 lines) into focused mixins: CRUD, search/filter, merge, and audit/history
-- [ ] **LOW** — Standardize test helper naming — inconsistent `_make_entity` vs `_entity` vs `_org`; adopt `make_*` convention and move shared helpers to `conftest.py`
+- [x] **MEDIUM** — Decompose `_find_num_ctx()` in `llm_ollama.py` — high cyclomatic complexity; extract `_ctx_from_model_info()` and `_ctx_from_parameters()` sub-functions
+- [x] **MEDIUM, Large effort** — Split `EntityMixin` (616 lines) into focused mixins: CRUD, search/filter, merge, and audit/history
+- [x] **LOW** — Standardize test helper naming — inconsistent `_make_entity` vs `_entity` vs `_org`; adopt `make_*` convention and move shared helpers to `conftest.py`
 
 #### Scraping enhancements
 

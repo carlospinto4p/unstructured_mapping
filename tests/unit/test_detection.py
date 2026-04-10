@@ -21,12 +21,12 @@ from unstructured_mapping.pipeline.detection import (
 # -- Helpers --
 
 
-def _entity(
+def make_entity(
     name: str,
     aliases: tuple[str, ...] = (),
     entity_id: str = "",
 ) -> Entity:
-    """Create a minimal entity for testing."""
+    """Create a minimal entity for detection tests."""
     return Entity(
         canonical_name=name,
         entity_type=EntityType.ORGANIZATION,
@@ -38,7 +38,10 @@ def _entity(
     )
 
 
-def _chunk(text: str, doc_id: str = "doc1") -> Chunk:
+def make_chunk(
+    text: str,
+    doc_id: str = "doc1",
+) -> Chunk:
     """Create a minimal chunk for testing."""
     return Chunk(
         document_id=doc_id,
@@ -59,7 +62,7 @@ def test_chunk_defaults():
 
 
 def test_chunk_frozen():
-    c = _chunk("text")
+    c = make_chunk("text")
     with pytest.raises(AttributeError):
         c.text = "other"  # type: ignore[misc]
 
@@ -250,8 +253,8 @@ def test_scan_nested_aliases_longer_first():
 
 def test_detector_from_entities():
     entities = [
-        _entity("Apple Inc.", aliases=("Apple", "AAPL")),
-        _entity("Microsoft", aliases=("MSFT",)),
+        make_entity("Apple Inc.", aliases=("Apple", "AAPL")),
+        make_entity("Microsoft", aliases=("MSFT",)),
     ]
     detector = RuleBasedDetector(entities)
     # canonical + aliases: 3 + 2 = 5 unique
@@ -260,14 +263,14 @@ def test_detector_from_entities():
 
 def test_detector_detect_basic():
     entities = [
-        _entity(
+        make_entity(
             "Federal Reserve",
             aliases=("the Fed", "Fed"),
             entity_id="fed1",
         ),
     ]
     detector = RuleBasedDetector(entities)
-    chunk = _chunk(
+    chunk = make_chunk(
         "The Fed raised rates on Wednesday."
     )
     mentions = detector.detect(chunk)
@@ -281,13 +284,13 @@ def test_detector_detect_basic():
 
 def test_detector_detect_multiple_entities():
     entities = [
-        _entity("Apple Inc.", aliases=("Apple",),
+        make_entity("Apple Inc.", aliases=("Apple",),
                 entity_id="apple"),
-        _entity("Google", aliases=("Alphabet",),
+        make_entity("Google", aliases=("Alphabet",),
                 entity_id="goog"),
     ]
     detector = RuleBasedDetector(entities)
-    chunk = _chunk("Apple and Google announced a deal.")
+    chunk = make_chunk("Apple and Google announced a deal.")
     mentions = detector.detect(chunk)
     ids = {
         cid
@@ -299,20 +302,20 @@ def test_detector_detect_multiple_entities():
 
 
 def test_detector_detect_empty_chunk():
-    entities = [_entity("Test")]
+    entities = [make_entity("Test")]
     detector = RuleBasedDetector(entities)
-    assert detector.detect(_chunk("")) == ()
+    assert detector.detect(make_chunk("")) == ()
 
 
 def test_detector_detect_no_entities():
     detector = RuleBasedDetector([])
     assert detector.alias_count == 0
-    assert detector.detect(_chunk("Some text")) == ()
+    assert detector.detect(make_chunk("Some text")) == ()
 
 
 def test_detector_duplicate_aliases_across_entities():
     """Same alias on two entities produces both IDs."""
-    e1 = _entity(
+    e1 = make_entity(
         "Apple Inc.", aliases=("Apple",),
         entity_id="corp",
     )
@@ -323,7 +326,7 @@ def test_detector_duplicate_aliases_across_entities():
         entity_id="stock",
     )
     detector = RuleBasedDetector([e1, e2])
-    chunk = _chunk("Buy Apple now")
+    chunk = make_chunk("Buy Apple now")
     mentions = detector.detect(chunk)
     apple = [
         m for m in mentions
@@ -336,9 +339,9 @@ def test_detector_duplicate_aliases_across_entities():
 
 
 def test_detector_returns_tuple():
-    entities = [_entity("Test", entity_id="t1")]
+    entities = [make_entity("Test", entity_id="t1")]
     detector = RuleBasedDetector(entities)
-    result = detector.detect(_chunk("Test run"))
+    result = detector.detect(make_chunk("Test run"))
     assert isinstance(result, tuple)
 
 
@@ -358,14 +361,14 @@ def test_detector_ignores_empty_alias():
 
 def test_detector_multiword_alias():
     entities = [
-        _entity(
+        make_entity(
             "Bank of England",
             aliases=("BoE",),
             entity_id="boe",
         ),
     ]
     detector = RuleBasedDetector(entities)
-    chunk = _chunk(
+    chunk = make_chunk(
         "The Bank of England held rates steady."
     )
     mentions = detector.detect(chunk)

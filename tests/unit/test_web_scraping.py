@@ -95,7 +95,7 @@ def test_scraper_cannot_be_instantiated():
 # -- ReutersScraper --
 
 
-def _mock_response(text: str):
+def make_mock_response(text: str):
     """Create a mock httpx response."""
 
     class _Resp:
@@ -117,7 +117,7 @@ def test_reuters_source():
 
 @patch("httpx.Client.get")
 def test_reuters_fetch_parses_rss(mock_get):
-    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_get.return_value = make_mock_response(SAMPLE_RSS)
     with ReutersScraper(
         feed_urls="https://fake.feed/rss"
     ) as scraper:
@@ -134,7 +134,7 @@ def test_reuters_fetch_parses_rss(mock_get):
 
 @patch("httpx.Client.get")
 def test_reuters_fetch_parses_date(mock_get):
-    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_get.return_value = make_mock_response(SAMPLE_RSS)
     with ReutersScraper(
         feed_urls="https://fake.feed/rss"
     ) as scraper:
@@ -148,7 +148,7 @@ def test_reuters_fetch_parses_date(mock_get):
 
 @patch("httpx.Client.get")
 def test_reuters_fetch_missing_date(mock_get):
-    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_get.return_value = make_mock_response(SAMPLE_RSS)
     with ReutersScraper(
         feed_urls="https://fake.feed/rss"
     ) as scraper:
@@ -167,7 +167,7 @@ def test_ap_source():
 
 @patch("httpx.Client.get")
 def test_ap_fetch_parses_rss(mock_get):
-    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_get.return_value = make_mock_response(SAMPLE_RSS)
     with APScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=False,
@@ -186,7 +186,7 @@ def test_ap_fetch_parses_rss(mock_get):
 )
 @patch("httpx.Client.get")
 def test_ap_fetch_full_text(mock_get, mock_extract):
-    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_get.return_value = make_mock_response(SAMPLE_RSS)
     mock_extract.return_value = ExtractionResult(
         body="Full article text from AP.",
         url="https://apnews.com/article/test",
@@ -213,7 +213,7 @@ def test_ap_fetch_full_text(mock_get, mock_extract):
 def test_ap_fallback_on_extraction_failure(
     mock_get, mock_extract
 ):
-    mock_get.return_value = _mock_response(SAMPLE_RSS)
+    mock_get.return_value = make_mock_response(SAMPLE_RSS)
     mock_extract.return_value = ExtractionResult()
     with APScraper(
         feed_urls="https://fake.feed/rss",
@@ -263,8 +263,8 @@ def test_bbc_source():
 def test_bbc_fetch_full_text(mock_get):
     def side_effect(url, **kwargs):
         if "fake.feed" in url:
-            return _mock_response(BBC_RSS)
-        return _mock_response(BBC_HTML)
+            return make_mock_response(BBC_RSS)
+        return make_mock_response(BBC_HTML)
 
     mock_get.side_effect = side_effect
     with BBCScraper(
@@ -282,7 +282,7 @@ def test_bbc_fetch_full_text(mock_get):
 
 @patch("httpx.Client.get")
 def test_bbc_fetch_summary_only(mock_get):
-    mock_get.return_value = _mock_response(BBC_RSS)
+    mock_get.return_value = make_mock_response(BBC_RSS)
     with BBCScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=False,
@@ -296,8 +296,8 @@ def test_bbc_fetch_summary_only(mock_get):
 def test_bbc_fallback_on_extraction_failure(mock_get):
     def side_effect(url, **kwargs):
         if "fake.feed" in url:
-            return _mock_response(BBC_RSS)
-        return _mock_response(
+            return make_mock_response(BBC_RSS)
+        return make_mock_response(
             "<html><body>No article</body></html>"
         )
 
@@ -335,7 +335,7 @@ BBC_RSS_WITH_PODCAST = """\
 @patch("httpx.Client.get")
 def test_bbc_skips_podcast_urls(mock_get):
     """Non-article URLs (BBC Sounds) are filtered out."""
-    mock_get.return_value = _mock_response(
+    mock_get.return_value = make_mock_response(
         BBC_RSS_WITH_PODCAST
     )
     with BBCScraper(
@@ -379,10 +379,10 @@ def test_fetch_enriches_duplicate_url_once(
 
     def side_effect(url, **kwargs):
         if url == "https://feed1/rss":
-            return _mock_response(BBC_RSS)
+            return make_mock_response(BBC_RSS)
         if url == "https://feed2/rss":
-            return _mock_response(BBC_RSS_DUP_FEED)
-        return _mock_response("<html></html>")
+            return make_mock_response(BBC_RSS_DUP_FEED)
+        return make_mock_response("<html></html>")
 
     mock_get.side_effect = side_effect
     mock_extract.return_value = ExtractionResult(
@@ -406,7 +406,7 @@ def test_fetch_enriches_duplicate_url_once(
 # -- ArticleStore --
 
 
-def _make_article(url="https://example.com/1", title="T"):
+def make_article(url="https://example.com/1", title="T"):
     return Article(
         title=title,
         body="Body text",
@@ -418,7 +418,7 @@ def _make_article(url="https://example.com/1", title="T"):
 def test_store_save_and_load(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
-        articles = [_make_article()]
+        articles = [make_article()]
         inserted = store.save(articles)
 
         assert inserted == 1
@@ -431,7 +431,7 @@ def test_store_save_and_load(tmp_path):
 def test_store_deduplication(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
-        articles = [_make_article()]
+        articles = [make_article()]
         store.save(articles)
         inserted = store.save(articles)
 
@@ -465,7 +465,7 @@ def test_store_load_limit(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
         store.save([
-            _make_article(url=f"https://example.com/{i}")
+            make_article(url=f"https://example.com/{i}")
             for i in range(5)
         ])
         assert len(store.load(limit=3)) == 3
@@ -476,7 +476,7 @@ def test_store_load_offset(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
         store.save([
-            _make_article(url=f"https://example.com/{i}")
+            make_article(url=f"https://example.com/{i}")
             for i in range(5)
         ])
         assert len(store.load(limit=2, offset=3)) == 2

@@ -15,7 +15,7 @@ from unstructured_mapping.knowledge_graph import (
     RevisionNotFound,
 )
 
-from .conftest import _make_entity
+from .conftest import make_entity
 
 
 # -- KnowledgeStore: entity CRUD --
@@ -23,7 +23,7 @@ from .conftest import _make_entity
 
 def test_store_save_and_get_entity(tmp_path):
     db = tmp_path / "kg.db"
-    entity = _make_entity(
+    entity = make_entity(
         aliases=("Alias1", "Alias2")
     )
     with KnowledgeStore(db_path=db) as store:
@@ -44,7 +44,7 @@ def test_store_get_entity_not_found(tmp_path):
 
 def test_store_find_by_name(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(canonical_name="John Doe")
+    e = make_entity(canonical_name="John Doe")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         results = store.find_by_name("john doe")
@@ -55,7 +55,7 @@ def test_store_find_by_name(tmp_path):
 
 def test_store_find_by_alias(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(aliases=("JD", "Johnny"))
+    e = make_entity(aliases=("JD", "Johnny"))
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         results = store.find_by_alias("jd")
@@ -66,7 +66,7 @@ def test_store_find_by_alias(tmp_path):
 
 def test_store_update_entity_aliases(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(aliases=("Old",))
+    e = make_entity(aliases=("Old",))
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         updated = Entity(
@@ -89,9 +89,9 @@ def test_store_update_entity_aliases(tmp_path):
 
 def test_find_entities_by_status(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Active Entity")
-    e2 = _make_entity(canonical_name="To Merge")
-    e3 = _make_entity(canonical_name="Surviving")
+    e1 = make_entity(canonical_name="Active Entity")
+    e2 = make_entity(canonical_name="To Merge")
+    e3 = make_entity(canonical_name="Surviving")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e1)
         store.save_entity(e2)
@@ -127,9 +127,9 @@ def test_find_entities_by_status_empty(tmp_path):
 
 def test_find_by_name_prefix(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Apple Inc.")
-    e2 = _make_entity(canonical_name="Applied Materials")
-    e3 = _make_entity(canonical_name="Google")
+    e1 = make_entity(canonical_name="Apple Inc.")
+    e2 = make_entity(canonical_name="Applied Materials")
+    e3 = make_entity(canonical_name="Google")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e1)
         store.save_entity(e2)
@@ -151,15 +151,15 @@ def test_find_by_name_prefix(tmp_path):
 
 def test_count_entities_by_type(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(
+    e1 = make_entity(
         canonical_name="A",
         entity_type=EntityType.PERSON,
     )
-    e2 = _make_entity(
+    e2 = make_entity(
         canonical_name="B",
         entity_type=EntityType.PERSON,
     )
-    e3 = _make_entity(
+    e3 = make_entity(
         canonical_name="C",
         entity_type=EntityType.ORGANIZATION,
     )
@@ -188,11 +188,11 @@ def test_find_entities_since(tmp_path):
     db = tmp_path / "kg.db"
     t1 = datetime(2025, 1, 1, tzinfo=timezone.utc)
     t2 = datetime(2025, 6, 1, tzinfo=timezone.utc)
-    e_old = _make_entity(
+    e_old = make_entity(
         canonical_name="Old",
         created_at=t1,
     )
-    e_new = _make_entity(
+    e_new = make_entity(
         canonical_name="New",
         created_at=t2,
     )
@@ -227,7 +227,7 @@ def test_entity_search_limit(tmp_path):
     db = tmp_path / "kg.db"
     t_base = datetime(2025, 1, 1, tzinfo=timezone.utc)
     persons = [
-        _make_entity(
+        make_entity(
             canonical_name=f"Person {i}",
             entity_type=EntityType.PERSON,
             subtype="executive",
@@ -273,9 +273,9 @@ def test_entity_search_limit(tmp_path):
 
 def test_store_merge_entities(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Apple Computer")
-    e2 = _make_entity(canonical_name="Apple Inc.")
-    e3 = _make_entity(canonical_name="Microsoft")
+    e1 = make_entity(canonical_name="Apple Computer")
+    e2 = make_entity(canonical_name="Apple Inc.")
+    e3 = make_entity(canonical_name="Microsoft")
     p = Provenance(
         entity_id=e1.entity_id,
         document_id="doc1",
@@ -315,7 +315,7 @@ def test_store_merge_entities(tmp_path):
 
 def test_store_merge_nonexistent_raises(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         with pytest.raises(EntityNotFound):
@@ -328,7 +328,7 @@ def test_store_merge_nonexistent_raises(tmp_path):
 def test_entity_temporal_round_trip(tmp_path):
     db = tmp_path / "kg.db"
     now = datetime(2024, 1, 15, tzinfo=timezone.utc)
-    e = _make_entity(
+    e = make_entity(
         valid_from=now,
         created_at=now,
     )
@@ -347,7 +347,7 @@ def test_entity_updated_at_round_trip(tmp_path):
     db = tmp_path / "kg.db"
     created = datetime(2024, 1, 15, tzinfo=timezone.utc)
     updated = datetime(2024, 6, 1, tzinfo=timezone.utc)
-    e = _make_entity(
+    e = make_entity(
         created_at=created,
         updated_at=updated,
     )
@@ -413,7 +413,7 @@ def test_store_relation_kind_entity(tmp_path):
 
 def test_entity_subtype_round_trip(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(
+    e = make_entity(
         canonical_name="Apple Inc.",
         entity_type=EntityType.ORGANIZATION,
         subtype="company",
@@ -428,7 +428,7 @@ def test_entity_subtype_round_trip(tmp_path):
 
 def test_entity_subtype_none_round_trip(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         loaded = store.get_entity(e.entity_id)
@@ -439,19 +439,19 @@ def test_entity_subtype_none_round_trip(tmp_path):
 
 def test_store_find_entities_by_subtype(tmp_path):
     db = tmp_path / "kg.db"
-    company = _make_entity(
+    company = make_entity(
         canonical_name="Apple Inc.",
         entity_type=EntityType.ORGANIZATION,
         subtype="company",
         description="Tech company.",
     )
-    bank = _make_entity(
+    bank = make_entity(
         canonical_name="Federal Reserve",
         entity_type=EntityType.ORGANIZATION,
         subtype="central_bank",
         description="US central bank.",
     )
-    other = _make_entity(
+    other = make_entity(
         canonical_name="UN",
         entity_type=EntityType.ORGANIZATION,
         description="International org.",
@@ -526,7 +526,7 @@ def test_metric_entity(tmp_path):
 
 def test_entity_create_logs_history(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(aliases=("A1",))
+    e = make_entity(aliases=("A1",))
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         history = store.get_entity_history(e.entity_id)
@@ -541,7 +541,7 @@ def test_entity_create_logs_history(tmp_path):
 
 def test_entity_update_logs_history(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(description="Original.")
+    e = make_entity(description="Original.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         updated = Entity(
@@ -565,8 +565,8 @@ def test_entity_update_logs_history(tmp_path):
 
 def test_entity_merge_logs_both_entities(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Apple Computer")
-    e2 = _make_entity(canonical_name="Apple Inc.")
+    e1 = make_entity(canonical_name="Apple Computer")
+    e2 = make_entity(canonical_name="Apple Inc.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e1)
         store.save_entity(e2)
@@ -589,7 +589,7 @@ def test_entity_merge_logs_both_entities(tmp_path):
 
 def test_entity_at_point_in_time(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(description="V1.")
+    e = make_entity(description="V1.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         history = store.get_entity_history(e.entity_id)
@@ -610,7 +610,7 @@ def test_entity_at_point_in_time(tmp_path):
 def test_entity_at_before_creation(tmp_path):
     db = tmp_path / "kg.db"
     past = datetime(2000, 1, 1, tzinfo=timezone.utc)
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         snap = store.get_entity_at(e.entity_id, past)
@@ -620,7 +620,7 @@ def test_entity_at_before_creation(tmp_path):
 
 def test_revert_entity(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity(
+    e = make_entity(
         description="Original.",
         aliases=("OG",),
     )
@@ -653,7 +653,7 @@ def test_revert_entity(tmp_path):
 
 def test_revert_entity_bad_revision(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         with pytest.raises(RevisionNotFound):

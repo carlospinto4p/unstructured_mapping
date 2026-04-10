@@ -6,7 +6,7 @@ from unstructured_mapping.knowledge_graph import (
 )
 
 
-def _make_entity(**kwargs):
+def make_entity(**kwargs):
     defaults = {
         "canonical_name": "Test Entity",
         "entity_type": EntityType.PERSON,

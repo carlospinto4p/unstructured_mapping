@@ -1,5 +1,23 @@
 ## Changelog
 
+### v0.23.4 - 10th April 2026
+
+- Refactored `pipeline/llm_ollama.py`:
+  - Extracted `_ctx_from_model_info()` and `_ctx_from_parameters()` from `_find_num_ctx()` to reduce cyclomatic complexity
+- Refactored `knowledge_graph/_entity_mixin.py`:
+  - Split 616-line `EntityMixin` into four focused sub-mixins:
+    - `EntityCRUDMixin`: save, get, find by name/alias
+    - `EntitySearchMixin`: filtered queries and aggregate counts
+    - `EntityMergeMixin`: merge with FK redirection
+    - `EntityHistoryMixin`: revision history, point-in-time, revert
+  - Extracted shared helpers into `_entity_helpers.py`
+  - `EntityMixin` now composes all four via multiple inheritance
+- Standardized test helper naming:
+  - Adopted `make_*` convention across all test files
+  - `conftest.py`: `_make_entity` → `make_entity`
+  - File-local helpers: `_chunk` → `make_chunk`, `_mention` → `make_mention`, `_org` → `make_org`, etc.
+
+
 ### v0.23.3 - 10th April 2026
 
 - `.claude/rules/`:

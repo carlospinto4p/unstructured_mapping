@@ -10,7 +10,6 @@ import logging
 import sqlite3
 
 from unstructured_mapping.knowledge_graph._helpers import (
-    ENTITY_SELECT,
     dt_to_iso,
     now_iso,
     row_to_entity,

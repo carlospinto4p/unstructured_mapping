@@ -1,21 +1,35 @@
 """Entity operations mixin for KnowledgeStore.
 
-Provides CRUD, search, merge, and audit history methods
-for entities. Mixed into
-:class:`~unstructured_mapping.knowledge_graph.storage.KnowledgeStore`.
+Composes four focused sub-mixins into a single
+:class:`EntityMixin` that
+:class:`~unstructured_mapping.knowledge_graph.storage.KnowledgeStore`
+inherits:
+
+- :class:`EntityCRUDMixin` — save / get / find by
+  name or alias.
+- :class:`EntitySearchMixin` — filtered queries (by
+  type, status, prefix, recency) and aggregate counts.
+- :class:`EntityMergeMixin` — merge two entities with
+  FK redirection and audit trail.
+- :class:`EntityHistoryMixin` — revision history,
+  point-in-time queries, and revert.
+
+Internal helpers (alias sync, row conversion, audit
+logging) live in
+:mod:`~._entity_helpers.EntityHelpersMixin`.
 """
 
-import json
-import logging
-import sqlite3
 from dataclasses import replace
 from datetime import datetime
+import logging
 
+from unstructured_mapping.knowledge_graph._entity_helpers import (
+    EntityHelpersMixin,
+)
 from unstructured_mapping.knowledge_graph._helpers import (
     ENTITY_SELECT,
     ENTITY_SELECT_ALIASED,
     dt_to_iso,
-    now_iso,
     row_to_entity,
     row_to_entity_rev,
 )
@@ -33,12 +47,11 @@ from unstructured_mapping.knowledge_graph.models import (
 logger = logging.getLogger(__name__)
 
 
-class EntityMixin:
-    """Entity operations for :class:`KnowledgeStore`."""
+# -- CRUD -------------------------------------------------------
 
-    _conn: sqlite3.Connection
 
-    # -- Entity CRUD --
+class EntityCRUDMixin(EntityHelpersMixin):
+    """Create, read, update, and basic name/alias lookup."""
 
     def save_entity(
         self,
@@ -148,7 +161,12 @@ class EntityMixin:
         ).fetchall()
         return self._rows_to_entities(rows)
 
-    # -- Entity search --
+
+# -- Search / filter --------------------------------------------
+
+
+class EntitySearchMixin(EntityHelpersMixin):
+    """Filtered entity queries and aggregate counts."""
 
     def find_entities_by_type(
         self,
@@ -315,7 +333,12 @@ class EntityMixin:
         ).fetchall()
         return self._rows_to_entities(rows)
 
-    # -- Merge operation --
+
+# -- Merge -------------------------------------------------------
+
+
+class EntityMergeMixin(EntityHelpersMixin):
+    """Merge two entities with FK redirection."""
 
     def merge_entities(
         self,
@@ -339,8 +362,10 @@ class EntityMixin:
         :raises EntityNotFound: If either entity is not
             found.
         """
-        dep = self.get_entity(deprecated_id)
-        surv = self.get_entity(surviving_id)
+        # get_entity lives in EntityCRUDMixin, which
+        # is always co-mixed into KnowledgeStore.
+        dep = self.get_entity(deprecated_id)  # type: ignore[attr-defined]
+        surv = self.get_entity(surviving_id)  # type: ignore[attr-defined]
         for entity, eid in (
             (dep, deprecated_id),
             (surv, surviving_id),
@@ -379,7 +404,12 @@ class EntityMixin:
             surviving_id,
         )
 
-    # -- History queries --
+
+# -- History / audit ---------------------------------------------
+
+
+class EntityHistoryMixin(EntityHelpersMixin):
+    """Revision history, point-in-time queries, revert."""
 
     def get_entity_history(
         self, entity_id: str
@@ -479,138 +509,28 @@ class EntityMixin:
             status=rev.status,
             merged_into=rev.merged_into,
         )
-        self.save_entity(
+        # save_entity lives in EntityCRUDMixin, which
+        # is always co-mixed into KnowledgeStore.
+        self.save_entity(  # type: ignore[attr-defined]
             restored,
             reason=f"reverted to revision {revision_id}",
             _operation="revert",
         )
         return restored
 
-    # -- Internal helpers --
 
-    def _rows_to_entities(
-        self,
-        rows: list[tuple[str, ...]],
-    ) -> list[Entity]:
-        """Convert entity rows with batch alias loading."""
-        if not rows:
-            return []
-        eids = [r["entity_id"] for r in rows]
-        alias_map = self._load_aliases_batch(eids)
-        return [
-            row_to_entity(
-                r, alias_map.get(r["entity_id"], ())
-            )
-            for r in rows
-        ]
+# -- Composite ---------------------------------------------------
 
-    def _sync_aliases(
-        self,
-        entity_id: str,
-        aliases: tuple[str, ...],
-    ) -> None:
-        """Delete old aliases and insert new ones."""
-        self._conn.execute(
-            "DELETE FROM entity_aliases "
-            "WHERE entity_id = ?",
-            (entity_id,),
-        )
-        if aliases:
-            self._conn.executemany(
-                "INSERT INTO entity_aliases "
-                "(entity_id, alias) VALUES (?, ?)",
-                [
-                    (entity_id, a) for a in aliases
-                ],
-            )
 
-    def _redirect_entity_references(
-        self,
-        old_id: str,
-        new_id: str,
-    ) -> None:
-        """Redirect all FK references from old to new."""
-        for sql in (
-            "UPDATE provenance SET entity_id = ? "
-            "WHERE entity_id = ?",
-            "UPDATE relationships SET source_id = ? "
-            "WHERE source_id = ?",
-            "UPDATE relationships SET target_id = ? "
-            "WHERE target_id = ?",
-            "UPDATE relationships "
-            "SET qualifier_id = ? "
-            "WHERE qualifier_id = ?",
-            "UPDATE relationships "
-            "SET relation_kind_id = ? "
-            "WHERE relation_kind_id = ?",
-        ):
-            self._conn.execute(sql, (new_id, old_id))
+class EntityMixin(
+    EntityCRUDMixin,
+    EntitySearchMixin,
+    EntityMergeMixin,
+    EntityHistoryMixin,
+):
+    """All entity operations, composed from sub-mixins.
 
-    def _log_entity(
-        self,
-        entity: Entity,
-        operation: str,
-        reason: str | None,
-    ) -> None:
-        aliases_json = json.dumps(entity.aliases)
-        self._conn.execute(
-            "INSERT INTO entity_history "
-            "(entity_id, operation, changed_at, "
-            "canonical_name, entity_type, subtype, "
-            "description, aliases, valid_from, "
-            "valid_until, status, merged_into, "
-            "reason) "
-            "VALUES "
-            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                entity.entity_id,
-                operation,
-                now_iso(),
-                entity.canonical_name,
-                entity.entity_type.value,
-                entity.subtype,
-                entity.description,
-                aliases_json,
-                dt_to_iso(entity.valid_from),
-                dt_to_iso(entity.valid_until),
-                entity.status.value,
-                entity.merged_into,
-                reason,
-            ),
-        )
-
-    def _load_aliases(
-        self, entity_id: str
-    ) -> tuple[str, ...]:
-        rows = self._conn.execute(
-            "SELECT alias FROM entity_aliases "
-            "WHERE entity_id = ?",
-            (entity_id,),
-        ).fetchall()
-        return tuple(r["alias"] for r in rows)
-
-    def _load_aliases_batch(
-        self, entity_ids: list[str]
-    ) -> dict[str, tuple[str, ...]]:
-        """Fetch aliases for multiple entities in one query.
-
-        :return: Mapping of entity_id to aliases tuple.
-        """
-        if not entity_ids:
-            return {}
-        placeholders = ", ".join(
-            "?" for _ in entity_ids
-        )
-        rows = self._conn.execute(
-            "SELECT entity_id, alias "
-            "FROM entity_aliases "
-            f"WHERE entity_id IN ({placeholders})",
-            entity_ids,
-        ).fetchall()
-        result: dict[str, list[str]] = {}
-        for eid, alias in rows:
-            result.setdefault(eid, []).append(alias)
-        return {
-            eid: tuple(aliases)
-            for eid, aliases in result.items()
-        }
+    :class:`KnowledgeStore` inherits this single mixin
+    to get the full entity API. The sub-mixins can also
+    be used individually in tests or narrower contexts.
+    """

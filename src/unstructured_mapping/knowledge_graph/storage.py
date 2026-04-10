@@ -7,7 +7,9 @@ The public interface is :class:`KnowledgeStore`, which composes
 domain-focused mixins:
 
 - :class:`~._entity_mixin.EntityMixin` -- entity CRUD, search,
-  merge, and audit history.
+  merge, and audit history (composed from
+  ``EntityCRUDMixin``, ``EntitySearchMixin``,
+  ``EntityMergeMixin``, ``EntityHistoryMixin``).
 - :class:`~._provenance_mixin.ProvenanceMixin` -- provenance
   records and co-mention queries.
 - :class:`~._relationship_mixin.RelationshipMixin` --

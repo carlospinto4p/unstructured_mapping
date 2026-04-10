@@ -17,7 +17,7 @@ from unstructured_mapping.pipeline.resolution import (
 # -- Helpers --
 
 
-def _chunk(
+def make_chunk(
     text: str,
     doc_id: str = "doc1",
     section: str | None = None,
@@ -30,7 +30,7 @@ def _chunk(
     )
 
 
-def _mention(
+def make_mention(
     form: str,
     start: int,
     end: int,
@@ -166,9 +166,9 @@ def test_snippet_at_text_end():
 
 def test_resolver_single_candidate_resolves():
     resolver = AliasResolver()
-    chunk = _chunk("The Fed raised rates today.")
+    chunk = make_chunk("The Fed raised rates today.")
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
+        make_mention("Fed", 4, 7, ("fed_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     assert len(result.resolved) == 1
@@ -179,9 +179,9 @@ def test_resolver_single_candidate_resolves():
 
 def test_resolver_zero_candidates_unresolved():
     resolver = AliasResolver()
-    chunk = _chunk("NewCo announced a deal.")
+    chunk = make_chunk("NewCo announced a deal.")
     mentions = (
-        _mention("NewCo", 0, 5, ()),
+        make_mention("NewCo", 0, 5, ()),
     )
     result = resolver.resolve(chunk, mentions)
     assert len(result.resolved) == 0
@@ -191,9 +191,9 @@ def test_resolver_zero_candidates_unresolved():
 
 def test_resolver_multi_candidates_unresolved():
     resolver = AliasResolver()
-    chunk = _chunk("Buy Apple now.")
+    chunk = make_chunk("Buy Apple now.")
     mentions = (
-        _mention("Apple", 4, 9, ("corp", "stock")),
+        make_mention("Apple", 4, 9, ("corp", "stock")),
     )
     result = resolver.resolve(chunk, mentions)
     assert len(result.resolved) == 0
@@ -206,10 +206,10 @@ def test_resolver_multi_candidates_unresolved():
 def test_resolver_mixed_mentions():
     resolver = AliasResolver()
     text = "The Fed and Apple announced a deal."
-    chunk = _chunk(text)
+    chunk = make_chunk(text)
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
-        _mention(
+        make_mention("Fed", 4, 7, ("fed_id",)),
+        make_mention(
             "Apple", 12, 17, ("corp", "stock")
         ),
     )
@@ -224,7 +224,7 @@ def test_resolver_mixed_mentions():
 
 def test_resolver_empty_mentions():
     resolver = AliasResolver()
-    chunk = _chunk("Some text.")
+    chunk = make_chunk("Some text.")
     result = resolver.resolve(chunk, ())
     assert result.resolved == ()
     assert result.unresolved == ()
@@ -232,9 +232,9 @@ def test_resolver_empty_mentions():
 
 def test_resolver_context_snippet_contains_mention():
     resolver = AliasResolver()
-    chunk = _chunk("The Fed raised rates on Wednesday.")
+    chunk = make_chunk("The Fed raised rates on Wednesday.")
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
+        make_mention("Fed", 4, 7, ("fed_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     assert "Fed" in result.resolved[0].context_snippet
@@ -242,12 +242,12 @@ def test_resolver_context_snippet_contains_mention():
 
 def test_resolver_inherits_section_name():
     resolver = AliasResolver()
-    chunk = _chunk(
+    chunk = make_chunk(
         "The Fed raised rates.",
         section="Prepared remarks",
     )
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
+        make_mention("Fed", 4, 7, ("fed_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     assert (
@@ -258,9 +258,9 @@ def test_resolver_inherits_section_name():
 
 def test_resolver_section_name_none_by_default():
     resolver = AliasResolver()
-    chunk = _chunk("The Fed raised rates.")
+    chunk = make_chunk("The Fed raised rates.")
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
+        make_mention("Fed", 4, 7, ("fed_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     assert result.resolved[0].section_name is None
@@ -275,9 +275,9 @@ def test_resolver_custom_context_window():
     )
     start = 51
     end = 54
-    chunk = _chunk(text)
+    chunk = make_chunk(text)
     mentions = (
-        _mention("Fed", start, end, ("fed_id",)),
+        make_mention("Fed", start, end, ("fed_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     snippet = result.resolved[0].context_snippet
@@ -290,10 +290,10 @@ def test_resolver_custom_context_window():
 def test_resolver_multiple_resolved():
     resolver = AliasResolver()
     text = "The Fed and the ECB held rates."
-    chunk = _chunk(text)
+    chunk = make_chunk(text)
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
-        _mention("ECB", 16, 19, ("ecb_id",)),
+        make_mention("Fed", 4, 7, ("fed_id",)),
+        make_mention("ECB", 16, 19, ("ecb_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     assert len(result.resolved) == 2
@@ -303,16 +303,16 @@ def test_resolver_multiple_resolved():
 
 def test_resolver_returns_resolution_result():
     resolver = AliasResolver()
-    chunk = _chunk("text")
+    chunk = make_chunk("text")
     result = resolver.resolve(chunk, ())
     assert isinstance(result, ResolutionResult)
 
 
 def test_resolver_resolved_are_tuples():
     resolver = AliasResolver()
-    chunk = _chunk("The Fed.")
+    chunk = make_chunk("The Fed.")
     mentions = (
-        _mention("Fed", 4, 7, ("fed_id",)),
+        make_mention("Fed", 4, 7, ("fed_id",)),
     )
     result = resolver.resolve(chunk, mentions)
     assert isinstance(result.resolved, tuple)

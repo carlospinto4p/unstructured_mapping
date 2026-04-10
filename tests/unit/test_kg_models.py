@@ -11,7 +11,7 @@ from unstructured_mapping.knowledge_graph import (
     RunStatus,
 )
 
-from .conftest import _make_entity
+from .conftest import make_entity
 
 
 # -- EntityType enum --
@@ -47,14 +47,14 @@ def test_entity_status_values():
 
 
 def test_entity_auto_id():
-    e1 = _make_entity()
-    e2 = _make_entity()
+    e1 = make_entity()
+    e2 = make_entity()
     assert len(e1.entity_id) == 32
     assert e1.entity_id != e2.entity_id
 
 
 def test_entity_defaults():
-    e = _make_entity()
+    e = make_entity()
     assert e.aliases == ()
     assert e.subtype is None
     assert e.status == EntityStatus.ACTIVE
@@ -64,7 +64,7 @@ def test_entity_defaults():
 
 
 def test_entity_with_subtype():
-    e = _make_entity(
+    e = make_entity(
         entity_type=EntityType.ORGANIZATION,
         subtype="company",
     )
@@ -72,13 +72,13 @@ def test_entity_with_subtype():
 
 
 def test_entity_is_frozen():
-    e = _make_entity()
+    e = make_entity()
     with pytest.raises(AttributeError):
         e.canonical_name = "X"  # type: ignore[misc]
 
 
 def test_entity_with_aliases():
-    e = _make_entity(aliases=("Alias A", "Alias B"))
+    e = make_entity(aliases=("Alias A", "Alias B"))
     assert e.aliases == ("Alias A", "Alias B")
 
 

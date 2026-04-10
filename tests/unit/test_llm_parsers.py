@@ -21,7 +21,7 @@ from unstructured_mapping.pipeline.models import (
 CANDIDATE_IDS = {"a1b2c3d4", "e5f6g7h8"}
 
 
-def _make_resolved_entry(
+def make_resolved_entry(
     entity_id="a1b2c3d4",
     surface_form="the Fed",
     context_snippet="...the Fed raised rates...",
@@ -34,7 +34,7 @@ def _make_resolved_entry(
     }
 
 
-def _make_new_entry(
+def make_new_entry(
     surface_form="Jerome Powell",
     canonical_name="Jerome Powell",
     entity_type="person",
@@ -59,7 +59,7 @@ def _make_new_entry(
     }
 
 
-def _wrap(entities):
+def wrap_entities(entities):
     return json.dumps({"entities": entities})
 
 
@@ -123,7 +123,7 @@ def test_parse_empty_entities():
 
 
 def test_parse_resolved_entity():
-    raw = _wrap([_make_resolved_entry()])
+    raw = wrap_entities([make_resolved_entry()])
     resolved, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS
     )
@@ -136,7 +136,7 @@ def test_parse_resolved_entity():
 
 
 def test_parse_new_entity():
-    raw = _wrap([_make_new_entry()])
+    raw = wrap_entities([make_new_entry()])
     resolved, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS
     )
@@ -154,8 +154,8 @@ def test_parse_new_entity():
 
 
 def test_parse_mixed_response():
-    raw = _wrap(
-        [_make_resolved_entry(), _make_new_entry()]
+    raw = wrap_entities(
+        [make_resolved_entry(), make_new_entry()]
     )
     resolved, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS
@@ -166,8 +166,8 @@ def test_parse_mixed_response():
 
 
 def test_parse_new_entity_type_case_insensitive():
-    entry = _make_new_entry(entity_type="PERSON")
-    raw = _wrap([entry])
+    entry = make_new_entry(entity_type="PERSON")
+    raw = wrap_entities([entry])
     _, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS
     )
@@ -176,9 +176,9 @@ def test_parse_new_entity_type_case_insensitive():
 
 
 def test_parse_new_entity_no_subtype():
-    entry = _make_new_entry(subtype=None)
+    entry = make_new_entry(subtype=None)
     entry["new_entity"]["subtype"] = None
-    raw = _wrap([entry])
+    raw = wrap_entities([entry])
     _, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS
     )
@@ -187,7 +187,7 @@ def test_parse_new_entity_no_subtype():
 
 
 def test_parse_chunk_index_propagated():
-    raw = _wrap([_make_new_entry()])
+    raw = wrap_entities([make_new_entry()])
     _, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS, chunk_index=3
     )
@@ -196,7 +196,7 @@ def test_parse_chunk_index_propagated():
 
 
 def test_parse_context_snippet_on_proposal():
-    raw = _wrap([_make_new_entry(
+    raw = wrap_entities([make_new_entry(
         context_snippet="...surrounding text..."
     )])
     _, proposals = parse_pass1_response(
@@ -210,13 +210,13 @@ def test_parse_context_snippet_on_proposal():
 
 def test_parse_multiple_resolved():
     entries = [
-        _make_resolved_entry(entity_id="a1b2c3d4"),
-        _make_resolved_entry(
+        make_resolved_entry(entity_id="a1b2c3d4"),
+        make_resolved_entry(
             entity_id="e5f6g7h8",
             surface_form="Powell",
         ),
     ]
-    raw = _wrap(entries)
+    raw = wrap_entities(entries)
     resolved, _ = parse_pass1_response(
         raw, CANDIDATE_IDS
     )
@@ -225,8 +225,8 @@ def test_parse_multiple_resolved():
 
 
 def test_parse_filters_empty_aliases():
-    entry = _make_new_entry(aliases=["Good", "", "Fine"])
-    raw = _wrap([entry])
+    entry = make_new_entry(aliases=["Good", "", "Fine"])
+    raw = wrap_entities([entry])
     _, proposals = parse_pass1_response(
         raw, CANDIDATE_IDS
     )
@@ -280,34 +280,34 @@ def test_rule1_entity_not_a_dict():
 
 
 def test_rule2_missing_surface_form():
-    entry = _make_resolved_entry()
+    entry = make_resolved_entry()
     del entry["surface_form"]
     with pytest.raises(
         Pass1ValidationError, match="surface_form"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
 def test_rule2_missing_context_snippet():
-    entry = _make_resolved_entry()
+    entry = make_resolved_entry()
     del entry["context_snippet"]
     with pytest.raises(
         Pass1ValidationError, match="context_snippet"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
 def test_rule2_empty_surface_form():
-    entry = _make_resolved_entry(surface_form="")
+    entry = make_resolved_entry(surface_form="")
     with pytest.raises(
         Pass1ValidationError, match="surface_form"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
@@ -315,7 +315,7 @@ def test_rule2_empty_surface_form():
 
 
 def test_rule3_both_present():
-    entry = _make_resolved_entry()
+    entry = make_resolved_entry()
     entry["new_entity"] = {
         "canonical_name": "X",
         "entity_type": "person",
@@ -326,7 +326,7 @@ def test_rule3_both_present():
         Pass1ValidationError, match="got both"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
@@ -341,7 +341,7 @@ def test_rule3_neither_present():
         Pass1ValidationError, match="got neither"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
@@ -356,7 +356,7 @@ def test_rule3_empty_entity_id_and_no_new():
         Pass1ValidationError, match="got neither"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
@@ -364,45 +364,45 @@ def test_rule3_empty_entity_id_and_no_new():
 
 
 def test_rule4_invalid_entity_type():
-    entry = _make_new_entry(entity_type="dinosaur")
+    entry = make_new_entry(entity_type="dinosaur")
     with pytest.raises(
         Pass1ValidationError, match="not a valid entity type"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
 def test_rule4_missing_canonical_name():
-    entry = _make_new_entry()
+    entry = make_new_entry()
     del entry["new_entity"]["canonical_name"]
     with pytest.raises(
         Pass1ValidationError, match="canonical_name"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
 def test_rule4_missing_description():
-    entry = _make_new_entry()
+    entry = make_new_entry()
     del entry["new_entity"]["description"]
     with pytest.raises(
         Pass1ValidationError, match="description"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
 def test_rule4_aliases_not_array():
-    entry = _make_new_entry()
+    entry = make_new_entry()
     entry["new_entity"]["aliases"] = "not an array"
     with pytest.raises(
         Pass1ValidationError, match="aliases.*must be an array"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
@@ -410,31 +410,31 @@ def test_rule4_aliases_not_array():
 
 
 def test_rule5_hallucinated_id():
-    entry = _make_resolved_entry(
+    entry = make_resolved_entry(
         entity_id="not_a_real_id"
     )
     with pytest.raises(
         Pass1ValidationError, match="not in the candidate"
     ):
         parse_pass1_response(
-            _wrap([entry]), CANDIDATE_IDS
+            wrap_entities([entry]), CANDIDATE_IDS
         )
 
 
 def test_rule5_valid_id_accepted():
-    entry = _make_resolved_entry(entity_id="a1b2c3d4")
+    entry = make_resolved_entry(entity_id="a1b2c3d4")
     resolved, _ = parse_pass1_response(
-        _wrap([entry]), CANDIDATE_IDS
+        wrap_entities([entry]), CANDIDATE_IDS
     )
 
     assert resolved[0].entity_id == "a1b2c3d4"
 
 
 def test_rule5_empty_candidate_set_rejects_any_id():
-    entry = _make_resolved_entry(entity_id="a1b2c3d4")
+    entry = make_resolved_entry(entity_id="a1b2c3d4")
     with pytest.raises(
         Pass1ValidationError, match="not in the candidate"
     ):
         parse_pass1_response(
-            _wrap([entry]), set()
+            wrap_entities([entry]), set()
         )

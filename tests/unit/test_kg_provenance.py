@@ -12,7 +12,7 @@ from unstructured_mapping.knowledge_graph import (
     RunStatus,
 )
 
-from .conftest import _make_entity
+from .conftest import make_entity
 
 
 # -- KnowledgeStore: provenance operations --
@@ -20,7 +20,7 @@ from .conftest import _make_entity
 
 def test_store_save_and_get_provenance(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     p = Provenance(
         entity_id=e.entity_id,
         document_id="doc123",
@@ -43,7 +43,7 @@ def test_store_save_and_get_provenance(tmp_path):
 def test_has_document_provenance(tmp_path):
     """has_document_provenance reports exact matches."""
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         assert (
@@ -69,7 +69,7 @@ def test_has_document_provenance(tmp_path):
 
 def test_store_provenance_deduplication(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     p = Provenance(
         entity_id=e.entity_id,
         document_id="doc1",
@@ -88,7 +88,7 @@ def test_store_provenance_deduplication(tmp_path):
 
 def test_store_save_provenances_bulk(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     provenances = [
         Provenance(
             entity_id=e.entity_id,
@@ -110,7 +110,7 @@ def test_store_save_provenances_bulk(tmp_path):
 
 def test_store_save_provenances_deduplication(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     p = Provenance(
         entity_id=e.entity_id,
         document_id="doc1",
@@ -141,7 +141,7 @@ def test_store_save_provenances_empty(tmp_path):
 
 def test_find_recent_mentions(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     old = datetime(2024, 1, 1, tzinfo=timezone.utc)
     recent = datetime(2024, 6, 1, tzinfo=timezone.utc)
     cutoff = datetime(2024, 3, 1, tzinfo=timezone.utc)
@@ -171,7 +171,7 @@ def test_find_recent_mentions(tmp_path):
 
 def test_find_recent_mentions_ordered_desc(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     t1 = datetime(2024, 3, 1, tzinfo=timezone.utc)
     t2 = datetime(2024, 6, 1, tzinfo=timezone.utc)
     t3 = datetime(2024, 9, 1, tzinfo=timezone.utc)
@@ -198,7 +198,7 @@ def test_find_recent_mentions_ordered_desc(tmp_path):
 
 def test_find_recent_mentions_empty(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     future = datetime(2099, 1, 1, tzinfo=timezone.utc)
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
@@ -223,17 +223,17 @@ def test_find_recent_mentions_empty(tmp_path):
 
 def test_find_co_mentioned_basic(tmp_path):
     db = tmp_path / "kg.db"
-    cpi = _make_entity(
+    cpi = make_entity(
         canonical_name="CPI",
         entity_type=EntityType.METRIC,
         description="Consumer Price Index.",
     )
-    apple = _make_entity(
+    apple = make_entity(
         canonical_name="Apple Inc.",
         entity_type=EntityType.ORGANIZATION,
         description="Tech company.",
     )
-    gold = _make_entity(
+    gold = make_entity(
         canonical_name="Gold",
         entity_type=EntityType.ASSET,
         description="Commodity.",
@@ -295,8 +295,8 @@ def test_find_co_mentioned_basic(tmp_path):
 
 def test_find_co_mentioned_with_since(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="E1")
-    e2 = _make_entity(
+    e1 = make_entity(canonical_name="E1")
+    e2 = make_entity(
         canonical_name="E2",
         entity_type=EntityType.ORGANIZATION,
         description="Org.",
@@ -352,7 +352,7 @@ def test_find_co_mentioned_with_since(tmp_path):
 
 def test_find_co_mentioned_no_self_match(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         store.save_provenance(Provenance(
@@ -368,7 +368,7 @@ def test_find_co_mentioned_no_self_match(tmp_path):
 
 def test_find_co_mentioned_empty(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         results = store.find_co_mentioned(e.entity_id)
@@ -379,9 +379,9 @@ def test_find_co_mentioned_empty(tmp_path):
 def test_find_co_mentioned_limit(tmp_path):
     """limit= caps the number of co-mentioned entities."""
     db = tmp_path / "kg.db"
-    hub = _make_entity(canonical_name="Hub")
+    hub = make_entity(canonical_name="Hub")
     others = [
-        _make_entity(canonical_name=f"Other {i}")
+        make_entity(canonical_name=f"Other {i}")
         for i in range(4)
     ]
     with KnowledgeStore(db_path=db) as store:
@@ -481,7 +481,7 @@ def test_store_get_run_not_found(tmp_path):
 
 def test_provenance_run_id_round_trip(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     run = IngestionRun()
     p = Provenance(
         entity_id=e.entity_id,
@@ -503,7 +503,7 @@ def test_provenance_run_id_round_trip(tmp_path):
 
 def test_provenance_run_id_none_by_default(tmp_path):
     db = tmp_path / "kg.db"
-    e = _make_entity()
+    e = make_entity()
     p = Provenance(
         entity_id=e.entity_id,
         document_id="doc1",
@@ -521,8 +521,8 @@ def test_provenance_run_id_none_by_default(tmp_path):
 
 def test_relationship_run_id_round_trip(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity()
-    e2 = _make_entity(
+    e1 = make_entity()
+    e2 = make_entity(
         canonical_name="Entity 2",
         entity_type=EntityType.ORGANIZATION,
     )

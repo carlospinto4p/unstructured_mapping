@@ -50,7 +50,7 @@ class _FakeProvider(LLMProvider):
         return self._response
 
 
-def _make_ollama_provider(
+def make_ollama_provider(
     client: MagicMock,
     *,
     context_window: int | None = 4096,
@@ -112,7 +112,7 @@ def test_ollama_generate_dict_response():
     client.generate.return_value = {
         "response": "  Apple Inc.  "
     }
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     out = provider.generate(
         "List entities.",
@@ -136,7 +136,7 @@ def test_ollama_generate_attr_response():
     response_obj.response = "Microsoft"
     # Ensure isinstance(response_obj, dict) is False.
     client.generate.return_value = response_obj
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     out = provider.generate("hi")
 
@@ -150,7 +150,7 @@ def test_ollama_generate_attr_response():
 def test_ollama_provider_metadata():
     """Provider metadata is exposed for run tracking."""
     client = MagicMock()
-    provider = _make_ollama_provider(
+    provider = make_ollama_provider(
         client, context_window=8192
     )
 
@@ -169,7 +169,7 @@ def test_ollama_connection_error():
     client.generate.side_effect = httpx.ConnectError(
         "refused"
     )
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     with pytest.raises(LLMConnectionError):
         provider.generate("hi")
@@ -181,7 +181,7 @@ def test_ollama_connect_timeout_is_connection_error():
     client.generate.side_effect = (
         httpx.ConnectTimeout("slow")
     )
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     with pytest.raises(LLMConnectionError):
         provider.generate("hi")
@@ -193,7 +193,7 @@ def test_ollama_read_timeout_is_timeout_error():
     client.generate.side_effect = httpx.ReadTimeout(
         "read took too long"
     )
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     with pytest.raises(LLMTimeoutError):
         provider.generate("hi")
@@ -205,7 +205,7 @@ def test_ollama_other_exception_is_provider_error():
     client.generate.side_effect = RuntimeError(
         "malformed model response"
     )
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     with pytest.raises(LLMProviderError) as exc:
         provider.generate("hi")
@@ -220,7 +220,7 @@ def test_ollama_empty_response_raises():
     """Empty response text -> LLMEmptyResponseError."""
     client = MagicMock()
     client.generate.return_value = {"response": "   "}
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     with pytest.raises(LLMEmptyResponseError):
         provider.generate("hi")
@@ -230,7 +230,7 @@ def test_ollama_missing_response_key_raises():
     """Dict without a 'response' key is treated as empty."""
     client = MagicMock()
     client.generate.return_value = {}
-    provider = _make_ollama_provider(client)
+    provider = make_ollama_provider(client)
 
     with pytest.raises(LLMEmptyResponseError):
         provider.generate("hi")
@@ -248,7 +248,7 @@ def test_ollama_context_window_from_model_info():
             "llama.vocab_size": 32000,
         }
     }
-    provider = _make_ollama_provider(
+    provider = make_ollama_provider(
         client, context_window=None
     )
 
@@ -262,7 +262,7 @@ def test_ollama_context_window_from_parameters():
     client.show.return_value = {
         "parameters": "num_ctx 16384\nstop eos",
     }
-    provider = _make_ollama_provider(
+    provider = make_ollama_provider(
         client, context_window=None
     )
 
@@ -273,7 +273,7 @@ def test_ollama_context_window_default_when_unknown():
     """Missing metadata falls back to DEFAULT_CONTEXT_WINDOW."""
     client = MagicMock()
     client.show.return_value = {}
-    provider = _make_ollama_provider(
+    provider = make_ollama_provider(
         client, context_window=None
     )
 
@@ -286,7 +286,7 @@ def test_ollama_context_window_default_on_show_error():
     """show() failures fall back gracefully."""
     client = MagicMock()
     client.show.side_effect = RuntimeError("no model")
-    provider = _make_ollama_provider(
+    provider = make_ollama_provider(
         client, context_window=None
     )
 
@@ -298,7 +298,7 @@ def test_ollama_context_window_default_on_show_error():
 def test_ollama_explicit_context_window_skips_show():
     """Passing context_window avoids the show() call."""
     client = MagicMock()
-    provider = _make_ollama_provider(
+    provider = make_ollama_provider(
         client, context_window=2048
     )
 

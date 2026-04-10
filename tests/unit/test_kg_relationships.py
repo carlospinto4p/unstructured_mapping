@@ -9,7 +9,7 @@ from unstructured_mapping.knowledge_graph import (
     Relationship,
 )
 
-from .conftest import _make_entity
+from .conftest import make_entity
 
 
 # -- KnowledgeStore: relationship CRUD --
@@ -17,8 +17,8 @@ from .conftest import _make_entity
 
 def test_store_save_and_get_relationships(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Entity A")
-    e2 = _make_entity(canonical_name="Entity B")
+    e1 = make_entity(canonical_name="Entity A")
+    e2 = make_entity(canonical_name="Entity B")
     rel = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -48,9 +48,9 @@ def test_store_save_and_get_relationships(tmp_path):
 def test_save_relationships_bulk_insert(tmp_path):
     """Bulk insert adds all new rows and logs history."""
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="A")
-    e2 = _make_entity(canonical_name="B")
-    e3 = _make_entity(canonical_name="C")
+    e1 = make_entity(canonical_name="A")
+    e2 = make_entity(canonical_name="B")
+    e3 = make_entity(canonical_name="C")
     rel1 = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -88,8 +88,8 @@ def test_save_relationships_bulk_insert(tmp_path):
 def test_save_relationships_skips_duplicates(tmp_path):
     """Existing + input-duplicate rows are skipped."""
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="A")
-    e2 = _make_entity(canonical_name="B")
+    e1 = make_entity(canonical_name="A")
+    e2 = make_entity(canonical_name="B")
     existing = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -150,8 +150,8 @@ def test_save_relationships_empty(tmp_path):
 def test_relationship_null_valid_from_dedup(tmp_path):
     """Duplicate unbounded relationships are rejected."""
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Entity A")
-    e2 = _make_entity(canonical_name="Entity B")
+    e1 = make_entity(canonical_name="Entity A")
+    e2 = make_entity(canonical_name="Entity B")
     rel = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -175,8 +175,8 @@ def test_relationship_null_valid_from_round_trip(
 ):
     """valid_from=None survives save/load round trip."""
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Entity A")
-    e2 = _make_entity(canonical_name="Entity B")
+    e1 = make_entity(canonical_name="Entity A")
+    e2 = make_entity(canonical_name="Entity B")
     rel = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -199,9 +199,9 @@ def test_relationship_null_valid_from_round_trip(
 
 def test_get_relationships_between(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Apple")
-    e2 = _make_entity(canonical_name="Foxconn")
-    e3 = _make_entity(canonical_name="TSMC")
+    e1 = make_entity(canonical_name="Apple")
+    e2 = make_entity(canonical_name="Foxconn")
+    e3 = make_entity(canonical_name="TSMC")
     rel1 = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -241,9 +241,9 @@ def test_get_relationships_between(tmp_path):
 
 def test_find_relationships_by_type(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Entity A")
-    e2 = _make_entity(canonical_name="Entity B")
-    e3 = _make_entity(canonical_name="Entity C")
+    e1 = make_entity(canonical_name="Entity A")
+    e2 = make_entity(canonical_name="Entity B")
+    e3 = make_entity(canonical_name="Entity C")
     rel_acq = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -281,9 +281,9 @@ def test_find_relationships_by_type(tmp_path):
 
 def test_find_active_relationships(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="Company A")
-    e2 = _make_entity(canonical_name="Company B")
-    e3 = _make_entity(canonical_name="Person X")
+    e1 = make_entity(canonical_name="Company A")
+    e2 = make_entity(canonical_name="Company B")
+    e3 = make_entity(canonical_name="Person X")
     past = datetime(2020, 1, 1, tzinfo=timezone.utc)
     future = datetime(2099, 12, 31, tzinfo=timezone.utc)
     rel_active = Relationship(
@@ -336,8 +336,8 @@ def test_find_active_relationships(tmp_path):
 def test_find_active_relationships_unbounded(tmp_path):
     """Relationships with no valid_until are active."""
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="A")
-    e2 = _make_entity(canonical_name="B")
+    e1 = make_entity(canonical_name="A")
+    e2 = make_entity(canonical_name="B")
     rel = Relationship(
         source_id=e1.entity_id,
         target_id=e2.entity_id,
@@ -361,8 +361,8 @@ def test_find_active_relationships_unbounded(tmp_path):
 
 def test_store_find_by_qualifier(tmp_path):
     db = tmp_path / "kg.db"
-    person = _make_entity(canonical_name="Jane Doe")
-    company = _make_entity(
+    person = make_entity(canonical_name="Jane Doe")
+    company = make_entity(
         canonical_name="Acme Corp",
         entity_type=EntityType.ORGANIZATION,
         description="A tech company.",
@@ -399,8 +399,8 @@ def test_store_find_by_qualifier(tmp_path):
 
 def test_store_find_by_relation_kind(tmp_path):
     db = tmp_path / "kg.db"
-    person = _make_entity(canonical_name="John")
-    company = _make_entity(
+    person = make_entity(canonical_name="John")
+    company = make_entity(
         canonical_name="Beta Inc",
         entity_type=EntityType.ORGANIZATION,
         description="A company.",
@@ -440,8 +440,8 @@ def test_store_relationship_qualifier_round_trip(
     tmp_path,
 ):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="A")
-    e2 = _make_entity(
+    e1 = make_entity(canonical_name="A")
+    e2 = make_entity(
         canonical_name="B",
         entity_type=EntityType.ORGANIZATION,
         description="Org B.",
@@ -484,8 +484,8 @@ def test_store_relationship_qualifier_round_trip(
 
 def test_store_merge_updates_qualifier(tmp_path):
     db = tmp_path / "kg.db"
-    person = _make_entity(canonical_name="X")
-    company = _make_entity(
+    person = make_entity(canonical_name="X")
+    company = make_entity(
         canonical_name="Y",
         entity_type=EntityType.ORGANIZATION,
         description="Org.",
@@ -529,8 +529,8 @@ def test_store_merge_updates_qualifier(tmp_path):
 
 def test_relationship_create_logs_history(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="A")
-    e2 = _make_entity(
+    e1 = make_entity(canonical_name="A")
+    e2 = make_entity(
         canonical_name="B",
         entity_type=EntityType.ORGANIZATION,
         description="Org B.",
@@ -556,8 +556,8 @@ def test_relationship_create_logs_history(tmp_path):
 
 def test_relationship_save_reason(tmp_path):
     db = tmp_path / "kg.db"
-    e1 = _make_entity(canonical_name="X")
-    e2 = _make_entity(
+    e1 = make_entity(canonical_name="X")
+    e2 = make_entity(
         canonical_name="Y",
         entity_type=EntityType.ORGANIZATION,
         description="Org.",
