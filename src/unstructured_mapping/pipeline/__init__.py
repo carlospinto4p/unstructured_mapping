@@ -30,6 +30,11 @@ from unstructured_mapping.pipeline.orchestrator import (
     Pipeline,
     PipelineResult,
 )
+from unstructured_mapping.pipeline.prompts import (
+    PASS1_SYSTEM_PROMPT,
+    build_kg_context_block,
+    build_pass1_user_prompt,
+)
 from unstructured_mapping.pipeline.resolution import (
     AliasResolver,
     EntityResolver,
@@ -48,9 +53,12 @@ __all__ = [
     "LLMTimeoutError",
     "Mention",
     "OllamaProvider",
+    "PASS1_SYSTEM_PROMPT",
     "Pipeline",
     "PipelineResult",
     "ResolvedMention",
     "ResolutionResult",
     "RuleBasedDetector",
+    "build_kg_context_block",
+    "build_pass1_user_prompt",
 ]

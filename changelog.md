@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.21.0 - 10th April 2026
+
+- Added `pipeline/prompts.py`:
+  - `PASS1_SYSTEM_PROMPT`: system prompt for LLM entity resolution pass.
+  - `build_kg_context_block()`: format candidate entities as numbered text blocks.
+  - `build_pass1_user_prompt()`: assemble user prompt with KG context, running entity header, and chunk text.
+- Added `tests/unit/test_prompts.py`: 20 tests covering system prompt, KG block, running entity header, and user prompt assembly.
+
+
 ### v0.20.0 - 9th April 2026
 
 - Added `pipeline/llm_provider.py`:
