@@ -12,6 +12,8 @@ from unittest.mock import MagicMock, patch
 import httpx
 import pytest
 
+from tests.unit.conftest import FakeProvider
+
 from unstructured_mapping.pipeline import (
     LLMConnectionError,
     LLMEmptyResponseError,
@@ -21,33 +23,6 @@ from unstructured_mapping.pipeline import (
     OllamaProvider,
 )
 from unstructured_mapping.pipeline import llm_ollama
-
-
-# -- Helpers --
-
-
-class _FakeProvider(LLMProvider):
-    """Minimal LLMProvider implementation for ABC tests."""
-
-    provider_name = "fake"
-    supports_json_mode = False
-
-    def __init__(self, response: str = "hello"):
-        self._response = response
-        self.calls: list[tuple[str, str | None, bool]] = []
-
-    model_name = "fake-1"
-    context_window = 4096
-
-    def generate(
-        self,
-        prompt: str,
-        *,
-        system: str | None = None,
-        json_mode: bool = False,
-    ) -> str:
-        self.calls.append((prompt, system, json_mode))
-        return self._response
 
 
 def make_ollama_provider(
@@ -78,7 +53,9 @@ def test_llm_provider_is_abstract():
 
 def test_fake_provider_satisfies_contract():
     """A concrete subclass works via the ABC interface."""
-    p = _FakeProvider(response="world")
+    p = FakeProvider(
+        response="world", supports_json_mode=False
+    )
     assert p.model_name == "fake-1"
     assert p.provider_name == "fake"
     assert p.context_window == 4096

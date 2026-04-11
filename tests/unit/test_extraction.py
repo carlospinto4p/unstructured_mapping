@@ -2,7 +2,7 @@
 
 Covers the `RelationshipExtractor` ABC and the
 `LLMRelationshipExtractor` concrete implementation.
-LLM calls are mocked via a `_FakeProvider` so tests
+LLM calls are mocked via a `FakeProvider` so tests
 don't require a running model.
 """
 
@@ -15,13 +15,12 @@ from unstructured_mapping.knowledge_graph.models import (
     EntityStatus,
     EntityType,
 )
+from tests.unit.conftest import FakeProvider
+
 from unstructured_mapping.pipeline import (
     LLMProviderError,
     LLMRelationshipExtractor,
     RelationshipExtractor,
-)
-from unstructured_mapping.pipeline.llm_provider import (
-    LLMProvider,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -29,42 +28,6 @@ from unstructured_mapping.pipeline.models import (
     ExtractionResult,
     ResolvedMention,
 )
-
-
-# -- Helpers --
-
-
-class _FakeProvider(LLMProvider):
-    """Minimal LLMProvider for extraction tests."""
-
-    provider_name = "fake"
-    supports_json_mode = True
-    model_name = "fake-1"
-    context_window = 4096
-
-    def __init__(
-        self, response: str | list[str] = "{}"
-    ):
-        self._responses = (
-            [response]
-            if isinstance(response, str)
-            else list(response)
-        )
-        self.calls: list[
-            tuple[str, str | None, bool]
-        ] = []
-
-    def generate(
-        self,
-        prompt: str,
-        *,
-        system: str | None = None,
-        json_mode: bool = False,
-    ) -> str:
-        self.calls.append((prompt, system, json_mode))
-        if len(self._responses) > 1:
-            return self._responses.pop(0)
-        return self._responses[0]
 
 
 def _make_chunk(
@@ -171,7 +134,7 @@ def test_extractor_happy_path():
             "chaired_by",
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed, powell)
     names = _name_lookup(fed, powell)
 
@@ -208,7 +171,7 @@ def test_extractor_name_resolution():
             "appointed",
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed, powell)
     names = _name_lookup(fed, powell)
 
@@ -238,7 +201,7 @@ def test_extractor_self_ref_dropped():
     response = _llm_response(
         _rel_entry("id-fed", "id-fed", "self_ref")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed)
     names = _name_lookup(fed)
 
@@ -256,7 +219,7 @@ def test_extractor_self_ref_dropped():
 
 def test_extractor_empty_entities():
     """Empty entity list returns empty result."""
-    provider = _FakeProvider()
+    provider = FakeProvider()
 
     extractor = LLMRelationshipExtractor(
         provider=provider,
@@ -277,7 +240,7 @@ def test_extractor_empty_relationships():
     )
 
     response = _llm_response()
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed)
 
     extractor = LLMRelationshipExtractor(
@@ -300,7 +263,7 @@ def test_extractor_calls_provider():
     )
 
     response = _llm_response()
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed)
 
     extractor = LLMRelationshipExtractor(
@@ -336,7 +299,7 @@ def test_extractor_with_dates():
             valid_until=None,
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed, powell)
 
     extractor = LLMRelationshipExtractor(
@@ -374,7 +337,7 @@ def test_extractor_retry_on_validation_failure():
     good_response = _llm_response(
         _rel_entry("id-fed", "id-powell", "appointed")
     )
-    provider = _FakeProvider(
+    provider = FakeProvider(
         [bad_response, good_response]
     )
     lookup = _entity_lookup(fed, powell)
@@ -401,7 +364,7 @@ def test_extractor_retry_prompt_contains_error():
 
     bad_response = '{"bad": "structure"}'
     good_response = _llm_response()
-    provider = _FakeProvider(
+    provider = FakeProvider(
         [bad_response, good_response]
     )
     lookup = _entity_lookup(fed)
@@ -426,7 +389,7 @@ def test_extractor_raises_after_two_failures():
     )
 
     bad_response = '{"bad": "structure"}'
-    provider = _FakeProvider(bad_response)
+    provider = FakeProvider(bad_response)
     lookup = _entity_lookup(fed)
 
     extractor = LLMRelationshipExtractor(
@@ -467,7 +430,7 @@ def test_extractor_with_proposals():
             "publishes",
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed)
 
     extractor = LLMRelationshipExtractor(
@@ -502,7 +465,7 @@ def test_extractor_unresolvable_ref_dropped():
             "related_to",
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed)
 
     extractor = LLMRelationshipExtractor(
@@ -537,7 +500,7 @@ def test_extractor_multiple_relationships():
             "id-powell", "id-fed", "chairs"
         ),
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed, powell, rates)
 
     extractor = LLMRelationshipExtractor(
@@ -572,7 +535,7 @@ def test_extractor_deduplicates_entity_ids():
             "id-fed", "id-powell", "appointed"
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed, powell)
     names = _name_lookup(fed, powell)
 
@@ -608,7 +571,7 @@ def test_extractor_qualifier_resolved():
             qualifier="id-chair",
         )
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     lookup = _entity_lookup(fed, powell, chair)
 
     extractor = LLMRelationshipExtractor(

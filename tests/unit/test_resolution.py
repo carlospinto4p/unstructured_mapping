@@ -8,8 +8,9 @@ from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityType,
 )
+from tests.unit.conftest import FakeProvider
+
 from unstructured_mapping.pipeline.llm_provider import (
-    LLMProvider,
     LLMProviderError,
 )
 from unstructured_mapping.pipeline.models import (
@@ -333,43 +334,6 @@ def test_resolver_resolved_are_tuples():
 # -- LLMEntityResolver helpers --
 
 
-class _FakeProvider(LLMProvider):
-    """Fake LLM that returns preset response(s).
-
-    Pass a single string for a fixed response, or a
-    list of strings to return different responses on
-    successive calls.
-    """
-
-    provider_name = "fake"
-    supports_json_mode = True
-    model_name = "fake-1"
-    context_window = 4096
-
-    def __init__(
-        self, response: str | list[str] = "{}",
-    ):
-        if isinstance(response, list):
-            self._responses = list(response)
-        else:
-            self._responses = [response]
-        self.calls: list[
-            tuple[str, str | None, bool]
-        ] = []
-
-    def generate(
-        self,
-        prompt: str,
-        *,
-        system: str | None = None,
-        json_mode: bool = False,
-    ) -> str:
-        self.calls.append((prompt, system, json_mode))
-        if len(self._responses) > 1:
-            return self._responses.pop(0)
-        return self._responses[0]
-
-
 def _make_kg_entity(
     entity_id: str,
     name: str,
@@ -430,7 +394,7 @@ def test_llm_resolver_resolves_entity():
     response = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -454,7 +418,7 @@ def test_llm_resolver_proposes_new_entity():
     response = _llm_response(
         _new_entry("Powell", "Jerome Powell", "person")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -484,7 +448,7 @@ def test_llm_resolver_mixed_resolved_and_proposals():
         _resolved_entry("fed_id", "the Fed"),
         _new_entry("Powell", "Jerome Powell", "person"),
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -505,7 +469,7 @@ def test_llm_resolver_mixed_resolved_and_proposals():
 
 def test_llm_resolver_empty_mentions():
     """No mentions → empty result, no LLM call."""
-    provider = _FakeProvider()
+    provider = FakeProvider()
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lambda _: None,
@@ -523,7 +487,7 @@ def test_llm_resolver_calls_provider():
     response = _llm_response(
         _resolved_entry("fed_id", "Fed")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -556,7 +520,7 @@ def test_llm_resolver_deduplicates_candidates():
     response = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=tracking_lookup,
@@ -577,7 +541,7 @@ def test_llm_resolver_deduplicates_candidates():
 def test_llm_resolver_skips_missing_candidate():
     """Missing entity in lookup is silently skipped."""
     response = _llm_response()
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lambda _: None,
@@ -596,7 +560,7 @@ def test_llm_resolver_raises_after_two_failures():
     """Two validation failures raise LLMProviderError."""
     fed = _make_kg_entity("fed_id", "Federal Reserve")
     lookup = {"fed_id": fed}
-    provider = _FakeProvider("not valid json")
+    provider = FakeProvider("not valid json")
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -617,7 +581,7 @@ def test_llm_resolver_retry_succeeds_on_second():
     good = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(
+    provider = FakeProvider(
         ["not valid json", good]
     )
     resolver = LLMEntityResolver(
@@ -643,7 +607,7 @@ def test_llm_resolver_retry_prompt_contains_error():
     good = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(
+    provider = FakeProvider(
         ["not valid json", good]
     )
     resolver = LLMEntityResolver(
@@ -669,7 +633,7 @@ def test_llm_resolver_no_retry_on_success():
     response = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -691,7 +655,7 @@ def test_llm_resolver_section_name_propagated():
     response = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -723,7 +687,7 @@ def test_llm_resolver_prev_entities_in_prompt():
     response = _llm_response(
         _resolved_entry("fed_id", "the Fed")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -747,7 +711,7 @@ def test_llm_resolver_proposals_reset_each_call():
     response1 = _llm_response(
         _new_entry("Powell", "Jerome Powell", "person")
     )
-    provider = _FakeProvider(response1)
+    provider = FakeProvider(response1)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
@@ -776,7 +740,7 @@ def test_llm_resolver_multiple_candidates():
     response = _llm_response(
         _resolved_entry("fed_id", "the bank")
     )
-    provider = _FakeProvider(response)
+    provider = FakeProvider(response)
     resolver = LLMEntityResolver(
         provider=provider,
         entity_lookup=lookup.get,
