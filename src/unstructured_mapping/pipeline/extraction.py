@@ -25,23 +25,23 @@ See ``docs/pipeline/01_design.md`` for how extraction
 fits into the broader pipeline.
 """
 
-import logging
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Sequence
 
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
 )
+from unstructured_mapping.pipeline._llm_retry import (
+    retry_llm_call,
+)
 from unstructured_mapping.pipeline.budget import (
     compute_budget,
 )
 from unstructured_mapping.pipeline.llm_parsers import (
-    Pass2ValidationError,
     parse_pass2_response,
 )
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
-    LLMProviderError,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -54,9 +54,6 @@ from unstructured_mapping.pipeline.prompts import (
     build_entity_list_block,
     build_pass2_user_prompt,
 )
-
-logger = logging.getLogger(__name__)
-
 
 class RelationshipExtractor(ABC):
     """Abstract base class for relationship extraction.
@@ -128,10 +125,6 @@ class LLMRelationshipExtractor(RelationshipExtractor):
             print(f"{rel.source_id} -> {rel.target_id}")
     """
 
-    #: Maximum number of LLM calls per chunk (1 original
-    #: + 1 retry on validation failure).
-    MAX_ATTEMPTS: int = 2
-
     def __init__(
         self,
         provider: LLMProvider,
@@ -186,44 +179,18 @@ class LLMRelationshipExtractor(RelationshipExtractor):
             chunk.text[:budget.flexible * 4],
         )
 
-        last_error: Pass2ValidationError | None = None
-        for attempt in range(self.MAX_ATTEMPTS):
-            prompt = user_prompt
-            if last_error is not None:
-                prompt = _append_error(
-                    prompt, last_error
-                )
+        relationships = retry_llm_call(
+            self._provider,
+            user_prompt,
+            PASS2_SYSTEM_PROMPT,
+            lambda raw: parse_pass2_response(
+                raw, known_ids, name_to_id
+            ),
+            pass_label="Pass 2",
+        )
 
-            raw = self._provider.generate(
-                prompt,
-                system=PASS2_SYSTEM_PROMPT,
-                json_mode=(
-                    self._provider.supports_json_mode
-                ),
-            )
-
-            try:
-                relationships = parse_pass2_response(
-                    raw, known_ids, name_to_id
-                )
-            except Pass2ValidationError as exc:
-                last_error = exc
-                logger.warning(
-                    "Pass 2 validation failed "
-                    "(attempt %d/%d): %s",
-                    attempt + 1,
-                    self.MAX_ATTEMPTS,
-                    exc,
-                )
-                continue
-
-            return ExtractionResult(
-                relationships=relationships
-            )
-
-        raise LLMProviderError(
-            f"Pass 2 failed after {self.MAX_ATTEMPTS} "
-            f"attempts: {last_error}"
+        return ExtractionResult(
+            relationships=relationships
         )
 
     def _build_lookup_maps(
@@ -260,23 +227,3 @@ class LLMRelationshipExtractor(RelationshipExtractor):
                 ] = name.entity_id
 
         return known_ids, name_to_id
-
-
-def _append_error(
-    prompt: str,
-    error: Pass2ValidationError,
-) -> str:
-    """Append a validation error to the user prompt.
-
-    Follows the retry format from
-    ``03_llm_interface.md`` § "Retry and error
-    feedback".
-    """
-    return (
-        f"{prompt}\n\n"
-        "Your previous response had the "
-        "following error:\n"
-        f"{error}\n\n"
-        "Please correct your response. Output "
-        "valid JSON matching the required schema."
-    )

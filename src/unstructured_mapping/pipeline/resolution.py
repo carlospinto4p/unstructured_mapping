@@ -36,17 +36,18 @@ from collections.abc import Callable, Sequence
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
 )
+from unstructured_mapping.pipeline._llm_retry import (
+    retry_llm_call,
+)
 from unstructured_mapping.pipeline.budget import (
     compute_budget,
     fit_candidates,
 )
 from unstructured_mapping.pipeline.llm_parsers import (
-    Pass1ValidationError,
     parse_pass1_response,
 )
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
-    LLMProviderError,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -271,10 +272,6 @@ class LLMEntityResolver(EntityResolver):
         """
         return self._proposals
 
-    #: Maximum number of LLM calls per chunk (1 original
-    #: + 1 retry on validation failure).
-    MAX_ATTEMPTS: int = 2
-
     def resolve(
         self,
         chunk: Chunk,
@@ -322,77 +319,27 @@ class LLMEntityResolver(EntityResolver):
         )
         fitted_ids = {e.entity_id for e in fitted}
 
-        last_error: Pass1ValidationError | None = None
-        for attempt in range(self.MAX_ATTEMPTS):
-            prompt = user_prompt
-            if last_error is not None:
-                prompt = self._append_error(
-                    prompt, last_error
-                )
-
-            raw = self._provider.generate(
-                prompt,
-                system=PASS1_SYSTEM_PROMPT,
-                json_mode=(
-                    self._provider.supports_json_mode
-                ),
-            )
-
-            try:
-                resolved, proposals = (
-                    parse_pass1_response(
-                        raw,
-                        fitted_ids,
-                        chunk.chunk_index,
-                    )
-                )
-            except Pass1ValidationError as exc:
-                last_error = exc
-                logger.warning(
-                    "Pass 1 validation failed "
-                    "(attempt %d/%d): %s",
-                    attempt + 1,
-                    self.MAX_ATTEMPTS,
-                    exc,
-                )
-                continue
-
-            resolved = tuple(
-                ResolvedMention(
-                    entity_id=rm.entity_id,
-                    surface_form=rm.surface_form,
-                    context_snippet=rm.context_snippet,
-                    section_name=chunk.section_name,
-                )
-                for rm in resolved
-            )
-            self._proposals = proposals
-            return ResolutionResult(resolved=resolved)
-
-        raise LLMProviderError(
-            f"Pass 1 failed after {self.MAX_ATTEMPTS} "
-            f"attempts: {last_error}"
+        resolved, proposals = retry_llm_call(
+            self._provider,
+            user_prompt,
+            PASS1_SYSTEM_PROMPT,
+            lambda raw: parse_pass1_response(
+                raw, fitted_ids, chunk.chunk_index
+            ),
+            pass_label="Pass 1",
         )
 
-    @staticmethod
-    def _append_error(
-        prompt: str,
-        error: Pass1ValidationError,
-    ) -> str:
-        """Append a validation error to the user prompt.
-
-        Follows the retry format from
-        ``03_llm_interface.md`` § "Retry and error
-        feedback".
-        """
-        return (
-            f"{prompt}\n\n"
-            "Your previous response had the "
-            "following error:\n"
-            f"{error}\n\n"
-            "Please correct your response. Output "
-            "valid JSON matching the required schema."
+        resolved = tuple(
+            ResolvedMention(
+                entity_id=rm.entity_id,
+                surface_form=rm.surface_form,
+                context_snippet=rm.context_snippet,
+                section_name=chunk.section_name,
+            )
+            for rm in resolved
         )
+        self._proposals = proposals
+        return ResolutionResult(resolved=resolved)
 
     def _collect_candidates(
         self,

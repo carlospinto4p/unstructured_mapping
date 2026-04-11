@@ -54,23 +54,29 @@ class Pass1ValidationError(ValueError):
     """
 
 
-def _parse_json(raw: str) -> dict:
+def _parse_json(
+    raw: str,
+    error_cls: type[ValueError] = Pass1ValidationError,
+) -> dict:
     """Parse raw LLM output as JSON.
 
     :param raw: Raw text from the LLM.
+    :param error_cls: Exception class to raise on
+        failure. Defaults to ``Pass1ValidationError``;
+        pass 2 uses ``Pass2ValidationError``.
     :return: Parsed JSON object.
-    :raises Pass1ValidationError: If the text is not
+    :raises ValueError: (subclass) If the text is not
         valid JSON or is not a JSON object.
     """
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as exc:
-        raise Pass1ValidationError(
+        raise error_cls(
             f"Invalid JSON: {exc.args[0]}"
         ) from exc
 
     if not isinstance(data, dict):
-        raise Pass1ValidationError(
+        raise error_cls(
             "Expected a JSON object, got "
             f"{type(data).__name__}."
         )
@@ -393,7 +399,7 @@ def parse_pass2_response(
     :raises Pass2ValidationError: If rules 1-2 are
         violated.
     """
-    data = _parse_json_pass2(raw)
+    data = _parse_json(raw, Pass2ValidationError)
     entries = _validate_relationships_array(data)
 
     results: list[ExtractedRelationship] = []
@@ -470,26 +476,6 @@ def parse_pass2_response(
 
     return tuple(results)
 
-
-def _parse_json_pass2(raw: str) -> dict:
-    """Parse raw LLM output as JSON for pass 2.
-
-    :raises Pass2ValidationError: If the text is not
-        valid JSON or is not a JSON object.
-    """
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise Pass2ValidationError(
-            f"Invalid JSON: {exc.args[0]}"
-        ) from exc
-
-    if not isinstance(data, dict):
-        raise Pass2ValidationError(
-            "Expected a JSON object, got "
-            f"{type(data).__name__}."
-        )
-    return data
 
 
 def _validate_relationships_array(
