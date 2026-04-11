@@ -1,5 +1,27 @@
 ## Changelog
 
+### v0.26.0 - 11th April 2026
+
+- `pipeline/`:
+  - Added `ClaudeProvider`: Anthropic Messages API
+    provider for quality/cost benchmarking against the
+    Ollama baseline.
+  - Added `llm_claude.py`: guarded `anthropic` import,
+    error translation
+    (`APITimeoutError` -> `LLMTimeoutError`,
+    `APIConnectionError` -> `LLMConnectionError`),
+    configurable `max_tokens` and `context_window`.
+  - Updated `llm_provider.py`: docstring lists
+    `llm_claude` as a concrete provider.
+  - Updated `__init__.py`: exports `ClaudeProvider`.
+- `pyproject.toml`:
+  - Added `anthropic>=0.42.0` to `llm` and `dev` extras.
+- `tests/unit/`:
+  - Added `test_llm_claude.py`: 12 tests covering happy
+    path, error translation, metadata, json_mode guard,
+    dependency guard, and edge cases.
+
+
 ### v0.25.1 - 11th April 2026
 
 - `.claude/rules/`:

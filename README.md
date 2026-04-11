@@ -325,13 +325,14 @@ See `docs/pipeline/10_orchestration.md` for design notes.
 
 The pipeline talks to LLM backends through the
 `LLMProvider` ABC so resolvers and extractors are
-backend-agnostic. `OllamaProvider` is the first
-concrete implementation and is available via the
-optional `llm` extras group:
+backend-agnostic. Two concrete implementations are
+available via the optional `llm` extras group:
 
 ```bash
 pip install unstructured-mapping[llm]
 ```
+
+**Ollama** (local, free, no API key):
 
 ```python
 from unstructured_mapping.pipeline import OllamaProvider
@@ -345,6 +346,23 @@ text = provider.generate(
     "List the named entities in: Apple reported Q3.",
     system="You extract entity mentions as JSON.",
     json_mode=True,
+)
+```
+
+**Anthropic** (hosted Claude models):
+
+```python
+from unstructured_mapping.pipeline import ClaudeProvider
+
+provider = ClaudeProvider(
+    model="claude-sonnet-4-6",
+    # api_key reads from ANTHROPIC_API_KEY env var
+    # context_window defaults to 200K
+)
+
+text = provider.generate(
+    "List the named entities in: Apple reported Q3.",
+    system="You extract entity mentions as JSON.",
 )
 ```
 

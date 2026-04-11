@@ -25,6 +25,8 @@ the ABC never drags in optional third-party SDKs:
 
 - :mod:`llm_ollama` -- ``OllamaProvider`` (requires the
   optional ``llm`` extras group).
+- :mod:`llm_claude` -- ``ClaudeProvider`` (requires the
+  optional ``llm`` extras group).
 
 This module intentionally has no third-party imports so
 that ``from unstructured_mapping.pipeline import

@@ -20,6 +20,9 @@ from unstructured_mapping.pipeline.llm_parsers import (
     Pass1ValidationError,
     parse_pass1_response,
 )
+from unstructured_mapping.pipeline.llm_claude import (
+    ClaudeProvider,
+)
 from unstructured_mapping.pipeline.llm_ollama import (
     OllamaProvider,
 )
@@ -55,6 +58,7 @@ from unstructured_mapping.pipeline.resolution import (
 
 __all__ = [
     "AliasResolver",
+    "ClaudeProvider",
     "DEFAULT_RESPONSE_HEADROOM",
     "ArticleResult",
     "Chunk",
