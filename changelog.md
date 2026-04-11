@@ -1,5 +1,25 @@
 ## Changelog
 
+### v0.27.1 - 11th April 2026
+
+- `docs/pipeline/`:
+  - Added `11_extraction.md`: extraction stage design
+    doc covering architecture, extract flow, validation
+    strategy (hard vs soft), name resolution, date
+    parsing, and design decisions.
+  - Updated `02_models.md`: `ExtractedRelationship`
+    fields now match implementation (`_id` not `_ref`,
+    `datetime` not strings), added `ExtractionResult`.
+  - Updated `06_prompts.md`: added Pass 2 prompt
+    documentation (`PASS2_SYSTEM_PROMPT`,
+    `build_entity_list_block()`,
+    `build_pass2_user_prompt()`).
+  - Updated `08_llm_parsers.md`: added Pass 2 parser
+    documentation (hard/soft validation split, entity
+    reference resolution, date parsing, qualifier
+    handling).
+
+
 ### v0.27.0 - 11th April 2026
 
 - `pipeline/`:

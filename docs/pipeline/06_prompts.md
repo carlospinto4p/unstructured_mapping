@@ -3,8 +3,9 @@
 ## Purpose
 
 `pipeline/prompts.py` builds the system and user prompts
-for LLM pass 1 (entity resolution). It implements the
-prompt architecture defined in
+for both LLM passes (entity resolution and relationship
+extraction). It implements the prompt architecture defined
+in
 [03_llm_interface.md](03_llm_interface.md) — this document
 covers the implementation-level decisions not covered
 there.
@@ -12,11 +13,14 @@ there.
 
 ## Public API
 
-| Symbol                     | Type     | Purpose                                              |
-|----------------------------|----------|------------------------------------------------------|
-| `PASS1_SYSTEM_PROMPT`      | str      | Fixed system prompt for entity resolution            |
-| `build_kg_context_block()` | function | Format `Entity` objects as numbered text blocks      |
-| `build_pass1_user_prompt()`| function | Assemble user prompt from KG block, header, and text |
+| Symbol                      | Type     | Pass | Purpose                                              |
+|-----------------------------|----------|------|------------------------------------------------------|
+| `PASS1_SYSTEM_PROMPT`       | str      | 1    | Fixed system prompt for entity resolution            |
+| `build_kg_context_block()`  | function | 1    | Format `Entity` objects as numbered text blocks      |
+| `build_pass1_user_prompt()` | function | 1    | Assemble user prompt from KG block, header, and text |
+| `PASS2_SYSTEM_PROMPT`       | str      | 2    | Fixed system prompt for relationship extraction      |
+| `build_entity_list_block()` | function | 2    | Format resolved entities + proposals as compact list |
+| `build_pass2_user_prompt()` | function | 2    | Assemble user prompt from entity block and text      |
 
 `_build_running_entity_header()` is internal — called by
 `build_pass1_user_prompt()` when `prev_entities` is
@@ -143,12 +147,69 @@ structural parts of the prompt. Single newlines are used
 within sections (e.g. between candidate entries).
 
 
+## Pass 2: Relationship extraction prompts
+
+### PASS2_SYSTEM_PROMPT
+
+The pass 2 system prompt follows the same structural
+pattern as pass 1: task description, JSON schema with
+example, and explicit rules. Key differences:
+
+- **Task**: extract directed relationships, not resolve
+  entity mentions.
+- **Output schema**: `{"relationships": [...]}` with
+  `source`, `target`, `relation_type`, `qualifier`,
+  `valid_from`, `valid_until`, `context_snippet`.
+- **Entity reference format**: source/target can be
+  entity IDs or canonical names (unlike pass 1 where
+  only IDs are accepted for existing entities).
+- **Self-referential constraint**: explicitly tells the
+  LLM not to create relationships where source == target.
+
+### build_entity_list_block()
+
+Formats resolved entities and proposals as the compact
+"ENTITIES IN THIS TEXT:" block defined in
+`03_llm_interface.md` § "Pass 2 entity list format":
+
+```
+ENTITIES IN THIS TEXT:
+
+- Federal Reserve (id=a1b2c3d4)
+- Jerome Powell (id=e5f6g7h8)
+- CPI (metric, NEW — not yet in KG)
+```
+
+Design decisions:
+
+- **Deduplication by entity ID** — same entity resolved
+  from multiple surface forms appears once. The first
+  `ResolvedMention` encountered wins (same policy as the
+  running entity header in pass 1).
+- **Proposals marked as NEW** — newly proposed entities
+  include their type and a "NEW" label so the LLM knows
+  they are not yet in the KG.
+- **Compact format** — one line per entity. The LLM only
+  needs to recognize entities, not re-resolve them.
+
+### build_pass2_user_prompt()
+
+Simpler than pass 1: just entity block + chunk text,
+separated by blank lines. No running entity header
+(pass 2 receives the full resolved entity list, not a
+subset from earlier chunks).
+
+Section ordering:
+
+1. Entity list block
+2. Chunk text
+
+Entity block comes first (same rationale as pass 1: the
+reference frame before the source material).
+
+
 ## What was deferred
 
-- **Pass 2 prompts** — relationship extraction prompts
-  will follow the same pattern but are not yet
-  implemented. They will be added when the extraction
-  stage is built.
 - **Few-shot examples** — see system prompt section above.
 - **Dynamic constraint injection** — e.g. "only extract
   entities of type ORGANIZATION" for filtered runs. Not

@@ -225,36 +225,72 @@ it later.
 ## ExtractedRelationship
 
 Produced by the extraction stage. An intermediate
-representation before persistence validation.
+representation before KG persistence — the orchestrator
+converts it into a full `Relationship` by adding
+persistence metadata (`document_id`, `discovered_at`,
+`run_id`, `description`).
 
 ### Fields
 
-| Field           | Type           | Default | Purpose                                       |
-|-----------------|----------------|---------|-----------------------------------------------|
-| source_ref      | str            | —       | Entity ID or canonical name of the source     |
-| target_ref      | str            | —       | Entity ID or canonical name of the target     |
-| relation_type   | str            | —       | Free-form relationship label                  |
-| qualifier_ref   | str \| None    | None    | Entity ID or canonical name of the qualifier  |
-| valid_from      | str \| None    | None    | ISO 8601 date string, if temporal             |
-| valid_until     | str \| None    | None    | ISO 8601 date string, if temporal             |
-| context_snippet | str            | —       | Surrounding text for provenance               |
-| section_name    | str \| None    | None    | Inherited from the chunk                      |
+| Field           | Type             | Default | Purpose                                       |
+|-----------------|------------------|---------|-----------------------------------------------|
+| source_id       | str              | —       | Resolved entity ID of the subject             |
+| target_id       | str              | —       | Resolved entity ID of the object              |
+| relation_type   | str              | —       | Free-form relationship label                  |
+| qualifier_id    | str \| None      | None    | Resolved entity ID for n-ary qualification    |
+| valid_from      | datetime \| None | None    | Parsed start date, or None if absent/invalid  |
+| valid_until     | datetime \| None | None    | Parsed end date, or None if absent/invalid    |
+| context_snippet | str              | ""      | Surrounding text for provenance               |
 
-### Why `_ref` fields instead of `_id`?
+### Why `_id` fields, not `_ref`?
 
-The LLM may reference entities by canonical name rather
-than by ID — especially for newly proposed entities that
-don't have an ID yet. The persistence stage resolves
-these references to actual entity IDs by matching against
-the KG and the current run's `EntityProposal` list.
+The original design planned `_ref` fields (raw strings
+that could be either IDs or canonical names) with
+resolution deferred to persistence. The implementation
+resolves references at parse time instead:
 
-### Why `valid_from` / `valid_until` as strings?
+- The parser already has the lookup maps for validation.
+  Resolving immediately avoids a second pass.
+- Downstream code (orchestrator, persistence) can trust
+  that IDs are valid without re-resolving.
+- Unresolvable references are dropped at parse time with
+  a warning, not silently carried forward.
 
-The LLM produces date strings in its JSON output. Parsing
-them into `datetime` objects is the persistence stage's
-responsibility — the extraction stage should not fail on
-date format variations. If parsing fails, the relationship
-is persisted without temporal bounds and logged.
+### Why `datetime`, not strings?
+
+The original design planned to defer date parsing to
+persistence. The implementation parses eagerly because:
+
+- Catching date issues early makes them visible in
+  extraction logs alongside other per-relationship
+  warnings.
+- `datetime | None` is easier for the orchestrator to
+  work with than raw strings that might fail later.
+- The three-format parser (`YYYY-MM-DD`, `YYYY-MM`,
+  `YYYY`) is simple and deterministic.
+
+Unparseable dates become `None` (relationship kept,
+temporal bound dropped).
+
+### Why no `section_name`?
+
+The original design included `section_name` inherited
+from the chunk. The implementation omits it because
+`ExtractedRelationship` is per-chunk output — the
+orchestrator knows which chunk produced it and can
+add section context during persistence if needed.
+
+
+## ExtractionResult
+
+Wraps the extraction output for one chunk, following the
+same pattern as `ResolutionResult`.
+
+### Fields
+
+| Field          | Type                             | Default | Purpose                            |
+|----------------|----------------------------------|---------|------------------------------------|
+| relationships  | tuple[ExtractedRelationship, ...] | ()      | Extracted directed relationships  |
 
 
 ## ChunkResult

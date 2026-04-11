@@ -2,24 +2,26 @@
 
 ## Purpose
 
-`pipeline/llm_parsers.py` parses the raw JSON string
-returned by the LLM for entity resolution (pass 1) and
-validates it against the five rules from
-[03_llm_interface.md](03_llm_interface.md). Valid entries are
-converted into `ResolvedMention` and `EntityProposal`
-objects for downstream stages.
+`pipeline/llm_parsers.py` parses the raw JSON strings
+returned by the LLM for both entity resolution (pass 1)
+and relationship extraction (pass 2), validating against
+the rules from [03_llm_interface.md](03_llm_interface.md).
+Valid entries are converted into typed pipeline models for
+downstream stages.
 
-For the response schema and validation rules, see
-[03_llm_interface.md](03_llm_interface.md) § "Pass 1".
+For the response schemas and validation rules, see
+[03_llm_interface.md](03_llm_interface.md).
 This document covers implementation-level decisions.
 
 
 ## Public API
 
-| Symbol                    | Type      | Purpose                                              |
-|---------------------------|-----------|------------------------------------------------------|
-| `Pass1ValidationError`    | exception | Schema validation failure with human-readable message|
-| `parse_pass1_response()`  | function  | Parse + validate → (resolved, proposals)             |
+| Symbol                    | Type      | Pass | Purpose                                              |
+|---------------------------|-----------|------|------------------------------------------------------|
+| `Pass1ValidationError`    | exception | 1    | Schema validation failure with human-readable message|
+| `parse_pass1_response()`  | function  | 1    | Parse + validate -> (resolved, proposals)            |
+| `Pass2ValidationError`    | exception | 2    | Structural validation failure for retry              |
+| `parse_pass2_response()`  | function  | 2    | Parse + validate -> extracted relationships          |
 
 
 ## Fail-fast validation
@@ -116,14 +118,80 @@ lists the types in lowercase, but models occasionally
 capitalise.
 
 
+## Pass 2: Relationship extraction parser
+
+### parse_pass2_response()
+
+```python
+def parse_pass2_response(
+    raw: str,
+    known_ids: Set[str],
+    name_to_id: Mapping[str, str],
+) -> tuple[ExtractedRelationship, ...]:
+```
+
+Returns a flat tuple (not a two-tuple like pass 1)
+because pass 2 has only one output type.
+
+### Hard vs soft validation
+
+Unlike pass 1 (which is entirely fail-fast), pass 2
+splits validation into hard and soft rules:
+
+**Hard** (raise `Pass2ValidationError`):
+- Rule 1: `relationships` must exist and be an array.
+- Rule 2: each entry must have `source`, `target`,
+  `relation_type`, `context_snippet`.
+
+**Soft** (drop individual relationship, log warning):
+- Rule 3: unresolvable source/target references.
+- Rule 4: unparseable dates (set to `None`).
+- Rule 5: self-referential relationships.
+
+This split exists because hard rules indicate the LLM
+misunderstood the output format (retrying helps), while
+soft rules indicate valid output with individual data
+issues (retrying the entire prompt for one bad reference
+is wasteful).
+
+### Entity reference resolution
+
+`parse_pass2_response()` accepts `known_ids` (set of
+valid entity IDs) and `name_to_id` (canonical name to
+ID mapping). References are resolved in order:
+
+1. Direct ID match in `known_ids`.
+2. Canonical name match in `name_to_id`.
+
+This differs from pass 1's rule 5 (which only checks
+against candidate IDs) because pass 2 allows canonical
+name references per `03_llm_interface.md` § "Why allow
+canonical names, not just IDs?".
+
+### Date parsing
+
+Dates are parsed at extraction time into `datetime`
+objects, supporting three formats: `YYYY-MM-DD`,
+`YYYY-MM`, `YYYY`. Unparseable values are set to `None`
+with a warning log — the relationship is kept, only the
+temporal bound is dropped.
+
+### Qualifier resolution
+
+The `qualifier` field follows the same resolution logic
+as source/target (ID or name lookup). Unresolvable
+qualifiers are silently set to `None` — a missing
+qualifier is less critical than a missing source/target.
+
+
 ## What was deferred
 
-- **Pass 2 parser** — relationship extraction parsing
-  follows the same pattern but with different fields and
-  validation rules. Will be added when the extraction
-  stage is built.
-- **Partial acceptance** — currently the entire response
-  is rejected on any error. A future enhancement could
-  accept valid entries and reject only the invalid ones,
-  but this adds complexity for marginal benefit at
-  current scale.
+- **Partial acceptance for pass 1** — currently the
+  entire pass 1 response is rejected on any error. A
+  future enhancement could accept valid entries and
+  reject only the invalid ones, but this adds complexity
+  for marginal benefit at current scale.
+- **Cross-relationship validation** — e.g. detecting
+  contradictory relationships in the same response.
+  Deferred until real-world extraction quality is
+  assessed.
