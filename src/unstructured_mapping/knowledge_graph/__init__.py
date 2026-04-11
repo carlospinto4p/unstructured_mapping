@@ -25,8 +25,17 @@ from unstructured_mapping.knowledge_graph.models import (
 from unstructured_mapping.knowledge_graph.storage import (
     KnowledgeStore,
 )
+from unstructured_mapping.knowledge_graph.validation import (
+    AliasCollision,
+    ConstraintWarning,
+    audit_relationship_constraints,
+    check_relationship_constraints,
+    find_alias_collisions,
+    validate_temporal,
+)
 
 __all__ = [
+    "AliasCollision",
     "Entity",
     "EntityNotFound",
     "EntityRevision",
@@ -41,5 +50,10 @@ __all__ = [
     "ResolutionAmbiguous",
     "RevisionNotFound",
     "RunStatus",
+    "ConstraintWarning",
     "ValidationError",
+    "audit_relationship_constraints",
+    "check_relationship_constraints",
+    "find_alias_collisions",
+    "validate_temporal",
 ]

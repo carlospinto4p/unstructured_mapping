@@ -8,7 +8,7 @@
 - [x] **HIGH** — LLM pass 1 (2f): orchestrator integration + `ProposedEntity` persistence — wire `LLMEntityResolver` into `Pipeline` as a cascade after `AliasResolver`, and route `ProposedEntity`s through `KnowledgeStore` entity creation with provenance linked to the run.
 - [x] **MEDIUM** — `ClaudeProvider` (`anthropic` SDK) — second concrete `LLMProvider` implementation; enables quality/cost benchmarking against the Ollama baseline
 - [x] **MEDIUM** — Relationship extraction module: `RelationshipExtractor` ABC + `LLMExtractor` — extract relationships between resolved entities from article text
-- [ ] **MEDIUM** — KG validation: temporal consistency (valid_until >= valid_from), alias collision detection across entities, entity-type relationship constraints
+- [x] **MEDIUM** — KG validation: temporal consistency (valid_until >= valid_from), alias collision detection across entities, entity-type relationship constraints
 
 #### Post-population (after KG is defined and populated)
 

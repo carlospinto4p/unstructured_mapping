@@ -18,6 +18,9 @@ from unstructured_mapping.knowledge_graph.models import (
     Relationship,
     RelationshipRevision,
 )
+from unstructured_mapping.knowledge_graph.validation import (
+    validate_temporal,
+)
 
 
 class RelationshipMixin:
@@ -43,6 +46,7 @@ class RelationshipMixin:
         :param reason: Optional explanation logged in the
             audit trail.
         """
+        validate_temporal(relationship)
         before = self._conn.total_changes
         self._conn.execute(
             "INSERT OR IGNORE INTO relationships "
@@ -103,6 +107,8 @@ class RelationshipMixin:
         """
         if not relationships:
             return 0
+        for rel in relationships:
+            validate_temporal(rel)
         # Dedupe input by PK, then filter out rows already
         # present in the DB. This lets us insert + log only
         # genuinely new rows, since executemany does not

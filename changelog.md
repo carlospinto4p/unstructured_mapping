@@ -1,5 +1,40 @@
 ## Changelog
 
+### v0.28.0 - 11th April 2026
+
+- `knowledge_graph/`:
+  - Added `validation.py`:
+    - `validate_temporal()`: enforced at save time,
+      raises `ValidationError` if `valid_until <
+      valid_from`.
+    - `find_alias_collisions()`: advisory audit for
+      aliases shared across entities.
+    - `AliasCollision` dataclass for structured results.
+    - `check_relationship_constraints()`: check a
+      relationship against canonical patterns from
+      `relationships.md`.
+    - `audit_relationship_constraints()`: scan all KG
+      relationships for constraint warnings.
+    - `ConstraintWarning` dataclass for audit results.
+    - `RELATIONSHIP_CONSTRAINTS` dict with 22 canonical
+      entity-type pair patterns.
+  - Updated `_entity_mixin.py`: `save_entity()` calls
+    `validate_temporal()` before INSERT.
+  - Updated `_relationship_mixin.py`:
+    `save_relationship()` and `save_relationships()`
+    call `validate_temporal()`.
+  - Updated `__init__.py`: exports all new public names.
+- `docs/knowledge_graph/`:
+  - Added `validation.md`: design rationale for
+    save-time vs advisory validation, temporal checks,
+    alias collisions, relationship constraints.
+- `tests/unit/`:
+  - Added `test_kg_validation.py`: 22 tests covering
+    temporal consistency (entity + relationship), alias
+    collision detection, relationship constraint
+    checking, and save-time integration.
+
+
 ### v0.27.1 - 11th April 2026
 
 - `docs/pipeline/`:

@@ -164,6 +164,35 @@ Entity types: `PERSON`, `ORGANIZATION`, `PLACE`, `TOPIC`,
 `PRODUCT`, `LEGISLATION`, `ASSET`, `METRIC`.
 See `docs/knowledge_graph/` for rationale.
 
+### Validation
+
+The KG validates data on save and provides advisory audit
+functions:
+
+```python
+from unstructured_mapping.knowledge_graph import (
+    find_alias_collisions,
+    check_relationship_constraints,
+    EntityType,
+)
+
+# Temporal consistency is enforced automatically:
+# save_entity() and save_relationship() raise
+# ValidationError if valid_until < valid_from.
+
+# Audit alias collisions across entities:
+collisions = find_alias_collisions(store._conn)
+
+# Check relationship patterns against conventions:
+warnings = check_relationship_constraints(
+    "works_at", EntityType.PERSON,
+    EntityType.ORGANIZATION,
+)
+```
+
+See `docs/knowledge_graph/validation.md` for design
+rationale.
+
 ## Entity Detection (Pipeline)
 
 The `pipeline` module provides entity detection against the

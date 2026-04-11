@@ -43,6 +43,9 @@ from unstructured_mapping.knowledge_graph.models import (
     EntityStatus,
     EntityType,
 )
+from unstructured_mapping.knowledge_graph.validation import (
+    validate_temporal,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +73,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         :param reason: Optional explanation logged in the
             audit trail.
         """
+        validate_temporal(entity)
         if _operation is None:
             existing = self._conn.execute(
                 "SELECT 1 FROM entities "
