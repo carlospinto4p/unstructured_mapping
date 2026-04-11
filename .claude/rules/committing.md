@@ -49,7 +49,7 @@ Use conventional commit style:
 - Separate subject from body with a blank line
 - Use the body to explain *what* and *why*, not *how*
 - Reference issues when applicable
-- **One command per Bash call** — never chain git commands with `&&`, `;`, heredocs, or subshells. This rule comes from `shell.md` and applies to ALL Bash calls, including git operations during the commit workflow. Each `git add`, `git commit`, `git push`, etc. must be its own separate Bash call.
+- **One command per Bash call** — never chain git commands with `&&`, `;`, heredocs, or subshells. Each `git add`, `git commit`, `git push`, etc. must be its own separate Bash call.
 
 ## Examples
 
