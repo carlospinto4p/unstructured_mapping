@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.28.2 - 12th April 2026
+
+- `docs/pipeline/`:
+  - Added `12_kg_population.md`: KG population strategy
+    covering the bootstrap problem, two-phase approach
+    (curated seed + organic LLM growth), seed
+    implementation guide, cold-start LLM mode (future),
+    Wikidata as alternative seed source, and operational
+    considerations.
+
+
 ### v0.28.1 - 12th April 2026
 
 - `pipeline/`:

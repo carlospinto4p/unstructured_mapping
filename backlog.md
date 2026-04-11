@@ -2,9 +2,15 @@
 
 ### 2026 March 30th
 
-#### Post-population (after KG is defined and populated)
+#### KG population (bootstrap + growth)
 
-- [ ] Build Wikipedia/Wikidata seed pipeline to populate the KG
+- [ ] **HIGH** — Curated seed file: JSON file with ~50-100 key financial entities (central banks, top companies, indices, policymakers, core metrics) with aliases — version-controlled for reproducible KG bootstrap
+- [ ] **HIGH** — Seed loader script: reads the curated seed file, persists entities to the KG with `reason="seed"`, reports counts by type
+- [ ] **MEDIUM** — Cold-start LLM mode: pipeline mode that sends raw article text directly to the LLM for full entity extraction (bypasses detection), useful for initial population from an empty KG
+- [ ] **LOW** — Wikidata seed pipeline: query Wikidata SPARQL for financial entities, map to KG schema, bulk-import — heavy but provides broad coverage and external IDs when needed
+
+#### Post-population (after KG is populated)
+
 - [ ] Add `external_ids` table for tickers, ISIN, FIGI, Wikidata QIDs — enables joining KG entities with price feeds and external data sources
 - [ ] Build sentiment/signal analysis layer — classify article stance toward entities (positive/negative/neutral), separate from KG provenance
 
