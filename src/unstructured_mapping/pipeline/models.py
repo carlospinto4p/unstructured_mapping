@@ -9,6 +9,7 @@ See ``docs/pipeline/02_models.md`` for field rationale.
 """
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from unstructured_mapping.knowledge_graph.models import (
     EntityType,
@@ -144,3 +145,54 @@ class EntityProposal:
     aliases: tuple[str, ...] = ()
     source_chunk: int = 0
     context_snippet: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class ExtractedRelationship:
+    """A relationship extracted by the LLM in pass 2.
+
+    Intermediate representation before KG persistence.
+    The orchestrator converts this into a full
+    :class:`~unstructured_mapping.knowledge_graph.models.Relationship`
+    by adding persistence fields (``document_id``,
+    ``discovered_at``, ``run_id``, ``description``).
+
+    Why not reuse ``Relationship`` directly?
+        ``Relationship`` carries persistence metadata that
+        the extractor should not set — those are the
+        orchestrator's responsibility. Separating the
+        extraction output from the storage model keeps
+        the extractor focused on what the LLM produced.
+
+    :param source_id: Subject entity ID.
+    :param target_id: Object entity ID.
+    :param relation_type: Free-form relationship label
+        (e.g. ``"raised"``, ``"appointed"``).
+    :param qualifier_id: Optional entity ID for n-ary
+        qualification (typically a ROLE entity).
+    :param valid_from: Relationship start date, or
+        ``None`` if not mentioned or unparseable.
+    :param valid_until: Relationship end date, or
+        ``None`` if not mentioned or unparseable.
+    :param context_snippet: ~100 chars of surrounding
+        text from the source chunk.
+    """
+
+    source_id: str
+    target_id: str
+    relation_type: str
+    qualifier_id: str | None = None
+    valid_from: datetime | None = None
+    valid_until: datetime | None = None
+    context_snippet: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class ExtractionResult:
+    """Output of the extraction stage for one chunk.
+
+    :param relationships: Directed relationships
+        extracted between resolved entities.
+    """
+
+    relationships: tuple[ExtractedRelationship, ...] = ()

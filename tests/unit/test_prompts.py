@@ -7,12 +7,16 @@ from unstructured_mapping.knowledge_graph import (
     EntityType,
 )
 from unstructured_mapping.pipeline.models import (
+    EntityProposal,
     ResolvedMention,
 )
 from unstructured_mapping.pipeline.prompts import (
     PASS1_SYSTEM_PROMPT,
+    PASS2_SYSTEM_PROMPT,
+    build_entity_list_block,
     build_kg_context_block,
     build_pass1_user_prompt,
+    build_pass2_user_prompt,
     _build_running_entity_header,
 )
 
@@ -274,4 +278,130 @@ def test_user_prompt_sections_separated_by_blank_lines(
     )
 
     # Double newline separates the major sections
+    assert "\n\n" in prompt
+
+
+# ====================================================
+# Pass 2 — Relationship extraction prompts
+# ====================================================
+
+# -- PASS2_SYSTEM_PROMPT --
+
+
+def test_pass2_system_prompt_is_nonempty():
+    assert isinstance(PASS2_SYSTEM_PROMPT, str)
+    assert len(PASS2_SYSTEM_PROMPT) > 100
+
+
+def test_pass2_system_prompt_mentions_json():
+    assert "JSON" in PASS2_SYSTEM_PROMPT
+
+
+def test_pass2_system_prompt_mentions_relationships():
+    assert "relationships" in PASS2_SYSTEM_PROMPT
+
+
+def test_pass2_system_prompt_mentions_source_target():
+    assert "source" in PASS2_SYSTEM_PROMPT
+    assert "target" in PASS2_SYSTEM_PROMPT
+
+
+# -- build_entity_list_block --
+
+
+def test_entity_block_empty():
+    block = build_entity_list_block([], [])
+    assert block == ""
+
+
+def test_entity_block_single(fed_resolved):
+    block = build_entity_list_block([fed_resolved])
+    assert "ENTITIES IN THIS TEXT:" in block
+    assert "the Fed" in block
+    assert "id=a1b2c3d4" in block
+
+
+def test_entity_block_multiple(
+    fed_resolved, powell_resolved
+):
+    block = build_entity_list_block(
+        [fed_resolved, powell_resolved]
+    )
+    assert "the Fed" in block
+    assert "Jerome Powell" in block
+
+
+def test_entity_block_deduplicates(fed_resolved):
+    dup = ResolvedMention(
+        entity_id="a1b2c3d4",
+        surface_form="Federal Reserve",
+        context_snippet="...",
+    )
+    block = build_entity_list_block(
+        [fed_resolved, dup]
+    )
+    lines = [
+        line
+        for line in block.splitlines()
+        if line.startswith("- ")
+    ]
+    assert len(lines) == 1
+
+
+def test_entity_block_with_proposals(fed_resolved):
+    proposal = EntityProposal(
+        canonical_name="CPI",
+        entity_type=EntityType.METRIC,
+        description="Consumer Price Index",
+    )
+    block = build_entity_list_block(
+        [fed_resolved], [proposal]
+    )
+    assert "CPI" in block
+    assert "NEW" in block
+    assert "metric" in block
+
+
+def test_entity_block_proposal_with_subtype(
+    fed_resolved,
+):
+    proposal = EntityProposal(
+        canonical_name="CPI",
+        entity_type=EntityType.METRIC,
+        subtype="inflation",
+        description="Consumer Price Index",
+    )
+    block = build_entity_list_block(
+        [fed_resolved], [proposal]
+    )
+    assert "metric / inflation" in block
+
+
+# -- build_pass2_user_prompt --
+
+
+def test_pass2_prompt_text_only():
+    prompt = build_pass2_user_prompt(
+        entity_block="", chunk_text="Article text."
+    )
+    assert "TEXT:\nArticle text." in prompt
+    assert "ENTITIES" not in prompt
+
+
+def test_pass2_prompt_with_entities(fed_resolved):
+    block = build_entity_list_block([fed_resolved])
+    prompt = build_pass2_user_prompt(
+        entity_block=block,
+        chunk_text="Article body.",
+    )
+    assert "ENTITIES IN THIS TEXT:" in prompt
+    assert "TEXT:\nArticle body." in prompt
+
+
+def test_pass2_prompt_sections_separated():
+    block = "ENTITIES IN THIS TEXT:\n- entity"
+    prompt = build_pass2_user_prompt(
+        entity_block=block,
+        chunk_text="Article.",
+    )
     assert "\n\n" in prompt

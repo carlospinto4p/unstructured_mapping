@@ -372,6 +372,34 @@ calculations. See `docs/pipeline/03_llm_interface.md` for
 the full contract, JSON schemas, and prompt
 architecture.
 
+### Relationship Extraction (Pass 2)
+
+The extraction module extracts directed relationships
+between resolved entities from article text:
+
+```python
+from unstructured_mapping.pipeline import (
+    LLMRelationshipExtractor,
+)
+
+extractor = LLMRelationshipExtractor(
+    provider=provider,
+    entity_lookup=store.get_entity,
+    name_lookup=store.find_by_name,
+    proposals=resolver.proposals,
+)
+result = extractor.extract(chunk, resolved_entities)
+
+for rel in result.relationships:
+    print(f"{rel.source_id} --{rel.relation_type}--> "
+          f"{rel.target_id}")
+```
+
+The extractor validates the LLM response, resolves entity
+references (IDs or canonical names), drops self-referential
+relationships, and parses temporal bounds. See
+`docs/pipeline/03_llm_interface.md` for the pass 2 schema.
+
 ### Prompt Construction
 
 The `prompts` module builds the system and user prompts

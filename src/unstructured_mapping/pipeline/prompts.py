@@ -25,6 +25,7 @@ from unstructured_mapping.knowledge_graph.models import (
     Entity,
 )
 from unstructured_mapping.pipeline.models import (
+    EntityProposal,
     ResolvedMention,
 )
 
@@ -172,6 +173,120 @@ def build_pass1_user_prompt(
     header = _build_running_entity_header(prev_entities)
     if header:
         parts.append(header)
+
+    parts.append(f"TEXT:\n{chunk_text}")
+
+    return "\n\n".join(parts)
+
+
+PASS2_SYSTEM_PROMPT: str = """\
+You are a relationship extraction assistant. Your task \
+is to extract directed relationships between the \
+provided entities based on the article text.
+
+Output a single JSON object with this schema:
+
+{
+  "relationships": [
+    {
+      "source": "<entity ID or canonical name>",
+      "target": "<entity ID or canonical name>",
+      "relation_type": "<free-form label>",
+      "qualifier": null or "<entity ID or name>",
+      "valid_from": null or "<ISO 8601 date>",
+      "valid_until": null or "<ISO 8601 date>",
+      "context_snippet": "<~100 chars of surrounding text>"
+    }
+  ]
+}
+
+Rules:
+- Only extract relationships between entities listed \
+in the ENTITIES IN THIS TEXT block.
+- `source` is the subject and `target` is the object \
+of the relationship.
+- `source` and `target` must be an entity ID or \
+canonical name from the entity list.
+- `relation_type` is a short, descriptive label for \
+the relationship (e.g. "raised", "appointed", \
+"headquartered_in").
+- `qualifier` is an optional entity reference for \
+n-ary qualification (e.g. a role entity).
+- `valid_from` and `valid_until` are optional ISO 8601 \
+dates (full or partial: "2024", "2024-03").
+- `context_snippet` must be a short passage (~100 \
+characters) from the text surrounding the relationship.
+- Do not create self-referential relationships where \
+source and target are the same entity.
+- If no relationships are found, return \
+{"relationships": []}.
+- Output valid JSON only — no commentary or markdown.\
+"""
+
+
+def build_entity_list_block(
+    entities: Sequence[ResolvedMention],
+    proposals: Sequence[EntityProposal] = (),
+) -> str:
+    """Format resolved entities for pass 2 prompts.
+
+    Produces the compact "ENTITIES IN THIS TEXT:" block
+    defined in ``03_llm_interface.md`` § "Pass 2 entity
+    list format". Includes both KG-matched entities and
+    newly proposed entities from pass 1.
+
+    :param entities: Resolved mentions from pass 1.
+    :param proposals: Entity proposals from pass 1
+        (entities not yet in the KG).
+    :return: Formatted text block, or empty string if
+        no entities.
+    """
+    if not entities and not proposals:
+        return ""
+
+    seen: dict[str, ResolvedMention] = {}
+    for rm in entities:
+        if rm.entity_id not in seen:
+            seen[rm.entity_id] = rm
+
+    lines: list[str] = ["ENTITIES IN THIS TEXT:", ""]
+    for rm in seen.values():
+        lines.append(
+            f"- {rm.surface_form} "
+            f"(id={rm.entity_id})"
+        )
+
+    for proposal in proposals:
+        type_label = proposal.entity_type.value
+        if proposal.subtype:
+            type_label += f" / {proposal.subtype}"
+        lines.append(
+            f"- {proposal.canonical_name} "
+            f"({type_label}, NEW — not yet in KG)"
+        )
+
+    return "\n".join(lines)
+
+
+def build_pass2_user_prompt(
+    entity_block: str,
+    chunk_text: str,
+) -> str:
+    """Assemble the user prompt for pass 2.
+
+    Combines the entity list block and chunk text into
+    a single user prompt. Sections are separated by
+    blank lines.
+
+    :param entity_block: Output of
+        :func:`build_entity_list_block`.
+    :param chunk_text: The article or chunk text.
+    :return: Complete user prompt string.
+    """
+    parts: list[str] = []
+
+    if entity_block:
+        parts.append(entity_block)
 
     parts.append(f"TEXT:\n{chunk_text}")
 

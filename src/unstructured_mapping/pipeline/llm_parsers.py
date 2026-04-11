@@ -1,8 +1,11 @@
-"""LLM response parsing and validation for pass 1.
+"""LLM response parsing and validation.
 
-Parses the raw JSON string returned by the LLM for
-entity resolution (pass 1) and validates it against the
-five rules from ``docs/pipeline/03_llm_interface.md``:
+Parses the raw JSON strings returned by the LLM for
+entity resolution (pass 1) and relationship extraction
+(pass 2), validating against the rules from
+``docs/pipeline/03_llm_interface.md``.
+
+Pass 1 validation rules:
 
 1. ``entities`` must be an array (may be empty).
 2. Each entry must have ``surface_form`` and
@@ -24,15 +27,20 @@ Why a separate module?
 """
 
 import json
-from collections.abc import Set
+import logging
+from collections.abc import Mapping, Set
+from datetime import datetime
 
 from unstructured_mapping.knowledge_graph.models import (
     EntityType,
 )
 from unstructured_mapping.pipeline.models import (
     EntityProposal,
+    ExtractedRelationship,
     ResolvedMention,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class Pass1ValidationError(ValueError):
@@ -298,3 +306,231 @@ def parse_pass1_response(
             )
 
     return tuple(resolved), tuple(proposals)
+
+
+# -- Pass 2: Relationship extraction ---------------------
+
+
+class Pass2ValidationError(ValueError):
+    """The LLM response for pass 2 failed validation.
+
+    Raised for structural issues (missing ``relationships``
+    key, non-array value, missing required fields). Soft
+    issues (unresolvable references, bad dates, self-refs)
+    are handled by dropping the individual relationship
+    with a warning, not by raising.
+    """
+
+
+def _parse_date(value: object) -> datetime | None:
+    """Parse an ISO 8601 date string, or return None.
+
+    Handles full dates (``2024-03-20``), year-month
+    (``2024-03``), and year-only (``2024``). Returns
+    ``None`` for non-string, empty, or unparseable
+    values — the relationship is kept, only the
+    temporal bound is dropped.
+    """
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    for fmt in ("%Y-%m-%d", "%Y-%m", "%Y"):
+        try:
+            return datetime.strptime(text, fmt)
+        except ValueError:
+            continue
+    logger.warning("Unparseable date %r, setting None", text)
+    return None
+
+
+def _resolve_ref(
+    ref: str,
+    known_ids: Set[str],
+    name_to_id: Mapping[str, str],
+) -> str | None:
+    """Resolve an entity reference to an ID.
+
+    The LLM may return an entity ID or a canonical name.
+    Returns the resolved ID, or ``None`` if unresolvable.
+    """
+    if ref in known_ids:
+        return ref
+    return name_to_id.get(ref)
+
+
+def parse_pass2_response(
+    raw: str,
+    known_ids: Set[str],
+    name_to_id: Mapping[str, str],
+) -> tuple[ExtractedRelationship, ...]:
+    """Parse and validate a pass 2 LLM response.
+
+    Applies the five validation rules from
+    ``03_llm_interface.md`` § "Pass 2 — Relationship
+    extraction":
+
+    1. ``relationships`` must be an array.
+    2. Each entry must have ``source``, ``target``,
+       ``relation_type``, ``context_snippet``.
+    3. Source/target must resolve to a known ID or
+       canonical name — unresolvable refs are dropped.
+    4. Dates are parsed gracefully — unparseable values
+       become ``None``.
+    5. Self-referential relationships are dropped.
+
+    Rules 1-2 are structural and raise
+    :class:`Pass2ValidationError` for retry. Rules 3-5
+    are soft: individual relationships are dropped with
+    a warning.
+
+    :param raw: Raw JSON string from the LLM.
+    :param known_ids: Set of entity IDs present in the
+        entity list (both KG entities and proposals with
+        generated IDs).
+    :param name_to_id: Mapping of canonical names to
+        entity IDs, for resolving name references.
+    :return: Validated extracted relationships.
+    :raises Pass2ValidationError: If rules 1-2 are
+        violated.
+    """
+    data = _parse_json_pass2(raw)
+    entries = _validate_relationships_array(data)
+
+    results: list[ExtractedRelationship] = []
+    for idx, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise Pass2ValidationError(
+                f"Relationship [{idx}]: expected an "
+                f"object, got {type(entry).__name__}."
+            )
+        _validate_pass2_required(entry, idx)
+
+        source_ref = entry["source"]
+        target_ref = entry["target"]
+
+        source_id = _resolve_ref(
+            source_ref, known_ids, name_to_id
+        )
+        if source_id is None:
+            logger.warning(
+                "Relationship [%d]: unresolvable "
+                "source %r, dropping",
+                idx,
+                source_ref,
+            )
+            continue
+
+        target_id = _resolve_ref(
+            target_ref, known_ids, name_to_id
+        )
+        if target_id is None:
+            logger.warning(
+                "Relationship [%d]: unresolvable "
+                "target %r, dropping",
+                idx,
+                target_ref,
+            )
+            continue
+
+        if source_id == target_id:
+            logger.warning(
+                "Relationship [%d]: self-referential "
+                "(source == target == %r), dropping",
+                idx,
+                source_id,
+            )
+            continue
+
+        qualifier = entry.get("qualifier")
+        qualifier_id: str | None = None
+        if qualifier is not None and isinstance(
+            qualifier, str
+        ):
+            qualifier_id = _resolve_ref(
+                qualifier, known_ids, name_to_id
+            )
+
+        results.append(
+            ExtractedRelationship(
+                source_id=source_id,
+                target_id=target_id,
+                relation_type=entry["relation_type"],
+                qualifier_id=qualifier_id,
+                valid_from=_parse_date(
+                    entry.get("valid_from")
+                ),
+                valid_until=_parse_date(
+                    entry.get("valid_until")
+                ),
+                context_snippet=entry[
+                    "context_snippet"
+                ],
+            )
+        )
+
+    return tuple(results)
+
+
+def _parse_json_pass2(raw: str) -> dict:
+    """Parse raw LLM output as JSON for pass 2.
+
+    :raises Pass2ValidationError: If the text is not
+        valid JSON or is not a JSON object.
+    """
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise Pass2ValidationError(
+            f"Invalid JSON: {exc.args[0]}"
+        ) from exc
+
+    if not isinstance(data, dict):
+        raise Pass2ValidationError(
+            "Expected a JSON object, got "
+            f"{type(data).__name__}."
+        )
+    return data
+
+
+def _validate_relationships_array(
+    data: dict,
+) -> list[dict]:
+    """Rule 1: ``relationships`` must be an array.
+
+    :raises Pass2ValidationError: If missing or not an
+        array.
+    """
+    rels = data.get("relationships")
+    if rels is None:
+        raise Pass2ValidationError(
+            'Missing required key "relationships".'
+        )
+    if not isinstance(rels, list):
+        raise Pass2ValidationError(
+            '"relationships" must be an array, got '
+            f"{type(rels).__name__}."
+        )
+    return rels
+
+
+def _validate_pass2_required(
+    entry: dict, index: int
+) -> None:
+    """Rule 2: required fields on each relationship.
+
+    :raises Pass2ValidationError: If required fields
+        are missing or not strings.
+    """
+    for field in (
+        "source",
+        "target",
+        "relation_type",
+        "context_snippet",
+    ):
+        val = entry.get(field)
+        if not val or not isinstance(val, str):
+            raise Pass2ValidationError(
+                f'Relationship [{index}]: "{field}" '
+                f"is required and must be a non-empty "
+                f"string."
+            )

@@ -7,7 +7,9 @@ import pytest
 from unstructured_mapping.knowledge_graph import EntityType
 from unstructured_mapping.pipeline.llm_parsers import (
     Pass1ValidationError,
+    Pass2ValidationError,
     parse_pass1_response,
+    parse_pass2_response,
 )
 from unstructured_mapping.pipeline.models import (
     EntityProposal,
@@ -438,3 +440,345 @@ def test_rule5_empty_candidate_set_rejects_any_id():
         parse_pass1_response(
             wrap_entities([entry]), set()
         )
+
+
+# ====================================================
+# Pass 2 — Relationship extraction
+# ====================================================
+
+KNOWN_IDS_P2: set[str] = {"id-fed", "id-powell"}
+NAME_TO_ID_P2: dict[str, str] = {
+    "Federal Reserve": "id-fed",
+    "Jerome Powell": "id-powell",
+}
+
+
+def _wrap_rels(rels: list[dict]) -> str:
+    return json.dumps({"relationships": rels})
+
+
+def _rel(
+    source: str = "id-fed",
+    target: str = "id-powell",
+    relation_type: str = "appointed",
+    snippet: str = "...appointed...",
+    **kwargs: object,
+) -> dict:
+    d: dict = {
+        "source": source,
+        "target": target,
+        "relation_type": relation_type,
+        "context_snippet": snippet,
+    }
+    d.update(kwargs)
+    return d
+
+
+# -- Pass 2: happy path --
+
+
+def test_p2_parse_empty_relationships():
+    result = parse_pass2_response(
+        _wrap_rels([]), KNOWN_IDS_P2, NAME_TO_ID_P2
+    )
+    assert result == ()
+
+
+def test_p2_parse_resolved_by_id():
+    result = parse_pass2_response(
+        _wrap_rels([_rel()]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert len(result) == 1
+    assert result[0].source_id == "id-fed"
+    assert result[0].target_id == "id-powell"
+    assert result[0].relation_type == "appointed"
+
+
+def test_p2_parse_resolved_by_name():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [
+                _rel(
+                    source="Federal Reserve",
+                    target="Jerome Powell",
+                )
+            ]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert len(result) == 1
+    assert result[0].source_id == "id-fed"
+    assert result[0].target_id == "id-powell"
+
+
+def test_p2_parse_multiple():
+    rels = [
+        _rel(relation_type="appointed"),
+        _rel(
+            source="id-powell",
+            target="id-fed",
+            relation_type="chairs",
+        ),
+    ]
+    result = parse_pass2_response(
+        _wrap_rels(rels), KNOWN_IDS_P2, NAME_TO_ID_P2
+    )
+    assert len(result) == 2
+
+
+# -- Pass 2: date parsing --
+
+
+def test_p2_full_date():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(valid_from="2024-03-20")]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].valid_from is not None
+    assert result[0].valid_from.year == 2024
+    assert result[0].valid_from.month == 3
+    assert result[0].valid_from.day == 20
+
+
+def test_p2_partial_date_year_month():
+    result = parse_pass2_response(
+        _wrap_rels([_rel(valid_from="2024-03")]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].valid_from is not None
+    assert result[0].valid_from.year == 2024
+    assert result[0].valid_from.month == 3
+
+
+def test_p2_partial_date_year_only():
+    result = parse_pass2_response(
+        _wrap_rels([_rel(valid_from="2024")]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].valid_from is not None
+    assert result[0].valid_from.year == 2024
+
+
+def test_p2_bad_date_becomes_none():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(valid_from="not-a-date")]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].valid_from is None
+
+
+def test_p2_null_date_stays_none():
+    result = parse_pass2_response(
+        _wrap_rels([_rel(valid_from=None)]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].valid_from is None
+
+
+# -- Pass 2: soft drops (rules 3, 5) --
+
+
+def test_p2_unresolvable_source_dropped():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(source="nonexistent")]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert len(result) == 0
+
+
+def test_p2_unresolvable_target_dropped():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(target="nonexistent")]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert len(result) == 0
+
+
+def test_p2_self_ref_dropped():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(source="id-fed", target="id-fed")]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert len(result) == 0
+
+
+def test_p2_self_ref_by_name_dropped():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [
+                _rel(
+                    source="id-fed",
+                    target="Federal Reserve",
+                )
+            ]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert len(result) == 0
+
+
+# -- Pass 2: structural errors (rules 1-2) --
+
+
+def test_p2_rule1_missing_relationships_key():
+    with pytest.raises(
+        Pass2ValidationError, match="relationships"
+    ):
+        parse_pass2_response(
+            '{"entities": []}',
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+def test_p2_rule1_relationships_not_array():
+    with pytest.raises(
+        Pass2ValidationError, match="array"
+    ):
+        parse_pass2_response(
+            '{"relationships": "nope"}',
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+def test_p2_rule1_invalid_json():
+    with pytest.raises(
+        Pass2ValidationError, match="Invalid JSON"
+    ):
+        parse_pass2_response(
+            "not json", KNOWN_IDS_P2, NAME_TO_ID_P2
+        )
+
+
+def test_p2_rule1_not_object():
+    with pytest.raises(
+        Pass2ValidationError, match="JSON object"
+    ):
+        parse_pass2_response(
+            "[1, 2]", KNOWN_IDS_P2, NAME_TO_ID_P2
+        )
+
+
+def test_p2_rule2_missing_source():
+    entry = _rel()
+    del entry["source"]
+    with pytest.raises(
+        Pass2ValidationError, match="source"
+    ):
+        parse_pass2_response(
+            _wrap_rels([entry]),
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+def test_p2_rule2_missing_target():
+    entry = _rel()
+    del entry["target"]
+    with pytest.raises(
+        Pass2ValidationError, match="target"
+    ):
+        parse_pass2_response(
+            _wrap_rels([entry]),
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+def test_p2_rule2_missing_relation_type():
+    entry = _rel()
+    del entry["relation_type"]
+    with pytest.raises(
+        Pass2ValidationError, match="relation_type"
+    ):
+        parse_pass2_response(
+            _wrap_rels([entry]),
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+def test_p2_rule2_missing_context_snippet():
+    entry = _rel()
+    del entry["context_snippet"]
+    with pytest.raises(
+        Pass2ValidationError, match="context_snippet"
+    ):
+        parse_pass2_response(
+            _wrap_rels([entry]),
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+def test_p2_rule2_entry_not_object():
+    with pytest.raises(
+        Pass2ValidationError, match="expected an object"
+    ):
+        parse_pass2_response(
+            '{"relationships": ["not_an_object"]}',
+            KNOWN_IDS_P2,
+            NAME_TO_ID_P2,
+        )
+
+
+# -- Pass 2: qualifier --
+
+
+def test_p2_qualifier_resolved():
+    known = {"id-fed", "id-powell", "id-chair"}
+    names = {
+        **NAME_TO_ID_P2,
+        "Chair": "id-chair",
+    }
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(qualifier="id-chair")]
+        ),
+        known,
+        names,
+    )
+    assert result[0].qualifier_id == "id-chair"
+
+
+def test_p2_qualifier_unresolvable_is_none():
+    result = parse_pass2_response(
+        _wrap_rels(
+            [_rel(qualifier="nonexistent")]
+        ),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].qualifier_id is None
+
+
+def test_p2_qualifier_null_is_none():
+    result = parse_pass2_response(
+        _wrap_rels([_rel(qualifier=None)]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].qualifier_id is None

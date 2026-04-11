@@ -1,5 +1,42 @@
 ## Changelog
 
+### v0.27.0 - 11th April 2026
+
+- `pipeline/`:
+  - Added `extraction.py`:
+    - `RelationshipExtractor` ABC with `extract()` method.
+    - `LLMRelationshipExtractor`: LLM-based pass 2
+      implementation with retry logic, name-to-ID
+      resolution, and proposal entity support.
+  - Added `models.py`:
+    - `ExtractedRelationship`: intermediate model for
+      LLM-extracted relationships (before KG persistence).
+    - `ExtractionResult`: extraction stage output.
+  - Added `prompts.py`:
+    - `PASS2_SYSTEM_PROMPT`: system prompt for
+      relationship extraction.
+    - `build_entity_list_block()`: formats "ENTITIES IN
+      THIS TEXT" block for pass 2.
+    - `build_pass2_user_prompt()`: assembles pass 2
+      user prompt.
+  - Added `llm_parsers.py`:
+    - `Pass2ValidationError`: structural validation
+      errors for retry.
+    - `parse_pass2_response()`: validates pass 2 rules
+      with soft drops for unresolvable refs, bad dates,
+      and self-refs.
+  - Updated `__init__.py`: exports all new public names.
+- `tests/unit/`:
+  - Added `test_extraction.py`: 18 tests covering ABC
+    contract, happy path, name resolution, self-ref
+    drops, retry logic, proposals, qualifier handling.
+  - Updated `test_llm_parsers.py`: 25 tests for pass 2
+    parsing, date handling, soft drops, structural
+    errors, qualifier resolution.
+  - Updated `test_prompts.py`: 11 tests for pass 2
+    system prompt, entity list block, user prompt.
+
+
 ### v0.26.0 - 11th April 2026
 
 - `pipeline/`:
