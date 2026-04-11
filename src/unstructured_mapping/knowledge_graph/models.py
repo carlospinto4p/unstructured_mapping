@@ -323,7 +323,8 @@ class IngestionRun:
         the run is in progress.
     :param status: Lifecycle state of the run.
     :param document_count: Number of documents processed.
-    :param entity_count: Number of entity mentions found.
+    :param entity_count: Number of entity mention
+        provenance records created (not distinct entities).
     :param relationship_count: Number of relationships
         extracted.
     :param error_message: Error details if the run failed.

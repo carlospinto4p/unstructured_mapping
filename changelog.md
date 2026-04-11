@@ -1,5 +1,22 @@
 ## Changelog
 
+### v0.28.3 - 12th April 2026
+
+- `pipeline/orchestrator.py`:
+  - Added `proposals_saved` field to `PipelineResult`:
+    aggregates new entities created from LLM proposals
+    across all articles.
+  - Updated `_compute_run_stats()`: now returns
+    `(doc_count, prov_count, proposal_count)` tuple.
+  - Updated run completion log: now includes
+    `"%d new entities"` alongside provenances.
+- `knowledge_graph/`:
+  - Updated `IngestionRun.entity_count` docstring:
+    clarified it tracks provenance records (entity
+    mention count), not distinct entities created.
+  - Updated `finish_run()` docstring: same clarification.
+
+
 ### v0.28.2 - 12th April 2026
 
 - `docs/pipeline/`:

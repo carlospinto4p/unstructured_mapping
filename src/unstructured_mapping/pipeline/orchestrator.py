@@ -70,11 +70,18 @@ logger = logging.getLogger(__name__)
 
 def _compute_run_stats(
     results: list["ArticleResult"],
-) -> tuple[int, int]:
-    """Return ``(document_count, provenance_count)``."""
+) -> tuple[int, int, int]:
+    """Return ``(doc_count, prov_count, proposal_count)``.
+
+    :return: Tuple of documents processed, provenance
+        rows inserted, and new entities created from
+        LLM proposals.
+    """
     processed = [r for r in results if not r.skipped]
-    return len(processed), sum(
-        r.provenances_saved for r in results
+    return (
+        len(processed),
+        sum(r.provenances_saved for r in results),
+        sum(r.proposals_saved for r in results),
     )
 
 
@@ -124,12 +131,15 @@ class PipelineResult:
         were actually processed (excludes skipped).
     :param provenances_saved: Total provenance rows
         inserted across all articles.
+    :param proposals_saved: Total new entities created
+        from LLM proposals across all articles.
     """
 
     run_id: str
     results: tuple[ArticleResult, ...]
     documents_processed: int
     provenances_saved: int
+    proposals_saved: int = 0
 
 
 def _utcnow() -> datetime:
@@ -239,8 +249,8 @@ class Pipeline:
                     )
                 )
         except Exception as exc:  # noqa: BLE001
-            doc_count, prov_count = _compute_run_stats(
-                results
+            doc_count, prov_count, prop_count = (
+                _compute_run_stats(results)
             )
             self._store.finish_run(
                 run.run_id,
@@ -254,7 +264,9 @@ class Pipeline:
             )
             raise
 
-        doc_count, prov_count = _compute_run_stats(results)
+        doc_count, prov_count, prop_count = (
+            _compute_run_stats(results)
+        )
         self._store.finish_run(
             run.run_id,
             status=RunStatus.COMPLETED,
@@ -263,17 +275,20 @@ class Pipeline:
         )
         logger.info(
             "Pipeline run %s completed: %d processed, "
-            "%d skipped, %d provenances",
+            "%d skipped, %d provenances, "
+            "%d new entities",
             run.run_id,
             doc_count,
             len(results) - doc_count,
             prov_count,
+            prop_count,
         )
         return PipelineResult(
             run_id=run.run_id,
             results=tuple(results),
             documents_processed=doc_count,
             provenances_saved=prov_count,
+            proposals_saved=prop_count,
         )
 
     def process_article(

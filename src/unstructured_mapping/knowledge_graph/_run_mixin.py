@@ -61,7 +61,8 @@ class RunMixin:
         :param run_id: The run to finish.
         :param status: Final status (completed or failed).
         :param document_count: Documents processed.
-        :param entity_count: Entity mentions found.
+        :param entity_count: Provenance records created
+            (entity mention count, not distinct entities).
         :param relationship_count: Relationships extracted.
         :param error_message: Error details if failed.
         """
