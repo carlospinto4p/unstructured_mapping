@@ -315,6 +315,7 @@ from unstructured_mapping.knowledge_graph import (
 from unstructured_mapping.pipeline import (
     AliasResolver,
     LLMEntityResolver,
+    LLMRelationshipExtractor,
     OllamaProvider,
     Pipeline,
     RuleBasedDetector,
@@ -324,13 +325,19 @@ with KnowledgeStore() as store:
     entities = store.find_entities_by_status(
         EntityStatus.ACTIVE
     )
+    provider = OllamaProvider(model="llama3.1:8b")
     pipeline = Pipeline(
         detector=RuleBasedDetector(entities),
         resolver=AliasResolver(),
         store=store,
         llm_resolver=LLMEntityResolver(
-            provider=OllamaProvider(model="llama3.1:8b"),
+            provider=provider,
             entity_lookup=store.get_entity,
+        ),
+        extractor=LLMRelationshipExtractor(
+            provider=provider,
+            entity_lookup=store.get_entity,
+            name_lookup=store.find_by_name,
         ),
     )
     result = pipeline.run(articles)
@@ -341,7 +348,8 @@ with KnowledgeStore() as store:
         elif not ar.skipped:
             print(
                 f"{ar.provenances_saved} provenances, "
-                f"{ar.proposals_saved} new entities"
+                f"{ar.proposals_saved} new entities, "
+                f"{ar.relationships_saved} relationships"
             )
 ```
 

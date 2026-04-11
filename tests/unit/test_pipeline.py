@@ -24,12 +24,17 @@ from unstructured_mapping.pipeline.llm_provider import (
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
+    ExtractedRelationship,
+    ExtractionResult,
     Mention,
     ResolutionResult,
     ResolvedMention,
 )
 from unstructured_mapping.pipeline.detection import (
     EntityDetector,
+)
+from unstructured_mapping.pipeline.extraction import (
+    RelationshipExtractor,
 )
 from unstructured_mapping.pipeline.resolution import (
     EntityResolver,
@@ -665,3 +670,196 @@ def test_pipeline_llm_cascade_skips_when_all_resolved(
     ar = result.results[0]
     assert ar.provenances_saved == 1
     assert ar.proposals_saved == 0
+
+
+# -- Relationship extraction integration ----------------
+
+
+class _StubExtractor(RelationshipExtractor):
+    """Returns preset relationships."""
+
+    def __init__(
+        self, result: ExtractionResult | None = None
+    ):
+        self._result = result or ExtractionResult()
+        self.calls: list[
+            tuple[Chunk, tuple[ResolvedMention, ...]]
+        ] = []
+
+    def extract(
+        self,
+        chunk: Chunk,
+        entities: tuple[ResolvedMention, ...],
+    ) -> ExtractionResult:
+        self.calls.append((chunk, entities))
+        return self._result
+
+
+class _ExplodingExtractor(RelationshipExtractor):
+    """Raises on every call."""
+
+    def extract(
+        self,
+        chunk: Chunk,
+        entities: tuple[ResolvedMention, ...],
+    ) -> ExtractionResult:
+        raise RuntimeError("extraction boom")
+
+
+def test_pipeline_extracts_relationships(tmp_path):
+    """Relationships are extracted and persisted."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    msft = make_org("Microsoft", aliases=("Microsoft",))
+
+    extraction = ExtractionResult(
+        relationships=(
+            ExtractedRelationship(
+                source_id=apple.entity_id,
+                target_id=msft.entity_id,
+                relation_type="competes_with",
+                context_snippet="Apple and Microsoft",
+            ),
+        )
+    )
+    extractor = _StubExtractor(extraction)
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_entity(msft)
+        detector = RuleBasedDetector([apple, msft])
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+            extractor=extractor,
+        )
+        article = make_article(
+            body="Apple and Microsoft both grew."
+        )
+        result = pipeline.run([article])
+
+        rels = store.get_relationships(
+            apple.entity_id
+        )
+
+    ar = result.results[0]
+    assert ar.relationships_saved == 1
+    assert result.relationships_saved == 1
+    assert len(rels) == 1
+    assert rels[0].relation_type == "competes_with"
+    assert rels[0].run_id == result.run_id
+
+
+def test_pipeline_no_extractor_no_relationships(
+    tmp_path,
+):
+    """Without extractor, relationships_saved is 0."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        detector = RuleBasedDetector([apple])
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+        )
+        article = make_article(body="Apple grew.")
+        result = pipeline.run([article])
+
+    assert result.relationships_saved == 0
+    assert result.results[0].relationships_saved == 0
+
+
+def test_pipeline_extraction_error_isolated(tmp_path):
+    """Extraction errors don't crash the run."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        detector = RuleBasedDetector([apple])
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+            extractor=_ExplodingExtractor(),
+        )
+        article = make_article(body="Apple grew.")
+        result = pipeline.run([article])
+
+    ar = result.results[0]
+    assert ar.error is not None
+    assert "extraction boom" in ar.error
+
+
+def test_pipeline_relationship_count_in_run(tmp_path):
+    """IngestionRun.relationship_count is populated."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    msft = make_org("Microsoft", aliases=("Microsoft",))
+
+    extraction = ExtractionResult(
+        relationships=(
+            ExtractedRelationship(
+                source_id=apple.entity_id,
+                target_id=msft.entity_id,
+                relation_type="competes_with",
+                context_snippet="Apple and Microsoft",
+            ),
+        )
+    )
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_entity(msft)
+        detector = RuleBasedDetector([apple, msft])
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+            extractor=_StubExtractor(extraction),
+        )
+        article = make_article(
+            body="Apple and Microsoft both grew."
+        )
+        result = pipeline.run([article])
+
+        run = store.get_run(result.run_id)
+
+    assert run is not None
+    assert run.relationship_count == 1
+
+
+def test_pipeline_extractor_receives_resolved(
+    tmp_path,
+):
+    """Extractor receives all resolved entities."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    msft = make_org("Microsoft", aliases=("Microsoft",))
+
+    extractor = _StubExtractor()
+
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_entity(msft)
+        detector = RuleBasedDetector([apple, msft])
+        pipeline = Pipeline(
+            detector=detector,
+            resolver=AliasResolver(),
+            store=store,
+            extractor=extractor,
+        )
+        article = make_article(
+            body="Apple and Microsoft both grew."
+        )
+        pipeline.run([article])
+
+    assert len(extractor.calls) == 1
+    _, entities = extractor.calls[0]
+    entity_ids = {e.entity_id for e in entities}
+    assert apple.entity_id in entity_ids
+    assert msft.entity_id in entity_ids

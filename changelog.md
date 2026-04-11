@@ -1,5 +1,35 @@
 ## Changelog
 
+### v0.29.0 - 12th April 2026
+
+- `pipeline/orchestrator.py`:
+  - Wired `RelationshipExtractor` into the `Pipeline`:
+    optional `extractor` parameter runs pass 2 after
+    resolution, converts `ExtractedRelationship` to
+    `Relationship`, and persists via
+    `save_relationships()`.
+  - Added `relationships_saved` field to `ArticleResult`
+    and `PipelineResult`.
+  - Updated `_compute_run_stats()`: now returns 4-tuple
+    including relationship count.
+  - Updated `finish_run()` calls: `relationship_count`
+    is now populated in `IngestionRun`.
+  - Updated run completion log: includes
+    `"%d relationships"`.
+  - Removed "intentionally out of scope" note from
+    module docstring.
+- `docs/pipeline/`:
+  - Rewrote `10_orchestration.md`: documents all 4
+    stages (detection, resolution, extraction,
+    persistence), field mapping table, updated diagrams
+    and interface docs.
+- `tests/unit/`:
+  - Added 5 tests to `test_pipeline.py`: extraction
+    integration, no-extractor default, error isolation,
+    run relationship_count, extractor receives resolved
+    entities.
+
+
 ### v0.28.3 - 12th April 2026
 
 - `pipeline/orchestrator.py`:

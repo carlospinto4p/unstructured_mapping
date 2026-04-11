@@ -1,17 +1,12 @@
-"""Pipeline orchestration — article to provenance.
+"""Pipeline orchestration — article to KG records.
 
-Wires the detection, resolution, and persistence stages
-into a single callable :class:`Pipeline`. Given an
-``Article`` (from :mod:`web_scraping`), the pipeline
-produces ``Provenance`` records in the
+Wires the detection, resolution, extraction, and
+persistence stages into a single callable
+:class:`Pipeline`. Given an ``Article`` (from
+:mod:`web_scraping`), the pipeline produces
+``Provenance`` and ``Relationship`` records in the
 :class:`KnowledgeStore` and tracks the execution in an
 ``IngestionRun``.
-
-Relationship extraction is intentionally out of scope
-for this class -- that stage has its own ABC and will
-be added once an ``LLMExtractor`` exists. The pipeline
-is designed to slot it in without rewriting the
-orchestrator.
 
 Design notes
 ------------
@@ -46,6 +41,7 @@ from unstructured_mapping.knowledge_graph.models import (
     EntityStatus,
     IngestionRun,
     Provenance,
+    Relationship,
     RunStatus,
 )
 from unstructured_mapping.knowledge_graph.storage import (
@@ -53,6 +49,9 @@ from unstructured_mapping.knowledge_graph.storage import (
 )
 from unstructured_mapping.pipeline.detection import (
     EntityDetector,
+)
+from unstructured_mapping.pipeline.extraction import (
+    RelationshipExtractor,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -70,18 +69,22 @@ logger = logging.getLogger(__name__)
 
 def _compute_run_stats(
     results: list["ArticleResult"],
-) -> tuple[int, int, int]:
-    """Return ``(doc_count, prov_count, proposal_count)``.
+) -> tuple[int, int, int, int]:
+    """Aggregate counts from per-article results.
 
-    :return: Tuple of documents processed, provenance
-        rows inserted, and new entities created from
-        LLM proposals.
+    :return: ``(doc_count, prov_count, proposal_count,
+        rel_count)`` — documents processed, provenance
+        rows, new entities from proposals, and
+        relationships persisted.
     """
     processed = [r for r in results if not r.skipped]
     return (
         len(processed),
         sum(r.provenances_saved for r in results),
         sum(r.proposals_saved for r in results),
+        sum(
+            r.relationships_saved for r in results
+        ),
     )
 
 
@@ -101,6 +104,9 @@ class ArticleResult:
     :param proposals_saved: Number of new entities
         created from LLM proposals. Zero when no LLM
         resolver is configured.
+    :param relationships_saved: Number of relationship
+        rows inserted by relationship extraction. Zero
+        when no extractor is configured.
     :param skipped: ``True`` when the article was skipped
         because it already had provenance in the store.
     :param error: Error message if processing failed for
@@ -114,6 +120,7 @@ class ArticleResult:
     )
     provenances_saved: int = 0
     proposals_saved: int = 0
+    relationships_saved: int = 0
     skipped: bool = False
     error: str | None = None
 
@@ -133,6 +140,8 @@ class PipelineResult:
         inserted across all articles.
     :param proposals_saved: Total new entities created
         from LLM proposals across all articles.
+    :param relationships_saved: Total relationship rows
+        inserted across all articles.
     """
 
     run_id: str
@@ -140,6 +149,7 @@ class PipelineResult:
     documents_processed: int
     provenances_saved: int
     proposals_saved: int = 0
+    relationships_saved: int = 0
 
 
 def _utcnow() -> datetime:
@@ -147,7 +157,7 @@ def _utcnow() -> datetime:
 
 
 class Pipeline:
-    """Orchestrates detection -> resolution -> provenance.
+    """Orchestrates detection -> resolution -> extraction.
 
     :param detector: Implementation of
         :class:`EntityDetector`. Typically a
@@ -158,13 +168,20 @@ class Pipeline:
         :class:`AliasResolver` handles unambiguous
         single-candidate mentions.
     :param store: The :class:`KnowledgeStore` receiving
-        provenance rows and tracking ingestion runs.
+        provenance and relationship rows, and tracking
+        ingestion runs.
     :param llm_resolver: Optional LLM-based resolver
         that cascades after the primary resolver.
         Unresolved mentions from ``resolver`` are
         passed to ``llm_resolver`` for a second pass.
         When ``None`` (the default), unresolved mentions
         are simply left unresolved.
+    :param extractor: Optional relationship extractor
+        (pass 2). When provided, resolved entities are
+        passed to the extractor after resolution, and
+        extracted relationships are persisted to the KG.
+        When ``None`` (the default), no relationship
+        extraction is performed.
     :param skip_processed: When ``True`` (the default),
         articles whose ``document_id`` already has any
         provenance row are skipped. Set ``False`` to
@@ -176,26 +193,32 @@ class Pipeline:
         from unstructured_mapping.pipeline import (
             AliasResolver,
             LLMEntityResolver,
+            LLMRelationshipExtractor,
             OllamaProvider,
             Pipeline,
             RuleBasedDetector,
         )
-        detector = RuleBasedDetector(
-            store.find_entities_by_status(
-                EntityStatus.ACTIVE
-            )
-        )
+        provider = OllamaProvider(model="...")
         pipeline = Pipeline(
-            detector=detector,
+            detector=RuleBasedDetector(
+                store.find_entities_by_status(
+                    EntityStatus.ACTIVE
+                )
+            ),
             resolver=AliasResolver(),
             store=store,
             llm_resolver=LLMEntityResolver(
-                provider=OllamaProvider(model="..."),
+                provider=provider,
                 entity_lookup=store.get_entity,
+            ),
+            extractor=LLMRelationshipExtractor(
+                provider=provider,
+                entity_lookup=store.get_entity,
+                name_lookup=store.find_by_name,
             ),
         )
         result = pipeline.run(articles)
-        print(result.provenances_saved)
+        print(result.relationships_saved)
     """
 
     def __init__(
@@ -205,12 +228,16 @@ class Pipeline:
         store: KnowledgeStore,
         *,
         llm_resolver: LLMEntityResolver | None = None,
+        extractor: (
+            RelationshipExtractor | None
+        ) = None,
         skip_processed: bool = True,
     ) -> None:
         self._detector = detector
         self._resolver = resolver
         self._store = store
         self._llm_resolver = llm_resolver
+        self._extractor = extractor
         self._skip_processed = skip_processed
 
     # -- Public API -----------------------------------------
@@ -249,14 +276,13 @@ class Pipeline:
                     )
                 )
         except Exception as exc:  # noqa: BLE001
-            doc_count, prov_count, prop_count = (
-                _compute_run_stats(results)
-            )
+            stats = _compute_run_stats(results)
             self._store.finish_run(
                 run.run_id,
                 status=RunStatus.FAILED,
-                document_count=doc_count,
-                entity_count=prov_count,
+                document_count=stats[0],
+                entity_count=stats[1],
+                relationship_count=stats[3],
                 error_message=str(exc),
             )
             logger.exception(
@@ -264,24 +290,27 @@ class Pipeline:
             )
             raise
 
-        doc_count, prov_count, prop_count = (
-            _compute_run_stats(results)
+        stats = _compute_run_stats(results)
+        doc_count, prov_count, prop_count, rel_count = (
+            stats
         )
         self._store.finish_run(
             run.run_id,
             status=RunStatus.COMPLETED,
             document_count=doc_count,
             entity_count=prov_count,
+            relationship_count=rel_count,
         )
         logger.info(
             "Pipeline run %s completed: %d processed, "
             "%d skipped, %d provenances, "
-            "%d new entities",
+            "%d new entities, %d relationships",
             run.run_id,
             doc_count,
             len(results) - doc_count,
             prov_count,
             prop_count,
+            rel_count,
         )
         return PipelineResult(
             run_id=run.run_id,
@@ -289,6 +318,7 @@ class Pipeline:
             documents_processed=doc_count,
             provenances_saved=prov_count,
             proposals_saved=prop_count,
+            relationships_saved=rel_count,
         )
 
     def process_article(
@@ -388,11 +418,22 @@ class Pipeline:
                 detected_at, run_id,
             )
 
+            # Pass 2: relationship extraction.
+            saved_rels = self._extract_relationships(
+                chunk,
+                resolution.resolved,
+                proposals,
+                doc_id,
+                detected_at,
+                run_id,
+            )
+
             return ArticleResult(
                 document_id=doc_id,
                 resolution=resolution,
                 provenances_saved=inserted,
                 proposals_saved=saved_proposals,
+                relationships_saved=saved_rels,
             )
         except Exception as exc:  # noqa: BLE001
             # Per-article isolation: log and carry on.
@@ -463,4 +504,59 @@ class Pipeline:
                 entity.canonical_name,
                 entity.entity_id,
             )
+        return count
+
+    def _extract_relationships(
+        self,
+        chunk: Chunk,
+        resolved: tuple,
+        proposals: tuple[EntityProposal, ...],
+        doc_id: str,
+        detected_at: datetime,
+        run_id: str | None,
+    ) -> int:
+        """Run pass 2 and persist extracted relationships.
+
+        Calls the relationship extractor (if configured)
+        with the resolved entities, converts
+        ``ExtractedRelationship`` objects to
+        ``Relationship`` records, and bulk-inserts them
+        into the KG.
+
+        :return: Number of relationships persisted.
+        """
+        if self._extractor is None:
+            return 0
+        if not resolved:
+            return 0
+
+        result = self._extractor.extract(
+            chunk, resolved
+        )
+        if not result.relationships:
+            return 0
+
+        relationships = [
+            Relationship(
+                source_id=er.source_id,
+                target_id=er.target_id,
+                relation_type=er.relation_type,
+                description=er.context_snippet,
+                qualifier_id=er.qualifier_id,
+                valid_from=er.valid_from,
+                valid_until=er.valid_until,
+                document_id=doc_id,
+                discovered_at=detected_at,
+                run_id=run_id,
+            )
+            for er in result.relationships
+        ]
+        count = self._store.save_relationships(
+            relationships
+        )
+        logger.info(
+            "Extracted %d relationships from %s",
+            count,
+            doc_id,
+        )
         return count

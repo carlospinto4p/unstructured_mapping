@@ -1,10 +1,11 @@
 # Pipeline Orchestration
 
-The orchestrator wires the detection, resolution, and
-persistence stages into a single callable `Pipeline`
-class. Given an `Article` (from `web_scraping`), it
-produces `Provenance` records in the `KnowledgeStore`
-and tracks the execution in an `IngestionRun`.
+The orchestrator wires detection, resolution, extraction,
+and persistence into a single callable `Pipeline` class.
+Given an `Article` (from `web_scraping`), it produces
+`Provenance` and `Relationship` records in the
+`KnowledgeStore` and tracks the execution in an
+`IngestionRun`.
 
 
 ## Role in the pipeline
@@ -13,18 +14,15 @@ and tracks the execution in an `IngestionRun`.
 flowchart LR
     A[Article] --> B[Detection]
     B --> C[Resolution]
-    C --> D[Persistence]
-    D --> E[IngestionRun]
+    C --> D[Extraction]
+    D --> E[Persistence]
+    E --> F[IngestionRun]
 
     style B fill:#bbf,stroke:#333
     style C fill:#f9f,stroke:#333
-    style D fill:#bfb,stroke:#333
+    style D fill:#fbf,stroke:#333
+    style E fill:#bfb,stroke:#333
 ```
-
-Relationship extraction is intentionally out of scope
-for the first iteration. The orchestrator is designed
-to slot an `LLMExtractor` in between resolution and
-persistence once that ABC exists — no rewrite required.
 
 
 ## Public interface
@@ -37,6 +35,8 @@ class Pipeline:
         resolver: EntityResolver,
         store: KnowledgeStore,
         *,
+        llm_resolver: LLMEntityResolver | None = None,
+        extractor: RelationshipExtractor | None = None,
         skip_processed: bool = True,
     ) -> None: ...
 
@@ -56,20 +56,69 @@ Two result types — both frozen dataclasses:
 
 - **`ArticleResult`** — per-article outcome. Exposes the
   raw `ResolutionResult` (so callers can inspect
-  ambiguous mentions), the number of provenance rows
-  actually written, a `skipped` flag, and an `error`
-  message when article-level processing failed.
+  ambiguous mentions), counts for provenance rows,
+  new entities (proposals), and relationships saved,
+  a `skipped` flag, and an `error` message when
+  article-level processing failed.
 - **`PipelineResult`** — aggregate outcome of a run.
   Carries the `run_id`, a tuple of per-article results,
-  and the totals for documents processed and provenance
-  rows saved.
+  and totals for documents processed, provenance rows,
+  new entities, and relationships saved.
+
+
+## Processing stages
+
+### 1. Detection
+
+The `RuleBasedDetector` scans the article text for
+entity mentions matching known aliases (Aho-Corasick
+trie). Returns `Mention` objects with candidate IDs.
+
+### 2. Resolution (pass 1)
+
+Two tiers:
+
+1. `AliasResolver` resolves unambiguous single-candidate
+   mentions directly.
+2. `LLMEntityResolver` (optional) cascades after the
+   alias resolver to handle ambiguous and unknown
+   mentions. Proposes new entities via `EntityProposal`.
+
+Proposals are persisted as new `Entity` records with
+provenance linking to the source article.
+
+### 3. Extraction (pass 2)
+
+The `RelationshipExtractor` (optional) receives all
+resolved entities and the chunk text. It calls the LLM
+to extract directed relationships between them.
+
+`ExtractedRelationship` objects are converted to
+`Relationship` records by the orchestrator, which adds
+persistence metadata:
+
+| From extractor | Added by orchestrator |
+|---|---|
+| `source_id`, `target_id` | `document_id` |
+| `relation_type` | `discovered_at` |
+| `qualifier_id` | `run_id` |
+| `valid_from`, `valid_until` | |
+| `context_snippet` → `description` | |
+
+### 4. Persistence
+
+- Provenance rows are bulk-inserted via
+  `save_provenances()`.
+- Relationships are bulk-inserted via
+  `save_relationships()`.
+- The `IngestionRun` is finalized with aggregate counts.
 
 
 ## Design decisions
 
 ### Single-chunk articles
 
-News articles are short (500–3000 words) and not
+News articles are short (500-3000 words) and not
 segmented into semantic sections. Each article becomes
 one `Chunk` with `chunk_index=0` and
 `section_name=None`. Long-form documents (research
@@ -80,12 +129,12 @@ not chunk.
 
 ### Per-article isolation
 
-An exception raised inside detection, resolution, or
-the provenance insert for one article is caught, logged,
-and recorded in the per-article `ArticleResult.error`.
-The run continues with the next article. A run only
-ends in `RunStatus.FAILED` when an exception escapes
-the per-article handler — e.g. the store itself going
+An exception raised inside detection, resolution,
+extraction, or persistence for one article is caught,
+logged, and recorded in `ArticleResult.error`. The run
+continues with the next article. A run only ends in
+`RunStatus.FAILED` when an exception escapes the
+per-article handler — e.g. the store itself going
 away mid-run. This matches the policy in
 [`01_design.md`](01_design.md#error-handling).
 
@@ -109,17 +158,17 @@ faster.
 
 ### Constructor injection
 
-The detector, resolver, and store are all injected by
-the caller. Lifecycle (opening and closing the store,
-loading entities into the detector) is the caller's
-responsibility. This keeps the orchestrator itself
-stateless apart from the injected dependencies, which
-in turn:
+The detector, resolver, extractor, and store are all
+injected by the caller. Lifecycle (opening and closing
+the store, loading entities into the detector) is the
+caller's responsibility. This keeps the orchestrator
+itself stateless apart from the injected dependencies,
+which in turn:
 
-- lets tests inject stub detectors and resolvers
-  without monkey-patching,
-- lets callers swap `AliasResolver` for a future
-  `LLMResolver` without touching orchestrator code,
+- lets tests inject stub detectors, resolvers, and
+  extractors without monkey-patching,
+- lets callers swap implementations without touching
+  orchestrator code,
 - makes the lifetime of the `KnowledgeStore`
   transaction explicit.
 
@@ -134,17 +183,13 @@ one-off ad-hoc processing.
 
 `entity_count` on the run row holds the total number of
 provenance rows inserted, not the number of distinct
-entities mentioned. This matches the existing semantics
-of `finish_run()` and the field's historical use — the
-field name is slightly loose, but changing it would be a
-KG migration and is deferred.
+entities mentioned. The field name is slightly loose,
+but changing it would be a KG migration — the docstring
+clarifies the semantics.
 
 
 ## Deferred
 
-- **Relationship extraction stage.** Not wired yet. The
-  orchestrator has a natural insertion point between
-  resolution and persistence.
 - **Parallel article processing.** Articles are
   processed sequentially. At current scale there's no
   benefit; parallelism would complicate error isolation
