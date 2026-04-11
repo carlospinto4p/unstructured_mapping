@@ -1,5 +1,32 @@
 ## Changelog
 
+### v0.28.1 - 12th April 2026
+
+- `pipeline/`:
+  - Added `_llm_retry.py`: shared `retry_llm_call()`
+    helper and `append_error()` function, extracted from
+    duplicate implementations in `resolution.py` and
+    `extraction.py`.
+  - Refactored `resolution.py`: replaced inline retry
+    loop and `_append_error` static method with shared
+    `retry_llm_call()`.
+  - Refactored `extraction.py`: replaced inline retry
+    loop and `_append_error` function with shared
+    `retry_llm_call()`.
+  - Refactored `llm_parsers.py`: unified `_parse_json()`
+    and `_parse_json_pass2()` into a single function
+    parameterized by exception class.
+  - Refactored `__init__.py`: sorted `__all__` and
+    imports fully alphabetically.
+- `tests/unit/`:
+  - Added `FakeProvider` to `conftest.py`: shared fake
+    LLM provider replacing 3 duplicate implementations.
+  - Refactored `test_extraction.py`,
+    `test_resolution.py`, `test_llm_provider.py`:
+    replaced local `_FakeProvider` with shared
+    `FakeProvider`.
+
+
 ### v0.28.0 - 11th April 2026
 
 - `knowledge_graph/`:
