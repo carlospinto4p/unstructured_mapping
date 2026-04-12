@@ -106,6 +106,14 @@ uv run python -m unstructured_mapping.cli.scrape --sources bbc --feeds default
 
 # Show database stats
 uv run python -m unstructured_mapping.cli.scrape --stats
+
+# Bootstrap the KG from the curated seed file
+uv run python -m unstructured_mapping.cli.seed
+
+# Seed a specific database from a custom seed file
+uv run python -m unstructured_mapping.cli.seed \
+    --seed data/seed/financial_entities.json \
+    --db data/knowledge.db
 ```
 
 ## Docker Deployment

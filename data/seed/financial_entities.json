@@ -1,0 +1,643 @@
+{
+  "version": 1,
+  "description": "Curated seed of core financial/market-moving entities for KG bootstrap. Each entry maps 1:1 to a KnowledgeStore entity; entity_type must match the EntityType enum in knowledge_graph.models.",
+  "entities": [
+    {
+      "canonical_name": "Federal Reserve System",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of the United States. Sets the federal funds rate, supervises banks, and is the dominant driver of global dollar liquidity.",
+      "aliases": ["Federal Reserve", "The Fed", "US Federal Reserve", "FOMC", "Federal Open Market Committee"]
+    },
+    {
+      "canonical_name": "European Central Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of the euro area, based in Frankfurt. Sets monetary policy for the 20 euro-using EU member states.",
+      "aliases": ["ECB", "Eurosystem"]
+    },
+    {
+      "canonical_name": "Bank of England",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of the United Kingdom. Sets UK monetary policy via the Monetary Policy Committee and supervises UK financial stability.",
+      "aliases": ["BOE", "BoE", "Old Lady of Threadneedle Street"]
+    },
+    {
+      "canonical_name": "Bank of Japan",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of Japan. Known for decades of ultra-loose monetary policy and yield curve control; a major driver of JPY and global carry trades.",
+      "aliases": ["BOJ", "BoJ"]
+    },
+    {
+      "canonical_name": "People's Bank of China",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of the People's Republic of China. Manages the yuan (CNY) and Chinese monetary policy under state direction.",
+      "aliases": ["PBOC", "PBoC"]
+    },
+    {
+      "canonical_name": "Swiss National Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of Switzerland. Manages the Swiss franc and is known for large FX interventions.",
+      "aliases": ["SNB"]
+    },
+    {
+      "canonical_name": "Reserve Bank of Australia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of Australia. Sets the cash rate target and manages the Australian dollar.",
+      "aliases": ["RBA"]
+    },
+    {
+      "canonical_name": "Bank of Canada",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of Canada. Sets the overnight rate and manages the Canadian dollar.",
+      "aliases": ["BOC", "BoC"]
+    },
+    {
+      "canonical_name": "Reserve Bank of India",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of India. Sets the repo rate and manages the Indian rupee.",
+      "aliases": ["RBI"]
+    },
+    {
+      "canonical_name": "Securities and Exchange Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "US federal agency regulating securities markets, public companies, and investment advisors.",
+      "aliases": ["SEC", "US SEC"]
+    },
+    {
+      "canonical_name": "Commodity Futures Trading Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "US federal agency regulating derivatives markets, including futures and swaps.",
+      "aliases": ["CFTC"]
+    },
+    {
+      "canonical_name": "Financial Conduct Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "UK regulator overseeing financial services firms and markets conduct.",
+      "aliases": ["FCA"]
+    },
+    {
+      "canonical_name": "European Securities and Markets Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "EU authority coordinating securities market regulation across member states.",
+      "aliases": ["ESMA"]
+    },
+    {
+      "canonical_name": "International Monetary Fund",
+      "entity_type": "organization",
+      "subtype": "multilateral",
+      "description": "Washington-based multilateral lender that provides balance-of-payments support and publishes influential global economic forecasts.",
+      "aliases": ["IMF"]
+    },
+    {
+      "canonical_name": "World Bank",
+      "entity_type": "organization",
+      "subtype": "multilateral",
+      "description": "Multilateral development bank providing loans and grants to low- and middle-income countries.",
+      "aliases": ["World Bank Group", "IBRD"]
+    },
+    {
+      "canonical_name": "Bank for International Settlements",
+      "entity_type": "organization",
+      "subtype": "multilateral",
+      "description": "Basel-based institution serving as bank for central banks and host of the Basel Committee on Banking Supervision.",
+      "aliases": ["BIS"]
+    },
+    {
+      "canonical_name": "Organisation for Economic Co-operation and Development",
+      "entity_type": "organization",
+      "subtype": "multilateral",
+      "description": "Paris-based intergovernmental organisation of mostly high-income economies; publishes economic outlooks and policy benchmarks.",
+      "aliases": ["OECD"]
+    },
+    {
+      "canonical_name": "New York Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Largest stock exchange in the world by market capitalisation, based in New York. Owned by Intercontinental Exchange.",
+      "aliases": ["NYSE", "Big Board"]
+    },
+    {
+      "canonical_name": "Nasdaq Stock Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "US electronic stock exchange dominated by large technology listings.",
+      "aliases": ["Nasdaq", "NASDAQ"]
+    },
+    {
+      "canonical_name": "London Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Primary stock exchange of the United Kingdom, based in London. Home to FTSE index listings.",
+      "aliases": ["LSE"]
+    },
+    {
+      "canonical_name": "Tokyo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Primary stock exchange of Japan, operated by Japan Exchange Group.",
+      "aliases": ["TSE", "JPX"]
+    },
+    {
+      "canonical_name": "Hong Kong Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Primary stock exchange of Hong Kong and a major gateway for trading in Chinese equities.",
+      "aliases": ["HKEX", "HKSE"]
+    },
+    {
+      "canonical_name": "Apple Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US multinational consumer electronics and services company headquartered in Cupertino, California. One of the largest companies by market capitalisation.",
+      "aliases": ["Apple", "AAPL"]
+    },
+    {
+      "canonical_name": "Microsoft Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US multinational technology company based in Redmond, Washington. Major cloud, software, and AI platform provider.",
+      "aliases": ["Microsoft", "MSFT"]
+    },
+    {
+      "canonical_name": "Alphabet Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Parent company of Google, headquartered in Mountain View, California. Dominant in search, online advertising, and cloud infrastructure.",
+      "aliases": ["Alphabet", "Google parent", "GOOGL", "GOOG"]
+    },
+    {
+      "canonical_name": "Amazon.com, Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US multinational technology and e-commerce company headquartered in Seattle. Owner of AWS, the largest public cloud provider.",
+      "aliases": ["Amazon", "AMZN"]
+    },
+    {
+      "canonical_name": "NVIDIA Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US semiconductor company dominant in GPUs used for AI, gaming, and data centres.",
+      "aliases": ["NVIDIA", "Nvidia", "NVDA"]
+    },
+    {
+      "canonical_name": "Meta Platforms, Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US technology company operating Facebook, Instagram, WhatsApp, and Reality Labs. Headquartered in Menlo Park, California.",
+      "aliases": ["Meta", "Facebook Inc", "META"]
+    },
+    {
+      "canonical_name": "Tesla, Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US electric vehicle and clean energy company led by Elon Musk, based in Austin, Texas.",
+      "aliases": ["Tesla", "TSLA"]
+    },
+    {
+      "canonical_name": "Berkshire Hathaway Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US multinational conglomerate holding company led by Warren Buffett; large insurance, railroad, energy, and equity portfolio.",
+      "aliases": ["Berkshire Hathaway", "Berkshire", "BRK"]
+    },
+    {
+      "canonical_name": "JPMorgan Chase & Co.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Largest US bank by assets, offering investment banking, consumer banking, and asset management.",
+      "aliases": ["JPMorgan", "JPMorgan Chase", "JPM", "Chase"]
+    },
+    {
+      "canonical_name": "Bank of America Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Major US diversified financial services company headquartered in Charlotte, North Carolina.",
+      "aliases": ["Bank of America", "BofA", "BAC"]
+    },
+    {
+      "canonical_name": "Goldman Sachs Group, Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US multinational investment bank and financial services firm based in New York.",
+      "aliases": ["Goldman Sachs", "Goldman", "GS"]
+    },
+    {
+      "canonical_name": "Exxon Mobil Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "US multinational oil and gas corporation, one of the largest publicly traded energy companies.",
+      "aliases": ["ExxonMobil", "Exxon", "XOM"]
+    },
+    {
+      "canonical_name": "Saudi Aramco",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Saudi state-owned petroleum and natural gas company; one of the largest companies in the world by revenue and market capitalisation.",
+      "aliases": ["Aramco", "Saudi Arabian Oil Company"]
+    },
+    {
+      "canonical_name": "Taiwan Semiconductor Manufacturing Company",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Taiwan-based contract chip manufacturer; world's largest dedicated semiconductor foundry.",
+      "aliases": ["TSMC", "Taiwan Semiconductor", "TSM"]
+    },
+    {
+      "canonical_name": "BlackRock, Inc.",
+      "entity_type": "organization",
+      "subtype": "fund_manager",
+      "description": "World's largest asset manager by AUM, headquartered in New York. Operator of the iShares ETF family.",
+      "aliases": ["BlackRock", "BLK"]
+    },
+    {
+      "canonical_name": "Vanguard Group",
+      "entity_type": "organization",
+      "subtype": "fund_manager",
+      "description": "US investment adviser and index-fund pioneer based in Valley Forge, Pennsylvania.",
+      "aliases": ["Vanguard"]
+    },
+    {
+      "canonical_name": "Moody's Corporation",
+      "entity_type": "organization",
+      "subtype": "rating_agency",
+      "description": "US credit rating agency; one of the 'Big Three' along with S&P and Fitch.",
+      "aliases": ["Moody's", "MCO"]
+    },
+    {
+      "canonical_name": "S&P Global Ratings",
+      "entity_type": "organization",
+      "subtype": "rating_agency",
+      "description": "Credit rating agency subsidiary of S&P Global; one of the 'Big Three'.",
+      "aliases": ["S&P", "Standard & Poor's", "S&P Ratings"]
+    },
+    {
+      "canonical_name": "Fitch Ratings",
+      "entity_type": "organization",
+      "subtype": "rating_agency",
+      "description": "Credit rating agency; one of the 'Big Three' major rating agencies.",
+      "aliases": ["Fitch"]
+    },
+    {
+      "canonical_name": "Jerome Powell",
+      "entity_type": "person",
+      "subtype": "policymaker",
+      "description": "Chair of the US Federal Reserve since 2018. Previously a Fed governor and partner at The Carlyle Group.",
+      "aliases": ["Jay Powell", "Chair Powell"]
+    },
+    {
+      "canonical_name": "Christine Lagarde",
+      "entity_type": "person",
+      "subtype": "policymaker",
+      "description": "President of the European Central Bank since 2019. Former Managing Director of the IMF and French finance minister.",
+      "aliases": ["Lagarde"]
+    },
+    {
+      "canonical_name": "Andrew Bailey",
+      "entity_type": "person",
+      "subtype": "policymaker",
+      "description": "Governor of the Bank of England since 2020.",
+      "aliases": []
+    },
+    {
+      "canonical_name": "Kazuo Ueda",
+      "entity_type": "person",
+      "subtype": "policymaker",
+      "description": "Governor of the Bank of Japan since April 2023. Academic economist appointed to lead normalisation of BOJ policy.",
+      "aliases": ["Ueda"]
+    },
+    {
+      "canonical_name": "Janet Yellen",
+      "entity_type": "person",
+      "subtype": "policymaker",
+      "description": "US Treasury Secretary 2021-2025. Former Chair of the Federal Reserve.",
+      "aliases": ["Yellen"]
+    },
+    {
+      "canonical_name": "Warren Buffett",
+      "entity_type": "person",
+      "subtype": "investor",
+      "description": "Chair and CEO of Berkshire Hathaway; widely followed value investor known as the 'Oracle of Omaha'.",
+      "aliases": ["Buffett", "Oracle of Omaha"]
+    },
+    {
+      "canonical_name": "Elon Musk",
+      "entity_type": "person",
+      "subtype": "executive",
+      "description": "CEO of Tesla and SpaceX, owner of X (formerly Twitter). Major market-moving figure in tech and EV sectors.",
+      "aliases": ["Musk"]
+    },
+    {
+      "canonical_name": "Jamie Dimon",
+      "entity_type": "person",
+      "subtype": "executive",
+      "description": "Chair and CEO of JPMorgan Chase since 2005. Influential voice on US banking and macroeconomic policy.",
+      "aliases": ["Dimon"]
+    },
+    {
+      "canonical_name": "S&P 500 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "US large-cap equity index of 500 leading companies; the dominant benchmark for US equities.",
+      "aliases": ["S&P 500", "SPX", "S&P"]
+    },
+    {
+      "canonical_name": "Dow Jones Industrial Average",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Price-weighted index of 30 large US public companies.",
+      "aliases": ["Dow Jones", "The Dow", "DJIA", "DJI"]
+    },
+    {
+      "canonical_name": "Nasdaq Composite",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Market-cap weighted index of all stocks listed on the Nasdaq exchange; heavily skewed to technology.",
+      "aliases": ["Nasdaq Comp", "IXIC"]
+    },
+    {
+      "canonical_name": "Nasdaq-100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Index of the 100 largest non-financial Nasdaq-listed companies. Tracked by the QQQ ETF.",
+      "aliases": ["Nasdaq 100", "NDX"]
+    },
+    {
+      "canonical_name": "Russell 2000 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "US small-cap equity index of 2,000 smallest companies in the Russell 3000.",
+      "aliases": ["Russell 2000", "RUT"]
+    },
+    {
+      "canonical_name": "FTSE 100 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Index of the 100 largest companies listed on the London Stock Exchange.",
+      "aliases": ["FTSE 100", "UKX", "Footsie"]
+    },
+    {
+      "canonical_name": "DAX Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Blue-chip stock market index of the 40 largest German companies on the Frankfurt Stock Exchange.",
+      "aliases": ["DAX", "DAX 40", "GDAXI"]
+    },
+    {
+      "canonical_name": "CAC 40 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark French stock market index of the 40 largest Euronext Paris listings.",
+      "aliases": ["CAC 40", "FCHI"]
+    },
+    {
+      "canonical_name": "Nikkei 225 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Price-weighted index of 225 large Japanese companies on the Tokyo Stock Exchange.",
+      "aliases": ["Nikkei", "Nikkei 225", "N225"]
+    },
+    {
+      "canonical_name": "Hang Seng Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark Hong Kong equity index of the largest companies listed on HKEX.",
+      "aliases": ["Hang Seng", "HSI"]
+    },
+    {
+      "canonical_name": "Shanghai Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Index of all A-shares and B-shares listed on the Shanghai Stock Exchange.",
+      "aliases": ["Shanghai Composite", "SSE Composite", "SHCOMP"]
+    },
+    {
+      "canonical_name": "STOXX Europe 600",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Broad European equity index covering 600 large, mid, and small caps across 17 countries.",
+      "aliases": ["STOXX 600", "SXXP"]
+    },
+    {
+      "canonical_name": "CBOE Volatility Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Measure of expected 30-day volatility of the S&P 500 implied from options pricing; the 'fear gauge'.",
+      "aliases": ["VIX", "Fear Gauge"]
+    },
+    {
+      "canonical_name": "US Dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of the United States and the world's primary reserve currency.",
+      "aliases": ["USD", "Dollar", "US$", "Greenback"]
+    },
+    {
+      "canonical_name": "Euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of the euro area; second most-held reserve currency after the USD.",
+      "aliases": ["EUR"]
+    },
+    {
+      "canonical_name": "Pound Sterling",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of the United Kingdom.",
+      "aliases": ["GBP", "British Pound", "Sterling", "Cable"]
+    },
+    {
+      "canonical_name": "Japanese Yen",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Japan; major funding currency for global carry trades.",
+      "aliases": ["JPY", "Yen"]
+    },
+    {
+      "canonical_name": "Chinese Yuan",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of the People's Republic of China; also called the renminbi.",
+      "aliases": ["CNY", "Renminbi", "RMB", "Yuan"]
+    },
+    {
+      "canonical_name": "Swiss Franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Switzerland, widely held as a safe-haven asset.",
+      "aliases": ["CHF"]
+    },
+    {
+      "canonical_name": "Bitcoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "First and largest cryptocurrency by market capitalisation; decentralised digital asset often framed as 'digital gold'.",
+      "aliases": ["BTC", "XBT"]
+    },
+    {
+      "canonical_name": "Ethereum",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Second-largest cryptocurrency by market capitalisation; programmable smart-contract platform.",
+      "aliases": ["ETH", "Ether"]
+    },
+    {
+      "canonical_name": "WTI Crude Oil",
+      "entity_type": "asset",
+      "subtype": "commodity",
+      "description": "West Texas Intermediate crude oil; benchmark grade for North American oil pricing.",
+      "aliases": ["WTI", "West Texas Intermediate", "CL"]
+    },
+    {
+      "canonical_name": "Brent Crude Oil",
+      "entity_type": "asset",
+      "subtype": "commodity",
+      "description": "North Sea crude oil blend; primary benchmark for global oil pricing.",
+      "aliases": ["Brent", "Brent Crude"]
+    },
+    {
+      "canonical_name": "Gold",
+      "entity_type": "asset",
+      "subtype": "commodity",
+      "description": "Precious metal widely held as a monetary reserve and inflation hedge.",
+      "aliases": ["XAU", "Gold Bullion"]
+    },
+    {
+      "canonical_name": "Silver",
+      "entity_type": "asset",
+      "subtype": "commodity",
+      "description": "Precious metal with both monetary and industrial demand.",
+      "aliases": ["XAG"]
+    },
+    {
+      "canonical_name": "Copper",
+      "entity_type": "asset",
+      "subtype": "commodity",
+      "description": "Industrial metal whose price is often treated as a barometer of global economic activity ('Dr. Copper').",
+      "aliases": ["Dr. Copper"]
+    },
+    {
+      "canonical_name": "Natural Gas",
+      "entity_type": "asset",
+      "subtype": "commodity",
+      "description": "Hydrocarbon gas used for heating, electricity generation, and industry; benchmark prices include Henry Hub and TTF.",
+      "aliases": ["Nat Gas", "NG"]
+    },
+    {
+      "canonical_name": "10-Year US Treasury Note",
+      "entity_type": "asset",
+      "subtype": "bond",
+      "description": "US government debt instrument maturing in 10 years; its yield is the primary benchmark for global risk-free rates.",
+      "aliases": ["10Y Treasury", "UST 10Y", "10-year Treasury", "10-year yield"]
+    },
+    {
+      "canonical_name": "German Bund",
+      "entity_type": "asset",
+      "subtype": "bond",
+      "description": "Long-dated German government bond, typically the 10-year benchmark for euro-area risk-free rates.",
+      "aliases": ["Bund", "10Y Bund"]
+    },
+    {
+      "canonical_name": "Consumer Price Index",
+      "entity_type": "metric",
+      "subtype": "inflation",
+      "description": "Measure of the average change over time in prices paid by consumers for a basket of goods and services. Main headline inflation gauge.",
+      "aliases": ["CPI", "Headline CPI"]
+    },
+    {
+      "canonical_name": "Core CPI",
+      "entity_type": "metric",
+      "subtype": "inflation",
+      "description": "Consumer Price Index excluding food and energy; preferred gauge for underlying inflation trends.",
+      "aliases": ["Core Consumer Price Index"]
+    },
+    {
+      "canonical_name": "Personal Consumption Expenditures Price Index",
+      "entity_type": "metric",
+      "subtype": "inflation",
+      "description": "US inflation measure preferred by the Federal Reserve for its 2% target, published by the BEA.",
+      "aliases": ["PCE", "PCE Price Index", "Core PCE"]
+    },
+    {
+      "canonical_name": "Producer Price Index",
+      "entity_type": "metric",
+      "subtype": "inflation",
+      "description": "Measure of the average change in selling prices received by domestic producers; early indicator of consumer inflation pressures.",
+      "aliases": ["PPI"]
+    },
+    {
+      "canonical_name": "Nonfarm Payrolls",
+      "entity_type": "metric",
+      "subtype": "employment",
+      "description": "Monthly US jobs report released by the BLS; headline number excludes farm, government, and non-profit employees.",
+      "aliases": ["NFP", "US Jobs Report", "Payrolls"]
+    },
+    {
+      "canonical_name": "Unemployment Rate",
+      "entity_type": "metric",
+      "subtype": "employment",
+      "description": "Share of the labour force that is unemployed and actively seeking work.",
+      "aliases": ["U-3", "Jobless Rate"]
+    },
+    {
+      "canonical_name": "Initial Jobless Claims",
+      "entity_type": "metric",
+      "subtype": "employment",
+      "description": "Weekly US data on new filings for unemployment insurance; high-frequency labour market indicator.",
+      "aliases": ["Jobless Claims", "Initial Claims"]
+    },
+    {
+      "canonical_name": "Gross Domestic Product",
+      "entity_type": "metric",
+      "subtype": "growth",
+      "description": "Total monetary value of goods and services produced within a country in a given period; headline measure of economic output.",
+      "aliases": ["GDP", "Real GDP"]
+    },
+    {
+      "canonical_name": "Retail Sales",
+      "entity_type": "metric",
+      "subtype": "growth",
+      "description": "Monthly estimate of consumer spending at retail establishments; key real-time indicator of consumption.",
+      "aliases": ["US Retail Sales"]
+    },
+    {
+      "canonical_name": "ISM Manufacturing PMI",
+      "entity_type": "metric",
+      "subtype": "growth",
+      "description": "Monthly US survey of purchasing managers in manufacturing; readings above 50 indicate expansion.",
+      "aliases": ["ISM PMI", "ISM Manufacturing"]
+    },
+    {
+      "canonical_name": "Federal Funds Rate",
+      "entity_type": "metric",
+      "subtype": "monetary_policy",
+      "description": "Interest rate at which US depository institutions lend reserves to each other overnight; the Fed's primary policy rate.",
+      "aliases": ["Fed Funds Rate", "FFR", "Policy Rate"]
+    },
+    {
+      "canonical_name": "ECB Deposit Facility Rate",
+      "entity_type": "metric",
+      "subtype": "monetary_policy",
+      "description": "Rate at which commercial banks are remunerated for overnight deposits at the ECB; the euro area's main policy rate since 2014.",
+      "aliases": ["ECB Deposit Rate", "DFR"]
+    },
+    {
+      "canonical_name": "Trade Balance",
+      "entity_type": "metric",
+      "subtype": "trade",
+      "description": "Difference between the monetary value of a country's exports and imports over a period.",
+      "aliases": ["Balance of Trade"]
+    }
+  ]
+}

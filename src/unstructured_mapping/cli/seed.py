@@ -1,0 +1,183 @@
+"""Bootstrap the knowledge graph from a curated seed file.
+
+Usage::
+
+    uv run python -m unstructured_mapping.cli.seed
+    uv run python -m unstructured_mapping.cli.seed \\
+        --seed data/seed/financial_entities.json \\
+        --db data/knowledge.db
+
+The seed file is a JSON document with an ``entities`` array.
+Each entry must have ``canonical_name``, ``entity_type``
+(matching :class:`EntityType`), and ``description``; plus
+optional ``subtype`` and ``aliases``.
+
+Entities that already exist in the KG (matched by
+``canonical_name`` + ``entity_type``, case-insensitive) are
+skipped, so the loader is idempotent — re-running after a
+seed file update only persists new entries. All newly
+created entities are tagged with ``reason="seed"`` in the
+entity history for provenance.
+"""
+
+import argparse
+import json
+import logging
+from collections import Counter
+from pathlib import Path
+
+from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.knowledge_graph import (
+    Entity,
+    EntityType,
+    KnowledgeStore,
+)
+
+logger = logging.getLogger(__name__)
+
+_DEFAULT_SEED = Path("data/seed/financial_entities.json")
+_DEFAULT_DB = Path("data/knowledge.db")
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description=(
+            "Bootstrap the KG from a curated seed file."
+        ),
+    )
+    p.add_argument(
+        "--seed",
+        type=Path,
+        default=_DEFAULT_SEED,
+        help=(
+            "Path to the seed JSON file "
+            f"(default: {_DEFAULT_SEED})."
+        ),
+    )
+    p.add_argument(
+        "--db",
+        type=Path,
+        default=_DEFAULT_DB,
+        help=(
+            "Path to the KG SQLite database "
+            f"(default: {_DEFAULT_DB})."
+        ),
+    )
+    p.add_argument(
+        "--dry-run",
+        action="store_true",
+        help=(
+            "Parse and validate the seed file without "
+            "writing to the database."
+        ),
+    )
+    return p
+
+
+def _parse_entity(raw: dict) -> Entity:
+    """Convert a seed JSON record to an :class:`Entity`.
+
+    :param raw: Parsed JSON object from the seed file.
+    :return: A validated :class:`Entity`.
+    :raises KeyError: If a required field is missing.
+    :raises ValueError: If ``entity_type`` is not a
+        recognised :class:`EntityType` value.
+    """
+    aliases = tuple(raw.get("aliases") or ())
+    return Entity(
+        canonical_name=raw["canonical_name"],
+        entity_type=EntityType(raw["entity_type"]),
+        description=raw["description"],
+        subtype=raw.get("subtype"),
+        aliases=aliases,
+    )
+
+
+def _exists(
+    store: KnowledgeStore,
+    name: str,
+    entity_type: EntityType,
+) -> bool:
+    """Return True if an entity with the same canonical
+    name and type already exists in the store.
+
+    Matching is case-insensitive on the canonical name,
+    mirroring :meth:`KnowledgeStore.find_by_name`.
+    """
+    matches = store.find_by_name(name)
+    return any(
+        e.entity_type == entity_type for e in matches
+    )
+
+
+def load_seed(
+    seed_path: Path,
+    store: KnowledgeStore,
+    *,
+    dry_run: bool = False,
+) -> tuple[int, int, Counter]:
+    """Load entities from ``seed_path`` into ``store``.
+
+    :param seed_path: Path to the seed JSON file.
+    :param store: Target knowledge store.
+    :param dry_run: When True, only parse and validate;
+        do not write to the database.
+    :return: ``(created, skipped, counts_by_type)`` where
+        ``counts_by_type`` is a :class:`Counter` of the
+        created entities keyed by ``entity_type.value``.
+    """
+    data = json.loads(seed_path.read_text(encoding="utf-8"))
+    raw_entities = data.get("entities", [])
+    created = 0
+    skipped = 0
+    counts: Counter = Counter()
+
+    for raw in raw_entities:
+        entity = _parse_entity(raw)
+        if _exists(
+            store, entity.canonical_name, entity.entity_type
+        ):
+            skipped += 1
+            continue
+        if not dry_run:
+            store.save_entity(entity, reason="seed")
+        created += 1
+        counts[entity.entity_type.value] += 1
+
+    return created, skipped, counts
+
+
+def main(argv: list[str] | None = None) -> None:
+    """Entry point for the seed CLI."""
+    setup_logging()
+    args = _build_parser().parse_args(argv)
+
+    if not args.seed.exists():
+        logger.error(
+            "Seed file not found: %s", args.seed
+        )
+        raise SystemExit(1)
+
+    logger.info(
+        "Loading seed %s into %s%s",
+        args.seed,
+        args.db,
+        " (dry run)" if args.dry_run else "",
+    )
+
+    with KnowledgeStore(db_path=args.db) as store:
+        created, skipped, counts = load_seed(
+            args.seed, store, dry_run=args.dry_run
+        )
+
+    logger.info(
+        "Seed complete: %d created, %d skipped",
+        created,
+        skipped,
+    )
+    for etype, count in sorted(counts.items()):
+        logger.info("  %-14s %d", etype, count)
+
+
+if __name__ == "__main__":
+    main()

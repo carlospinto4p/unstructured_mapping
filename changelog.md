@@ -1,5 +1,24 @@
 ## Changelog
 
+### v0.30.0 - 12th April 2026
+
+- Added KG bootstrap seed:
+  - `data/seed/financial_entities.json`: curated seed of
+    ~90 core financial/market-moving entities (central
+    banks, regulators, exchanges, top companies,
+    policymakers, indices, currencies, commodities,
+    macro metrics).
+  - `cli/seed.py`: idempotent loader that reads the seed
+    JSON, skips existing entities (case-insensitive match
+    on canonical name + type), and tags new rows with
+    `reason="seed"` in the entity history. Supports
+    `--seed`, `--db`, and `--dry-run` flags.
+- Added unit tests:
+  - `tests/unit/test_cli_seed.py`: 14 tests covering
+    parsing, idempotency, dry-run, history tagging, and
+    curated file validity.
+
+
 ### v0.29.0 - 12th April 2026
 
 - `pipeline/orchestrator.py`:
