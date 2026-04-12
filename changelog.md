@@ -1,5 +1,30 @@
 ## Changelog
 
+### v0.31.0 - 12th April 2026
+
+- Added cold-start LLM mode for bootstrapping an empty KG:
+  - `pipeline/cold_start.py`: new
+    `ColdStartEntityDiscoverer` that asks the LLM to
+    propose entities straight from raw article text,
+    reusing the pass 1 prompt with an empty candidate
+    set so every returned entity becomes a proposal.
+  - `pipeline/detection.py`: added `NoopDetector`
+    utility that always returns zero mentions.
+  - `pipeline/orchestrator.py`: new
+    `cold_start_discoverer` kwarg on `Pipeline`; when
+    set, the orchestrator skips detection, resolution,
+    and relationship extraction for each article and
+    persists proposals via the existing
+    `_save_proposals` path.
+- Added unit tests:
+  - `tests/unit/test_cold_start.py`: 8 tests covering
+    discovery, prompt shape, hallucination rejection,
+    pipeline integration, detector bypass, and
+    idempotency.
+- Added `docs/pipeline/13_cold_start.md`; updated
+  `12_kg_population.md` to reference the shipped mode.
+
+
 ### v0.30.1 - 12th April 2026
 
 - Updated `docs/pipeline/12_kg_population.md`: replaced

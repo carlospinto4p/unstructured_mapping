@@ -161,26 +161,27 @@ both ``asset`` and ``topic``), so seeds can add a new
 flavour of an existing surface form without collision.
 
 
-## Cold-start LLM mode (future)
+## Cold-start LLM mode
 
-An alternative to manual seeding: a pipeline mode that
-sends raw article text directly to the LLM for full
-entity extraction, bypassing detection entirely. This
-would:
+Implemented as `ColdStartEntityDiscoverer` +
+`Pipeline(cold_start_discoverer=...)`. Bypasses detection
+and resolution: the LLM sees the raw article and proposes
+entities directly. Every discovered entity is persisted
+with `reason="proposed by LLM"`; relationship extraction
+is deferred to the next normal pipeline run, once the
+entities exist in the KG.
 
-- Process articles without any existing KG entities
-- Extract all entities the LLM can identify
-- Propose them all as new entities
+More expensive than normal detection (every article gets
+an LLM call), so the recommended flow is:
 
-This is more expensive (every article gets an LLM call,
-not just those with unresolved mentions) but eliminates
-the need for manual seeding. It could be used for initial
-population, then switched to the normal detection →
-resolution flow once the KG has enough entities.
+1. Run the curated seed loader.
+2. (Optional) Run cold-start over a small batch to
+   broaden coverage.
+3. Switch to the normal pipeline for steady-state
+   ingestion.
 
-**Not yet implemented.** The current pipeline requires
-detection to produce mentions before the LLM resolver
-runs.
+See `13_cold_start.md` for the full rationale, usage
+recipes, and deferred features.
 
 
 ## Alternative seed sources

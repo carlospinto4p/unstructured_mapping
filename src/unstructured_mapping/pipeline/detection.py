@@ -255,3 +255,18 @@ class RuleBasedDetector(EntityDetector):
         if not chunk.text:
             return ()
         return tuple(_scan_trie(self._root, chunk.text))
+
+
+class NoopDetector(EntityDetector):
+    """Detector that always returns zero mentions.
+
+    Intended for cold-start mode, where detection is
+    intentionally skipped so the LLM sees the raw article
+    text and proposes entities from scratch. Prefer this
+    over ``RuleBasedDetector([])`` because the name makes
+    the intent explicit to callers and reviewers.
+    """
+
+    def detect(self, chunk: Chunk) -> tuple[Mention, ...]:
+        """Return an empty tuple regardless of input."""
+        return ()

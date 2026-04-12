@@ -12,8 +12,12 @@ from unstructured_mapping.pipeline.budget import (
     estimate_tokens,
     fit_candidates,
 )
+from unstructured_mapping.pipeline.cold_start import (
+    ColdStartEntityDiscoverer,
+)
 from unstructured_mapping.pipeline.detection import (
     EntityDetector,
+    NoopDetector,
     RuleBasedDetector,
 )
 from unstructured_mapping.pipeline.extraction import (
@@ -72,6 +76,7 @@ __all__ = [
     "ArticleResult",
     "Chunk",
     "ClaudeProvider",
+    "ColdStartEntityDiscoverer",
     "DEFAULT_RESPONSE_HEADROOM",
     "EntityDetector",
     "EntityProposal",
@@ -86,6 +91,7 @@ __all__ = [
     "LLMRelationshipExtractor",
     "LLMTimeoutError",
     "Mention",
+    "NoopDetector",
     "OllamaProvider",
     "PASS1_SYSTEM_PROMPT",
     "PASS2_SYSTEM_PROMPT",

@@ -47,6 +47,9 @@ from unstructured_mapping.knowledge_graph.models import (
 from unstructured_mapping.knowledge_graph.storage import (
     KnowledgeStore,
 )
+from unstructured_mapping.pipeline.cold_start import (
+    ColdStartEntityDiscoverer,
+)
 from unstructured_mapping.pipeline.detection import (
     EntityDetector,
 )
@@ -182,6 +185,16 @@ class Pipeline:
         extracted relationships are persisted to the KG.
         When ``None`` (the default), no relationship
         extraction is performed.
+    :param cold_start_discoverer: Optional
+        :class:`ColdStartEntityDiscoverer`. When provided,
+        the pipeline switches to cold-start mode: the
+        detector, resolver, and ``llm_resolver`` are all
+        bypassed, and the discoverer proposes entities
+        directly from the raw article text. Use this only
+        for initial KG population; for steady-state
+        operation leave it ``None``. Mutually exclusive
+        with detection-driven stages (they are ignored
+        when a discoverer is set).
     :param skip_processed: When ``True`` (the default),
         articles whose ``document_id`` already has any
         provenance row are skipped. Set ``False`` to
@@ -231,6 +244,9 @@ class Pipeline:
         extractor: (
             RelationshipExtractor | None
         ) = None,
+        cold_start_discoverer: (
+            ColdStartEntityDiscoverer | None
+        ) = None,
         skip_processed: bool = True,
     ) -> None:
         self._detector = detector
@@ -238,6 +254,9 @@ class Pipeline:
         self._store = store
         self._llm_resolver = llm_resolver
         self._extractor = extractor
+        self._cold_start_discoverer = (
+            cold_start_discoverer
+        )
         self._skip_processed = skip_processed
 
     # -- Public API -----------------------------------------
@@ -371,6 +390,10 @@ class Pipeline:
                 text=article.body,
                 section_name=None,
             )
+            if self._cold_start_discoverer is not None:
+                return self._process_cold_start(
+                    chunk, article, run_id
+                )
             mentions = self._detector.detect(chunk)
             resolution = self._resolver.resolve(
                 chunk, mentions
@@ -447,6 +470,56 @@ class Pipeline:
                 document_id=doc_id,
                 error=str(exc),
             )
+
+    def _process_cold_start(
+        self,
+        chunk: Chunk,
+        article: Article,
+        run_id: str | None,
+    ) -> ArticleResult:
+        """Bootstrap entities from raw text via the LLM.
+
+        Bypasses detection and resolution entirely. The
+        configured :class:`ColdStartEntityDiscoverer`
+        proposes entities directly from the article body;
+        each proposal becomes a new entity plus a
+        provenance row. Relationship extraction is
+        skipped in cold-start mode — subsequent runs
+        with the normal pipeline will detect the new
+        entities and extract relationships from there.
+
+        :return: Per-article result with
+            ``proposals_saved`` reflecting new entities
+            created. ``provenances_saved`` mirrors that
+            count since one provenance row is created
+            per proposal.
+        """
+        assert (
+            self._cold_start_discoverer is not None
+        )  # caller guarantees this
+        proposals = (
+            self._cold_start_discoverer.discover(chunk)
+        )
+        detected_at = _utcnow()
+        saved = self._save_proposals(
+            proposals,
+            chunk.document_id,
+            article.source,
+            detected_at,
+            run_id,
+        )
+        logger.info(
+            "Cold-start discovered %d entities from %s",
+            saved,
+            chunk.document_id,
+        )
+        return ArticleResult(
+            document_id=chunk.document_id,
+            resolution=ResolutionResult(),
+            provenances_saved=saved,
+            proposals_saved=saved,
+            relationships_saved=0,
+        )
 
     def _save_proposals(
         self,
