@@ -187,15 +187,11 @@ class EntitySearchMixin(EntityHelpersMixin):
             unnecessary alias lookups.
         :return: Matching entities.
         """
-        query = ENTITY_SELECT + "WHERE entity_type = ?"
-        params: list[str | int] = [entity_type.value]
-        if limit is not None:
-            query += " LIMIT ?"
-            params.append(limit)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
-        return self._rows_to_entities(rows)
+        return self._find_entities_where(
+            "entity_type = ?",
+            [entity_type.value],
+            limit=limit,
+        )
 
     def find_entities_by_subtype(
         self,
@@ -212,21 +208,11 @@ class EntitySearchMixin(EntityHelpersMixin):
             returned.
         :return: Matching entities.
         """
-        query = (
-            ENTITY_SELECT
-            + "WHERE entity_type = ? AND subtype = ?"
+        return self._find_entities_where(
+            "entity_type = ? AND subtype = ?",
+            [entity_type.value, subtype],
+            limit=limit,
         )
-        params: list[str | int] = [
-            entity_type.value,
-            subtype,
-        ]
-        if limit is not None:
-            query += " LIMIT ?"
-            params.append(limit)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
-        return self._rows_to_entities(rows)
 
     def find_entities_by_status(
         self,
@@ -244,15 +230,11 @@ class EntitySearchMixin(EntityHelpersMixin):
             returned.
         :return: Matching entities.
         """
-        query = ENTITY_SELECT + "WHERE status = ?"
-        params: list[str | int] = [status.value]
-        if limit is not None:
-            query += " LIMIT ?"
-            params.append(limit)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
-        return self._rows_to_entities(rows)
+        return self._find_entities_where(
+            "status = ?",
+            [status.value],
+            limit=limit,
+        )
 
     def find_by_name_prefix(
         self,
@@ -272,19 +254,11 @@ class EntitySearchMixin(EntityHelpersMixin):
             small bound (e.g. 10).
         :return: Matching entities.
         """
-        query = (
-            ENTITY_SELECT
-            + "WHERE canonical_name "
-            "COLLATE NOCASE LIKE ? || '%'"
+        return self._find_entities_where(
+            "canonical_name COLLATE NOCASE LIKE ? || '%'",
+            [prefix],
+            limit=limit,
         )
-        params: list[str | int] = [prefix]
-        if limit is not None:
-            query += " LIMIT ?"
-            params.append(limit)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
-        return self._rows_to_entities(rows)
 
     def count_entities_by_type(
         self,
@@ -321,21 +295,12 @@ class EntitySearchMixin(EntityHelpersMixin):
             returned.
         :return: Matching entities, newest first.
         """
-        query = (
-            ENTITY_SELECT
-            + "WHERE created_at >= ? "
-            "ORDER BY created_at DESC"
+        return self._find_entities_where(
+            "created_at >= ?",
+            [dt_to_iso(since)],
+            suffix="ORDER BY created_at DESC",
+            limit=limit,
         )
-        params: list[str | int | None] = [
-            dt_to_iso(since)
-        ]
-        if limit is not None:
-            query += " LIMIT ?"
-            params.append(limit)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
-        return self._rows_to_entities(rows)
 
 
 # -- Merge -------------------------------------------------------

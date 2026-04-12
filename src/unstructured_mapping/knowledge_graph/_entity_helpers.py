@@ -70,6 +70,49 @@ class EntityHelpersMixin:
             for r in rows
         ]
 
+    def _find_entities_where(
+        self,
+        where_clause: str,
+        params: list[object],
+        *,
+        suffix: str = "",
+        limit: int | None = None,
+    ) -> list[Entity]:
+        """Run ``ENTITY_SELECT + WHERE ...`` with optional
+        suffix (ORDER BY) and LIMIT, returning entities.
+
+        Every filtered-entity query in
+        :class:`EntitySearchMixin` follows the same shape;
+        this helper centralises the query assembly and
+        row-to-entity conversion so callers only supply
+        the discriminating parts.
+
+        :param where_clause: The WHERE expression, without
+            the ``WHERE`` keyword (e.g. ``"entity_type = ?"``).
+        :param params: Positional parameters for the WHERE
+            placeholders, in order.
+        :param suffix: Optional SQL fragment appended after
+            the WHERE clause and before any LIMIT (e.g.
+            ``"ORDER BY created_at DESC"``).
+        :param limit: Optional LIMIT bound; appended as a
+            parameter when present.
+        :return: Matching entities with aliases hydrated.
+        """
+        from unstructured_mapping.knowledge_graph._helpers import (
+            ENTITY_SELECT,
+        )
+        query = ENTITY_SELECT + "WHERE " + where_clause
+        effective_params = list(params)
+        if suffix:
+            query += " " + suffix
+        if limit is not None:
+            query += " LIMIT ?"
+            effective_params.append(limit)
+        rows = self._conn.execute(
+            query, effective_params
+        ).fetchall()
+        return self._rows_to_entities(rows)
+
     def _sync_aliases(
         self,
         entity_id: str,
