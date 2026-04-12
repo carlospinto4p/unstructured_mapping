@@ -120,41 +120,45 @@ sources.
 
 ## Bootstrap implementation
 
-The seed script loads entities from a curated JSON file
-and persists them to the KG:
+The curated seed lives at
+`data/seed/financial_entities.json` and is
+version-controlled so the initial KG state is
+reproducible. The JSON has a top-level ``entities`` array;
+each record has ``canonical_name``, ``entity_type`` (one of
+the :class:`EntityType` values), ``description``, and
+optional ``subtype`` and ``aliases``:
 
-```python
-from unstructured_mapping.knowledge_graph import (
-    Entity,
-    EntityType,
-    KnowledgeStore,
-)
-
-seed_entities = [
-    Entity(
-        canonical_name="Federal Reserve",
-        entity_type=EntityType.ORGANIZATION,
-        subtype="central_bank",
-        description=(
-            "The central banking system of the "
-            "United States, responsible for monetary "
-            "policy and the federal funds rate."
-        ),
-        aliases=(
-            "the Fed", "Fed", "Federal Reserve",
-            "Federal Reserve Board", "US Federal Reserve",
-        ),
-    ),
-    # ... more entities
-]
-
-with KnowledgeStore() as store:
-    for entity in seed_entities:
-        store.save_entity(entity, reason="seed")
+```json
+{
+  "version": 1,
+  "entities": [
+    {
+      "canonical_name": "Federal Reserve System",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central bank of the United States...",
+      "aliases": ["Federal Reserve", "The Fed", "FOMC"]
+    }
+  ]
+}
 ```
 
-The seed file should be version-controlled so the initial
-KG state is reproducible.
+The loader CLI (`unstructured_mapping.cli.seed`) reads the
+file, parses each record into an :class:`Entity`, and
+persists it with ``reason="seed"`` for provenance. The
+loader is **idempotent**: it skips entries whose
+``canonical_name`` + ``entity_type`` already exist
+(case-insensitive), so re-running after a seed update only
+writes new rows.
+
+```bash
+uv run python -m unstructured_mapping.cli.seed
+uv run python -m unstructured_mapping.cli.seed --dry-run
+```
+
+Same-name-different-type is allowed (e.g. ``"Gold"`` as
+both ``asset`` and ``topic``), so seeds can add a new
+flavour of an existing surface form without collision.
 
 
 ## Cold-start LLM mode (future)

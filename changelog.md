@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.30.1 - 12th April 2026
+
+- Updated `docs/pipeline/12_kg_population.md`: replaced
+  the pre-implementation bootstrap snippet with the actual
+  shipped seed file path, JSON schema, and CLI usage.
+
+
 ### v0.30.0 - 12th April 2026
 
 - Added KG bootstrap seed:
