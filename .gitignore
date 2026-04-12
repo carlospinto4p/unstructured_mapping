@@ -28,3 +28,6 @@ credentials/
 # Build artifacts
 build/
 .claude/settings.local.json
+
+# Editor / tool tempfiles (e.g. atomic-write temp copies)
+*.tmp.*
