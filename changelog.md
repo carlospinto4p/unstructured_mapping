@@ -1,5 +1,25 @@
 ## Changelog
 
+### v0.31.2 - 12th April 2026
+
+- Refactored `tests/unit/`:
+  - Consolidated fixture factories in `conftest.py`:
+    added `make_org`, `make_chunk`, `make_mention`,
+    `make_resolved`, and `make_article`. Removed
+    duplicated copies from `test_detection.py`,
+    `test_extraction.py`, `test_pipeline.py`,
+    `test_resolution.py`, and `test_cold_start.py`.
+- Refactored `knowledge_graph/`:
+  - Added `TYPE_CHECKING`-guarded cross-mixin method
+    declarations on `EntityHelpersMixin`
+    (`save_entity`, `get_entity`) and `ProvenanceMixin`
+    (`_load_aliases_batch`). Removed seven
+    `# type: ignore[attr-defined]` / `[arg-type]`
+    comments from `_entity_mixin.py` and
+    `_provenance_mixin.py` and narrowed the None-checks
+    in `merge_entities`.
+
+
 ### v0.31.1 - 12th April 2026
 
 - `pipeline/orchestrator.py`: documented cold-start mode

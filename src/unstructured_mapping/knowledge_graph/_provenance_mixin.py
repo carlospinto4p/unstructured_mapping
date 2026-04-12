@@ -6,6 +6,7 @@ into :class:`~unstructured_mapping.knowledge_graph.storage.KnowledgeStore`.
 
 import sqlite3
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from unstructured_mapping.knowledge_graph._helpers import (
     dt_to_iso,
@@ -22,6 +23,15 @@ class ProvenanceMixin:
     """Provenance operations for :class:`KnowledgeStore`."""
 
     _conn: sqlite3.Connection
+
+    if TYPE_CHECKING:
+        # Provided by ``EntityHelpersMixin`` when composed
+        # into ``KnowledgeStore``; declared here so
+        # co-mention queries can batch-load aliases
+        # without ``# type: ignore[attr-defined]``.
+        def _load_aliases_batch(
+            self, entity_ids: list[str]
+        ) -> dict[str, tuple[str, ...]]: ...
 
     # -- Provenance CRUD --
 
@@ -209,7 +219,7 @@ class ProvenanceMixin:
         if not rows:
             return []
         eids = [r["entity_id"] for r in rows]
-        alias_map = self._load_aliases_batch(eids)  # type: ignore[attr-defined]
+        alias_map = self._load_aliases_batch(eids)
         results: list[tuple[Entity, int]] = []
         for row in rows:
             eid = row["entity_id"]

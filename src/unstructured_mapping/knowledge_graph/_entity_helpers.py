@@ -3,11 +3,22 @@
 Provides alias loading, syncing, and row-conversion
 utilities used by the CRUD, search, merge, and history
 mixins. Not part of the public API.
+
+Cross-mixin call declarations
+-----------------------------
+The merge and history mixins call ``save_entity`` and
+``get_entity``, which live on :class:`EntityCRUDMixin`.
+At runtime this is fine because
+:class:`~unstructured_mapping.knowledge_graph.storage.KnowledgeStore`
+composes every entity sub-mixin. For static type checkers,
+``TYPE_CHECKING``-guarded declarations on this shared base
+surface the cross-mixin contract without any runtime cost.
 """
 
 import json
 import logging
 import sqlite3
+from typing import TYPE_CHECKING
 
 from unstructured_mapping.knowledge_graph._helpers import (
     dt_to_iso,
@@ -25,6 +36,23 @@ class EntityHelpersMixin:
     """Internal helpers shared across entity mixins."""
 
     _conn: sqlite3.Connection
+
+    if TYPE_CHECKING:
+        # Provided by sibling ``EntityCRUDMixin`` when
+        # composed into ``KnowledgeStore``; declared here
+        # so merge/history mixins can call them without
+        # ``# type: ignore[attr-defined]``.
+        def get_entity(
+            self, entity_id: str
+        ) -> Entity | None: ...
+
+        def save_entity(
+            self,
+            entity: Entity,
+            *,
+            reason: str | None = None,
+            _operation: str | None = None,
+        ) -> None: ...
 
     def _rows_to_entities(
         self,

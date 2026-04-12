@@ -366,16 +366,12 @@ class EntityMergeMixin(EntityHelpersMixin):
         :raises EntityNotFound: If either entity is not
             found.
         """
-        # get_entity lives in EntityCRUDMixin, which
-        # is always co-mixed into KnowledgeStore.
-        dep = self.get_entity(deprecated_id)  # type: ignore[attr-defined]
-        surv = self.get_entity(surviving_id)  # type: ignore[attr-defined]
-        for entity, eid in (
-            (dep, deprecated_id),
-            (surv, surviving_id),
-        ):
-            if entity is None:
-                raise EntityNotFound(eid)
+        dep = self.get_entity(deprecated_id)
+        surv = self.get_entity(surviving_id)
+        if dep is None:
+            raise EntityNotFound(deprecated_id)
+        if surv is None:
+            raise EntityNotFound(surviving_id)
 
         merge_reason = (
             f"merged {deprecated_id} into "
@@ -391,16 +387,14 @@ class EntityMergeMixin(EntityHelpersMixin):
             ("merged", surviving_id, deprecated_id),
         )
         merged_dep = replace(
-            dep,  # type: ignore[arg-type]
+            dep,
             status=EntityStatus.MERGED,
             merged_into=surviving_id,
         )
         self._log_entity(
             merged_dep, "merge", merge_reason
         )
-        self._log_entity(
-            surv, "merge", merge_reason  # type: ignore[arg-type]
-        )
+        self._log_entity(surv, "merge", merge_reason)
         self._conn.commit()
         logger.info(
             "Merged entity %s into %s",
@@ -513,9 +507,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
             status=rev.status,
             merged_into=rev.merged_into,
         )
-        # save_entity lives in EntityCRUDMixin, which
-        # is always co-mixed into KnowledgeStore.
-        self.save_entity(  # type: ignore[attr-defined]
+        self.save_entity(
             restored,
             reason=f"reverted to revision {revision_id}",
             _operation="revert",
