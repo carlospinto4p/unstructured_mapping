@@ -217,9 +217,10 @@ class LLMEntityResolver(EntityResolver):
 
     The resolver composes the prompt builder, token budget
     manager, and response parser into a single
-    :meth:`resolve` call. It does **not** retry on
-    validation failure — that is handled by a separate
-    retry wrapper (backlog item 2e).
+    :meth:`resolve` call. Retry-on-validation-failure is
+    delegated to :func:`~._llm_retry.retry_llm_call`, so
+    this class stays focused on prompt assembly and
+    parsing.
 
     :param provider: The LLM backend to call.
     :param entity_lookup: Callable that returns an
