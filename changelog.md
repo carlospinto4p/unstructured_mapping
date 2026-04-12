@@ -1,13 +1,6 @@
 ## Changelog
 
-### v0.31.4 - 12th April 2026
-
-- Updated `.claude/hooks/block-chained-commands.sh`:
-  propagated newline-chaining block from the
-  programme canonical.
-
-
-### v0.31.3 - 12th April 2026
+### v0.31.5 - 12th April 2026
 
 - Refactored `knowledge_graph/`:
   - Added `EntityHelpersMixin._find_entities_where()`:
@@ -41,6 +34,13 @@
 - Chore:
   - Removed stray `*.tmp.*` temp files under `src/`
     and `tests/`; added `*.tmp.*` to `.gitignore`.
+
+
+### v0.31.4 - 12th April 2026
+
+- Updated `.claude/hooks/block-chained-commands.sh`:
+  propagated newline-chaining block from the
+  programme canonical.
 
 
 ### v0.31.2 - 12th April 2026
