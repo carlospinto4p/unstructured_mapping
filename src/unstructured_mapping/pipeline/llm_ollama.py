@@ -25,11 +25,10 @@ import logging
 
 import httpx
 
-try:
-    import ollama as _ollama
-except ImportError:  # pragma: no cover - exercised via tests
-    _ollama = None  # type: ignore[assignment]
-
+from unstructured_mapping.pipeline._optional_import import (
+    require_llm_extra,
+    try_import,
+)
 from unstructured_mapping.pipeline.llm_provider import (
     LLMConnectionError,
     LLMEmptyResponseError,
@@ -37,6 +36,8 @@ from unstructured_mapping.pipeline.llm_provider import (
     LLMProviderError,
     LLMTimeoutError,
 )
+
+_ollama = try_import("ollama")
 
 logger = logging.getLogger(__name__)
 
@@ -99,13 +100,7 @@ class OllamaProvider(LLMProvider):
         timeout: float = DEFAULT_TIMEOUT,
         context_window: int | None = None,
     ) -> None:
-        if _ollama is None:
-            raise ImportError(
-                "OllamaProvider requires the 'llm' "
-                "optional dependency group. Install "
-                "with: pip install "
-                "unstructured-mapping[llm]"
-            )
+        require_llm_extra(_ollama, "OllamaProvider")
         self._model = model
         self._timeout = timeout
         self._client = _ollama.Client(

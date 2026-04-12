@@ -21,11 +21,10 @@ import so that:
 
 import logging
 
-try:
-    import anthropic as _anthropic
-except ImportError:  # pragma: no cover - exercised via tests
-    _anthropic = None  # type: ignore[assignment]
-
+from unstructured_mapping.pipeline._optional_import import (
+    require_llm_extra,
+    try_import,
+)
 from unstructured_mapping.pipeline.llm_provider import (
     LLMConnectionError,
     LLMEmptyResponseError,
@@ -33,6 +32,8 @@ from unstructured_mapping.pipeline.llm_provider import (
     LLMProviderError,
     LLMTimeoutError,
 )
+
+_anthropic = try_import("anthropic")
 
 logger = logging.getLogger(__name__)
 
@@ -99,13 +100,7 @@ class ClaudeProvider(LLMProvider):
         context_window: int = DEFAULT_CONTEXT_WINDOW,
         max_tokens: int = DEFAULT_MAX_TOKENS,
     ) -> None:
-        if _anthropic is None:
-            raise ImportError(
-                "ClaudeProvider requires the 'llm' "
-                "optional dependency group. Install "
-                "with: pip install "
-                "unstructured-mapping[llm]"
-            )
+        require_llm_extra(_anthropic, "ClaudeProvider")
         self._model = model
         self._timeout = timeout
         self._context_window = context_window
