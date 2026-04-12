@@ -1,5 +1,48 @@
 ## Changelog
 
+### v0.31.4 - 12th April 2026
+
+- Updated `.claude/hooks/block-chained-commands.sh`:
+  propagated newline-chaining block from the
+  programme canonical.
+
+
+### v0.31.3 - 12th April 2026
+
+- Refactored `knowledge_graph/`:
+  - Added `EntityHelpersMixin._find_entities_where()`:
+    shared query-assembly helper.
+  - Rewrote `EntitySearchMixin.find_entities_by_type`,
+    `find_entities_by_subtype`,
+    `find_entities_by_status`, `find_by_name_prefix`,
+    and `find_entities_since` as thin wrappers around
+    it.
+- Refactored `pipeline/`:
+  - Added `_optional_import.py`:
+    - `try_import()`: lazy SDK loader.
+    - `require_llm_extra()`: standard ImportError
+      raiser for missing `llm` extras.
+  - Updated `llm_claude.py` and `llm_ollama.py` to use
+    the helpers instead of duplicated try/except and
+    inline ImportError messages.
+  - Replaced stale "backlog item 2e" reference in
+    `LLMEntityResolver` docstring with a direct link
+    to `retry_llm_call`.
+- Refactored `web_scraping/`:
+  - Added `Scraper.default_feed_urls` and
+    `Scraper.default_fetch_full_text` class attributes.
+  - Removed redundant pass-through `__init__` from
+    `BBCScraper` and `ReutersScraper`; they now declare
+    only the class-level defaults that differ from the
+    base.
+  - Simplified `APScraper.__init__` to resolve
+    `fetch_full_text` via the new class attribute while
+    keeping the optional-dependency check.
+- Chore:
+  - Removed stray `*.tmp.*` temp files under `src/`
+    and `tests/`; added `*.tmp.*` to `.gitignore`.
+
+
 ### v0.31.2 - 12th April 2026
 
 - Refactored `tests/unit/`:
