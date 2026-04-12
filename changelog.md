@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.31.1 - 12th April 2026
+
+- `pipeline/orchestrator.py`: documented cold-start mode
+  alongside the normal path — module docstring,
+  `Pipeline` example block, and `ArticleResult` field
+  descriptions now cover both modes.
+
+
 ### v0.31.0 - 12th April 2026
 
 - Added cold-start LLM mode for bootstrapping an empty KG:

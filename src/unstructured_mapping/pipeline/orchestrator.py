@@ -30,6 +30,12 @@ Design notes
 - **Constructor injection.** The detector, resolver, and
   store are injected, so the caller owns lifecycle and
   tests can swap in fakes without monkey-patching.
+- **Cold-start mode.** When a
+  :class:`ColdStartEntityDiscoverer` is injected via
+  ``cold_start_discoverer``, the orchestrator bypasses
+  detection, resolution, and relationship extraction and
+  asks the LLM to propose entities directly from the
+  article body. See ``docs/pipeline/13_cold_start.md``.
 """
 
 import logging
@@ -103,10 +109,14 @@ class ArticleResult:
     :param provenances_saved: Number of provenance rows
         inserted by this article. Duplicates already in
         the store are counted as zero, matching
-        :meth:`KnowledgeStore.save_provenances`.
+        :meth:`KnowledgeStore.save_provenances`. In
+        cold-start mode this mirrors ``proposals_saved``
+        since each proposal writes one provenance row.
     :param proposals_saved: Number of new entities
-        created from LLM proposals. Zero when no LLM
-        resolver is configured.
+        created from LLM proposals. Populated by the
+        cascade LLM resolver in normal mode, and by the
+        discoverer in cold-start mode. Zero when neither
+        is configured.
     :param relationships_saved: Number of relationship
         rows inserted by relationship extraction. Zero
         when no extractor is configured.
@@ -232,6 +242,25 @@ class Pipeline:
         )
         result = pipeline.run(articles)
         print(result.relationships_saved)
+
+    Cold-start (empty KG)::
+
+        from unstructured_mapping.pipeline import (
+            AliasResolver,
+            ColdStartEntityDiscoverer,
+            NoopDetector,
+            Pipeline,
+        )
+        pipeline = Pipeline(
+            detector=NoopDetector(),
+            resolver=AliasResolver(),
+            store=store,
+            cold_start_discoverer=(
+                ColdStartEntityDiscoverer(provider)
+            ),
+        )
+        result = pipeline.run(articles)
+        print(result.proposals_saved)
     """
 
     def __init__(
