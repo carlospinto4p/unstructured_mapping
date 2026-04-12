@@ -2,7 +2,6 @@
 
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
-    DEFAULT_TIMEOUT,
     google_news_rss,
 )
 
@@ -14,21 +13,14 @@ class ReutersScraper(Scraper):
 
     Uses a Google News RSS feed filtered to Reuters
     articles. Only titles and summaries are available
-    (Reuters blocks direct article scraping).
+    (Reuters blocks direct article scraping), so the
+    base-class default ``fetch_full_text=False`` is
+    retained.
 
-    :param feed_urls: RSS feed URLs. Pass a single string
-        or a list. Defaults to Google News filtered to
-        Reuters.
-    :param timeout: HTTP request timeout in seconds.
+    Constructor parameters are inherited from
+    :class:`~.base.Scraper`; this class only overrides
+    the default feed URL.
     """
 
-    def __init__(
-        self,
-        feed_urls: str | list[str] = _DEFAULT_FEED_URL,
-        timeout: float = DEFAULT_TIMEOUT,
-    ) -> None:
-        super().__init__(
-            feed_urls=feed_urls, timeout=timeout
-        )
-
+    default_feed_urls = _DEFAULT_FEED_URL
     source = "reuters"

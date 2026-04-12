@@ -51,27 +51,36 @@ class APScraper(Scraper):
         extraction.
     """
 
+    default_feed_urls = _DEFAULT_FEED_URL
+    default_fetch_full_text = True
+    source = "ap"
+
     def __init__(
         self,
-        feed_urls: str | list[str] = _DEFAULT_FEED_URL,
-        fetch_full_text: bool = True,
+        feed_urls: str | list[str] | None = None,
+        fetch_full_text: bool | None = None,
         timeout: float = DEFAULT_TIMEOUT,
         max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
+        requested_full_text = (
+            fetch_full_text
+            if fetch_full_text is not None
+            else self.default_fetch_full_text
+        )
         has_deps = _has_scraping_deps()
         super().__init__(
             feed_urls=feed_urls,
             timeout=timeout,
-            fetch_full_text=fetch_full_text and has_deps,
+            fetch_full_text=(
+                requested_full_text and has_deps
+            ),
             max_workers=max_workers,
         )
-        if fetch_full_text and not has_deps:
+        if requested_full_text and not has_deps:
             logger.warning(
                 "scraping extra not installed; "
                 "falling back to RSS summaries"
             )
-
-    source = "ap"
 
     def _extract_body(
         self, gnews_url: str

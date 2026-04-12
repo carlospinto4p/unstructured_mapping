@@ -42,27 +42,74 @@ class Scraper(ABC):
     pooling. Call :meth:`close` when done, or use as a
     context manager.
 
-    :param feed_urls: One or more RSS feed URLs.
+    Subclass defaults
+    -----------------
+
+    Most source-specific scrapers differ from the base
+    only in their default RSS feed and whether they fetch
+    full text out of the box. Subclasses declare these as
+    class attributes:
+
+    - ``default_feed_urls`` -- used when ``feed_urls`` is
+      not passed to ``__init__``. Subclasses that want
+      callers to always pick a feed leave it ``None``.
+    - ``default_fetch_full_text`` -- used when
+      ``fetch_full_text`` is not passed. Defaults to
+      ``False`` to avoid surprising the base-class
+      caller.
+
+    Keeping these as class attributes lets subclasses skip
+    defining ``__init__`` entirely unless they need real
+    setup logic (see :class:`~.ap.APScraper` for an
+    example with an optional-dependency check).
+
+    :param feed_urls: One or more RSS feed URLs. Falls
+        back to ``default_feed_urls`` when ``None``.
     :param timeout: HTTP request timeout in seconds.
     :param fetch_full_text: Enable full-text extraction
-        via :meth:`_extract_body`. Defaults to ``False``.
+        via :meth:`_extract_body`. Falls back to
+        ``default_fetch_full_text`` when ``None``.
     :param max_workers: Thread pool size for parallel
         full-text extraction.
     """
 
+    #: Default RSS feeds when ``feed_urls`` is not passed.
+    default_feed_urls: str | list[str] | None = None
+
+    #: Default value for ``fetch_full_text`` when not
+    #: passed. Keep ``False`` in the base so the shared
+    #: code path remains side-effect-free; subclasses
+    #: flip this when full-text is their steady state.
+    default_fetch_full_text: bool = False
+
     def __init__(
         self,
-        feed_urls: str | list[str],
+        feed_urls: str | list[str] | None = None,
         timeout: float = DEFAULT_TIMEOUT,
-        fetch_full_text: bool = False,
+        fetch_full_text: bool | None = None,
         max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
-        if isinstance(feed_urls, str):
-            self._feed_urls = [feed_urls]
+        resolved_feeds = (
+            feed_urls
+            if feed_urls is not None
+            else self.default_feed_urls
+        )
+        if resolved_feeds is None:
+            raise TypeError(
+                f"{type(self).__name__} requires "
+                "feed_urls (none provided and no "
+                "default_feed_urls class attribute set)"
+            )
+        if isinstance(resolved_feeds, str):
+            self._feed_urls = [resolved_feeds]
         else:
-            self._feed_urls = list(feed_urls)
+            self._feed_urls = list(resolved_feeds)
         self._timeout = timeout
-        self._fetch_full_text = fetch_full_text
+        self._fetch_full_text = (
+            fetch_full_text
+            if fetch_full_text is not None
+            else self.default_fetch_full_text
+        )
         self._max_workers = max_workers
         self._client = httpx.Client(
             timeout=timeout,

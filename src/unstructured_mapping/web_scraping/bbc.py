@@ -7,10 +7,6 @@ import httpx
 from bs4 import BeautifulSoup
 
 from unstructured_mapping.web_scraping.base import Scraper
-from unstructured_mapping.web_scraping.config import (
-    DEFAULT_MAX_WORKERS,
-    DEFAULT_TIMEOUT,
-)
 from unstructured_mapping.web_scraping.models import (
     Article,
     ExtractionResult,
@@ -105,20 +101,8 @@ class BBCScraper(Scraper):
         extraction.
     """
 
-    def __init__(
-        self,
-        feed_urls: str | list[str] = _DEFAULT_FEED_URL,
-        fetch_full_text: bool = True,
-        timeout: float = DEFAULT_TIMEOUT,
-        max_workers: int = DEFAULT_MAX_WORKERS,
-    ) -> None:
-        super().__init__(
-            feed_urls=feed_urls,
-            timeout=timeout,
-            fetch_full_text=fetch_full_text,
-            max_workers=max_workers,
-        )
-
+    default_feed_urls = _DEFAULT_FEED_URL
+    default_fetch_full_text = True
     source = "bbc"
 
     def _parse_feed(
