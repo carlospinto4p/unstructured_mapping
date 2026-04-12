@@ -4,7 +4,11 @@ import json
 
 import pytest
 
-from tests.unit.conftest import FakeProvider
+from tests.unit.conftest import (
+    FakeProvider,
+    make_article,
+    make_chunk,
+)
 from unstructured_mapping.knowledge_graph import (
     EntityType,
     KnowledgeStore,
@@ -18,8 +22,6 @@ from unstructured_mapping.pipeline import (
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProviderError,
 )
-from unstructured_mapping.pipeline.models import Chunk
-from unstructured_mapping.web_scraping.models import Article
 
 
 # -- helpers ---------------------------------------------------
@@ -48,22 +50,12 @@ def _fed_entity(entity_id: str | None = None) -> dict:
     }
 
 
-def _chunk(text: str = "the Fed raised rates today") -> Chunk:
-    return Chunk(
-        document_id="doc1",
-        chunk_index=0,
-        text=text,
-        section_name=None,
-    )
+def _chunk(text: str = "the Fed raised rates today"):
+    return make_chunk(text)
 
 
-def _article(body: str = "The Fed raised rates.") -> Article:
-    return Article(
-        title="News",
-        body=body,
-        url="https://example.com/a",
-        source="bbc",
-    )
+def _article(body: str = "The Fed raised rates."):
+    return make_article(body=body, title="News")
 
 
 # -- NoopDetector ---------------------------------------------

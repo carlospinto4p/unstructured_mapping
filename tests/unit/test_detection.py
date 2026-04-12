@@ -2,6 +2,7 @@
 
 import pytest
 
+from tests.unit.conftest import make_chunk, make_org
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityType,
@@ -16,38 +17,6 @@ from unstructured_mapping.pipeline.detection import (
     _is_word_boundary,
     _scan_trie,
 )
-
-
-# -- Helpers --
-
-
-def make_entity(
-    name: str,
-    aliases: tuple[str, ...] = (),
-    entity_id: str = "",
-) -> Entity:
-    """Create a minimal entity for detection tests."""
-    return Entity(
-        canonical_name=name,
-        entity_type=EntityType.ORGANIZATION,
-        description=f"Test entity {name}",
-        aliases=aliases,
-        entity_id=entity_id or name.lower().replace(
-            " ", "_"
-        ),
-    )
-
-
-def make_chunk(
-    text: str,
-    doc_id: str = "doc1",
-) -> Chunk:
-    """Create a minimal chunk for testing."""
-    return Chunk(
-        document_id=doc_id,
-        chunk_index=0,
-        text=text,
-    )
 
 
 # -- Chunk model tests --
@@ -253,8 +222,8 @@ def test_scan_nested_aliases_longer_first():
 
 def test_detector_from_entities():
     entities = [
-        make_entity("Apple Inc.", aliases=("Apple", "AAPL")),
-        make_entity("Microsoft", aliases=("MSFT",)),
+        make_org("Apple Inc.", aliases=("Apple", "AAPL")),
+        make_org("Microsoft", aliases=("MSFT",)),
     ]
     detector = RuleBasedDetector(entities)
     # canonical + aliases: 3 + 2 = 5 unique
@@ -263,7 +232,7 @@ def test_detector_from_entities():
 
 def test_detector_detect_basic():
     entities = [
-        make_entity(
+        make_org(
             "Federal Reserve",
             aliases=("the Fed", "Fed"),
             entity_id="fed1",
@@ -284,9 +253,9 @@ def test_detector_detect_basic():
 
 def test_detector_detect_multiple_entities():
     entities = [
-        make_entity("Apple Inc.", aliases=("Apple",),
+        make_org("Apple Inc.", aliases=("Apple",),
                 entity_id="apple"),
-        make_entity("Google", aliases=("Alphabet",),
+        make_org("Google", aliases=("Alphabet",),
                 entity_id="goog"),
     ]
     detector = RuleBasedDetector(entities)
@@ -302,7 +271,7 @@ def test_detector_detect_multiple_entities():
 
 
 def test_detector_detect_empty_chunk():
-    entities = [make_entity("Test")]
+    entities = [make_org("Test")]
     detector = RuleBasedDetector(entities)
     assert detector.detect(make_chunk("")) == ()
 
@@ -315,7 +284,7 @@ def test_detector_detect_no_entities():
 
 def test_detector_duplicate_aliases_across_entities():
     """Same alias on two entities produces both IDs."""
-    e1 = make_entity(
+    e1 = make_org(
         "Apple Inc.", aliases=("Apple",),
         entity_id="corp",
     )
@@ -339,7 +308,7 @@ def test_detector_duplicate_aliases_across_entities():
 
 
 def test_detector_returns_tuple():
-    entities = [make_entity("Test", entity_id="t1")]
+    entities = [make_org("Test", entity_id="t1")]
     detector = RuleBasedDetector(entities)
     result = detector.detect(make_chunk("Test run"))
     assert isinstance(result, tuple)
@@ -361,7 +330,7 @@ def test_detector_ignores_empty_alias():
 
 def test_detector_multiword_alias():
     entities = [
-        make_entity(
+        make_org(
             "Bank of England",
             aliases=("BoE",),
             entity_id="boe",

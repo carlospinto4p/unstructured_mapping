@@ -4,18 +4,19 @@ import json
 
 import pytest
 
+from tests.unit.conftest import (
+    FakeProvider,
+    make_chunk,
+    make_mention,
+)
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityType,
 )
-from tests.unit.conftest import FakeProvider
-
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProviderError,
 )
 from unstructured_mapping.pipeline.models import (
-    Chunk,
-    Mention,
     ResolvedMention,
     ResolutionResult,
 )
@@ -24,36 +25,6 @@ from unstructured_mapping.pipeline.resolution import (
     LLMEntityResolver,
     _extract_snippet,
 )
-
-
-# -- Helpers --
-
-
-def make_chunk(
-    text: str,
-    doc_id: str = "doc1",
-    section: str | None = None,
-) -> Chunk:
-    return Chunk(
-        document_id=doc_id,
-        chunk_index=0,
-        text=text,
-        section_name=section,
-    )
-
-
-def make_mention(
-    form: str,
-    start: int,
-    end: int,
-    candidates: tuple[str, ...] = (),
-) -> Mention:
-    return Mention(
-        surface_form=form,
-        span_start=start,
-        span_end=end,
-        candidate_ids=candidates,
-    )
 
 
 # -- ResolvedMention model tests --
@@ -256,7 +227,7 @@ def test_resolver_inherits_section_name():
     resolver = AliasResolver()
     chunk = make_chunk(
         "The Fed raised rates.",
-        section="Prepared remarks",
+        section_name="Prepared remarks",
     )
     mentions = (
         make_mention("Fed", 4, 7, ("fed_id",)),
@@ -662,7 +633,7 @@ def test_llm_resolver_section_name_propagated():
     )
     chunk = make_chunk(
         "the Fed raised rates",
-        section="Economy",
+        section_name="Economy",
     )
     mentions = (
         make_mention(

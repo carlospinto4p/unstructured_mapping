@@ -4,8 +4,8 @@ import json
 
 import pytest
 
+from tests.unit.conftest import make_article, make_org
 from unstructured_mapping.knowledge_graph import (
-    Entity,
     EntityType,
     KnowledgeStore,
     Provenance,
@@ -39,36 +39,6 @@ from unstructured_mapping.pipeline.extraction import (
 from unstructured_mapping.pipeline.resolution import (
     EntityResolver,
 )
-from unstructured_mapping.web_scraping.models import Article
-
-
-# -- Helpers --
-
-
-def make_article(
-    body: str = "Apple and Microsoft both grew.",
-    title: str = "Tech news",
-    source: str = "bbc",
-) -> Article:
-    return Article(
-        title=title,
-        body=body,
-        url=f"https://example.com/{title}",
-        source=source,
-    )
-
-
-def make_org(
-    name: str,
-    aliases: tuple[str, ...] = (),
-) -> Entity:
-    return Entity(
-        canonical_name=name,
-        entity_type=EntityType.ORGANIZATION,
-        description=f"Test entity {name}",
-        aliases=aliases,
-        entity_id=name.lower().replace(" ", "_"),
-    )
 
 
 class _StubDetector(EntityDetector):

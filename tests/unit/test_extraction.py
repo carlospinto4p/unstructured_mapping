@@ -10,62 +10,25 @@ import json
 
 import pytest
 
+from tests.unit.conftest import (
+    FakeProvider,
+    make_chunk,
+    make_org,
+    make_resolved,
+)
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
-    EntityStatus,
     EntityType,
 )
-from tests.unit.conftest import FakeProvider
-
 from unstructured_mapping.pipeline import (
     LLMProviderError,
     LLMRelationshipExtractor,
     RelationshipExtractor,
 )
 from unstructured_mapping.pipeline.models import (
-    Chunk,
     EntityProposal,
     ExtractionResult,
-    ResolvedMention,
 )
-
-
-def _make_chunk(
-    text: str = "The Fed raised rates.",
-    doc_id: str = "doc1",
-) -> Chunk:
-    return Chunk(
-        document_id=doc_id,
-        chunk_index=0,
-        text=text,
-    )
-
-
-def _make_entity(
-    entity_id: str,
-    name: str,
-    aliases: tuple[str, ...] = (),
-) -> Entity:
-    return Entity(
-        entity_id=entity_id,
-        canonical_name=name,
-        entity_type=EntityType.ORGANIZATION,
-        description=f"Test entity {name}",
-        aliases=aliases,
-        status=EntityStatus.ACTIVE,
-    )
-
-
-def _make_resolved(
-    entity_id: str,
-    surface_form: str,
-    snippet: str = "...context...",
-) -> ResolvedMention:
-    return ResolvedMention(
-        entity_id=entity_id,
-        surface_form=surface_form,
-        context_snippet=snippet,
-    )
 
 
 def _rel_entry(
@@ -119,12 +82,12 @@ def test_relationship_extractor_is_abstract():
 
 def test_extractor_happy_path():
     """Extracts relationships between resolved entities."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-powell", "Powell"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-powell", "Powell"),
     )
 
     response = _llm_response(
@@ -144,7 +107,7 @@ def test_extractor_happy_path():
         name_lookup=names.get,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
@@ -156,12 +119,12 @@ def test_extractor_happy_path():
 
 def test_extractor_name_resolution():
     """Source/target can be canonical names, not IDs."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-powell", "Powell"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-powell", "Powell"),
     )
 
     response = _llm_response(
@@ -181,7 +144,7 @@ def test_extractor_name_resolution():
         name_lookup=names.get,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
@@ -192,10 +155,10 @@ def test_extractor_name_resolution():
 
 def test_extractor_self_ref_dropped():
     """Self-referential relationships are dropped."""
-    fed = _make_entity("id-fed", "Federal Reserve")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
 
     response = _llm_response(
@@ -211,7 +174,7 @@ def test_extractor_self_ref_dropped():
         name_lookup=names.get,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 0
@@ -226,7 +189,7 @@ def test_extractor_empty_entities():
         entity_lookup=lambda _: None,
         name_lookup=lambda _: None,
     )
-    result = extractor.extract(_make_chunk(), ())
+    result = extractor.extract(make_chunk(), ())
 
     assert result == ExtractionResult()
     assert len(provider.calls) == 0
@@ -234,9 +197,9 @@ def test_extractor_empty_entities():
 
 def test_extractor_empty_relationships():
     """LLM returns no relationships."""
-    fed = _make_entity("id-fed", "Federal Reserve")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
 
     response = _llm_response()
@@ -249,7 +212,7 @@ def test_extractor_empty_relationships():
         name_lookup=lambda _: None,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 0
@@ -257,9 +220,9 @@ def test_extractor_empty_relationships():
 
 def test_extractor_calls_provider():
     """Provider is called with system prompt + json_mode."""
-    fed = _make_entity("id-fed", "Federal Reserve")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
 
     response = _llm_response()
@@ -271,7 +234,7 @@ def test_extractor_calls_provider():
         entity_lookup=lookup.get,
         name_lookup=lambda _: None,
     )
-    extractor.extract(_make_chunk(), entities)
+    extractor.extract(make_chunk(), entities)
 
     assert len(provider.calls) == 1
     _, system, json_mode = provider.calls[0]
@@ -282,12 +245,12 @@ def test_extractor_calls_provider():
 
 def test_extractor_with_dates():
     """Dates are parsed and included in relationships."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-powell", "Powell"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-powell", "Powell"),
     )
 
     response = _llm_response(
@@ -308,7 +271,7 @@ def test_extractor_with_dates():
         name_lookup=lambda _: None,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
@@ -325,12 +288,12 @@ def test_extractor_with_dates():
 
 def test_extractor_retry_on_validation_failure():
     """Retries once on structural validation failure."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-powell", "Powell"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-powell", "Powell"),
     )
 
     bad_response = '{"bad": "structure"}'
@@ -348,7 +311,7 @@ def test_extractor_retry_on_validation_failure():
         name_lookup=lambda _: None,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
@@ -357,9 +320,9 @@ def test_extractor_retry_on_validation_failure():
 
 def test_extractor_retry_prompt_contains_error():
     """Retry prompt includes the validation error."""
-    fed = _make_entity("id-fed", "Federal Reserve")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
 
     bad_response = '{"bad": "structure"}'
@@ -374,7 +337,7 @@ def test_extractor_retry_prompt_contains_error():
         entity_lookup=lookup.get,
         name_lookup=lambda _: None,
     )
-    extractor.extract(_make_chunk(), entities)
+    extractor.extract(make_chunk(), entities)
 
     retry_prompt = provider.calls[1][0]
     assert "previous response" in retry_prompt
@@ -383,9 +346,9 @@ def test_extractor_retry_prompt_contains_error():
 
 def test_extractor_raises_after_two_failures():
     """Raises LLMProviderError after 2 validation fails."""
-    fed = _make_entity("id-fed", "Federal Reserve")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
 
     bad_response = '{"bad": "structure"}'
@@ -399,7 +362,7 @@ def test_extractor_raises_after_two_failures():
     )
 
     with pytest.raises(LLMProviderError, match="Pass 2"):
-        extractor.extract(_make_chunk(), entities)
+        extractor.extract(make_chunk(), entities)
 
     assert len(provider.calls) == 2
 
@@ -409,11 +372,11 @@ def test_extractor_raises_after_two_failures():
 
 def test_extractor_with_proposals():
     """Proposals from pass 1 are available for reference."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    cpi = _make_entity("id-cpi", "CPI")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    cpi = make_org("CPI", entity_id="id-cpi")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
     proposals = [
         EntityProposal(
@@ -442,7 +405,7 @@ def test_extractor_with_proposals():
         proposals=proposals,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
@@ -453,9 +416,9 @@ def test_extractor_with_proposals():
 
 def test_extractor_unresolvable_ref_dropped():
     """Unresolvable entity references are dropped."""
-    fed = _make_entity("id-fed", "Federal Reserve")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
     entities = (
-        _make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "the Fed"),
     )
 
     response = _llm_response(
@@ -474,7 +437,7 @@ def test_extractor_unresolvable_ref_dropped():
         name_lookup=lambda _: None,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 0
@@ -482,14 +445,14 @@ def test_extractor_unresolvable_ref_dropped():
 
 def test_extractor_multiple_relationships():
     """Multiple relationships are extracted."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
-    rates = _make_entity("id-rates", "Interest Rates")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
+    rates = make_org("Interest Rates", entity_id="id-rates")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-powell", "Powell"),
-        _make_resolved("id-rates", "rates"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-powell", "Powell"),
+        make_resolved("id-rates", "rates"),
     )
 
     response = _llm_response(
@@ -509,7 +472,7 @@ def test_extractor_multiple_relationships():
         name_lookup=lambda _: None,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 2
@@ -521,13 +484,13 @@ def test_extractor_multiple_relationships():
 
 def test_extractor_deduplicates_entity_ids():
     """Duplicate entity IDs in resolved list are handled."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-fed", "Federal Reserve"),
-        _make_resolved("id-powell", "Powell"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-fed", "Federal Reserve"),
+        make_resolved("id-powell", "Powell"),
     )
 
     response = _llm_response(
@@ -545,7 +508,7 @@ def test_extractor_deduplicates_entity_ids():
         name_lookup=names.get,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
@@ -553,14 +516,14 @@ def test_extractor_deduplicates_entity_ids():
 
 def test_extractor_qualifier_resolved():
     """Qualifier entity reference is resolved to ID."""
-    fed = _make_entity("id-fed", "Federal Reserve")
-    powell = _make_entity("id-powell", "Jerome Powell")
-    chair = _make_entity("id-chair", "Chair")
+    fed = make_org("Federal Reserve", entity_id="id-fed")
+    powell = make_org("Jerome Powell", entity_id="id-powell")
+    chair = make_org("Chair", entity_id="id-chair")
 
     entities = (
-        _make_resolved("id-fed", "the Fed"),
-        _make_resolved("id-powell", "Powell"),
-        _make_resolved("id-chair", "Chair"),
+        make_resolved("id-fed", "the Fed"),
+        make_resolved("id-powell", "Powell"),
+        make_resolved("id-chair", "Chair"),
     )
 
     response = _llm_response(
@@ -580,7 +543,7 @@ def test_extractor_qualifier_resolved():
         name_lookup=lambda _: None,
     )
     result = extractor.extract(
-        _make_chunk(), entities
+        make_chunk(), entities
     )
 
     assert len(result.relationships) == 1
