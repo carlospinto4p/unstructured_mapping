@@ -2,7 +2,7 @@
 
 ### 2026.04.13 (KG population plan)
 
-- [ ] **HIGH / Small** — Run the curated seed first (`cli.seed` against `data/seed/financial_entities.json`) so hand-tuned LLM-facing descriptions define canonical names before any Wikidata import.
+- [x] **HIGH / Small** — Run the curated seed first (`cli.seed` against `data/seed/financial_entities.json`) so hand-tuned LLM-facing descriptions define canonical names before any Wikidata import.
 - [ ] **HIGH / Small** — Dry-run each Wikidata type at `--limit 20` and eyeball the results before committing. The SPARQL class filters (especially `Q17278032` for regulators) are best guesses and may need tuning.
 - [ ] **HIGH / Medium** — Staged Wikidata imports, smallest/cleanest first, validating between stages (`db_health`, 10-row spot checks, conflict log review):
   1. `currency` (no limit — population is ~180)
