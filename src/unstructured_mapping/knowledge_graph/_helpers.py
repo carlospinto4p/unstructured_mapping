@@ -132,7 +132,7 @@ def row_to_entity_rev(
         else ()
     )
     return EntityRevision(
-        revision_id=row["revision_id"],
+        history_id=row["history_id"],
         entity_id=row["entity_id"],
         operation=row["operation"],
         changed_at=datetime.fromisoformat(
@@ -172,7 +172,7 @@ def row_to_relationship_rev(
 ) -> RelationshipRevision:
     """Convert a ``sqlite3.Row`` to a RelationshipRevision."""
     return RelationshipRevision(
-        revision_id=row["revision_id"],
+        history_id=row["history_id"],
         operation=row["operation"],
         changed_at=datetime.fromisoformat(
             row["changed_at"]

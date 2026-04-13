@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS relationships (
 
 _CREATE_ENTITY_HISTORY = """
 CREATE TABLE IF NOT EXISTS entity_history (
-    revision_id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    history_id    INTEGER PRIMARY KEY AUTOINCREMENT,
     entity_id      TEXT NOT NULL,
     operation      TEXT NOT NULL,
     changed_at     TEXT NOT NULL,
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS entity_history (
 
 _CREATE_RELATIONSHIP_HISTORY = """
 CREATE TABLE IF NOT EXISTS relationship_history (
-    revision_id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    history_id      INTEGER PRIMARY KEY AUTOINCREMENT,
     operation        TEXT NOT NULL,
     changed_at       TEXT NOT NULL,
     source_id        TEXT NOT NULL,

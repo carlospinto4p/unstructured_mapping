@@ -452,14 +452,14 @@ class EntityHistoryMixin(EntityHelpersMixin):
         :return: List of revisions.
         """
         rows = self._conn.execute(
-            "SELECT revision_id, entity_id, operation,"
+            "SELECT history_id, entity_id, operation,"
             " changed_at, canonical_name, entity_type,"
             " subtype, description, aliases, "
             "valid_from, valid_until, status, "
             "merged_into, reason "
             "FROM entity_history "
             "WHERE entity_id = ? "
-            "ORDER BY revision_id",
+            "ORDER BY history_id",
             (entity_id,),
         ).fetchall()
         return [row_to_entity_rev(r) for r in rows]
@@ -480,7 +480,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
             did not exist at that time.
         """
         row = self._conn.execute(
-            "SELECT revision_id, entity_id, operation,"
+            "SELECT history_id, entity_id, operation,"
             " changed_at, canonical_name, entity_type,"
             " subtype, description, aliases, "
             "valid_from, valid_until, status, "
@@ -488,7 +488,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
             "FROM entity_history "
             "WHERE entity_id = ? "
             "AND changed_at <= ? "
-            "ORDER BY revision_id DESC LIMIT 1",
+            "ORDER BY history_id DESC LIMIT 1",
             (entity_id, dt_to_iso(at)),
         ).fetchone()
         if row is None:
@@ -496,7 +496,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
         return row_to_entity_rev(row)
 
     def revert_entity(
-        self, entity_id: str, revision_id: int
+        self, entity_id: str, history_id: int
     ) -> Entity:
         """Revert an entity to a previous revision.
 
@@ -505,25 +505,25 @@ class EntityHistoryMixin(EntityHelpersMixin):
         in the audit trail.
 
         :param entity_id: The entity to revert.
-        :param revision_id: The revision to restore.
+        :param history_id: The revision to restore.
         :return: The restored entity.
         :raises RevisionNotFound: If the revision is not
             found or belongs to a different entity.
         """
         row = self._conn.execute(
-            "SELECT revision_id, entity_id, operation,"
+            "SELECT history_id, entity_id, operation,"
             " changed_at, canonical_name, entity_type,"
             " subtype, description, aliases, "
             "valid_from, valid_until, status, "
             "merged_into, reason "
             "FROM entity_history "
-            "WHERE revision_id = ? "
+            "WHERE history_id = ? "
             "AND entity_id = ?",
-            (revision_id, entity_id),
+            (history_id, entity_id),
         ).fetchone()
         if row is None:
             raise RevisionNotFound(
-                revision_id, entity_id
+                history_id, entity_id
             )
         rev = row_to_entity_rev(row)
         restored = Entity(
@@ -540,7 +540,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
         )
         self.save_entity(
             restored,
-            reason=f"reverted to revision {revision_id}",
+            reason=f"reverted to revision {history_id}",
             _operation="revert",
         )
         return restored

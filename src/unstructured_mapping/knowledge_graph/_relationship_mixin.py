@@ -348,14 +348,14 @@ class RelationshipMixin:
         :return: List of relationship revisions.
         """
         rows = self._conn.execute(
-            "SELECT revision_id, operation, "
+            "SELECT history_id, operation, "
             "changed_at, source_id, target_id, "
             "relation_type, description, qualifier_id,"
             " relation_kind_id, valid_from, "
             "valid_until, document_id, reason "
             "FROM relationship_history "
             "WHERE source_id = ? OR target_id = ? "
-            "ORDER BY revision_id",
+            "ORDER BY history_id",
             (entity_id, entity_id),
         ).fetchall()
         return [

@@ -589,7 +589,7 @@ def test_migration_adds_run_id(tmp_path):
     )
     conn.execute(
         "CREATE TABLE entity_history ("
-        "revision_id INTEGER PRIMARY KEY "
+        "history_id INTEGER PRIMARY KEY "
         "AUTOINCREMENT, "
         "entity_id TEXT NOT NULL, "
         "operation TEXT NOT NULL, "
@@ -603,7 +603,7 @@ def test_migration_adds_run_id(tmp_path):
     )
     conn.execute(
         "CREATE TABLE relationship_history ("
-        "revision_id INTEGER PRIMARY KEY "
+        "history_id INTEGER PRIMARY KEY "
         "AUTOINCREMENT, "
         "operation TEXT NOT NULL, "
         "changed_at TEXT NOT NULL, "

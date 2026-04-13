@@ -133,7 +133,7 @@ full snapshot of the entity after the operation.
 
 | Column         | Type    | Constraint            | Purpose                               |
 |----------------|---------|-----------------------|---------------------------------------|
-| revision_id    | INTEGER | PRIMARY KEY AUTOINCR  | Monotonically increasing revision     |
+| history_id     | INTEGER | PRIMARY KEY AUTOINCR  | Global append-only event counter      |
 | entity_id      | TEXT    | NOT NULL              | Which entity this revision belongs to |
 | operation      | TEXT    | NOT NULL              | create, update, merge, revert         |
 | changed_at     | TEXT    | NOT NULL              | When the operation occurred (UTC ISO)  |
@@ -157,7 +157,7 @@ Append-only audit log for relationship mutations.
 
 | Column           | Type    | Constraint            | Purpose                               |
 |------------------|---------|-----------------------|---------------------------------------|
-| revision_id      | INTEGER | PRIMARY KEY AUTOINCR  | Monotonically increasing revision     |
+| history_id       | INTEGER | PRIMARY KEY AUTOINCR  | Global append-only event counter      |
 | operation        | TEXT    | NOT NULL              | create, merge                         |
 | changed_at       | TEXT    | NOT NULL              | When the operation occurred (UTC ISO)  |
 | source_id        | TEXT    | NOT NULL              | Subject entity at this revision       |

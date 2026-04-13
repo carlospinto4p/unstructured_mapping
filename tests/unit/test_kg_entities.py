@@ -702,7 +702,7 @@ def test_revert_entity(tmp_path):
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         history = store.get_entity_history(e.entity_id)
-        rev_id = history[0].revision_id
+        rev_id = history[0].history_id
         updated = Entity(
             entity_id=e.entity_id,
             canonical_name=e.canonical_name,

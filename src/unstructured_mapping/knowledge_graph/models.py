@@ -221,7 +221,7 @@ class EntityRevision:
     state (including aliases as a JSON list) is captured
     so any revision can be restored without loss.
 
-    :param revision_id: Auto-incremented primary key.
+    :param history_id: Auto-incremented primary key.
     :param entity_id: The entity this revision belongs to.
     :param operation: What triggered the snapshot:
         ``"create"``, ``"update"``, ``"merge"``,
@@ -240,7 +240,7 @@ class EntityRevision:
         (e.g. ``"merged duplicate"``).
     """
 
-    revision_id: int
+    history_id: int
     entity_id: str
     operation: str
     changed_at: datetime
@@ -263,7 +263,7 @@ class RelationshipRevision:
     Written to the ``relationship_history`` audit log on
     every create or merge-redirect operation.
 
-    :param revision_id: Auto-incremented primary key.
+    :param history_id: Auto-incremented primary key.
     :param operation: What triggered the snapshot.
     :param changed_at: When the operation occurred.
     :param source_id: Subject entity at this revision.
@@ -278,7 +278,7 @@ class RelationshipRevision:
     :param reason: Optional free-text explanation.
     """
 
-    revision_id: int
+    history_id: int
     operation: str
     changed_at: datetime
     source_id: str

@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.35.0 - 14th April 2026
+
+- Renamed `revision_id` to `history_id` throughout the `knowledge_graph/` module to better reflect that the column is a global audit-log sequence, not a per-entity revision number:
+  - `storage.py`: `entity_history.revision_id` and `relationship_history.revision_id` columns renamed.
+  - `models.py`: `EntityRevision.revision_id` and `RelationshipRevision.revision_id` fields renamed.
+  - `_entity_mixin.py`: `revert_entity()` parameter renamed; SQL queries updated.
+  - `_relationship_mixin.py`: SQL queries updated.
+  - `_helpers.py`: row-to-dataclass converters updated.
+  - `exceptions.py`: `RevisionNotFound.revision_id` attribute and constructor parameter renamed.
+- Updated documentation:
+  - `docs/knowledge_graph/schema.md`: column names and purpose descriptions updated.
+  - `docs/knowledge_graph/design.md`: `revert_entity` signature reference updated.
+- Existing databases need a one-off `ALTER TABLE ... RENAME COLUMN revision_id TO history_id` on both `entity_history` and `relationship_history`.
+
+
 ### v0.34.0 - 14th April 2026
 
 - Fixed entity timestamp handling in `knowledge_graph/`:

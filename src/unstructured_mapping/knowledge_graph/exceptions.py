@@ -27,19 +27,19 @@ class EntityNotFound(KnowledgeGraphError):
 class RevisionNotFound(KnowledgeGraphError):
     """Raised when a revision does not exist.
 
-    :param revision_id: The revision ID that was not
+    :param history_id: The history row ID that was not
         found.
     :param entity_id: The entity the revision was
         expected to belong to.
     """
 
     def __init__(
-        self, revision_id: int, entity_id: str
+        self, history_id: int, entity_id: str
     ) -> None:
-        self.revision_id = revision_id
+        self.history_id = history_id
         self.entity_id = entity_id
         super().__init__(
-            f"revision {revision_id} not found "
+            f"revision {history_id} not found "
             f"for entity '{entity_id}'"
         )
 

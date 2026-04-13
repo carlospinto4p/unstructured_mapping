@@ -378,7 +378,7 @@ restore from.
   chronological order.
 - `get_entity_at(entity_id, datetime)` — entity state at
   a point in time (latest revision before that timestamp).
-- `revert_entity(entity_id, revision_id)` — restore a
+- `revert_entity(entity_id, history_id)` — restore a
   prior snapshot and log a `"revert"` operation.
 - `get_relationship_history(entity_id)` — all relationship
   revisions involving the entity.
