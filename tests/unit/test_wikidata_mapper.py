@@ -2,7 +2,13 @@
 
 from unstructured_mapping.knowledge_graph import EntityType
 from unstructured_mapping.wikidata.mapper import (
+    map_central_bank_row,
     map_company_row,
+    map_crypto_row,
+    map_currency_row,
+    map_exchange_row,
+    map_index_row,
+    map_regulator_row,
 )
 
 
@@ -118,3 +124,191 @@ def test_map_company_row_returns_none_when_label_missing():
     row = _company_row()
     row.pop("itemLabel")
     assert map_company_row(row) is None
+
+
+# -- central bank ----------------------------------------------
+
+
+def test_map_central_bank_row_sets_subtype_and_country():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q53776", "uri"
+        ),
+        "itemLabel": _binding("Federal Reserve System"),
+        "countryLabel": _binding("United States"),
+    }
+    result = map_central_bank_row(row)
+    assert result is not None
+    assert result.entity.entity_type is EntityType.ORGANIZATION
+    assert result.entity.subtype == "central_bank"
+    assert "United States" in result.entity.description
+    assert result.entity.aliases == ("wikidata:Q53776",)
+
+
+def test_map_central_bank_row_without_country_still_maps():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q1", "uri"
+        ),
+        "itemLabel": _binding("Some Bank"),
+    }
+    result = map_central_bank_row(row)
+    assert result is not None
+    assert "central bank" in result.entity.description.lower()
+
+
+# -- regulator -------------------------------------------------
+
+
+def test_map_regulator_row_sets_subtype_regulator():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q913975", "uri"
+        ),
+        "itemLabel": _binding(
+            "Securities and Exchange Commission"
+        ),
+        "countryLabel": _binding("United States"),
+    }
+    result = map_regulator_row(row)
+    assert result is not None
+    assert result.entity.subtype == "regulator"
+    assert "United States" in result.entity.description
+
+
+# -- exchange --------------------------------------------------
+
+
+def test_map_exchange_row_includes_mic_as_alias():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q13677", "uri"
+        ),
+        "itemLabel": _binding("New York Stock Exchange"),
+        "countryLabel": _binding("United States"),
+        "mic": _binding("XNYS"),
+    }
+    result = map_exchange_row(row)
+    assert result is not None
+    assert result.entity.subtype == "exchange"
+    assert "mic:XNYS" in result.entity.aliases
+
+
+def test_map_exchange_row_without_mic_has_no_mic_alias():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q1", "uri"
+        ),
+        "itemLabel": _binding("Some Exchange"),
+    }
+    result = map_exchange_row(row)
+    assert result is not None
+    assert not any(
+        a.startswith("mic:") for a in result.entity.aliases
+    )
+
+
+# -- currency --------------------------------------------------
+
+
+def test_map_currency_row_uses_asset_type_and_iso_alias():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q4917", "uri"
+        ),
+        "itemLabel": _binding("United States dollar"),
+        "iso": _binding("USD"),
+        "countryLabel": _binding("United States"),
+    }
+    result = map_currency_row(row)
+    assert result is not None
+    assert result.entity.entity_type is EntityType.ASSET
+    assert result.entity.subtype == "currency"
+    assert "iso:USD" in result.entity.aliases
+    assert "USD" in result.entity.description
+
+
+# -- index -----------------------------------------------------
+
+
+def test_map_index_row_uses_asset_index_subtype():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q242345", "uri"
+        ),
+        "itemLabel": _binding("S&P 500"),
+        "exchangeLabel": _binding("NYSE"),
+        "countryLabel": _binding("United States"),
+    }
+    result = map_index_row(row)
+    assert result is not None
+    assert result.entity.entity_type is EntityType.ASSET
+    assert result.entity.subtype == "index"
+    assert "NYSE" in result.entity.description
+
+
+# -- crypto ----------------------------------------------------
+
+
+def test_map_crypto_row_includes_symbol_alias():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q131723", "uri"
+        ),
+        "itemLabel": _binding("Bitcoin"),
+        "symbol": _binding("BTC"),
+    }
+    result = map_crypto_row(row)
+    assert result is not None
+    assert result.entity.entity_type is EntityType.ASSET
+    assert result.entity.subtype == "crypto"
+    assert "symbol:BTC" in result.entity.aliases
+    assert "BTC" in result.entity.description
+
+
+def test_map_crypto_row_without_symbol_still_maps():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q1", "uri"
+        ),
+        "itemLabel": _binding("Something Coin"),
+    }
+    result = map_crypto_row(row)
+    assert result is not None
+    assert not any(
+        a.startswith("symbol:") for a in result.entity.aliases
+    )
+
+
+# -- reject rules apply to every mapper ------------------------
+
+
+def test_every_mapper_rejects_missing_item():
+    row = {"itemLabel": _binding("X")}
+    for mapper in (
+        map_central_bank_row,
+        map_regulator_row,
+        map_exchange_row,
+        map_currency_row,
+        map_index_row,
+        map_crypto_row,
+    ):
+        assert mapper(row) is None
+
+
+def test_every_mapper_rejects_qid_only_label():
+    row = {
+        "item": _binding(
+            "http://www.wikidata.org/entity/Q42", "uri"
+        ),
+        "itemLabel": _binding("Q42"),
+    }
+    for mapper in (
+        map_central_bank_row,
+        map_regulator_row,
+        map_exchange_row,
+        map_currency_row,
+        map_index_row,
+        map_crypto_row,
+    ):
+        assert mapper(row) is None

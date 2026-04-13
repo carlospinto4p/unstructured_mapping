@@ -15,27 +15,38 @@ move financial markets. Wikidata contains millions of
 entities, so the seed pipeline uses aggressive filters
 instead of bulk-dumping.
 
-**Phase 1 (implemented):**
+**Implemented types:**
 
-- **ORGANIZATION / company** — instances of
-  `Q4830453` (business) or any subclass that have a
-  stock-exchange listing (`P414`). Ordered by market
-  capitalisation (`P2226`) so a small `--limit` still
-  captures the most impactful firms.
+| CLI `--type`    | KG mapping                    | Wikidata class filter      |
+|-----------------|-------------------------------|----------------------------|
+| `company`       | `ORGANIZATION / company`      | `Q4830453` + listing (P414), ordered by market cap (P2226) |
+| `central_bank`  | `ORGANIZATION / central_bank` | `Q46825`                   |
+| `regulator`     | `ORGANIZATION / regulator`    | `Q17278032`                |
+| `exchange`      | `ORGANIZATION / exchange`     | `Q11691`                   |
+| `currency`      | `ASSET / currency`            | `Q8142` + ISO code (P498)  |
+| `index`         | `ASSET / index`               | `Q167270`                  |
+| `crypto`        | `ASSET / crypto`              | `Q13479982`                |
 
-**Later phases (planned):**
+New types plug in via three small additions — a SPARQL
+template in `wikidata/queries.py`, a mapper in
+`wikidata/mapper.py`, and an entry in the CLI's
+`_TYPE_HANDLERS` registry.
 
-- `ORGANIZATION / central_bank`, `regulator`, `exchange`,
-  `rating_agency`
-- `ASSET / currency`, `index`, `crypto`, `commodity`
-- `LEGISLATION` — flagship financial regulations
-- `PERSON` — CEOs, central bank governors, finance
-  ministers (via relationship queries against listed
-  companies rather than broad instance-of filters)
+**Deliberately excluded:**
 
-New phases only need a SPARQL template in
-`wikidata/queries.py` and a mapper in `wikidata/mapper.py`;
-the CLI dispatches via a small `_TYPE_HANDLERS` registry.
+- **Rating agencies** — the population is tiny (S&P,
+  Moody's, Fitch, DBRS); a curated seed entry produces
+  a cleaner KG than a SPARQL filter.
+- **Commodities** — heterogeneous and small
+  (gold, oil, wheat, copper…); curated seed is a better
+  fit.
+- **Flagship legislation** — Wikidata's class tree for
+  "law" is too broad to filter cleanly; import the dozen
+  or so that matter via the curated seed.
+- **Named persons** (CEOs, central-bank governors) —
+  these are better extracted from news mentions by the
+  resolution pipeline than bulk-imported from Wikidata,
+  whose coverage of current office-holders lags.
 
 ## External-identifier alias convention
 
@@ -51,6 +62,9 @@ survive in the KG and remain queryable via
 | `wikidata:`     | `wikidata:Q312`         | the entity's QID   |
 | `ticker:`       | `ticker:AAPL`           | `P249` (listing)   |
 | `isin:`         | `isin:US0378331005`     | `P946`             |
+| `mic:`          | `mic:XNYS`              | `P2283` (exchange) |
+| `iso:`          | `iso:USD`               | `P498` (currency)  |
+| `symbol:`       | `symbol:BTC`            | `P498` (crypto)    |
 
 Plain human-readable aliases (`"Apple"`, `"FOMC"`) remain
 unprefixed — entity detection in free text must still

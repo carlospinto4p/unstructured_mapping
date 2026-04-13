@@ -6,30 +6,39 @@ constants (rather than built dynamically) so the exact
 SPARQL sent to Wikidata is auditable and copy-pasteable
 into the public query editor for debugging.
 
-Phase 1 covers listed companies. Additional query templates
-for central banks, regulators, indices, and currencies will
-be added in later phases — see ``docs/seed/wikidata.md``
-for the full scope plan.
+Coverage by type:
+
+- Listed companies (``LISTED_COMPANIES_QUERY``) — ordered
+  by market capitalisation.
+- Central banks (``CENTRAL_BANKS_QUERY``).
+- Financial regulators (``REGULATORS_QUERY``).
+- Stock exchanges (``EXCHANGES_QUERY``).
+- Fiat currencies (``CURRENCIES_QUERY``).
+- Stock market indices (``INDICES_QUERY``).
+- Cryptocurrencies (``CRYPTO_QUERY``).
+
+Rating agencies, commodities, flagship legislation, and
+named persons are intentionally *not* covered by SPARQL.
+Those populations are small and heterogeneous enough that
+the curated seed file (``data/seed/financial_entities.json``)
+is a better source — see ``docs/seed/wikidata.md`` for the
+rationale.
 
 Conventions:
 
 - Each query must ``SELECT`` at least ``?item``, ``?itemLabel``,
   and ``?description``. Mappers assume these bindings exist.
-- Company-specific queries add ``?ticker``, ``?isin``,
-  ``?exchangeLabel``, and ``?countryLabel`` when available.
+- Optional columns (country, currency, symbol, etc.) are
+  typed into the ``OPTIONAL`` block so missing data never
+  prunes an otherwise-valid row.
 - Labels use the Wikidata label-service hack
   (``SERVICE wikibase:label``) so we get one English label
   per row without nested subqueries.
+- Class filters use ``wdt:P31/wdt:P279*`` so subclasses
+  (e.g. "national central bank" under "central bank") are
+  included without listing each explicitly.
 """
 
-#: Listed companies ordered by market capitalisation
-#: (property P2226). We constrain to entities that are
-#: instances of (P31) "business" / "public company" /
-#: "enterprise" (Q4830453 — business) or any of its
-#: subclasses, and that have a stock-exchange listing
-#: (P414). Ordering by market cap DESC gives the most
-#: impactful subset first, which matters when the caller
-#: uses ``--limit``.
 _LISTED_COMPANIES_TEMPLATE = """
 SELECT DISTINCT ?item ?itemLabel ?description
        ?ticker ?isin ?exchange ?exchangeLabel
@@ -54,9 +63,122 @@ ORDER BY DESC(?marketCap)
 LIMIT {limit}
 """
 
-#: Default query for phase 1. Substitute ``{limit}`` via
-#: :func:`build_query` to avoid hand-formatting at call sites.
+_CENTRAL_BANKS_TEMPLATE = """
+SELECT DISTINCT ?item ?itemLabel ?description
+       ?country ?countryLabel
+WHERE {{
+  ?item wdt:P31/wdt:P279* wd:Q46825 .
+  OPTIONAL {{ ?item wdt:P17 ?country . }}
+  OPTIONAL {{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "en" .
+  }}
+}}
+LIMIT {limit}
+"""
+
+_REGULATORS_TEMPLATE = """
+SELECT DISTINCT ?item ?itemLabel ?description
+       ?country ?countryLabel
+WHERE {{
+  ?item wdt:P31/wdt:P279* wd:Q17278032 .
+  OPTIONAL {{ ?item wdt:P17 ?country . }}
+  OPTIONAL {{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "en" .
+  }}
+}}
+LIMIT {limit}
+"""
+
+_EXCHANGES_TEMPLATE = """
+SELECT DISTINCT ?item ?itemLabel ?description
+       ?country ?countryLabel ?mic
+WHERE {{
+  ?item wdt:P31/wdt:P279* wd:Q11691 .
+  OPTIONAL {{ ?item wdt:P17 ?country . }}
+  OPTIONAL {{ ?item wdt:P2283 ?mic . }}
+  OPTIONAL {{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "en" .
+  }}
+}}
+LIMIT {limit}
+"""
+
+_CURRENCIES_TEMPLATE = """
+SELECT DISTINCT ?item ?itemLabel ?description
+       ?iso ?country ?countryLabel
+WHERE {{
+  ?item wdt:P31/wdt:P279* wd:Q8142 .
+  ?item wdt:P498 ?iso .
+  OPTIONAL {{ ?item wdt:P17 ?country . }}
+  OPTIONAL {{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "en" .
+  }}
+}}
+LIMIT {limit}
+"""
+
+_INDICES_TEMPLATE = """
+SELECT DISTINCT ?item ?itemLabel ?description
+       ?exchange ?exchangeLabel ?country ?countryLabel
+WHERE {{
+  ?item wdt:P31/wdt:P279* wd:Q167270 .
+  OPTIONAL {{ ?item wdt:P414 ?exchange . }}
+  OPTIONAL {{ ?item wdt:P17  ?country . }}
+  OPTIONAL {{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "en" .
+  }}
+}}
+LIMIT {limit}
+"""
+
+_CRYPTO_TEMPLATE = """
+SELECT DISTINCT ?item ?itemLabel ?description ?symbol
+WHERE {{
+  ?item wdt:P31/wdt:P279* wd:Q13479982 .
+  OPTIONAL {{ ?item wdt:P498 ?symbol . }}
+  OPTIONAL {{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "en" .
+  }}
+}}
+LIMIT {limit}
+"""
+
+#: Phase 1 — equity universe.
 LISTED_COMPANIES_QUERY = _LISTED_COMPANIES_TEMPLATE
+
+#: Phase 2 — institutional actors.
+CENTRAL_BANKS_QUERY = _CENTRAL_BANKS_TEMPLATE
+REGULATORS_QUERY = _REGULATORS_TEMPLATE
+EXCHANGES_QUERY = _EXCHANGES_TEMPLATE
+
+#: Phase 3 — asset classes.
+CURRENCIES_QUERY = _CURRENCIES_TEMPLATE
+INDICES_QUERY = _INDICES_TEMPLATE
+CRYPTO_QUERY = _CRYPTO_TEMPLATE
 
 
 def build_query(template: str, *, limit: int) -> str:

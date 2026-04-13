@@ -46,6 +46,31 @@ def test_build_query_rejects_non_positive_limit():
         build_query(LISTED_COMPANIES_QUERY, limit=0)
 
 
+def test_all_registered_types_build_valid_queries():
+    for kind, (template, _mapper) in (
+        wikidata_seed._TYPE_HANDLERS.items()
+    ):
+        sparql = build_query(template, limit=5)
+        assert "LIMIT 5" in sparql, kind
+        assert "?item" in sparql, kind
+        assert "?itemLabel" in sparql, kind
+
+
+def test_registered_types_cover_expected_set():
+    expected = {
+        "company",
+        "central_bank",
+        "regulator",
+        "exchange",
+        "currency",
+        "index",
+        "crypto",
+    }
+    assert (
+        set(wikidata_seed._TYPE_HANDLERS) == expected
+    )
+
+
 # -- import_entities --------------------------------------------
 
 

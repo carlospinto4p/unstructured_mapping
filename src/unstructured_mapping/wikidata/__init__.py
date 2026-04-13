@@ -18,18 +18,42 @@ from unstructured_mapping.wikidata.client import (
 )
 from unstructured_mapping.wikidata.mapper import (
     MappedEntity,
+    map_central_bank_row,
     map_company_row,
+    map_crypto_row,
+    map_currency_row,
+    map_exchange_row,
+    map_index_row,
+    map_regulator_row,
 )
 from unstructured_mapping.wikidata.queries import (
+    CENTRAL_BANKS_QUERY,
+    CRYPTO_QUERY,
+    CURRENCIES_QUERY,
+    EXCHANGES_QUERY,
+    INDICES_QUERY,
     LISTED_COMPANIES_QUERY,
+    REGULATORS_QUERY,
     build_query,
 )
 
 __all__ = [
+    "CENTRAL_BANKS_QUERY",
+    "CRYPTO_QUERY",
+    "CURRENCIES_QUERY",
+    "EXCHANGES_QUERY",
+    "INDICES_QUERY",
     "LISTED_COMPANIES_QUERY",
     "MappedEntity",
+    "REGULATORS_QUERY",
     "SparqlClient",
     "SparqlError",
     "build_query",
+    "map_central_bank_row",
     "map_company_row",
+    "map_crypto_row",
+    "map_currency_row",
+    "map_exchange_row",
+    "map_index_row",
+    "map_regulator_row",
 ]

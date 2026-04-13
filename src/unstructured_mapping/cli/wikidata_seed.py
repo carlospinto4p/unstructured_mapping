@@ -44,11 +44,23 @@ from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
 )
 from unstructured_mapping.wikidata import (
+    CENTRAL_BANKS_QUERY,
+    CRYPTO_QUERY,
+    CURRENCIES_QUERY,
+    EXCHANGES_QUERY,
+    INDICES_QUERY,
     LISTED_COMPANIES_QUERY,
     MappedEntity,
+    REGULATORS_QUERY,
     SparqlClient,
     build_query,
+    map_central_bank_row,
     map_company_row,
+    map_crypto_row,
+    map_currency_row,
+    map_exchange_row,
+    map_index_row,
+    map_regulator_row,
 )
 
 logger = logging.getLogger(__name__)
@@ -61,6 +73,15 @@ _DEFAULT_DB = Path("data/knowledge.db")
 #: entries here without touching the CLI plumbing.
 _TYPE_HANDLERS = {
     "company": (LISTED_COMPANIES_QUERY, map_company_row),
+    "central_bank": (
+        CENTRAL_BANKS_QUERY,
+        map_central_bank_row,
+    ),
+    "regulator": (REGULATORS_QUERY, map_regulator_row),
+    "exchange": (EXCHANGES_QUERY, map_exchange_row),
+    "currency": (CURRENCIES_QUERY, map_currency_row),
+    "index": (INDICES_QUERY, map_index_row),
+    "crypto": (CRYPTO_QUERY, map_crypto_row),
 }
 
 

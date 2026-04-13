@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.33.0 - 13th April 2026
+
+- Extended Wikidata seed pipeline to six additional types:
+  - `wikidata/queries.py`: added `CENTRAL_BANKS_QUERY`, `REGULATORS_QUERY`, `EXCHANGES_QUERY`, `CURRENCIES_QUERY`, `INDICES_QUERY`, `CRYPTO_QUERY`.
+  - `wikidata/mapper.py`: added `map_central_bank_row()`, `map_regulator_row()`, `map_exchange_row()`, `map_currency_row()`, `map_index_row()`, `map_crypto_row()`; factored out `_extract_item()` and `_make_mapped()` helpers.
+  - `cli/wikidata_seed.py`: registered the new types in `_TYPE_HANDLERS`; CLI `--type` now accepts `company`, `central_bank`, `regulator`, `exchange`, `currency`, `index`, `crypto`.
+- Extended external-identifier alias prefixes:
+  - `mic:` for Market Identifier Codes (exchanges, P2283).
+  - `iso:` for ISO 4217 currency codes (P498).
+  - `symbol:` for cryptocurrency symbols (P498).
+- Added unit tests: 13 new mapper tests + 2 new CLI registry tests in `tests/unit/test_wikidata_mapper.py` and `tests/unit/test_wikidata_seed.py`.
+- Updated `docs/seed/wikidata.md` with the full type matrix and explicit rationale for deliberately-excluded populations (rating agencies, commodities, legislation, persons).
+
+
 ### v0.32.0 - 13th April 2026
 
 - Added `wikidata/` module for KG bootstrap from Wikidata:
