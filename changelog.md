@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.35.2 - 14th April 2026
+
+- Fixed Wikidata SPARQL query templates in `wikidata/queries.py`:
+  - Corrected three wrong class QIDs shipped in v0.33.0:
+    - Central bank: `Q46825` → `Q66344`. The old value matched religious-art entities, not central banks.
+    - Financial regulator: `Q17278032` → `Q105062392`. The old value matched nothing.
+    - Stock market index: `Q167270` → `Q223371`. The old value matched record labels.
+  - Rewrote every template to use the subquery `LIMIT` idiom — the `LIMIT` now caps distinct items in an inner `SELECT DISTINCT`, not post-OPTIONAL cartesian rows. Fixes two symptoms: the `index` query returning only 2 rows (labels dropping to bare QIDs when the label service ran out of budget), and the `company` query timing out at HTTP 502 after ~112 seconds (now 0.9s).
+  - Dropped `ORDER BY DESC(?marketCap)` from the company query — Wikidata can't sort the intermediate result set at any reasonable limit without timing out.
+  - Tightened `exchange` and `crypto` filters from `wdt:P31/wdt:P279*` to direct `wdt:P31` — excludes clearing houses and crypto-exchange entities that the subclass tree previously pulled in.
+- Added unit tests in `tests/unit/test_wikidata_seed.py`:
+  - `test_queries_reference_expected_class_qids` — pins the class QIDs so a typo fails CI.
+  - `test_queries_use_subquery_limit_pattern` — enforces the subquery `LIMIT` idiom across all templates.
+
+
 ### v0.35.1 - 14th April 2026
 
 - Updated `docs/knowledge_graph/schema.md`: added one-line clarifications under `entity_history` and `relationship_history` headers explaining that each row is a *revision* identified by `history_id` (a global counter, not a per-entity revision number) — closes a terminology gap between the row-level "revision" wording and the renamed column.

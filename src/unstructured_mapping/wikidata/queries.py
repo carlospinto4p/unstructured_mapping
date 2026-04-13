@@ -6,10 +6,27 @@ constants (rather than built dynamically) so the exact
 SPARQL sent to Wikidata is auditable and copy-pasteable
 into the public query editor for debugging.
 
+Query shape (idiomatic on Wikidata)::
+
+    SELECT ... WHERE {
+      { SELECT DISTINCT ?item WHERE { <core filter> } LIMIT N }
+      OPTIONAL { ... }
+      ...
+      SERVICE wikibase:label { ... }
+    }
+
+The **inner subquery** picks the N distinct items first,
+so the ``LIMIT`` caps entity count — not the cartesian
+product of entity × exchange × country × description.
+Without this, OPTIONAL joins explode the row count,
+``SERVICE wikibase:label`` runs out of budget, and most
+rows come back with their QID as the label (which the
+mapper then rejects as an un-labelled row). The subquery
+pattern fixes that.
+
 Coverage by type:
 
-- Listed companies (``LISTED_COMPANIES_QUERY``) — ordered
-  by market capitalisation.
+- Listed companies (``LISTED_COMPANIES_QUERY``).
 - Central banks (``CENTRAL_BANKS_QUERY``).
 - Financial regulators (``REGULATORS_QUERY``).
 - Stock exchanges (``EXCHANGES_QUERY``).
@@ -18,153 +35,200 @@ Coverage by type:
 - Cryptocurrencies (``CRYPTO_QUERY``).
 
 Rating agencies, commodities, flagship legislation, and
-named persons are intentionally *not* covered by SPARQL.
-Those populations are small and heterogeneous enough that
-the curated seed file (``data/seed/financial_entities.json``)
-is a better source — see ``docs/seed/wikidata.md`` for the
-rationale.
+named persons are intentionally *not* covered by SPARQL —
+see ``docs/seed/wikidata.md`` for the rationale.
 
-Conventions:
-
-- Each query must ``SELECT`` at least ``?item``, ``?itemLabel``,
-  and ``?description``. Mappers assume these bindings exist.
-- Optional columns (country, currency, symbol, etc.) are
-  typed into the ``OPTIONAL`` block so missing data never
-  prunes an otherwise-valid row.
-- Labels use the Wikidata label-service hack
-  (``SERVICE wikibase:label``) so we get one English label
-  per row without nested subqueries.
-- Class filters use ``wdt:P31/wdt:P279*`` so subclasses
-  (e.g. "national central bank" under "central bank") are
-  included without listing each explicitly.
+Class QIDs are verified against known anchor entities
+(Fed, S&P 500, Bitcoin, …). A typo in one of these
+constants silently produces an empty (or absurd) import,
+so changes to these values require re-running the
+anchor probe documented in ``docs/seed/wikidata.md``.
 """
 
-_LISTED_COMPANIES_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description
+#: Class QIDs used in the filters. The original v0.33.0
+#: shipping set contained several guessed values — one
+#: produced religious-art rows for "central_bank", another
+#: produced record labels for "index". The current values
+#: were discovered by probing the ``wdt:P31`` classes of
+#: known anchor entities; see the commit history for the
+#: discovery script.
+_Q_BUSINESS = "Q4830453"           # business
+_Q_CENTRAL_BANK = "Q66344"         # central bank
+_Q_FIN_REGULATOR = "Q105062392"    # financial regulatory agency
+_Q_STOCK_EXCHANGE = "Q11691"       # stock exchange
+_Q_CURRENCY = "Q8142"              # currency
+_Q_STOCK_INDEX = "Q223371"         # stock market index
+_Q_CRYPTOCURRENCY = "Q13479982"    # cryptocurrency
+
+
+#: Listed companies — instances of ``business`` (or any
+#: subclass) that have a stock-exchange listing (P414).
+#: No ORDER BY: earlier versions sorted by market cap
+#: (P2226) to prefer the biggest firms, but that forces
+#: Wikidata to materialise and sort a huge intermediate
+#: result set and regularly times out with HTTP 502. For
+#: a curated top-N import, pass specific tickers or QIDs
+#: to a future targeted query instead of relying on a
+#: SPARQL-wide sort.
+_LISTED_COMPANIES_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description
        ?ticker ?isin ?exchange ?exchangeLabel
-       ?country ?countryLabel ?marketCap
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q4830453 .
-  ?item p:P414 ?listing .
-  ?listing ps:P414 ?exchange .
-  OPTIONAL {{ ?listing pq:P249 ?ticker . }}
-  OPTIONAL {{ ?item wdt:P946 ?isin . }}
-  OPTIONAL {{ ?item wdt:P17  ?country . }}
-  OPTIONAL {{ ?item wdt:P2226 ?marketCap . }}
-  OPTIONAL {{
-    ?item schema:description ?description .
-    FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
-    bd:serviceParam wikibase:language "en" .
-  }}
-}}
-ORDER BY DESC(?marketCap)
-LIMIT {limit}
-"""
-
-_CENTRAL_BANKS_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description
        ?country ?countryLabel
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q46825 .
-  OPTIONAL {{ ?item wdt:P17 ?country . }}
-  OPTIONAL {{
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item ?listing ?exchange WHERE {{{{
+      ?item wdt:P31/wdt:P279* wd:{_Q_BUSINESS} .
+      ?item p:P414 ?listing .
+      ?listing ps:P414 ?exchange .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?listing pq:P249 ?ticker . }}}}
+  OPTIONAL {{{{ ?item wdt:P946 ?isin . }}}}
+  OPTIONAL {{{{ ?item wdt:P17  ?country . }}}}
+  OPTIONAL {{{{
     ?item schema:description ?description .
     FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
+  }}}}
+  SERVICE wikibase:label {{{{
     bd:serviceParam wikibase:language "en" .
-  }}
-}}
-LIMIT {limit}
+  }}}}
+}}}}
 """
 
-_REGULATORS_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description
+_CENTRAL_BANKS_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description
        ?country ?countryLabel
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q17278032 .
-  OPTIONAL {{ ?item wdt:P17 ?country . }}
-  OPTIONAL {{
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item WHERE {{{{
+      ?item wdt:P31/wdt:P279* wd:{_Q_CENTRAL_BANK} .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?item wdt:P17 ?country . }}}}
+  OPTIONAL {{{{
     ?item schema:description ?description .
     FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
+  }}}}
+  SERVICE wikibase:label {{{{
     bd:serviceParam wikibase:language "en" .
-  }}
-}}
-LIMIT {limit}
+  }}}}
+}}}}
 """
 
-_EXCHANGES_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description
+_REGULATORS_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description
+       ?country ?countryLabel
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item WHERE {{{{
+      ?item wdt:P31/wdt:P279* wd:{_Q_FIN_REGULATOR} .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?item wdt:P17 ?country . }}}}
+  OPTIONAL {{{{
+    ?item schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }}}}
+  SERVICE wikibase:label {{{{
+    bd:serviceParam wikibase:language "en" .
+  }}}}
+}}}}
+"""
+
+#: Stock exchanges use *direct* instance-of (no P279*
+#: subclass expansion) to exclude clearing houses,
+#: brokerages, and other adjacent entities that inherit
+#: from the exchange class.
+_EXCHANGES_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description
        ?country ?countryLabel ?mic
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q11691 .
-  OPTIONAL {{ ?item wdt:P17 ?country . }}
-  OPTIONAL {{ ?item wdt:P2283 ?mic . }}
-  OPTIONAL {{
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item WHERE {{{{
+      ?item wdt:P31 wd:{_Q_STOCK_EXCHANGE} .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?item wdt:P17 ?country . }}}}
+  OPTIONAL {{{{ ?item wdt:P2283 ?mic . }}}}
+  OPTIONAL {{{{
     ?item schema:description ?description .
     FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
+  }}}}
+  SERVICE wikibase:label {{{{
     bd:serviceParam wikibase:language "en" .
-  }}
-}}
-LIMIT {limit}
+  }}}}
+}}}}
 """
 
-_CURRENCIES_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description
+_CURRENCIES_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description
        ?iso ?country ?countryLabel
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q8142 .
-  ?item wdt:P498 ?iso .
-  OPTIONAL {{ ?item wdt:P17 ?country . }}
-  OPTIONAL {{
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item ?iso WHERE {{{{
+      ?item wdt:P31/wdt:P279* wd:{_Q_CURRENCY} .
+      ?item wdt:P498 ?iso .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?item wdt:P17 ?country . }}}}
+  OPTIONAL {{{{
     ?item schema:description ?description .
     FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
+  }}}}
+  SERVICE wikibase:label {{{{
     bd:serviceParam wikibase:language "en" .
-  }}
-}}
-LIMIT {limit}
+  }}}}
+}}}}
 """
 
-_INDICES_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description
+_INDICES_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description
        ?exchange ?exchangeLabel ?country ?countryLabel
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q167270 .
-  OPTIONAL {{ ?item wdt:P414 ?exchange . }}
-  OPTIONAL {{ ?item wdt:P17  ?country . }}
-  OPTIONAL {{
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item WHERE {{{{
+      ?item wdt:P31/wdt:P279* wd:{_Q_STOCK_INDEX} .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?item wdt:P414 ?exchange . }}}}
+  OPTIONAL {{{{ ?item wdt:P17  ?country . }}}}
+  OPTIONAL {{{{
     ?item schema:description ?description .
     FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
+  }}}}
+  SERVICE wikibase:label {{{{
     bd:serviceParam wikibase:language "en" .
-  }}
-}}
-LIMIT {limit}
+  }}}}
+}}}}
 """
 
-_CRYPTO_TEMPLATE = """
-SELECT DISTINCT ?item ?itemLabel ?description ?symbol
-WHERE {{
-  ?item wdt:P31/wdt:P279* wd:Q13479982 .
-  OPTIONAL {{ ?item wdt:P498 ?symbol . }}
-  OPTIONAL {{
+#: Crypto uses direct instance-of (no P279*) to exclude
+#: crypto exchanges, which the wide subclass tree would
+#: otherwise pull in alongside actual cryptocurrencies.
+_CRYPTO_TEMPLATE = f"""
+SELECT ?item ?itemLabel ?description ?symbol
+WHERE {{{{
+  {{{{
+    SELECT DISTINCT ?item WHERE {{{{
+      ?item wdt:P31 wd:{_Q_CRYPTOCURRENCY} .
+    }}}}
+    LIMIT {{limit}}
+  }}}}
+  OPTIONAL {{{{ ?item wdt:P498 ?symbol . }}}}
+  OPTIONAL {{{{
     ?item schema:description ?description .
     FILTER(LANG(?description) = "en")
-  }}
-  SERVICE wikibase:label {{
+  }}}}
+  SERVICE wikibase:label {{{{
     bd:serviceParam wikibase:language "en" .
-  }}
-}}
-LIMIT {limit}
+  }}}}
+}}}}
 """
 
 #: Phase 1 — equity universe.

@@ -56,6 +56,55 @@ def test_all_registered_types_build_valid_queries():
         assert "?itemLabel" in sparql, kind
 
 
+def test_queries_reference_expected_class_qids():
+    """Class QIDs are load-bearing — a typo produces empty
+    or absurd results. Pin them so a change that drifts
+    away from a verified value fails CI."""
+    from unstructured_mapping.wikidata import queries
+
+    expected = {
+        queries.LISTED_COMPANIES_QUERY: "Q4830453",
+        queries.CENTRAL_BANKS_QUERY: "Q66344",
+        queries.REGULATORS_QUERY: "Q105062392",
+        queries.EXCHANGES_QUERY: "Q11691",
+        queries.CURRENCIES_QUERY: "Q8142",
+        queries.INDICES_QUERY: "Q223371",
+        queries.CRYPTO_QUERY: "Q13479982",
+    }
+    for template, qid in expected.items():
+        assert f"wd:{qid}" in template, (
+            f"template missing wd:{qid}"
+        )
+
+
+def test_queries_use_subquery_limit_pattern():
+    """Each template must cap the inner SELECT DISTINCT,
+    not the outer SELECT. Putting LIMIT on the outer
+    SELECT counts post-join rows and makes the label
+    service drop most items to bare-QID fallback.
+    """
+    from unstructured_mapping.wikidata import queries
+
+    templates = [
+        queries.LISTED_COMPANIES_QUERY,
+        queries.CENTRAL_BANKS_QUERY,
+        queries.REGULATORS_QUERY,
+        queries.EXCHANGES_QUERY,
+        queries.CURRENCIES_QUERY,
+        queries.INDICES_QUERY,
+        queries.CRYPTO_QUERY,
+    ]
+    for tmpl in templates:
+        assert "SELECT DISTINCT ?item" in tmpl
+        # The {limit} placeholder must appear after the
+        # inner DISTINCT block (i.e. inside the subquery).
+        distinct_pos = tmpl.find("SELECT DISTINCT")
+        limit_pos = tmpl.find("{limit}")
+        assert 0 <= distinct_pos < limit_pos, (
+            "LIMIT must follow the inner SELECT DISTINCT"
+        )
+
+
 def test_registered_types_cover_expected_set():
     expected = {
         "company",
