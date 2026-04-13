@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.35.1 - 14th April 2026
+
+- Updated `docs/knowledge_graph/schema.md`: added one-line clarifications under `entity_history` and `relationship_history` headers explaining that each row is a *revision* identified by `history_id` (a global counter, not a per-entity revision number) — closes a terminology gap between the row-level "revision" wording and the renamed column.
+
+
 ### v0.35.0 - 14th April 2026
 
 - Renamed `revision_id` to `history_id` throughout the `knowledge_graph/` module to better reflect that the column is a global audit-log sequence, not a per-entity revision number:

@@ -129,7 +129,10 @@ Indexes: `source_id`, `target_id`, `qualifier_id`,
 ## `entity_history`
 
 Append-only audit log for entity mutations. Each row is a
-full snapshot of the entity after the operation.
+*revision* — a full snapshot of the entity after the
+operation — identified by `history_id`, a global
+monotonically-increasing counter shared across all entities
+(not a per-entity revision number).
 
 | Column         | Type    | Constraint            | Purpose                               |
 |----------------|---------|-----------------------|---------------------------------------|
@@ -153,7 +156,10 @@ Index: `(entity_id, changed_at)`.
 
 ## `relationship_history`
 
-Append-only audit log for relationship mutations.
+Append-only audit log for relationship mutations. Each row
+is a *revision* — a full snapshot of the relationship after
+the operation — identified by `history_id`, a global
+monotonically-increasing counter (not per-relationship).
 
 | Column           | Type    | Constraint            | Purpose                               |
 |------------------|---------|-----------------------|---------------------------------------|
