@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.34.0 - 14th April 2026
+
+- Fixed entity timestamp handling in `knowledge_graph/`:
+  - `_entity_mixin.py`: `save_entity()` now owns `created_at` and `updated_at` — stamps both on create, preserves `created_at` across updates, and bumps `updated_at` on every save. A caller-provided `created_at` on a brand-new entity is still respected (useful for backfills and history-preserving imports).
+  - `_entity_mixin.py`: added `backfill_entity_timestamps()` — one-shot helper that pulls authoritative create times from `entity_history` onto rows with NULL timestamps. Safe to re-run.
+- Updated unit tests in `tests/unit/test_kg_entities.py`:
+  - Replaced `test_entity_updated_at_round_trip` with three behavioural tests (`test_save_entity_stamps_timestamps_on_create`, `test_save_entity_respects_explicit_created_at`, `test_save_entity_advances_updated_at_on_update`).
+  - Added `test_backfill_entity_timestamps_populates_nulls`.
+
+
 ### v0.33.0 - 13th April 2026
 
 - Extended Wikidata seed pipeline to six additional types:

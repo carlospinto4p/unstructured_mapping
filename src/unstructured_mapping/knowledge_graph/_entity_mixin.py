@@ -20,7 +20,7 @@ logging) live in
 """
 
 from dataclasses import replace
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 from unstructured_mapping.knowledge_graph._entity_helpers import (
@@ -30,6 +30,7 @@ from unstructured_mapping.knowledge_graph._helpers import (
     ENTITY_SELECT,
     ENTITY_SELECT_ALIASED,
     dt_to_iso,
+    iso_to_dt,
     row_to_entity,
     row_to_entity_rev,
 )
@@ -69,21 +70,41 @@ class EntityCRUDMixin(EntityHelpersMixin):
         added. A snapshot is written to ``entity_history``
         for every operation.
 
+        Timestamps are owned by the storage layer, not the
+        caller. ``updated_at`` is stamped on every save
+        with the current UTC time. ``created_at`` is set
+        once, on the first save; subsequent saves preserve
+        the original value regardless of what the caller
+        passes. A caller-provided ``created_at`` on a brand
+        new entity is respected, which is useful for
+        backfills and history-preserving imports.
+
         :param entity: The entity to save.
         :param reason: Optional explanation logged in the
             audit trail.
         """
         validate_temporal(entity)
+        existing_row = self._conn.execute(
+            "SELECT created_at FROM entities "
+            "WHERE entity_id = ?",
+            (entity.entity_id,),
+        ).fetchone()
+        is_update = existing_row is not None
         if _operation is None:
-            existing = self._conn.execute(
-                "SELECT 1 FROM entities "
-                "WHERE entity_id = ?",
-                (entity.entity_id,),
-            ).fetchone()
-            _operation = (
-                "update" if existing else "create"
-            )
+            _operation = "update" if is_update else "create"
         operation = _operation
+
+        now = datetime.now(timezone.utc)
+        if is_update:
+            created_at = (
+                iso_to_dt(existing_row[0])
+                or entity.created_at
+                or now
+            )
+        else:
+            created_at = entity.created_at or now
+        updated_at = now
+
         self._conn.execute(
             "INSERT OR REPLACE INTO entities "
             "(entity_id, canonical_name, entity_type, "
@@ -102,8 +123,8 @@ class EntityCRUDMixin(EntityHelpersMixin):
                 dt_to_iso(entity.valid_until),
                 entity.status.value,
                 entity.merged_into,
-                dt_to_iso(entity.created_at),
-                dt_to_iso(entity.updated_at),
+                dt_to_iso(created_at),
+                dt_to_iso(updated_at),
             ),
         )
         self._sync_aliases(
@@ -145,6 +166,51 @@ class EntityCRUDMixin(EntityHelpersMixin):
             (name,),
         ).fetchall()
         return self._rows_to_entities(rows)
+
+    def backfill_entity_timestamps(self) -> int:
+        """Fill NULL ``created_at`` / ``updated_at`` on
+        existing rows from the audit history.
+
+        Written to correct databases that were populated
+        before the storage layer started stamping
+        timestamps automatically. For each affected entity
+        we use the ``entity_history`` row with
+        ``operation = 'create'`` as the authoritative
+        creation time, and mirror it into ``updated_at``.
+        Rows whose history has been purged (no ``create``
+        record remains) are left untouched.
+
+        Safe to re-run — rows that already have non-NULL
+        timestamps are skipped. Intended for one-shot use
+        during migration; production entity writes never
+        need this.
+
+        :return: Number of rows updated.
+        """
+        rows = self._conn.execute(
+            "SELECT e.entity_id, h.changed_at "
+            "FROM entities e "
+            "JOIN entity_history h "
+            "  ON h.entity_id = e.entity_id "
+            "WHERE (e.created_at IS NULL "
+            "       OR e.updated_at IS NULL) "
+            "  AND h.operation = 'create'"
+        ).fetchall()
+        if not rows:
+            return 0
+        self._conn.executemany(
+            "UPDATE entities "
+            "SET created_at = COALESCE(created_at, ?), "
+            "    updated_at = COALESCE(updated_at, ?) "
+            "WHERE entity_id = ?",
+            [
+                (row["changed_at"], row["changed_at"],
+                 row["entity_id"])
+                for row in rows
+            ],
+        )
+        self._conn.commit()
+        return len(rows)
 
     def find_by_alias(
         self, alias: str

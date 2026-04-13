@@ -1,5 +1,6 @@
 """Tests for KnowledgeStore entity operations."""
 
+from dataclasses import replace
 from datetime import datetime, timezone
 
 import pytest
@@ -340,24 +341,98 @@ def test_entity_temporal_round_trip(tmp_path):
     assert loaded.valid_from == now
     assert loaded.created_at == now
     assert loaded.valid_until is None
-    assert loaded.updated_at is None
+    # updated_at is always stamped by save_entity,
+    # even on create, so we can track freshness.
+    assert loaded.updated_at is not None
 
 
-def test_entity_updated_at_round_trip(tmp_path):
+def test_save_entity_stamps_timestamps_on_create(tmp_path):
+    """On create, both timestamps are auto-stamped."""
+    db = tmp_path / "kg.db"
+    e = make_entity()
+    before = datetime.now(timezone.utc)
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        loaded = store.get_entity(e.entity_id)
+    after = datetime.now(timezone.utc)
+
+    assert loaded is not None
+    assert loaded.created_at is not None
+    assert loaded.updated_at is not None
+    assert before <= loaded.created_at <= after
+    assert loaded.created_at == loaded.updated_at
+
+
+def test_save_entity_respects_explicit_created_at(tmp_path):
+    """A caller-provided created_at is honoured on create.
+
+    Useful for backfills or history-preserving imports.
+    """
     db = tmp_path / "kg.db"
     created = datetime(2024, 1, 15, tzinfo=timezone.utc)
-    updated = datetime(2024, 6, 1, tzinfo=timezone.utc)
-    e = make_entity(
-        created_at=created,
-        updated_at=updated,
-    )
+    e = make_entity(created_at=created)
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         loaded = store.get_entity(e.entity_id)
 
     assert loaded is not None
     assert loaded.created_at == created
-    assert loaded.updated_at == updated
+    # updated_at is still stamped by the storage layer.
+    assert loaded.updated_at is not None
+    assert loaded.updated_at >= created
+
+
+def test_save_entity_advances_updated_at_on_update(
+    tmp_path,
+):
+    """A subsequent save preserves created_at and bumps
+    updated_at."""
+    db = tmp_path / "kg.db"
+    e = make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        first = store.get_entity(e.entity_id)
+        # Re-save with a changed field.
+        store.save_entity(
+            replace(first, description="v2")
+        )
+        second = store.get_entity(e.entity_id)
+
+    assert first is not None and second is not None
+    assert second.created_at == first.created_at
+    assert second.updated_at > first.updated_at
+
+
+def test_backfill_entity_timestamps_populates_nulls(
+    tmp_path,
+):
+    """The backfill helper fills NULL timestamps from the
+    history audit log without touching rows that already
+    have values."""
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        e = make_entity()
+        store.save_entity(e)
+        # Simulate a legacy row: null out its timestamps.
+        store._conn.execute(
+            "UPDATE entities "
+            "SET created_at = NULL, updated_at = NULL "
+            "WHERE entity_id = ?",
+            (e.entity_id,),
+        )
+        store._conn.commit()
+
+        updated = store.backfill_entity_timestamps()
+        loaded = store.get_entity(e.entity_id)
+
+        # Re-running is a no-op.
+        again = store.backfill_entity_timestamps()
+
+    assert updated == 1
+    assert again == 0
+    assert loaded is not None
+    assert loaded.created_at is not None
+    assert loaded.updated_at == loaded.created_at
 
 
 # -- KnowledgeStore: ROLE and RELATION_KIND entities --
