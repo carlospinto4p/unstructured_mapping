@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.32.0 - 13th April 2026
+
+- Added `wikidata/` module for KG bootstrap from Wikidata:
+  - `client.py`: `SparqlClient` with retry/backoff on 429 and 5xx.
+  - `queries.py`: `LISTED_COMPANIES_QUERY` and `build_query()`.
+  - `mapper.py`: `map_company_row()` and `MappedEntity`.
+- Added `cli/wikidata_seed.py`: fetches companies from Wikidata, dedups by `wikidata:Qxxx` alias then by `canonical_name`+type, tags history with `reason="wikidata-seed"`. Supports `--type`, `--limit`, `--dry-run`, and `--snapshot` for reproducibility.
+- Added external-identifier alias convention: `wikidata:Qxxx`, `ticker:AAPL`, `isin:US0378331005` — documented in `docs/seed/wikidata.md`.
+- Added unit tests:
+  - `tests/unit/test_wikidata_client.py`: 4 tests using `httpx.MockTransport`.
+  - `tests/unit/test_wikidata_mapper.py`: 9 tests.
+  - `tests/unit/test_wikidata_seed.py`: 8 tests.
+
+
 ### v0.31.5 - 12th April 2026
 
 - Refactored `knowledge_graph/`:

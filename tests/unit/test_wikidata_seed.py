@@ -1,0 +1,145 @@
+"""Tests for the Wikidata seed CLI."""
+
+import json
+from pathlib import Path
+
+import pytest
+
+from unstructured_mapping.cli import wikidata_seed
+from unstructured_mapping.knowledge_graph import (
+    Entity,
+    EntityType,
+    KnowledgeStore,
+)
+from unstructured_mapping.wikidata.mapper import (
+    MappedEntity,
+)
+from unstructured_mapping.wikidata.queries import (
+    LISTED_COMPANIES_QUERY,
+    build_query,
+)
+
+
+def _mapped(qid: str, name: str, aliases=()) -> MappedEntity:
+    return MappedEntity(
+        qid=qid,
+        entity=Entity(
+            canonical_name=name,
+            entity_type=EntityType.ORGANIZATION,
+            subtype="company",
+            description=f"{name} is a company.",
+            aliases=tuple([f"wikidata:{qid}", *aliases]),
+        ),
+    )
+
+
+# -- build_query ------------------------------------------------
+
+
+def test_build_query_substitutes_limit():
+    sparql = build_query(LISTED_COMPANIES_QUERY, limit=42)
+    assert "LIMIT 42" in sparql
+
+
+def test_build_query_rejects_non_positive_limit():
+    with pytest.raises(ValueError):
+        build_query(LISTED_COMPANIES_QUERY, limit=0)
+
+
+# -- import_entities --------------------------------------------
+
+
+def test_import_entities_creates_new_entries(tmp_path: Path):
+    mapped = [_mapped("Q1", "Alpha"), _mapped("Q2", "Beta")]
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        created, skipped, counts = (
+            wikidata_seed.import_entities(mapped, store)
+        )
+    assert created == 2
+    assert skipped == 0
+    assert counts["company"] == 2
+
+
+def test_import_entities_dedups_by_wikidata_qid(
+    tmp_path: Path,
+):
+    db = tmp_path / "kg.db"
+    mapped = _mapped("Q1", "Alpha")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(mapped.entity)
+        created, skipped, _ = wikidata_seed.import_entities(
+            [_mapped("Q1", "Alpha Renamed")], store
+        )
+    # Same QID alias → already_imported skips even though
+    # the canonical_name changed.
+    assert created == 0
+    assert skipped == 1
+
+
+def test_import_entities_dedups_by_name_and_type(
+    tmp_path: Path,
+):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        # Pre-existing curated entry (no Wikidata QID)
+        store.save_entity(
+            Entity(
+                canonical_name="Apple Inc.",
+                entity_type=EntityType.ORGANIZATION,
+                subtype="company",
+                description="Curated.",
+            )
+        )
+        created, skipped, _ = wikidata_seed.import_entities(
+            [_mapped("Q312", "Apple Inc.")], store
+        )
+    assert created == 0
+    assert skipped == 1
+
+
+def test_import_entities_dry_run_does_not_write(
+    tmp_path: Path,
+):
+    db = tmp_path / "kg.db"
+    mapped = [_mapped("Q1", "Alpha")]
+    with KnowledgeStore(db_path=db) as store:
+        created, skipped, _ = wikidata_seed.import_entities(
+            mapped, store, dry_run=True
+        )
+        assert created == 1
+        assert skipped == 0
+        assert store.find_by_alias("wikidata:Q1") == []
+
+
+def test_import_entities_tags_history_with_wikidata_reason(
+    tmp_path: Path,
+):
+    db = tmp_path / "kg.db"
+    mapped = [_mapped("Q1", "Alpha")]
+    with KnowledgeStore(db_path=db) as store:
+        wikidata_seed.import_entities(mapped, store)
+        saved = store.find_by_alias("wikidata:Q1")[0]
+        history = store.get_entity_history(saved.entity_id)
+        assert history[0].reason == "wikidata-seed"
+
+
+# -- snapshot ---------------------------------------------------
+
+
+def test_write_snapshot_produces_seed_compatible_file(
+    tmp_path: Path,
+):
+    mapped = [
+        _mapped("Q1", "Alpha", aliases=("ticker:ALP",)),
+    ]
+    path = tmp_path / "snapshot.json"
+    wikidata_seed._write_snapshot(mapped, path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert data["version"] == 1
+    entry = data["entities"][0]
+    assert entry["canonical_name"] == "Alpha"
+    assert entry["entity_type"] == "organization"
+    assert entry["subtype"] == "company"
+    assert "wikidata:Q1" in entry["aliases"]
+    assert "ticker:ALP" in entry["aliases"]
