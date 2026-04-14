@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "reason": "wikidata-seed",
   "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
   "entities": [
     {

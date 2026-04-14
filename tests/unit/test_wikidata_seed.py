@@ -225,6 +225,7 @@ def test_write_snapshot_produces_seed_compatible_file(
     wikidata_seed._write_snapshot(mapped, path)
     data = json.loads(path.read_text(encoding="utf-8"))
     assert data["version"] == 1
+    assert data["reason"] == "wikidata-seed"
     entry = data["entities"][0]
     assert entry["canonical_name"] == "Alpha"
     assert entry["entity_type"] == "organization"

@@ -1,7 +1,48 @@
 {
   "version": 1,
+  "reason": "wikidata-seed",
   "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
   "entities": [
+    {
+      "canonical_name": "Cape Verdean escudo",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Cape Verdean escudo is a fiat currency, with ISO 4217 code CVE, issued by Cape Verde. currency of the Republic of Cape Verde",
+      "aliases": [
+        "wikidata:Q4591",
+        "iso:CVE"
+      ]
+    },
+    {
+      "canonical_name": "Djiboutian franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Djiboutian franc is a fiat currency, with ISO 4217 code DJF, issued by Djibouti. currency of Djibouti",
+      "aliases": [
+        "wikidata:Q4594",
+        "iso:DJF"
+      ]
+    },
+    {
+      "canonical_name": "Seychellois rupee",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Seychellois rupee is a fiat currency, with ISO 4217 code SCR, issued by Seychelles. currency of the Seychelles",
+      "aliases": [
+        "wikidata:Q4595",
+        "iso:SCR"
+      ]
+    },
+    {
+      "canonical_name": "Fijian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Fijian dollar is a fiat currency, with ISO 4217 code FJD, issued by Fiji. currency of Fiji",
+      "aliases": [
+        "wikidata:Q4592",
+        "iso:FJD"
+      ]
+    },
     {
       "canonical_name": "leone",
       "entity_type": "asset",
@@ -40,6 +81,36 @@
       "aliases": [
         "wikidata:Q4589",
         "iso:TZS"
+      ]
+    },
+    {
+      "canonical_name": "Ugandan shilling",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Ugandan shilling is a fiat currency, with ISO 4217 code UGX, issued by Uganda. currency of Uganda",
+      "aliases": [
+        "wikidata:Q4598",
+        "iso:UGX"
+      ]
+    },
+    {
+      "canonical_name": "Sri Lankan rupee",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Sri Lankan rupee is a fiat currency, with ISO 4217 code LKR, issued by Sri Lanka. currency of Sri Lanka",
+      "aliases": [
+        "wikidata:Q4596",
+        "iso:LKR"
+      ]
+    },
+    {
+      "canonical_name": "Solomon Islands dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Solomon Islands dollar is a fiat currency, with ISO 4217 code SBD, issued by Solomon Islands. currency of the Solomon Islands",
+      "aliases": [
+        "wikidata:Q4597",
+        "iso:SBD"
       ]
     },
     {
@@ -123,43 +194,103 @@
       ]
     },
     {
-      "canonical_name": "Cape Verdean escudo",
+      "canonical_name": "Tunisian dinar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Cape Verdean escudo is a fiat currency, with ISO 4217 code CVE, issued by Cape Verde. currency of the Republic of Cape Verde",
+      "description": "Tunisian dinar is a fiat currency, with ISO 4217 code TND, issued by Tunisia. currency of Tunisia",
       "aliases": [
-        "wikidata:Q4591",
-        "iso:CVE"
+        "wikidata:Q4602",
+        "iso:TND"
       ]
     },
     {
-      "canonical_name": "Djiboutian franc",
+      "canonical_name": "Somali shilling",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Djiboutian franc is a fiat currency, with ISO 4217 code DJF, issued by Djibouti. currency of Djibouti",
+      "description": "Somali shilling is a fiat currency, with ISO 4217 code SOS, issued by Somalia. currency of Somalia",
       "aliases": [
-        "wikidata:Q4594",
-        "iso:DJF"
+        "wikidata:Q4603",
+        "iso:SOS"
       ]
     },
     {
-      "canonical_name": "Seychellois rupee",
+      "canonical_name": "Georgian lari",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Seychellois rupee is a fiat currency, with ISO 4217 code SCR, issued by Seychelles. currency of the Seychelles",
+      "description": "Georgian lari is a fiat currency, with ISO 4217 code GEL, issued by Georgia. currency of Georgia",
       "aliases": [
-        "wikidata:Q4595",
-        "iso:SCR"
+        "wikidata:Q4608",
+        "iso:GEL"
       ]
     },
     {
-      "canonical_name": "Fijian dollar",
+      "canonical_name": "Tongan paʻanga",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Fijian dollar is a fiat currency, with ISO 4217 code FJD, issued by Fiji. currency of Fiji",
+      "description": "Tongan paʻanga is a fiat currency, with ISO 4217 code TOP, issued by Tonga. currency of Tonga",
       "aliases": [
-        "wikidata:Q4592",
-        "iso:FJD"
+        "wikidata:Q4613",
+        "iso:TOP"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Mark",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Deutsche Mark is a fiat currency, with ISO 4217 code DEM, issued by West Germany. official currency of West Germany and later Germany from 1948 to 2002",
+      "aliases": [
+        "wikidata:Q16068",
+        "iso:DEM"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Mark",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Deutsche Mark is a fiat currency, with ISO 4217 code DEM, issued by Germany. official currency of West Germany and later Germany from 1948 to 2002",
+      "aliases": [
+        "wikidata:Q16068",
+        "iso:DEM"
+      ]
+    },
+    {
+      "canonical_name": "Philippine peso",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Philippine peso is a fiat currency, with ISO 4217 code PHP, issued by Philippines. official currency of the Philippines",
+      "aliases": [
+        "wikidata:Q17193",
+        "iso:PHP"
+      ]
+    },
+    {
+      "canonical_name": "Albanian lek",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Albanian lek is a fiat currency, with ISO 4217 code ALL, issued by Albania. Albanian currency",
+      "aliases": [
+        "wikidata:Q125999",
+        "iso:ALL"
+      ]
+    },
+    {
+      "canonical_name": "Estonian kroon",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Estonian kroon is a fiat currency, with ISO 4217 code EEK, issued by Estonia. currency",
+      "aliases": [
+        "wikidata:Q129983",
+        "iso:EEK"
+      ]
+    },
+    {
+      "canonical_name": "Armenian dram",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Armenian dram is a fiat currency, with ISO 4217 code AMD, issued by Armenia. official currency of Armenia",
+      "aliases": [
+        "wikidata:Q130498",
+        "iso:AMD"
       ]
     },
     {
@@ -203,43 +334,43 @@
       ]
     },
     {
-      "canonical_name": "Honduran lempira",
+      "canonical_name": "Burundian franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Honduran lempira is a fiat currency, with ISO 4217 code HNL, issued by Honduras. currency of Honduras",
+      "description": "Burundian franc is a fiat currency, with ISO 4217 code BIF, issued by Burundi. currency of Burundi",
       "aliases": [
-        "wikidata:Q4719",
-        "iso:HNL"
+        "wikidata:Q238007",
+        "iso:BIF"
       ]
     },
     {
-      "canonical_name": "peso",
+      "canonical_name": "Syrian pound",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "peso is a fiat currency, with ISO 4217 code MXN, issued by Mexico. currency of Mexico",
+      "description": "Syrian pound is a fiat currency, with ISO 4217 code SYP, issued by Syria. currency",
       "aliases": [
-        "wikidata:Q4730",
-        "iso:MXN"
+        "wikidata:Q240468",
+        "iso:SYP"
       ]
     },
     {
-      "canonical_name": "Congolese franc",
+      "canonical_name": "Yemeni Rial",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Congolese franc is a fiat currency, with ISO 4217 code CDF, issued by Democratic Republic of the Congo. currency of the Democratic Republic of the Congo",
+      "description": "Yemeni Rial is a fiat currency, with ISO 4217 code YER, issued by Yemen. Official currency of Yemen",
       "aliases": [
-        "wikidata:Q4734",
-        "iso:CDF"
+        "wikidata:Q240512",
+        "iso:YER"
       ]
     },
     {
-      "canonical_name": "Rwandan franc",
+      "canonical_name": "Macanese pataca",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Rwandan franc is a fiat currency, with ISO 4217 code RWF, issued by Rwanda. currency of Rwanda",
+      "description": "Macanese pataca is a fiat currency, with ISO 4217 code MOP, issued by Macau. currency of Macau",
       "aliases": [
-        "wikidata:Q4741",
-        "iso:RWF"
+        "wikidata:Q241214",
+        "iso:MOP"
       ]
     },
     {
@@ -290,286 +421,6 @@
       "aliases": [
         "wikidata:Q232415",
         "iso:BEF"
-      ]
-    },
-    {
-      "canonical_name": "lilangeni",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "lilangeni is a fiat currency, with ISO 4217 code SZL, issued by Eswatini. currency of Eswatini",
-      "aliases": [
-        "wikidata:Q4823",
-        "iso:SZL"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Kosovo. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by San Marino. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Vatican City. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Montenegro. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Monaco. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Malta. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Cyprus. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Andorra. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Croatia. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Bulgaria. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Slovenia. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Slovakia. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Latvia. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Estonia. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Germany. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by France. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Netherlands. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Portugal. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Greece. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Austria. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Italy. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Lithuania. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Finland. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Luxembourg. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Belgium. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Spain. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
-      ]
-    },
-    {
-      "canonical_name": "euro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Ireland. currency of most countries in the European Union",
-      "aliases": [
-        "wikidata:Q4916",
-        "iso:EUR"
       ]
     },
     {
@@ -630,6 +481,416 @@
       "aliases": [
         "wikidata:Q171503",
         "iso:ERN"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Anguilla. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Montserrat. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Dominica. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Antigua and Barbuda. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Grenada. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Saint Kitts and Nevis. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Saint Lucia. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Saint Vincent and the Grenadines. currency of all members of the OECS",
+      "aliases": [
+        "wikidata:Q26365",
+        "iso:XCD"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Hong Kong dollar is a fiat currency, with ISO 4217 code HKD, issued by British Hong Kong. currency of Hong Kong",
+      "aliases": [
+        "wikidata:Q31015",
+        "iso:HKD"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Hong Kong dollar is a fiat currency, with ISO 4217 code HKD, issued by People's Republic of China. currency of Hong Kong",
+      "aliases": [
+        "wikidata:Q31015",
+        "iso:HKD"
+      ]
+    },
+    {
+      "canonical_name": "Kyrgyz som",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Kyrgyz som is a fiat currency, with ISO 4217 code KGS, issued by Kyrgyzstan. currency of Kyrgyzstan",
+      "aliases": [
+        "wikidata:Q35881",
+        "iso:KGS"
+      ]
+    },
+    {
+      "canonical_name": "renminbi",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "renminbi is a fiat currency, with ISO 4217 code CNY, issued by People's Republic of China. official currency of the People's Republic of China",
+      "aliases": [
+        "wikidata:Q39099",
+        "iso:CNY"
+      ]
+    },
+    {
+      "canonical_name": "Rhodesian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code RHD, issued by Zimbabwe Rhodesia. former currency of Rhodesia (1970-1980)",
+      "aliases": [
+        "wikidata:Q392858",
+        "iso:RHD"
+      ]
+    },
+    {
+      "canonical_name": "Rhodesian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code ZWC, issued by Zimbabwe Rhodesia. former currency of Rhodesia (1970-1980)",
+      "aliases": [
+        "wikidata:Q392858",
+        "iso:ZWC"
+      ]
+    },
+    {
+      "canonical_name": "Rhodesian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code RHD, issued by Rhodesia. former currency of Rhodesia (1970-1980)",
+      "aliases": [
+        "wikidata:Q392858",
+        "iso:RHD"
+      ]
+    },
+    {
+      "canonical_name": "Rhodesian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code ZWC, issued by Rhodesia. former currency of Rhodesia (1970-1980)",
+      "aliases": [
+        "wikidata:Q392858",
+        "iso:ZWC"
+      ]
+    },
+    {
+      "canonical_name": "Rhodesian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code RHD, issued by Zimbabwe. former currency of Rhodesia (1970-1980)",
+      "aliases": [
+        "wikidata:Q392858",
+        "iso:RHD"
+      ]
+    },
+    {
+      "canonical_name": "Rhodesian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code ZWC, issued by Zimbabwe. former currency of Rhodesia (1970-1980)",
+      "aliases": [
+        "wikidata:Q392858",
+        "iso:ZWC"
+      ]
+    },
+    {
+      "canonical_name": "Portuguese escudo",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Portuguese escudo is a fiat currency, with ISO 4217 code PTE, issued by Portugal. former currency of Portugal from 1911 until 1999",
+      "aliases": [
+        "wikidata:Q468474",
+        "iso:PTE"
+      ]
+    },
+    {
+      "canonical_name": "Azerbaijani manat",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Azerbaijani manat is a fiat currency, with ISO 4217 code AZN, issued by Azerbaijan. currency",
+      "aliases": [
+        "wikidata:Q483725",
+        "iso:AZN"
+      ]
+    },
+    {
+      "canonical_name": "Turkmenistan new manat",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Turkmenistan new manat is a fiat currency, with ISO 4217 code TMT, issued by Turkmenistan. currency of Turkmenistan",
+      "aliases": [
+        "wikidata:Q486637",
+        "iso:TMT"
+      ]
+    },
+    {
+      "canonical_name": "Cayman Islands dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Cayman Islands dollar is a fiat currency, with ISO 4217 code KYD, issued by Cayman Islands. currency of the Cayman Islands",
+      "aliases": [
+        "wikidata:Q319885",
+        "iso:KYD"
+      ]
+    },
+    {
+      "canonical_name": "Falkland Islands pound",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Falkland Islands pound is a fiat currency, with ISO 4217 code FKP, issued by Falkland Islands. monetary currency of the Falkland Islands",
+      "aliases": [
+        "wikidata:Q330044",
+        "iso:FKP"
+      ]
+    },
+    {
+      "canonical_name": "special drawing rights",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "special drawing rights is a fiat currency, with ISO 4217 code XDR, issued by worldwide. supplementary foreign exchange reserve assets defined and maintained by the IMF",
+      "aliases": [
+        "wikidata:Q363958",
+        "iso:XDR"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUM, issued by Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUM"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUD, issued by Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUD"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUN, issued by Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUN"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUM, issued by Kingdom of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUM"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUD, issued by Kingdom of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUD"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUN, issued by Kingdom of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUN"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUM, issued by Socialist Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUM"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUD, issued by Socialist Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUD"
+      ]
+    },
+    {
+      "canonical_name": "Yugoslav dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUN, issued by Socialist Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
+      "aliases": [
+        "wikidata:Q373429",
+        "iso:YUN"
+      ]
+    },
+    {
+      "canonical_name": "Saint Helena pound",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Saint Helena pound is a fiat currency, with ISO 4217 code SHP, issued by United Kingdom. currency of the Atlantic islands of Saint Helena and Ascension",
+      "aliases": [
+        "wikidata:Q374453",
+        "iso:SHP"
+      ]
+    },
+    {
+      "canonical_name": "Honduran lempira",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Honduran lempira is a fiat currency, with ISO 4217 code HNL, issued by Honduras. currency of Honduras",
+      "aliases": [
+        "wikidata:Q4719",
+        "iso:HNL"
+      ]
+    },
+    {
+      "canonical_name": "peso",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "peso is a fiat currency, with ISO 4217 code MXN, issued by Mexico. currency of Mexico",
+      "aliases": [
+        "wikidata:Q4730",
+        "iso:MXN"
+      ]
+    },
+    {
+      "canonical_name": "Congolese franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Congolese franc is a fiat currency, with ISO 4217 code CDF, issued by Democratic Republic of the Congo. currency of the Democratic Republic of the Congo",
+      "aliases": [
+        "wikidata:Q4734",
+        "iso:CDF"
+      ]
+    },
+    {
+      "canonical_name": "Rwandan franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Rwandan franc is a fiat currency, with ISO 4217 code RWF, issued by Rwanda. currency of Rwanda",
+      "aliases": [
+        "wikidata:Q4741",
+        "iso:RWF"
+      ]
+    },
+    {
+      "canonical_name": "Danish krone",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Danish krone is a fiat currency, with ISO 4217 code DKK, issued by Denmark. official currency of Denmark, Greenland and the Faroe Islands",
+      "aliases": [
+        "wikidata:Q25417",
+        "iso:DKK"
+      ]
+    },
+    {
+      "canonical_name": "Lithuanian litas",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Lithuanian litas is a fiat currency, with ISO 4217 code LTL, issued by Lithuania. former currency of Lithuania",
+      "aliases": [
+        "wikidata:Q25627",
+        "iso:LTL"
+      ]
+    },
+    {
+      "canonical_name": "Croatian kuna",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Croatian kuna is a fiat currency, with ISO 4217 code HRK, issued by Croatia. former currency of Croatia (1994–2022)",
+      "aliases": [
+        "wikidata:Q26360",
+        "iso:HRK"
       ]
     },
     {
@@ -733,483 +994,33 @@
       ]
     },
     {
-      "canonical_name": "South Sudanese pound",
+      "canonical_name": "Saudi riyal",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "South Sudanese pound is a fiat currency, with ISO 4217 code SSP, issued by South Sudan. official currency of the Republic of South Sudan",
+      "description": "Saudi riyal is a fiat currency, with ISO 4217 code SAR, issued by Saudi Arabia. currency of Saudi Arabia",
       "aliases": [
-        "wikidata:Q244366",
-        "iso:SSP"
+        "wikidata:Q199857",
+        "iso:SAR"
       ]
     },
     {
-      "canonical_name": "Colombian peso",
+      "canonical_name": "Tajikistani somoni",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Colombian peso is a fiat currency, with ISO 4217 code COP, issued by Colombia. currency of Colombia",
+      "description": "Tajikistani somoni is a fiat currency, with ISO 4217 code TJS, issued by Tajikistan. national currency of Tajikistan",
       "aliases": [
-        "wikidata:Q244819",
-        "iso:COP"
+        "wikidata:Q199886",
+        "iso:TJS"
       ]
     },
     {
-      "canonical_name": "Australian dollar",
+      "canonical_name": "Chilean peso",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Australian dollar is a fiat currency, with ISO 4217 code AUD, issued by Australia. official currency of Australia; also officially used in Kiribati, Nauru, and Tuvalu",
+      "description": "Chilean peso is a fiat currency, with ISO 4217 code CLP, issued by Chile. currency of Chile",
       "aliases": [
-        "wikidata:Q259502",
-        "iso:AUD"
-      ]
-    },
-    {
-      "canonical_name": "Comorian franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Comorian franc is a fiat currency, with ISO 4217 code KMF, issued by Comoros. Comorian currency",
-      "aliases": [
-        "wikidata:Q267264",
-        "iso:KMF"
-      ]
-    },
-    {
-      "canonical_name": "Irish pound",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Irish pound is a fiat currency, with ISO 4217 code IEP, issued by Ireland. former currency of Ireland",
-      "aliases": [
-        "wikidata:Q270642",
-        "iso:IEP"
-      ]
-    },
-    {
-      "canonical_name": "Sudanese pound",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Sudanese pound is a fiat currency, with ISO 4217 code SDG, issued by Sudan. currency in Sudan",
-      "aliases": [
-        "wikidata:Q271206",
-        "iso:SDG"
-      ]
-    },
-    {
-      "canonical_name": "Omani rial",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Omani rial is a fiat currency, with ISO 4217 code OMR, issued by Oman. currency",
-      "aliases": [
-        "wikidata:Q272290",
-        "iso:OMR"
-      ]
-    },
-    {
-      "canonical_name": "Belize dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Belize dollar is a fiat currency, with ISO 4217 code BZD, issued by Belize. official currency of Belize",
-      "aliases": [
-        "wikidata:Q275112",
-        "iso:BZD"
-      ]
-    },
-    {
-      "canonical_name": "Ukrainian karbovanets",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Ukrainian karbovanets is a fiat currency, with ISO 4217 code UAK, issued by Ukraine. former currency of Ukraine",
-      "aliases": [
-        "wikidata:Q308765",
-        "iso:UAK"
-      ]
-    },
-    {
-      "canonical_name": "Ugandan shilling",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Ugandan shilling is a fiat currency, with ISO 4217 code UGX, issued by Uganda. currency of Uganda",
-      "aliases": [
-        "wikidata:Q4598",
-        "iso:UGX"
-      ]
-    },
-    {
-      "canonical_name": "Sri Lankan rupee",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Sri Lankan rupee is a fiat currency, with ISO 4217 code LKR, issued by Sri Lanka. currency of Sri Lanka",
-      "aliases": [
-        "wikidata:Q4596",
-        "iso:LKR"
-      ]
-    },
-    {
-      "canonical_name": "Solomon Islands dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Solomon Islands dollar is a fiat currency, with ISO 4217 code SBD, issued by Solomon Islands. currency of the Solomon Islands",
-      "aliases": [
-        "wikidata:Q4597",
-        "iso:SBD"
-      ]
-    },
-    {
-      "canonical_name": "Macedonian denar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Macedonian denar is a fiat currency, with ISO 4217 code MKD, issued by North Macedonia. currency of North Macedonia",
-      "aliases": [
-        "wikidata:Q177875",
-        "iso:MKD"
-      ]
-    },
-    {
-      "canonical_name": "baht",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "baht is a fiat currency, with ISO 4217 code THB, issued by Thailand. official currency of Thailand",
-      "aliases": [
-        "wikidata:Q177882",
-        "iso:THB"
-      ]
-    },
-    {
-      "canonical_name": "Slovak koruna",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Slovak koruna is a fiat currency, with ISO 4217 code SKK, issued by Slovakia. currency of Slovakia, 1993–2008",
-      "aliases": [
-        "wikidata:Q178874",
-        "iso:SKK"
-      ]
-    },
-    {
-      "canonical_name": "Cayman Islands dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Cayman Islands dollar is a fiat currency, with ISO 4217 code KYD, issued by Cayman Islands. currency of the Cayman Islands",
-      "aliases": [
-        "wikidata:Q319885",
-        "iso:KYD"
-      ]
-    },
-    {
-      "canonical_name": "Falkland Islands pound",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Falkland Islands pound is a fiat currency, with ISO 4217 code FKP, issued by Falkland Islands. monetary currency of the Falkland Islands",
-      "aliases": [
-        "wikidata:Q330044",
-        "iso:FKP"
-      ]
-    },
-    {
-      "canonical_name": "special drawing rights",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "special drawing rights is a fiat currency, with ISO 4217 code XDR, issued by worldwide. supplementary foreign exchange reserve assets defined and maintained by the IMF",
-      "aliases": [
-        "wikidata:Q363958",
-        "iso:XDR"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUM, issued by Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUM"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUM, issued by Kingdom of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUM"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUM, issued by Socialist Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUM"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUD, issued by Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUD"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUN, issued by Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUN"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUD, issued by Kingdom of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUD"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUN, issued by Kingdom of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUN"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUD, issued by Socialist Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUD"
-      ]
-    },
-    {
-      "canonical_name": "Yugoslav dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yugoslav dinar is a fiat currency, with ISO 4217 code YUN, issued by Socialist Federal Republic of Yugoslavia. currency of the three Yugoslav states between 1918 and 2003",
-      "aliases": [
-        "wikidata:Q373429",
-        "iso:YUN"
-      ]
-    },
-    {
-      "canonical_name": "Saint Helena pound",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Saint Helena pound is a fiat currency, with ISO 4217 code SHP, issued by United Kingdom. currency of the Atlantic islands of Saint Helena and Ascension",
-      "aliases": [
-        "wikidata:Q374453",
-        "iso:SHP"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Senegal. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Niger. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Ivory Coast. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Guinea-Bissau. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Burkina Faso. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Benin. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Togo. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "West African CFA franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Mali. currency of several West African countries",
-      "aliases": [
-        "wikidata:Q861690",
-        "iso:XOF"
-      ]
-    },
-    {
-      "canonical_name": "Ecuadorian sucre",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Ecuadorian sucre is a fiat currency, with ISO 4217 code ECS, issued by Ecuador. former currency of Ecuador",
-      "aliases": [
-        "wikidata:Q911562",
-        "iso:ECS"
-      ]
-    },
-    {
-      "canonical_name": "Brazilian cruzado",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Brazilian cruzado is a fiat currency, with ISO 4217 code BRC, issued by Brazil. Brazilian currency from 1986 to 1989",
-      "aliases": [
-        "wikidata:Q926028",
-        "iso:BRC"
-      ]
-    },
-    {
-      "canonical_name": "Equatorial Guinean ekwele",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Equatorial Guinean ekwele is a fiat currency, with ISO 4217 code GQE, issued by Equatorial Guinea. former Equatorial Guinean currency",
-      "aliases": [
-        "wikidata:Q971818",
-        "iso:GQE"
-      ]
-    },
-    {
-      "canonical_name": "Sammarinese lira",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Sammarinese lira is a fiat currency, with ISO 4217 code SML, issued by San Marino. currency",
-      "aliases": [
-        "wikidata:Q1063029",
-        "iso:SML"
-      ]
-    },
-    {
-      "canonical_name": "Canadian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Canadian dollar is a fiat currency, with ISO 4217 code CAD, issued by Canada. currency of Canada",
-      "aliases": [
-        "wikidata:Q1104069",
-        "iso:CAD"
-      ]
-    },
-    {
-      "canonical_name": "Albanian lek",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Albanian lek is a fiat currency, with ISO 4217 code ALL, issued by Albania. Albanian currency",
-      "aliases": [
-        "wikidata:Q125999",
-        "iso:ALL"
-      ]
-    },
-    {
-      "canonical_name": "Estonian kroon",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Estonian kroon is a fiat currency, with ISO 4217 code EEK, issued by Estonia. currency",
-      "aliases": [
-        "wikidata:Q129983",
-        "iso:EEK"
-      ]
-    },
-    {
-      "canonical_name": "Armenian dram",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Armenian dram is a fiat currency, with ISO 4217 code AMD, issued by Armenia. official currency of Armenia",
-      "aliases": [
-        "wikidata:Q130498",
-        "iso:AMD"
-      ]
-    },
-    {
-      "canonical_name": "Serbian dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Serbian dinar is a fiat currency, with ISO 4217 code RSD, issued by Serbia. Serbian currency",
-      "aliases": [
-        "wikidata:Q172524",
-        "iso:RSD"
-      ]
-    },
-    {
-      "canonical_name": "Bulgarian lev",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Bulgarian lev is a fiat currency, with ISO 4217 code BGN, issued by Bulgaria. currency of Bulgaria from 1880 to 2025 (iso: BGN)",
-      "aliases": [
-        "wikidata:Q172540",
-        "iso:BGN"
-      ]
-    },
-    {
-      "canonical_name": "Turkish lira",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Turkish lira is a fiat currency, with ISO 4217 code TRY, issued by Northern Cyprus. currency of Turkey",
-      "aliases": [
-        "wikidata:Q172872",
-        "iso:TRY"
-      ]
-    },
-    {
-      "canonical_name": "Turkish lira",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Turkish lira is a fiat currency, with ISO 4217 code TRY, issued by Turkey. currency of Turkey",
-      "aliases": [
-        "wikidata:Q172872",
-        "iso:TRY"
+        "wikidata:Q200050",
+        "iso:CLP"
       ]
     },
     {
@@ -1243,363 +1054,73 @@
       ]
     },
     {
-      "canonical_name": "Romanian Leu",
+      "canonical_name": "Botswana pula",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Romanian Leu is a fiat currency, with ISO 4217 code RON, issued by Romania. currency of Romania",
+      "description": "Botswana pula is a fiat currency, with ISO 4217 code BWP, issued by Botswana. official currency of Botswana",
       "aliases": [
-        "wikidata:Q131645",
-        "iso:RON"
+        "wikidata:Q186794",
+        "iso:BWP"
       ]
     },
     {
-      "canonical_name": "Norwegian krone",
+      "canonical_name": "Pakistani rupee",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Norwegian krone is a fiat currency, with ISO 4217 code NOK, issued by Norway. currency of Norway",
+      "description": "Pakistani rupee is a fiat currency, with ISO 4217 code PKR, issued by Pakistan. currency",
       "aliases": [
-        "wikidata:Q132643",
-        "iso:NOK"
+        "wikidata:Q188289",
+        "iso:PKR"
       ]
     },
     {
-      "canonical_name": "Latvian lats",
+      "canonical_name": "Iranian rial",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Latvian lats is a fiat currency, with ISO 4217 code LVL, issued by Latvia. former Latvian currency",
+      "description": "Iranian rial is a fiat currency, with ISO 4217 code IRR, issued by Iran. currency of Iran",
       "aliases": [
-        "wikidata:Q133011",
-        "iso:LVL"
+        "wikidata:Q188608",
+        "iso:IRR"
       ]
     },
     {
-      "canonical_name": "Lithuanian talonas",
+      "canonical_name": "Czech koruna",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Lithuanian talonas is a fiat currency, with ISO 4217 code LTT, issued by Lithuania. former currency of Lithuania",
+      "description": "Czech koruna is a fiat currency, with ISO 4217 code 203, issued by Czech Republic. currency of the Czech Republic",
       "aliases": [
-        "wikidata:Q1130620",
-        "iso:LTT"
+        "wikidata:Q131016",
+        "iso:203"
       ]
     },
     {
-      "canonical_name": "SUCRE",
+      "canonical_name": "Czech koruna",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "SUCRE is a fiat currency, with ISO 4217 code XSU, issued by Venezuela. proposed regional currency in Latin America",
+      "description": "Czech koruna is a fiat currency, with ISO 4217 code CZK, issued by Czech Republic. currency of the Czech Republic",
       "aliases": [
-        "wikidata:Q1148329",
-        "iso:XSU"
+        "wikidata:Q131016",
+        "iso:CZK"
       ]
     },
     {
-      "canonical_name": "Financial rand",
+      "canonical_name": "new shekel",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Financial rand is a fiat currency, with ISO 4217 code ZAL, issued by South Africa. South Africa currency system",
+      "description": "new shekel is a fiat currency, with ISO 4217 code ILS, issued by Israel. currency of Israel and occupied territories",
       "aliases": [
-        "wikidata:Q1291684",
-        "iso:ZAL"
+        "wikidata:Q131309",
+        "iso:ILS"
       ]
     },
     {
-      "canonical_name": "Guinea-Bissau peso",
+      "canonical_name": "Icelandic króna",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Guinea-Bissau peso is a fiat currency, with ISO 4217 code GWP, issued by Guinea-Bissau. currency of Guinea-Bissau from 1975 to 1997",
+      "description": "Icelandic króna is a fiat currency, with ISO 4217 code ISK, issued by Iceland. currency of Iceland",
       "aliases": [
-        "wikidata:Q1329465",
-        "iso:GWP"
-      ]
-    },
-    {
-      "canonical_name": "Portuguese Timorese escudo",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Portuguese Timorese escudo is a fiat currency, with ISO 4217 code TPE, issued by Portuguese Timor. timorese currency (1959-1976)",
-      "aliases": [
-        "wikidata:Q1367371",
-        "iso:TPE"
-      ]
-    },
-    {
-      "canonical_name": "Malagasy franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Malagasy franc is a fiat currency, with ISO 4217 code MGF, issued by Madagascar. former currency of Madagascar",
-      "aliases": [
-        "wikidata:Q1440737",
-        "iso:MGF"
-      ]
-    },
-    {
-      "canonical_name": "New Zealand dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "New Zealand dollar is a fiat currency, with ISO 4217 code NZD, issued by New Zealand. currency of New Zealand",
-      "aliases": [
-        "wikidata:Q1472704",
-        "iso:NZD"
-      ]
-    },
-    {
-      "canonical_name": "Portuguese Guinean escudo",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Portuguese Guinean escudo is a fiat currency, with ISO 4217 code GWE, issued by Portuguese Guinea. Currency of Portuguese",
-      "aliases": [
-        "wikidata:Q2340666",
-        "iso:GWE"
-      ]
-    },
-    {
-      "canonical_name": "Bolivian peso",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Bolivian peso is a fiat currency, with ISO 4217 code BOP, issued by Bolivia. former currency of Bolivia from 1963 until 1986",
-      "aliases": [
-        "wikidata:Q2414435",
-        "iso:BOP"
-      ]
-    },
-    {
-      "canonical_name": "Tajikistani ruble",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Tajikistani ruble is a fiat currency, with ISO 4217 code TJR, issued by Tajikistan. currency of Tajikistan between May 10, 1995 and October 29, 2000",
-      "aliases": [
-        "wikidata:Q2423956",
-        "iso:TJR"
-      ]
-    },
-    {
-      "canonical_name": "Latvian rublis",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Latvian rublis is a fiat currency, with ISO 4217 code LVR, issued by Latvia. former currency of Latvia",
-      "aliases": [
-        "wikidata:Q2472225",
-        "iso:LVR"
-      ]
-    },
-    {
-      "canonical_name": "Bosnia and Herzegovina dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Bosnia and Herzegovina dinar is a fiat currency, with ISO 4217 code BAD, issued by Republic of Bosnia and Herzegovina. Currency of Republic of Bosnia and Herzegovina (1991-1998)",
-      "aliases": [
-        "wikidata:Q2538687",
-        "iso:BAD"
-      ]
-    },
-    {
-      "canonical_name": "Bosnia and Herzegovina dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Bosnia and Herzegovina dinar is a fiat currency, with ISO 4217 code BAD, issued by Bosnia and Herzegovina. Currency of Republic of Bosnia and Herzegovina (1991-1998)",
-      "aliases": [
-        "wikidata:Q2538687",
-        "iso:BAD"
-      ]
-    },
-    {
-      "canonical_name": "Malian franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Malian franc is a fiat currency, with ISO 4217 code MLF, issued by Mali. historical currency of Mali (1962–1984)",
-      "aliases": [
-        "wikidata:Q2629054",
-        "iso:MLF"
-      ]
-    },
-    {
-      "canonical_name": "Old Israeli shekel",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Old Israeli shekel is a fiat currency, with ISO 4217 code ILR, issued by Israel. currency of the State of Israel between 24 February 1980 and 31 December 1985",
-      "aliases": [
-        "wikidata:Q2720762",
-        "iso:ILR"
-      ]
-    },
-    {
-      "canonical_name": "UIC franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "UIC franc is a fiat currency, with ISO 4217 code XFU. former ISO 4217 defined account curency",
-      "aliases": [
-        "wikidata:Q3080510",
-        "iso:XFU"
-      ]
-    },
-    {
-      "canonical_name": "MVDOL",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "MVDOL is a fiat currency, with ISO 4217 code BOV, issued by Bolivia. Bolivial currency, as a maintained value between Bolivian bolivar and US dollar",
-      "aliases": [
-        "wikidata:Q5731551",
-        "iso:BOV"
-      ]
-    },
-    {
-      "canonical_name": "Unidad de Valor Constante",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Unidad de Valor Constante is a fiat currency, with ISO 4217 code ECV, issued by Ecuador. former currency created by the \"Ley de Valores\" of Ecuador in 1993",
-      "aliases": [
-        "wikidata:Q7884824",
-        "iso:ECV"
-      ]
-    },
-    {
-      "canonical_name": "cruzeiro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "cruzeiro is a fiat currency, with ISO 4217 code BRB, issued by Brazil. Brazilian currency from 1970 to 1986",
-      "aliases": [
-        "wikidata:Q10261894",
-        "iso:BRB"
-      ]
-    },
-    {
-      "canonical_name": "cruzeiro",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "cruzeiro is a fiat currency, with ISO 4217 code BRE, issued by Brazil. Brazilian currency from 1990 to 1993",
-      "aliases": [
-        "wikidata:Q10261896",
-        "iso:BRE"
-      ]
-    },
-    {
-      "canonical_name": "Georgian kuponi",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Georgian kuponi is a fiat currency, with ISO 4217 code GEK, issued by Georgia. former currency of Georgia, used 1993-1995",
-      "aliases": [
-        "wikidata:Q10749151",
-        "iso:GEK"
-      ]
-    },
-    {
-      "canonical_name": "convertible mark",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "convertible mark is a fiat currency, with ISO 4217 code BAM, issued by Bosnia and Herzegovina. currency of Bosnia and Herzegovina",
-      "aliases": [
-        "wikidata:Q179620",
-        "iso:BAM"
-      ]
-    },
-    {
-      "canonical_name": "Moldovan leu",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Moldovan leu is a fiat currency, with ISO 4217 code MDL, issued by Moldova. currency",
-      "aliases": [
-        "wikidata:Q181129",
-        "iso:MDL"
-      ]
-    },
-    {
-      "canonical_name": "rand",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "rand is a fiat currency, with ISO 4217 code ZAR, issued by South Africa. official currency of South Africa",
-      "aliases": [
-        "wikidata:Q181907",
-        "iso:ZAR"
-      ]
-    },
-    {
-      "canonical_name": "Burundian franc",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Burundian franc is a fiat currency, with ISO 4217 code BIF, issued by Burundi. currency of Burundi",
-      "aliases": [
-        "wikidata:Q238007",
-        "iso:BIF"
-      ]
-    },
-    {
-      "canonical_name": "Syrian pound",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Syrian pound is a fiat currency, with ISO 4217 code SYP, issued by Syria. currency",
-      "aliases": [
-        "wikidata:Q240468",
-        "iso:SYP"
-      ]
-    },
-    {
-      "canonical_name": "Yemeni Rial",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Yemeni Rial is a fiat currency, with ISO 4217 code YER, issued by Yemen. Official currency of Yemen",
-      "aliases": [
-        "wikidata:Q240512",
-        "iso:YER"
-      ]
-    },
-    {
-      "canonical_name": "Macanese pataca",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Macanese pataca is a fiat currency, with ISO 4217 code MOP, issued by Macau. currency of Macau",
-      "aliases": [
-        "wikidata:Q241214",
-        "iso:MOP"
-      ]
-    },
-    {
-      "canonical_name": "United States dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "United States dollar is a fiat currency, with ISO 4217 code USD, issued by United States. official currency of the United States",
-      "aliases": [
-        "wikidata:Q4917",
-        "iso:USD"
-      ]
-    },
-    {
-      "canonical_name": "yen",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "yen is a fiat currency, with ISO 4217 code JPY, issued by Japan. official currency of Japan",
-      "aliases": [
-        "wikidata:Q8146",
-        "iso:JPY"
-      ]
-    },
-    {
-      "canonical_name": "Iraqi dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Iraqi dinar is a fiat currency, with ISO 4217 code IQD, issued by Iraq. official currency of Iraq",
-      "aliases": [
-        "wikidata:Q193094",
-        "iso:IQD"
-      ]
-    },
-    {
-      "canonical_name": "Kuwaiti dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Kuwaiti dinar is a fiat currency, with ISO 4217 code KWD, issued by Kuwait. Currency of Kuwait",
-      "aliases": [
-        "wikidata:Q193098",
-        "iso:KWD"
-      ]
-    },
-    {
-      "canonical_name": "São Tomé and Príncipe dobra",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "São Tomé and Príncipe dobra is a fiat currency, with ISO 4217 code STN, issued by São Tomé and Príncipe. currency unit of the republic of São Tomé and Príncipe",
-      "aliases": [
-        "wikidata:Q193712",
-        "iso:STN"
+        "wikidata:Q131473",
+        "iso:ISK"
       ]
     },
     {
@@ -1643,133 +1164,33 @@
       ]
     },
     {
-      "canonical_name": "Trinidad and Tobago dollar",
+      "canonical_name": "Brazilian real",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Trinidad and Tobago dollar is a fiat currency, with ISO 4217 code TTD, issued by Trinidad and Tobago. currency of Trinidad and Tobago",
+      "description": "Brazilian real is a fiat currency, with ISO 4217 code BRL, issued by Brazil. Brazilian currency since 1994",
       "aliases": [
-        "wikidata:Q242890",
-        "iso:TTD"
+        "wikidata:Q173117",
+        "iso:BRL"
       ]
     },
     {
-      "canonical_name": "Costa Rican colón",
+      "canonical_name": "Kazakhstani tenge",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Costa Rican colón is a fiat currency, with ISO 4217 code CRC, issued by Costa Rica. currency of Costa Rica",
+      "description": "Kazakhstani tenge is a fiat currency, with ISO 4217 code KZT, issued by Kazakhstan. currency of Kazakhstan",
       "aliases": [
-        "wikidata:Q242915",
-        "iso:CRC"
+        "wikidata:Q173751",
+        "iso:KZT"
       ]
     },
     {
-      "canonical_name": "Dominican peso",
+      "canonical_name": "Maltese lira",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Dominican peso is a fiat currency, with ISO 4217 code DOP, issued by Dominican Republic. currency of the Dominican Republic",
+      "description": "Maltese lira is a fiat currency, with ISO 4217 code MTL, issued by Malta. Currency of Malta from 1972 until 2008",
       "aliases": [
-        "wikidata:Q242922",
-        "iso:DOP"
-      ]
-    },
-    {
-      "canonical_name": "Liberian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Liberian dollar is a fiat currency, with ISO 4217 code LRD, issued by Liberia. currency of Liberia",
-      "aliases": [
-        "wikidata:Q242988",
-        "iso:LRD"
-      ]
-    },
-    {
-      "canonical_name": "Rhodesian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code RHD, issued by Zimbabwe Rhodesia. former currency of Rhodesia (1970-1980)",
-      "aliases": [
-        "wikidata:Q392858",
-        "iso:RHD"
-      ]
-    },
-    {
-      "canonical_name": "Rhodesian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code ZWC, issued by Zimbabwe Rhodesia. former currency of Rhodesia (1970-1980)",
-      "aliases": [
-        "wikidata:Q392858",
-        "iso:ZWC"
-      ]
-    },
-    {
-      "canonical_name": "Rhodesian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code RHD, issued by Rhodesia. former currency of Rhodesia (1970-1980)",
-      "aliases": [
-        "wikidata:Q392858",
-        "iso:RHD"
-      ]
-    },
-    {
-      "canonical_name": "Rhodesian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code ZWC, issued by Rhodesia. former currency of Rhodesia (1970-1980)",
-      "aliases": [
-        "wikidata:Q392858",
-        "iso:ZWC"
-      ]
-    },
-    {
-      "canonical_name": "Rhodesian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code RHD, issued by Zimbabwe. former currency of Rhodesia (1970-1980)",
-      "aliases": [
-        "wikidata:Q392858",
-        "iso:RHD"
-      ]
-    },
-    {
-      "canonical_name": "Rhodesian dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Rhodesian dollar is a fiat currency, with ISO 4217 code ZWC, issued by Zimbabwe. former currency of Rhodesia (1970-1980)",
-      "aliases": [
-        "wikidata:Q392858",
-        "iso:ZWC"
-      ]
-    },
-    {
-      "canonical_name": "Portuguese escudo",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Portuguese escudo is a fiat currency, with ISO 4217 code PTE, issued by Portugal. former currency of Portugal from 1911 until 1999",
-      "aliases": [
-        "wikidata:Q468474",
-        "iso:PTE"
-      ]
-    },
-    {
-      "canonical_name": "Azerbaijani manat",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Azerbaijani manat is a fiat currency, with ISO 4217 code AZN, issued by Azerbaijan. currency",
-      "aliases": [
-        "wikidata:Q483725",
-        "iso:AZN"
-      ]
-    },
-    {
-      "canonical_name": "Turkmenistan new manat",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Turkmenistan new manat is a fiat currency, with ISO 4217 code TMT, issued by Turkmenistan. currency of Turkmenistan",
-      "aliases": [
-        "wikidata:Q486637",
-        "iso:TMT"
+        "wikidata:Q174467",
+        "iso:MTL"
       ]
     },
     {
@@ -2193,33 +1614,423 @@
       ]
     },
     {
-      "canonical_name": "Lao kip",
+      "canonical_name": "Russian ruble",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Lao kip is a fiat currency, with ISO 4217 code LAK, issued by Laos. currency of Laos since 1952",
+      "description": "Russian ruble is a fiat currency, with ISO 4217 code RUB, issued by Russia. currency of the Russian Federation",
       "aliases": [
-        "wikidata:Q200055",
-        "iso:LAK"
+        "wikidata:Q41044",
+        "iso:RUB"
       ]
     },
     {
-      "canonical_name": "Moroccan dirham",
+      "canonical_name": "Gibraltar pound",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Moroccan dirham is a fiat currency, with ISO 4217 code MAD, issued by Morocco. currency of Morocco",
+      "description": "Gibraltar pound is a fiat currency, with ISO 4217 code GIP, issued by United Kingdom. currency",
       "aliases": [
-        "wikidata:Q200192",
-        "iso:MAD"
+        "wikidata:Q41429",
+        "iso:GIP"
       ]
     },
     {
-      "canonical_name": "United Arab Emirates dirham",
+      "canonical_name": "rupiah",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "United Arab Emirates dirham is a fiat currency, with ISO 4217 code AED, issued by United Arab Emirates. currency",
+      "description": "rupiah is a fiat currency, with ISO 4217 code IDR, issued by Indonesia. official currency of Indonesia",
       "aliases": [
-        "wikidata:Q200294",
-        "iso:AED"
+        "wikidata:Q41588",
+        "iso:IDR"
+      ]
+    },
+    {
+      "canonical_name": "Trinidad and Tobago dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Trinidad and Tobago dollar is a fiat currency, with ISO 4217 code TTD, issued by Trinidad and Tobago. currency of Trinidad and Tobago",
+      "aliases": [
+        "wikidata:Q242890",
+        "iso:TTD"
+      ]
+    },
+    {
+      "canonical_name": "Costa Rican colón",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Costa Rican colón is a fiat currency, with ISO 4217 code CRC, issued by Costa Rica. currency of Costa Rica",
+      "aliases": [
+        "wikidata:Q242915",
+        "iso:CRC"
+      ]
+    },
+    {
+      "canonical_name": "Dominican peso",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Dominican peso is a fiat currency, with ISO 4217 code DOP, issued by Dominican Republic. currency of the Dominican Republic",
+      "aliases": [
+        "wikidata:Q242922",
+        "iso:DOP"
+      ]
+    },
+    {
+      "canonical_name": "Liberian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Liberian dollar is a fiat currency, with ISO 4217 code LRD, issued by Liberia. currency of Liberia",
+      "aliases": [
+        "wikidata:Q242988",
+        "iso:LRD"
+      ]
+    },
+    {
+      "canonical_name": "Macedonian denar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Macedonian denar is a fiat currency, with ISO 4217 code MKD, issued by North Macedonia. currency of North Macedonia",
+      "aliases": [
+        "wikidata:Q177875",
+        "iso:MKD"
+      ]
+    },
+    {
+      "canonical_name": "baht",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "baht is a fiat currency, with ISO 4217 code THB, issued by Thailand. official currency of Thailand",
+      "aliases": [
+        "wikidata:Q177882",
+        "iso:THB"
+      ]
+    },
+    {
+      "canonical_name": "Slovak koruna",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Slovak koruna is a fiat currency, with ISO 4217 code SKK, issued by Slovakia. currency of Slovakia, 1993–2008",
+      "aliases": [
+        "wikidata:Q178874",
+        "iso:SKK"
+      ]
+    },
+    {
+      "canonical_name": "Serbian dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Serbian dinar is a fiat currency, with ISO 4217 code RSD, issued by Serbia. Serbian currency",
+      "aliases": [
+        "wikidata:Q172524",
+        "iso:RSD"
+      ]
+    },
+    {
+      "canonical_name": "Bulgarian lev",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Bulgarian lev is a fiat currency, with ISO 4217 code BGN, issued by Bulgaria. currency of Bulgaria from 1880 to 2025 (iso: BGN)",
+      "aliases": [
+        "wikidata:Q172540",
+        "iso:BGN"
+      ]
+    },
+    {
+      "canonical_name": "Turkish lira",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Turkish lira is a fiat currency, with ISO 4217 code TRY, issued by Northern Cyprus. currency of Turkey",
+      "aliases": [
+        "wikidata:Q172872",
+        "iso:TRY"
+      ]
+    },
+    {
+      "canonical_name": "Turkish lira",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Turkish lira is a fiat currency, with ISO 4217 code TRY, issued by Turkey. currency of Turkey",
+      "aliases": [
+        "wikidata:Q172872",
+        "iso:TRY"
+      ]
+    },
+    {
+      "canonical_name": "lilangeni",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "lilangeni is a fiat currency, with ISO 4217 code SZL, issued by Eswatini. currency of Eswatini",
+      "aliases": [
+        "wikidata:Q4823",
+        "iso:SZL"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Kosovo. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by San Marino. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Vatican City. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Montenegro. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Monaco. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Malta. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Cyprus. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Andorra. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Croatia. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Bulgaria. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Slovenia. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Slovakia. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Latvia. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Estonia. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Germany. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by France. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Netherlands. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Portugal. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Greece. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Austria. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Italy. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Lithuania. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Finland. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Luxembourg. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Belgium. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Spain. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
+      ]
+    },
+    {
+      "canonical_name": "euro",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "euro is a fiat currency, with ISO 4217 code EUR, issued by Ireland. currency of most countries in the European Union",
+      "aliases": [
+        "wikidata:Q4916",
+        "iso:EUR"
       ]
     },
     {
@@ -2383,203 +2194,373 @@
       ]
     },
     {
-      "canonical_name": "Tunisian dinar",
+      "canonical_name": "Nuevo sol",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Tunisian dinar is a fiat currency, with ISO 4217 code TND, issued by Tunisia. currency of Tunisia",
+      "description": "Nuevo sol is a fiat currency, with ISO 4217 code PEN, issued by Peru. currency of Peru",
       "aliases": [
-        "wikidata:Q4602",
-        "iso:TND"
+        "wikidata:Q204656",
+        "iso:PEN"
       ]
     },
     {
-      "canonical_name": "Somali shilling",
+      "canonical_name": "riel",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Somali shilling is a fiat currency, with ISO 4217 code SOS, issued by Somalia. currency of Somalia",
+      "description": "riel is a fiat currency, with ISO 4217 code KHR, issued by Cambodia. currency of Cambodia",
       "aliases": [
-        "wikidata:Q4603",
-        "iso:SOS"
+        "wikidata:Q204737",
+        "iso:KHR"
       ]
     },
     {
-      "canonical_name": "Georgian lari",
+      "canonical_name": "Italian lira",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Georgian lari is a fiat currency, with ISO 4217 code GEL, issued by Georgia. currency of Georgia",
+      "description": "Italian lira is a fiat currency, with ISO 4217 code ITL, issued by Kingdom of Italy. currency",
       "aliases": [
-        "wikidata:Q4608",
-        "iso:GEL"
+        "wikidata:Q204992",
+        "iso:ITL"
       ]
     },
     {
-      "canonical_name": "Tongan paʻanga",
+      "canonical_name": "Italian lira",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Tongan paʻanga is a fiat currency, with ISO 4217 code TOP, issued by Tonga. currency of Tonga",
+      "description": "Italian lira is a fiat currency, with ISO 4217 code ITL, issued by Italy. currency",
       "aliases": [
-        "wikidata:Q4613",
-        "iso:TOP"
+        "wikidata:Q204992",
+        "iso:ITL"
       ]
     },
     {
-      "canonical_name": "Deutsche Mark",
+      "canonical_name": "bir",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Deutsche Mark is a fiat currency, with ISO 4217 code DEM, issued by West Germany. official currency of West Germany and later Germany from 1948 to 2002",
+      "description": "bir is a fiat currency, with ISO 4217 code ETB, issued by Ethiopia. currency of Ethiopia",
       "aliases": [
-        "wikidata:Q16068",
-        "iso:DEM"
+        "wikidata:Q206243",
+        "iso:ETB"
       ]
     },
     {
-      "canonical_name": "Deutsche Mark",
+      "canonical_name": "Brunei dollar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Deutsche Mark is a fiat currency, with ISO 4217 code DEM, issued by Germany. official currency of West Germany and later Germany from 1948 to 2002",
+      "description": "Brunei dollar is a fiat currency, with ISO 4217 code BND, issued by Brunei. monetary currency of the Sultanate of Brunei",
       "aliases": [
-        "wikidata:Q16068",
-        "iso:DEM"
+        "wikidata:Q206319",
+        "iso:BND"
       ]
     },
     {
-      "canonical_name": "Philippine peso",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Philippine peso is a fiat currency, with ISO 4217 code PHP, issued by Philippines. official currency of the Philippines",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Senegal. currency of several West African countries",
       "aliases": [
-        "wikidata:Q17193",
-        "iso:PHP"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "Sudanese dinar",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Sudanese dinar is a fiat currency, with ISO 4217 code SDD, issued by Sudan. the currency of Sudan between 1992 and 2007",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Niger. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1511773",
-        "iso:SDD"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "Peruvian inti",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Peruvian inti is a fiat currency, with ISO 4217 code PEI, issued by Peru. currency of Peru between 1985 and 1991",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Ivory Coast. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1531048",
-        "iso:PEI"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "modern Greek drachma",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "modern Greek drachma is a fiat currency, with ISO 4217 code GRD, issued by Greece. former currency of Greece (1833 ... 2002)",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Guinea-Bissau. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1546443",
-        "iso:GRD"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "silver as an investment",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "silver as an investment is a fiat currency, with ISO 4217 code XAG. Precious metal as a store of value",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Burkina Faso. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1584286",
-        "iso:XAG"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "Peruvian sol",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Peruvian sol is a fiat currency, with ISO 4217 code PES, issued by Peru. former currency of Peru",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Benin. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1606309",
-        "iso:PES"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "peso argentino",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "peso argentino is a fiat currency, with ISO 4217 code ARP, issued by Argentina. former currency of Argentina (1983-85)",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Togo. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1640286",
-        "iso:ARP"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "palladium as an investment",
+      "canonical_name": "West African CFA franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "palladium as an investment is a fiat currency, with ISO 4217 code XPD. overview about Palladium as an investment",
+      "description": "West African CFA franc is a fiat currency, with ISO 4217 code XOF, issued by Mali. currency of several West African countries",
       "aliases": [
-        "wikidata:Q1669450",
-        "iso:XPD"
+        "wikidata:Q861690",
+        "iso:XOF"
       ]
     },
     {
-      "canonical_name": "Israeli lira",
+      "canonical_name": "Ecuadorian sucre",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Israeli lira is a fiat currency, with ISO 4217 code ILP, issued by Israel. currency of the State of Israel from 9 June 1952 until 23 February 1980",
+      "description": "Ecuadorian sucre is a fiat currency, with ISO 4217 code ECS, issued by Ecuador. former currency of Ecuador",
       "aliases": [
-        "wikidata:Q1674712",
-        "iso:ILP"
+        "wikidata:Q911562",
+        "iso:ECS"
       ]
     },
     {
-      "canonical_name": "Brazilian cruzado novo",
+      "canonical_name": "Brazilian cruzado",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Brazilian cruzado novo is a fiat currency, with ISO 4217 code BRN, issued by Brazil. Brazilian currency from 1989 to 1990",
+      "description": "Brazilian cruzado is a fiat currency, with ISO 4217 code BRC, issued by Brazil. Brazilian currency from 1986 to 1989",
       "aliases": [
-        "wikidata:Q1764812",
-        "iso:BRN"
+        "wikidata:Q926028",
+        "iso:BRC"
       ]
     },
     {
-      "canonical_name": "Surinamese guilder",
+      "canonical_name": "Equatorial Guinean ekwele",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Surinamese guilder is a fiat currency, with ISO 4217 code SRG, issued by Suriname. former currency of Suriname (1940–2004)",
+      "description": "Equatorial Guinean ekwele is a fiat currency, with ISO 4217 code GQE, issued by Equatorial Guinea. former Equatorial Guinean currency",
       "aliases": [
-        "wikidata:Q2192949",
-        "iso:SRG"
+        "wikidata:Q971818",
+        "iso:GQE"
       ]
     },
     {
-      "canonical_name": "Danish krone",
+      "canonical_name": "Sammarinese lira",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Danish krone is a fiat currency, with ISO 4217 code DKK, issued by Denmark. official currency of Denmark, Greenland and the Faroe Islands",
+      "description": "Sammarinese lira is a fiat currency, with ISO 4217 code SML, issued by San Marino. currency",
       "aliases": [
-        "wikidata:Q25417",
-        "iso:DKK"
+        "wikidata:Q1063029",
+        "iso:SML"
       ]
     },
     {
-      "canonical_name": "Lithuanian litas",
+      "canonical_name": "Canadian dollar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Lithuanian litas is a fiat currency, with ISO 4217 code LTL, issued by Lithuania. former currency of Lithuania",
+      "description": "Canadian dollar is a fiat currency, with ISO 4217 code CAD, issued by Canada. currency of Canada",
       "aliases": [
-        "wikidata:Q25627",
-        "iso:LTL"
+        "wikidata:Q1104069",
+        "iso:CAD"
       ]
     },
     {
-      "canonical_name": "Croatian kuna",
+      "canonical_name": "South Sudanese pound",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Croatian kuna is a fiat currency, with ISO 4217 code HRK, issued by Croatia. former currency of Croatia (1994–2022)",
+      "description": "South Sudanese pound is a fiat currency, with ISO 4217 code SSP, issued by South Sudan. official currency of the Republic of South Sudan",
       "aliases": [
-        "wikidata:Q26360",
-        "iso:HRK"
+        "wikidata:Q244366",
+        "iso:SSP"
+      ]
+    },
+    {
+      "canonical_name": "Colombian peso",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Colombian peso is a fiat currency, with ISO 4217 code COP, issued by Colombia. currency of Colombia",
+      "aliases": [
+        "wikidata:Q244819",
+        "iso:COP"
+      ]
+    },
+    {
+      "canonical_name": "Australian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Australian dollar is a fiat currency, with ISO 4217 code AUD, issued by Australia. official currency of Australia; also officially used in Kiribati, Nauru, and Tuvalu",
+      "aliases": [
+        "wikidata:Q259502",
+        "iso:AUD"
+      ]
+    },
+    {
+      "canonical_name": "Comorian franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Comorian franc is a fiat currency, with ISO 4217 code KMF, issued by Comoros. Comorian currency",
+      "aliases": [
+        "wikidata:Q267264",
+        "iso:KMF"
+      ]
+    },
+    {
+      "canonical_name": "Lithuanian talonas",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Lithuanian talonas is a fiat currency, with ISO 4217 code LTT, issued by Lithuania. former currency of Lithuania",
+      "aliases": [
+        "wikidata:Q1130620",
+        "iso:LTT"
+      ]
+    },
+    {
+      "canonical_name": "SUCRE",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "SUCRE is a fiat currency, with ISO 4217 code XSU, issued by Venezuela. proposed regional currency in Latin America",
+      "aliases": [
+        "wikidata:Q1148329",
+        "iso:XSU"
+      ]
+    },
+    {
+      "canonical_name": "Financial rand",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Financial rand is a fiat currency, with ISO 4217 code ZAL, issued by South Africa. South Africa currency system",
+      "aliases": [
+        "wikidata:Q1291684",
+        "iso:ZAL"
+      ]
+    },
+    {
+      "canonical_name": "Guinea-Bissau peso",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Guinea-Bissau peso is a fiat currency, with ISO 4217 code GWP, issued by Guinea-Bissau. currency of Guinea-Bissau from 1975 to 1997",
+      "aliases": [
+        "wikidata:Q1329465",
+        "iso:GWP"
+      ]
+    },
+    {
+      "canonical_name": "Portuguese Timorese escudo",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Portuguese Timorese escudo is a fiat currency, with ISO 4217 code TPE, issued by Portuguese Timor. timorese currency (1959-1976)",
+      "aliases": [
+        "wikidata:Q1367371",
+        "iso:TPE"
+      ]
+    },
+    {
+      "canonical_name": "Malagasy franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Malagasy franc is a fiat currency, with ISO 4217 code MGF, issued by Madagascar. former currency of Madagascar",
+      "aliases": [
+        "wikidata:Q1440737",
+        "iso:MGF"
+      ]
+    },
+    {
+      "canonical_name": "New Zealand dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "New Zealand dollar is a fiat currency, with ISO 4217 code NZD, issued by New Zealand. currency of New Zealand",
+      "aliases": [
+        "wikidata:Q1472704",
+        "iso:NZD"
+      ]
+    },
+    {
+      "canonical_name": "Romanian Leu",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Romanian Leu is a fiat currency, with ISO 4217 code RON, issued by Romania. currency of Romania",
+      "aliases": [
+        "wikidata:Q131645",
+        "iso:RON"
+      ]
+    },
+    {
+      "canonical_name": "Norwegian krone",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Norwegian krone is a fiat currency, with ISO 4217 code NOK, issued by Norway. currency of Norway",
+      "aliases": [
+        "wikidata:Q132643",
+        "iso:NOK"
+      ]
+    },
+    {
+      "canonical_name": "Latvian lats",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Latvian lats is a fiat currency, with ISO 4217 code LVL, issued by Latvia. former Latvian currency",
+      "aliases": [
+        "wikidata:Q133011",
+        "iso:LVL"
+      ]
+    },
+    {
+      "canonical_name": "Qatari riyal",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Qatari riyal is a fiat currency, with ISO 4217 code QAR, issued by Qatar. currency",
+      "aliases": [
+        "wikidata:Q206386",
+        "iso:QAR"
+      ]
+    },
+    {
+      "canonical_name": "Maldivian rufiyaa",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Maldivian rufiyaa is a fiat currency, with ISO 4217 code MVR, issued by Maldives. currency",
+      "aliases": [
+        "wikidata:Q206600",
+        "iso:MVR"
+      ]
+    },
+    {
+      "canonical_name": "Mauritanian ouguiya",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Mauritanian ouguiya is a fiat currency, with ISO 4217 code MRU, issued by Mauritania. currency of Mauritania",
+      "aliases": [
+        "wikidata:Q207024",
+        "iso:MRU"
+      ]
+    },
+    {
+      "canonical_name": "Nicaraguan córdoba",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Nicaraguan córdoba is a fiat currency, with ISO 4217 code NIO, issued by Nicaragua. currency of Nicaragua",
+      "aliases": [
+        "wikidata:Q207312",
+        "iso:NIO"
       ]
     },
     {
@@ -2633,293 +2614,343 @@
       ]
     },
     {
-      "canonical_name": "Czech koruna",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Czech koruna is a fiat currency, with ISO 4217 code CZK, issued by Czech Republic. currency of the Czech Republic",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Captaincy General of the Philippines. former currency of Spain",
       "aliases": [
-        "wikidata:Q131016",
-        "iso:CZK"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Czech koruna",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Czech koruna is a fiat currency, with ISO 4217 code 203, issued by Czech Republic. currency of the Czech Republic",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Captaincy General of Cuba. former currency of Spain",
       "aliases": [
-        "wikidata:Q131016",
-        "iso:203"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "new shekel",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "new shekel is a fiat currency, with ISO 4217 code ILS, issued by Israel. currency of Israel and occupied territories",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Ifni. former currency of Spain",
       "aliases": [
-        "wikidata:Q131309",
-        "iso:ILS"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Icelandic króna",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Icelandic króna is a fiat currency, with ISO 4217 code ISK, issued by Iceland. currency of Iceland",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Captaincy General of Puerto Rico. former currency of Spain",
       "aliases": [
-        "wikidata:Q131473",
-        "iso:ISK"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Cypriot pound",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Cypriot pound is a fiat currency, with ISO 4217 code CYP, issued by Cyprus. old currency",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Spanish protectorate in Morocco. former currency of Spain",
       "aliases": [
-        "wikidata:Q193716",
-        "iso:CYP"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Bahamian dollar",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Bahamian dollar is a fiat currency, with ISO 4217 code BSD, issued by The Bahamas. monetary currency of the Bahamas",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Western Sahara. former currency of Spain",
       "aliases": [
-        "wikidata:Q194339",
-        "iso:BSD"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Barbadian dollar",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Barbadian dollar is a fiat currency, with ISO 4217 code BBD, issued by Barbados. currency of Barbados",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Equatorial Guinea. former currency of Spain",
       "aliases": [
-        "wikidata:Q194351",
-        "iso:BBD"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Bangladeshi taka",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Bangladeshi taka is a fiat currency, with ISO 4217 code BDT, issued by Bangladesh. currency of Bangladesh",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Andorra. former currency of Spain",
       "aliases": [
-        "wikidata:Q194453",
-        "iso:BDT"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Zimbabwean dollar",
+      "canonical_name": "peseta",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWD, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Spain. former currency of Spain",
       "aliases": [
-        "wikidata:Q182803",
-        "iso:ZWD"
+        "wikidata:Q189097",
+        "iso:ESP"
       ]
     },
     {
-      "canonical_name": "Zimbabwean dollar",
+      "canonical_name": "Libyan dinar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWN, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "description": "Libyan dinar is a fiat currency, with ISO 4217 code LYD, issued by Libya. Currency of Libya",
       "aliases": [
-        "wikidata:Q182803",
-        "iso:ZWN"
+        "wikidata:Q190699",
+        "iso:LYD"
       ]
     },
     {
-      "canonical_name": "Zimbabwean dollar",
+      "canonical_name": "Singapore dollar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWR, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "description": "Singapore dollar is a fiat currency, with ISO 4217 code SGD, issued by Singapore. official currency of Singapore",
       "aliases": [
-        "wikidata:Q182803",
-        "iso:ZWR"
+        "wikidata:Q190951",
+        "iso:SGD"
       ]
     },
     {
-      "canonical_name": "Zimbabwean dollar",
+      "canonical_name": "Vietnamese đồng",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWL, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "description": "Vietnamese đồng is a fiat currency, with ISO 4217 code VND, issued by Vietnam. official currency of Vietnam",
       "aliases": [
-        "wikidata:Q182803",
-        "iso:ZWL"
+        "wikidata:Q192090",
+        "iso:VND"
       ]
     },
     {
-      "canonical_name": "Vatican lira",
+      "canonical_name": "Portuguese Guinean escudo",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Vatican lira is a fiat currency, with ISO 4217 code VAL, issued by Vatican City. currency of the Vatican City between 1929 and 2002",
+      "description": "Portuguese Guinean escudo is a fiat currency, with ISO 4217 code GWE, issued by Portuguese Guinea. Currency of Portuguese",
       "aliases": [
-        "wikidata:Q183354",
-        "iso:VAL"
+        "wikidata:Q2340666",
+        "iso:GWE"
       ]
     },
     {
-      "canonical_name": "Mongolian tögrög",
+      "canonical_name": "Bolivian peso",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Mongolian tögrög is a fiat currency, with ISO 4217 code MNT, issued by Mongolia. currency of Mongolia",
+      "description": "Bolivian peso is a fiat currency, with ISO 4217 code BOP, issued by Bolivia. former currency of Bolivia from 1963 until 1986",
       "aliases": [
-        "wikidata:Q183435",
-        "iso:MNT"
+        "wikidata:Q2414435",
+        "iso:BOP"
       ]
     },
     {
-      "canonical_name": "Ghana cedi",
+      "canonical_name": "Tajikistani ruble",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Ghana cedi is a fiat currency, with ISO 4217 code GHS, issued by Ghana. currency of Ghana",
+      "description": "Tajikistani ruble is a fiat currency, with ISO 4217 code TJR, issued by Tajikistan. currency of Tajikistan between May 10, 1995 and October 29, 2000",
       "aliases": [
-        "wikidata:Q183530",
-        "iso:GHS"
+        "wikidata:Q2423956",
+        "iso:TJR"
       ]
     },
     {
-      "canonical_name": "French franc",
+      "canonical_name": "Latvian rublis",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "French franc is a fiat currency, with ISO 4217 code FRF, issued by Monaco. former currency of France",
+      "description": "Latvian rublis is a fiat currency, with ISO 4217 code LVR, issued by Latvia. former currency of Latvia",
       "aliases": [
-        "wikidata:Q184172",
-        "iso:FRF"
+        "wikidata:Q2472225",
+        "iso:LVR"
       ]
     },
     {
-      "canonical_name": "French franc",
+      "canonical_name": "Bosnia and Herzegovina dinar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "French franc is a fiat currency, with ISO 4217 code FRF, issued by Andorra. former currency of France",
+      "description": "Bosnia and Herzegovina dinar is a fiat currency, with ISO 4217 code BAD, issued by Republic of Bosnia and Herzegovina. Currency of Republic of Bosnia and Herzegovina (1991-1998)",
       "aliases": [
-        "wikidata:Q184172",
-        "iso:FRF"
+        "wikidata:Q2538687",
+        "iso:BAD"
       ]
     },
     {
-      "canonical_name": "French franc",
+      "canonical_name": "Bosnia and Herzegovina dinar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "French franc is a fiat currency, with ISO 4217 code FRF, issued by France. former currency of France",
+      "description": "Bosnia and Herzegovina dinar is a fiat currency, with ISO 4217 code BAD, issued by Bosnia and Herzegovina. Currency of Republic of Bosnia and Herzegovina (1991-1998)",
       "aliases": [
-        "wikidata:Q184172",
-        "iso:FRF"
+        "wikidata:Q2538687",
+        "iso:BAD"
       ]
     },
     {
-      "canonical_name": "Brazilian real",
+      "canonical_name": "Malian franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Brazilian real is a fiat currency, with ISO 4217 code BRL, issued by Brazil. Brazilian currency since 1994",
+      "description": "Malian franc is a fiat currency, with ISO 4217 code MLF, issued by Mali. historical currency of Mali (1962–1984)",
       "aliases": [
-        "wikidata:Q173117",
-        "iso:BRL"
+        "wikidata:Q2629054",
+        "iso:MLF"
       ]
     },
     {
-      "canonical_name": "Kazakhstani tenge",
+      "canonical_name": "Old Israeli shekel",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Kazakhstani tenge is a fiat currency, with ISO 4217 code KZT, issued by Kazakhstan. currency of Kazakhstan",
+      "description": "Old Israeli shekel is a fiat currency, with ISO 4217 code ILR, issued by Israel. currency of the State of Israel between 24 February 1980 and 31 December 1985",
       "aliases": [
-        "wikidata:Q173751",
-        "iso:KZT"
+        "wikidata:Q2720762",
+        "iso:ILR"
       ]
     },
     {
-      "canonical_name": "Maltese lira",
+      "canonical_name": "UIC franc",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Maltese lira is a fiat currency, with ISO 4217 code MTL, issued by Malta. Currency of Malta from 1972 until 2008",
+      "description": "UIC franc is a fiat currency, with ISO 4217 code XFU. former ISO 4217 defined account curency",
       "aliases": [
-        "wikidata:Q174467",
-        "iso:MTL"
+        "wikidata:Q3080510",
+        "iso:XFU"
       ]
     },
     {
-      "canonical_name": "ngultrum",
+      "canonical_name": "MVDOL",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "ngultrum is a fiat currency, with ISO 4217 code BTN, issued by Bhutan. currency of Bhutan",
+      "description": "MVDOL is a fiat currency, with ISO 4217 code BOV, issued by Bolivia. Bolivial currency, as a maintained value between Bolivian bolivar and US dollar",
       "aliases": [
-        "wikidata:Q201799",
-        "iso:BTN"
+        "wikidata:Q5731551",
+        "iso:BOV"
       ]
     },
     {
-      "canonical_name": "Bahraini dinar",
+      "canonical_name": "Unidad de Valor Constante",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Bahraini dinar is a fiat currency, with ISO 4217 code BHD, issued by Bahrain. currency of Bahrain",
+      "description": "Unidad de Valor Constante is a fiat currency, with ISO 4217 code ECV, issued by Ecuador. former currency created by the \"Ley de Valores\" of Ecuador in 1993",
       "aliases": [
-        "wikidata:Q201871",
-        "iso:BHD"
+        "wikidata:Q7884824",
+        "iso:ECV"
       ]
     },
     {
-      "canonical_name": "kyat",
+      "canonical_name": "cruzeiro",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "kyat is a fiat currency, with ISO 4217 code MMK, issued by Myanmar. currency of Myanmar",
+      "description": "cruzeiro is a fiat currency, with ISO 4217 code BRB, issued by Brazil. Brazilian currency from 1970 to 1986",
       "aliases": [
-        "wikidata:Q201875",
-        "iso:MMK"
+        "wikidata:Q10261894",
+        "iso:BRB"
       ]
     },
     {
-      "canonical_name": "Lebanese pound",
+      "canonical_name": "cruzeiro",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Lebanese pound is a fiat currency, with ISO 4217 code LBP, issued by Lebanon. official currency of Lebanon",
+      "description": "cruzeiro is a fiat currency, with ISO 4217 code BRE, issued by Brazil. Brazilian currency from 1990 to 1993",
       "aliases": [
-        "wikidata:Q201880",
-        "iso:LBP"
+        "wikidata:Q10261896",
+        "iso:BRE"
       ]
     },
     {
-      "canonical_name": "quetzal",
+      "canonical_name": "Georgian kuponi",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "quetzal is a fiat currency, with ISO 4217 code GTQ, issued by Guatemala. currency of Guatemala",
+      "description": "Georgian kuponi is a fiat currency, with ISO 4217 code GEK, issued by Georgia. former currency of Georgia, used 1993-1995",
       "aliases": [
-        "wikidata:Q207396",
-        "iso:GTQ"
+        "wikidata:Q10749151",
+        "iso:GEK"
       ]
     },
     {
-      "canonical_name": "Paraguayan guaraní",
+      "canonical_name": "convertible mark",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Paraguayan guaraní is a fiat currency, with ISO 4217 code PYG, issued by Paraguay. currency",
+      "description": "convertible mark is a fiat currency, with ISO 4217 code BAM, issued by Bosnia and Herzegovina. currency of Bosnia and Herzegovina",
       "aliases": [
-        "wikidata:Q207514",
-        "iso:PYG"
+        "wikidata:Q179620",
+        "iso:BAM"
       ]
     },
     {
-      "canonical_name": "Vanuatu vatus",
+      "canonical_name": "Moldovan leu",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "Vanuatu vatus is a fiat currency, with ISO 4217 code VUV, issued by Vanuatu. currency",
+      "description": "Moldovan leu is a fiat currency, with ISO 4217 code MDL, issued by Moldova. currency",
       "aliases": [
-        "wikidata:Q207523",
-        "iso:VUV"
+        "wikidata:Q181129",
+        "iso:MDL"
       ]
     },
     {
-      "canonical_name": "loti",
+      "canonical_name": "rand",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "loti is a fiat currency, with ISO 4217 code LSL, issued by Lesotho. currency of Lesotho",
+      "description": "rand is a fiat currency, with ISO 4217 code ZAR, issued by South Africa. official currency of South Africa",
       "aliases": [
-        "wikidata:Q208039",
-        "iso:LSL"
+        "wikidata:Q181907",
+        "iso:ZAR"
+      ]
+    },
+    {
+      "canonical_name": "Lao kip",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Lao kip is a fiat currency, with ISO 4217 code LAK, issued by Laos. currency of Laos since 1952",
+      "aliases": [
+        "wikidata:Q200055",
+        "iso:LAK"
+      ]
+    },
+    {
+      "canonical_name": "Moroccan dirham",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Moroccan dirham is a fiat currency, with ISO 4217 code MAD, issued by Morocco. currency of Morocco",
+      "aliases": [
+        "wikidata:Q200192",
+        "iso:MAD"
+      ]
+    },
+    {
+      "canonical_name": "United Arab Emirates dirham",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "United Arab Emirates dirham is a fiat currency, with ISO 4217 code AED, issued by United Arab Emirates. currency",
+      "aliases": [
+        "wikidata:Q200294",
+        "iso:AED"
+      ]
+    },
+    {
+      "canonical_name": "United States dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "United States dollar is a fiat currency, with ISO 4217 code USD, issued by United States. official currency of the United States",
+      "aliases": [
+        "wikidata:Q4917",
+        "iso:USD"
+      ]
+    },
+    {
+      "canonical_name": "yen",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "yen is a fiat currency, with ISO 4217 code JPY, issued by Japan. official currency of Japan",
+      "aliases": [
+        "wikidata:Q8146",
+        "iso:JPY"
       ]
     },
     {
@@ -3183,6 +3214,406 @@
       ]
     },
     {
+      "canonical_name": "Zimbabwean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWD, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "aliases": [
+        "wikidata:Q182803",
+        "iso:ZWD"
+      ]
+    },
+    {
+      "canonical_name": "Zimbabwean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWN, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "aliases": [
+        "wikidata:Q182803",
+        "iso:ZWN"
+      ]
+    },
+    {
+      "canonical_name": "Zimbabwean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWR, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "aliases": [
+        "wikidata:Q182803",
+        "iso:ZWR"
+      ]
+    },
+    {
+      "canonical_name": "Zimbabwean dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Zimbabwean dollar is a fiat currency, with ISO 4217 code ZWL, issued by Zimbabwe. former currency of Zimbabwe, from 1980 to 2009",
+      "aliases": [
+        "wikidata:Q182803",
+        "iso:ZWL"
+      ]
+    },
+    {
+      "canonical_name": "Vatican lira",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Vatican lira is a fiat currency, with ISO 4217 code VAL, issued by Vatican City. currency of the Vatican City between 1929 and 2002",
+      "aliases": [
+        "wikidata:Q183354",
+        "iso:VAL"
+      ]
+    },
+    {
+      "canonical_name": "Mongolian tögrög",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Mongolian tögrög is a fiat currency, with ISO 4217 code MNT, issued by Mongolia. currency of Mongolia",
+      "aliases": [
+        "wikidata:Q183435",
+        "iso:MNT"
+      ]
+    },
+    {
+      "canonical_name": "Ghana cedi",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Ghana cedi is a fiat currency, with ISO 4217 code GHS, issued by Ghana. currency of Ghana",
+      "aliases": [
+        "wikidata:Q183530",
+        "iso:GHS"
+      ]
+    },
+    {
+      "canonical_name": "French franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "French franc is a fiat currency, with ISO 4217 code FRF, issued by Monaco. former currency of France",
+      "aliases": [
+        "wikidata:Q184172",
+        "iso:FRF"
+      ]
+    },
+    {
+      "canonical_name": "French franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "French franc is a fiat currency, with ISO 4217 code FRF, issued by Andorra. former currency of France",
+      "aliases": [
+        "wikidata:Q184172",
+        "iso:FRF"
+      ]
+    },
+    {
+      "canonical_name": "French franc",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "French franc is a fiat currency, with ISO 4217 code FRF, issued by France. former currency of France",
+      "aliases": [
+        "wikidata:Q184172",
+        "iso:FRF"
+      ]
+    },
+    {
+      "canonical_name": "Sudanese dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Sudanese dinar is a fiat currency, with ISO 4217 code SDD, issued by Sudan. the currency of Sudan between 1992 and 2007",
+      "aliases": [
+        "wikidata:Q1511773",
+        "iso:SDD"
+      ]
+    },
+    {
+      "canonical_name": "Peruvian inti",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Peruvian inti is a fiat currency, with ISO 4217 code PEI, issued by Peru. currency of Peru between 1985 and 1991",
+      "aliases": [
+        "wikidata:Q1531048",
+        "iso:PEI"
+      ]
+    },
+    {
+      "canonical_name": "modern Greek drachma",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "modern Greek drachma is a fiat currency, with ISO 4217 code GRD, issued by Greece. former currency of Greece (1833 ... 2002)",
+      "aliases": [
+        "wikidata:Q1546443",
+        "iso:GRD"
+      ]
+    },
+    {
+      "canonical_name": "silver as an investment",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "silver as an investment is a fiat currency, with ISO 4217 code XAG. Precious metal as a store of value",
+      "aliases": [
+        "wikidata:Q1584286",
+        "iso:XAG"
+      ]
+    },
+    {
+      "canonical_name": "Peruvian sol",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Peruvian sol is a fiat currency, with ISO 4217 code PES, issued by Peru. former currency of Peru",
+      "aliases": [
+        "wikidata:Q1606309",
+        "iso:PES"
+      ]
+    },
+    {
+      "canonical_name": "peso argentino",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "peso argentino is a fiat currency, with ISO 4217 code ARP, issued by Argentina. former currency of Argentina (1983-85)",
+      "aliases": [
+        "wikidata:Q1640286",
+        "iso:ARP"
+      ]
+    },
+    {
+      "canonical_name": "palladium as an investment",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "palladium as an investment is a fiat currency, with ISO 4217 code XPD. overview about Palladium as an investment",
+      "aliases": [
+        "wikidata:Q1669450",
+        "iso:XPD"
+      ]
+    },
+    {
+      "canonical_name": "Israeli lira",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Israeli lira is a fiat currency, with ISO 4217 code ILP, issued by Israel. currency of the State of Israel from 9 June 1952 until 23 February 1980",
+      "aliases": [
+        "wikidata:Q1674712",
+        "iso:ILP"
+      ]
+    },
+    {
+      "canonical_name": "Brazilian cruzado novo",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Brazilian cruzado novo is a fiat currency, with ISO 4217 code BRN, issued by Brazil. Brazilian currency from 1989 to 1990",
+      "aliases": [
+        "wikidata:Q1764812",
+        "iso:BRN"
+      ]
+    },
+    {
+      "canonical_name": "Surinamese guilder",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Surinamese guilder is a fiat currency, with ISO 4217 code SRG, issued by Suriname. former currency of Suriname (1940–2004)",
+      "aliases": [
+        "wikidata:Q2192949",
+        "iso:SRG"
+      ]
+    },
+    {
+      "canonical_name": "Irish pound",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Irish pound is a fiat currency, with ISO 4217 code IEP, issued by Ireland. former currency of Ireland",
+      "aliases": [
+        "wikidata:Q270642",
+        "iso:IEP"
+      ]
+    },
+    {
+      "canonical_name": "Sudanese pound",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Sudanese pound is a fiat currency, with ISO 4217 code SDG, issued by Sudan. currency in Sudan",
+      "aliases": [
+        "wikidata:Q271206",
+        "iso:SDG"
+      ]
+    },
+    {
+      "canonical_name": "Omani rial",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Omani rial is a fiat currency, with ISO 4217 code OMR, issued by Oman. currency",
+      "aliases": [
+        "wikidata:Q272290",
+        "iso:OMR"
+      ]
+    },
+    {
+      "canonical_name": "Belize dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Belize dollar is a fiat currency, with ISO 4217 code BZD, issued by Belize. official currency of Belize",
+      "aliases": [
+        "wikidata:Q275112",
+        "iso:BZD"
+      ]
+    },
+    {
+      "canonical_name": "Ukrainian karbovanets",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Ukrainian karbovanets is a fiat currency, with ISO 4217 code UAK, issued by Ukraine. former currency of Ukraine",
+      "aliases": [
+        "wikidata:Q308765",
+        "iso:UAK"
+      ]
+    },
+    {
+      "canonical_name": "Iraqi dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Iraqi dinar is a fiat currency, with ISO 4217 code IQD, issued by Iraq. official currency of Iraq",
+      "aliases": [
+        "wikidata:Q193094",
+        "iso:IQD"
+      ]
+    },
+    {
+      "canonical_name": "Kuwaiti dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Kuwaiti dinar is a fiat currency, with ISO 4217 code KWD, issued by Kuwait. Currency of Kuwait",
+      "aliases": [
+        "wikidata:Q193098",
+        "iso:KWD"
+      ]
+    },
+    {
+      "canonical_name": "São Tomé and Príncipe dobra",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "São Tomé and Príncipe dobra is a fiat currency, with ISO 4217 code STN, issued by São Tomé and Príncipe. currency unit of the republic of São Tomé and Príncipe",
+      "aliases": [
+        "wikidata:Q193712",
+        "iso:STN"
+      ]
+    },
+    {
+      "canonical_name": "ngultrum",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "ngultrum is a fiat currency, with ISO 4217 code BTN, issued by Bhutan. currency of Bhutan",
+      "aliases": [
+        "wikidata:Q201799",
+        "iso:BTN"
+      ]
+    },
+    {
+      "canonical_name": "Bahraini dinar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Bahraini dinar is a fiat currency, with ISO 4217 code BHD, issued by Bahrain. currency of Bahrain",
+      "aliases": [
+        "wikidata:Q201871",
+        "iso:BHD"
+      ]
+    },
+    {
+      "canonical_name": "kyat",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "kyat is a fiat currency, with ISO 4217 code MMK, issued by Myanmar. currency of Myanmar",
+      "aliases": [
+        "wikidata:Q201875",
+        "iso:MMK"
+      ]
+    },
+    {
+      "canonical_name": "Lebanese pound",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Lebanese pound is a fiat currency, with ISO 4217 code LBP, issued by Lebanon. official currency of Lebanon",
+      "aliases": [
+        "wikidata:Q201880",
+        "iso:LBP"
+      ]
+    },
+    {
+      "canonical_name": "quetzal",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "quetzal is a fiat currency, with ISO 4217 code GTQ, issued by Guatemala. currency of Guatemala",
+      "aliases": [
+        "wikidata:Q207396",
+        "iso:GTQ"
+      ]
+    },
+    {
+      "canonical_name": "Paraguayan guaraní",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Paraguayan guaraní is a fiat currency, with ISO 4217 code PYG, issued by Paraguay. currency",
+      "aliases": [
+        "wikidata:Q207514",
+        "iso:PYG"
+      ]
+    },
+    {
+      "canonical_name": "Vanuatu vatus",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Vanuatu vatus is a fiat currency, with ISO 4217 code VUV, issued by Vanuatu. currency",
+      "aliases": [
+        "wikidata:Q207523",
+        "iso:VUV"
+      ]
+    },
+    {
+      "canonical_name": "loti",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "loti is a fiat currency, with ISO 4217 code LSL, issued by Lesotho. currency of Lesotho",
+      "aliases": [
+        "wikidata:Q208039",
+        "iso:LSL"
+      ]
+    },
+    {
+      "canonical_name": "Cypriot pound",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Cypriot pound is a fiat currency, with ISO 4217 code CYP, issued by Cyprus. old currency",
+      "aliases": [
+        "wikidata:Q193716",
+        "iso:CYP"
+      ]
+    },
+    {
+      "canonical_name": "Bahamian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Bahamian dollar is a fiat currency, with ISO 4217 code BSD, issued by The Bahamas. monetary currency of the Bahamas",
+      "aliases": [
+        "wikidata:Q194339",
+        "iso:BSD"
+      ]
+    },
+    {
+      "canonical_name": "Barbadian dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Barbadian dollar is a fiat currency, with ISO 4217 code BBD, issued by Barbados. currency of Barbados",
+      "aliases": [
+        "wikidata:Q194351",
+        "iso:BBD"
+      ]
+    },
+    {
+      "canonical_name": "Bangladeshi taka",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Bangladeshi taka is a fiat currency, with ISO 4217 code BDT, issued by Bangladesh. currency of Bangladesh",
+      "aliases": [
+        "wikidata:Q194453",
+        "iso:BDT"
+      ]
+    },
+    {
       "canonical_name": "Surinamese dollar",
       "entity_type": "asset",
       "subtype": "currency",
@@ -3223,66 +3654,6 @@
       ]
     },
     {
-      "canonical_name": "Botswana pula",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Botswana pula is a fiat currency, with ISO 4217 code BWP, issued by Botswana. official currency of Botswana",
-      "aliases": [
-        "wikidata:Q186794",
-        "iso:BWP"
-      ]
-    },
-    {
-      "canonical_name": "Pakistani rupee",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Pakistani rupee is a fiat currency, with ISO 4217 code PKR, issued by Pakistan. currency",
-      "aliases": [
-        "wikidata:Q188289",
-        "iso:PKR"
-      ]
-    },
-    {
-      "canonical_name": "Iranian rial",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Iranian rial is a fiat currency, with ISO 4217 code IRR, issued by Iran. currency of Iran",
-      "aliases": [
-        "wikidata:Q188608",
-        "iso:IRR"
-      ]
-    },
-    {
-      "canonical_name": "Saudi riyal",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Saudi riyal is a fiat currency, with ISO 4217 code SAR, issued by Saudi Arabia. currency of Saudi Arabia",
-      "aliases": [
-        "wikidata:Q199857",
-        "iso:SAR"
-      ]
-    },
-    {
-      "canonical_name": "Tajikistani somoni",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Tajikistani somoni is a fiat currency, with ISO 4217 code TJS, issued by Tajikistan. national currency of Tajikistan",
-      "aliases": [
-        "wikidata:Q199886",
-        "iso:TJS"
-      ]
-    },
-    {
-      "canonical_name": "Chilean peso",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Chilean peso is a fiat currency, with ISO 4217 code CLP, issued by Chile. currency of Chile",
-      "aliases": [
-        "wikidata:Q200050",
-        "iso:CLP"
-      ]
-    },
-    {
       "canonical_name": "dalasi",
       "entity_type": "asset",
       "subtype": "currency",
@@ -3320,206 +3691,6 @@
       "aliases": [
         "wikidata:Q203354",
         "iso:FIM"
-      ]
-    },
-    {
-      "canonical_name": "Qatari riyal",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Qatari riyal is a fiat currency, with ISO 4217 code QAR, issued by Qatar. currency",
-      "aliases": [
-        "wikidata:Q206386",
-        "iso:QAR"
-      ]
-    },
-    {
-      "canonical_name": "Maldivian rufiyaa",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Maldivian rufiyaa is a fiat currency, with ISO 4217 code MVR, issued by Maldives. currency",
-      "aliases": [
-        "wikidata:Q206600",
-        "iso:MVR"
-      ]
-    },
-    {
-      "canonical_name": "Mauritanian ouguiya",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Mauritanian ouguiya is a fiat currency, with ISO 4217 code MRU, issued by Mauritania. currency of Mauritania",
-      "aliases": [
-        "wikidata:Q207024",
-        "iso:MRU"
-      ]
-    },
-    {
-      "canonical_name": "Nicaraguan córdoba",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Nicaraguan córdoba is a fiat currency, with ISO 4217 code NIO, issued by Nicaragua. currency of Nicaragua",
-      "aliases": [
-        "wikidata:Q207312",
-        "iso:NIO"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Anguilla. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Montserrat. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Dominica. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Antigua and Barbuda. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Grenada. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Saint Kitts and Nevis. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Saint Lucia. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Eastern Caribbean dollar is a fiat currency, with ISO 4217 code XCD, issued by Saint Vincent and the Grenadines. currency of all members of the OECS",
-      "aliases": [
-        "wikidata:Q26365",
-        "iso:XCD"
-      ]
-    },
-    {
-      "canonical_name": "Hong Kong dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Hong Kong dollar is a fiat currency, with ISO 4217 code HKD, issued by British Hong Kong. currency of Hong Kong",
-      "aliases": [
-        "wikidata:Q31015",
-        "iso:HKD"
-      ]
-    },
-    {
-      "canonical_name": "Hong Kong dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Hong Kong dollar is a fiat currency, with ISO 4217 code HKD, issued by People's Republic of China. currency of Hong Kong",
-      "aliases": [
-        "wikidata:Q31015",
-        "iso:HKD"
-      ]
-    },
-    {
-      "canonical_name": "Kyrgyz som",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Kyrgyz som is a fiat currency, with ISO 4217 code KGS, issued by Kyrgyzstan. currency of Kyrgyzstan",
-      "aliases": [
-        "wikidata:Q35881",
-        "iso:KGS"
-      ]
-    },
-    {
-      "canonical_name": "renminbi",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "renminbi is a fiat currency, with ISO 4217 code CNY, issued by People's Republic of China. official currency of the People's Republic of China",
-      "aliases": [
-        "wikidata:Q39099",
-        "iso:CNY"
-      ]
-    },
-    {
-      "canonical_name": "naira",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "naira is a fiat currency, with ISO 4217 code NGN, issued by Nigeria. currency of the Federal Republic of Nigeria",
-      "aliases": [
-        "wikidata:Q203567",
-        "iso:NGN"
-      ]
-    },
-    {
-      "canonical_name": "Jordanian dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Jordanian dinar is a fiat currency, with ISO 4217 code JOD, issued by Jordan. currency",
-      "aliases": [
-        "wikidata:Q203722",
-        "iso:JOD"
-      ]
-    },
-    {
-      "canonical_name": "bolívar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "bolívar is a fiat currency, with ISO 4217 code VEB, issued by Venezuela. former currency of Venezuela (–2008)",
-      "aliases": [
-        "wikidata:Q203757",
-        "iso:VEB"
-      ]
-    },
-    {
-      "canonical_name": "gourde",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "gourde is a fiat currency, with ISO 4217 code HTG, issued by Haiti. currency of Haiti",
-      "aliases": [
-        "wikidata:Q203955",
-        "iso:HTG"
       ]
     },
     {
@@ -3593,183 +3764,43 @@
       ]
     },
     {
-      "canonical_name": "peseta",
+      "canonical_name": "naira",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Captaincy General of the Philippines. former currency of Spain",
+      "description": "naira is a fiat currency, with ISO 4217 code NGN, issued by Nigeria. currency of the Federal Republic of Nigeria",
       "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
+        "wikidata:Q203567",
+        "iso:NGN"
       ]
     },
     {
-      "canonical_name": "peseta",
+      "canonical_name": "Jordanian dinar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Captaincy General of Cuba. former currency of Spain",
+      "description": "Jordanian dinar is a fiat currency, with ISO 4217 code JOD, issued by Jordan. currency",
       "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
+        "wikidata:Q203722",
+        "iso:JOD"
       ]
     },
     {
-      "canonical_name": "peseta",
+      "canonical_name": "bolívar",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Ifni. former currency of Spain",
+      "description": "bolívar is a fiat currency, with ISO 4217 code VEB, issued by Venezuela. former currency of Venezuela (–2008)",
       "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
+        "wikidata:Q203757",
+        "iso:VEB"
       ]
     },
     {
-      "canonical_name": "peseta",
+      "canonical_name": "gourde",
       "entity_type": "asset",
       "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Captaincy General of Puerto Rico. former currency of Spain",
+      "description": "gourde is a fiat currency, with ISO 4217 code HTG, issued by Haiti. currency of Haiti",
       "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
-      ]
-    },
-    {
-      "canonical_name": "peseta",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Spanish protectorate in Morocco. former currency of Spain",
-      "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
-      ]
-    },
-    {
-      "canonical_name": "peseta",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Western Sahara. former currency of Spain",
-      "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
-      ]
-    },
-    {
-      "canonical_name": "peseta",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Equatorial Guinea. former currency of Spain",
-      "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
-      ]
-    },
-    {
-      "canonical_name": "peseta",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Andorra. former currency of Spain",
-      "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
-      ]
-    },
-    {
-      "canonical_name": "peseta",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "peseta is a fiat currency, with ISO 4217 code ESP, issued by Spain. former currency of Spain",
-      "aliases": [
-        "wikidata:Q189097",
-        "iso:ESP"
-      ]
-    },
-    {
-      "canonical_name": "Libyan dinar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Libyan dinar is a fiat currency, with ISO 4217 code LYD, issued by Libya. Currency of Libya",
-      "aliases": [
-        "wikidata:Q190699",
-        "iso:LYD"
-      ]
-    },
-    {
-      "canonical_name": "Singapore dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Singapore dollar is a fiat currency, with ISO 4217 code SGD, issued by Singapore. official currency of Singapore",
-      "aliases": [
-        "wikidata:Q190951",
-        "iso:SGD"
-      ]
-    },
-    {
-      "canonical_name": "Vietnamese đồng",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Vietnamese đồng is a fiat currency, with ISO 4217 code VND, issued by Vietnam. official currency of Vietnam",
-      "aliases": [
-        "wikidata:Q192090",
-        "iso:VND"
-      ]
-    },
-    {
-      "canonical_name": "Nuevo sol",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Nuevo sol is a fiat currency, with ISO 4217 code PEN, issued by Peru. currency of Peru",
-      "aliases": [
-        "wikidata:Q204656",
-        "iso:PEN"
-      ]
-    },
-    {
-      "canonical_name": "riel",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "riel is a fiat currency, with ISO 4217 code KHR, issued by Cambodia. currency of Cambodia",
-      "aliases": [
-        "wikidata:Q204737",
-        "iso:KHR"
-      ]
-    },
-    {
-      "canonical_name": "Italian lira",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Italian lira is a fiat currency, with ISO 4217 code ITL, issued by Kingdom of Italy. currency",
-      "aliases": [
-        "wikidata:Q204992",
-        "iso:ITL"
-      ]
-    },
-    {
-      "canonical_name": "Italian lira",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Italian lira is a fiat currency, with ISO 4217 code ITL, issued by Italy. currency",
-      "aliases": [
-        "wikidata:Q204992",
-        "iso:ITL"
-      ]
-    },
-    {
-      "canonical_name": "bir",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "bir is a fiat currency, with ISO 4217 code ETB, issued by Ethiopia. currency of Ethiopia",
-      "aliases": [
-        "wikidata:Q206243",
-        "iso:ETB"
-      ]
-    },
-    {
-      "canonical_name": "Brunei dollar",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Brunei dollar is a fiat currency, with ISO 4217 code BND, issued by Brunei. monetary currency of the Sultanate of Brunei",
-      "aliases": [
-        "wikidata:Q206319",
-        "iso:BND"
+        "wikidata:Q203955",
+        "iso:HTG"
       ]
     },
     {
@@ -3940,36 +3971,6 @@
       "aliases": [
         "wikidata:Q133100209",
         "iso:BGK"
-      ]
-    },
-    {
-      "canonical_name": "Russian ruble",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Russian ruble is a fiat currency, with ISO 4217 code RUB, issued by Russia. currency of the Russian Federation",
-      "aliases": [
-        "wikidata:Q41044",
-        "iso:RUB"
-      ]
-    },
-    {
-      "canonical_name": "Gibraltar pound",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "Gibraltar pound is a fiat currency, with ISO 4217 code GIP, issued by United Kingdom. currency",
-      "aliases": [
-        "wikidata:Q41429",
-        "iso:GIP"
-      ]
-    },
-    {
-      "canonical_name": "rupiah",
-      "entity_type": "asset",
-      "subtype": "currency",
-      "description": "rupiah is a fiat currency, with ISO 4217 code IDR, issued by Indonesia. official currency of Indonesia",
-      "aliases": [
-        "wikidata:Q41588",
-        "iso:IDR"
       ]
     },
     {

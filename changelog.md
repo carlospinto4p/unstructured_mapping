@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.38.0 - 14th April 2026
+
+- Preserved Wikidata provenance on snapshot replay:
+  - `cli/seed.py`: `load_seed()` now honours a top-level `"reason"` string in the seed payload, defaulting to `"seed"` when absent. Snapshots carrying `"reason": "wikidata-seed"` round-trip the origin signal into `entity_history` when `cli.populate` rebuilds the KG.
+  - `cli/wikidata_seed.py`: `_write_snapshot()` emits `"reason": "wikidata-seed"` in the header.
+  - Refreshed all 7 Wikidata snapshots under `data/seed/wikidata/` to carry the new `reason` field.
+- Added unit tests:
+  - `tests/unit/test_cli_seed.py`: `test_load_seed_honours_reason_hint_in_payload`.
+  - `tests/unit/test_wikidata_seed.py`: extended `test_write_snapshot_produces_seed_compatible_file` to assert the reason is written.
+- Updated `docs/seed/reproducibility.md` to document the reason-hint round-trip and drop the outdated caveat about provenance loss.
+
+
 ### v0.37.1 - 14th April 2026
 
 - Tightened `EXCHANGES_QUERY` in `wikidata/queries.py`:

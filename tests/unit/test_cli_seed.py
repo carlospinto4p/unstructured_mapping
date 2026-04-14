@@ -215,6 +215,40 @@ def test_load_seed_tags_history_with_seed_reason(
         assert history[0].reason == "seed"
 
 
+def test_load_seed_honours_reason_hint_in_payload(
+    tmp_path: Path,
+):
+    """A top-level ``reason`` in the seed file overrides
+    the default ``"seed"`` tag. Used by Wikidata snapshots
+    to preserve the ``"wikidata-seed"`` provenance signal
+    on replay — without it, rebuilding from
+    ``data/seed/wikidata/*.json`` would flatten origin to
+    plain ``"seed"`` in ``entity_history``."""
+    path = tmp_path / "snapshot.json"
+    path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "reason": "wikidata-seed",
+                "entities": [
+                    {
+                        "canonical_name": "Apple Inc.",
+                        "entity_type": "organization",
+                        "description": "Tech.",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        load_seed(path, store)
+        apple = store.find_by_name("Apple Inc.")[0]
+        history = store.get_entity_history(apple.entity_id)
+    assert history[0].reason == "wikidata-seed"
+
+
 # -- main -------------------------------------------------------
 
 

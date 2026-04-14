@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "reason": "wikidata-seed",
   "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
   "entities": [
     {
@@ -81,6 +82,168 @@
       "description": "MazaCoin is a cryptocurrency. cryptocurrency",
       "aliases": [
         "wikidata:Q15966458"
+      ]
+    },
+    {
+      "canonical_name": "Bitcoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Bitcoin is a cryptocurrency. digital cash system and associated currency",
+      "aliases": [
+        "wikidata:Q131723"
+      ]
+    },
+    {
+      "canonical_name": "Namecoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Namecoin is a cryptocurrency. cryptocurrency based on Bitcoin",
+      "aliases": [
+        "wikidata:Q2577141"
+      ]
+    },
+    {
+      "canonical_name": "Auroracoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Auroracoin is a cryptocurrency. Cryptocurrency",
+      "aliases": [
+        "wikidata:Q15981447"
+      ]
+    },
+    {
+      "canonical_name": "PTA Peseta digital",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "PTA Peseta digital is a cryptocurrency. Criptomoneda descentralizada",
+      "aliases": [
+        "wikidata:Q16324525"
+      ]
+    },
+    {
+      "canonical_name": "Ethereum",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Ethereum is a cryptocurrency. public blockchain platform with programmable transaction functionality",
+      "aliases": [
+        "wikidata:Q16783523"
+      ]
+    },
+    {
+      "canonical_name": "Counterparty",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Counterparty is a cryptocurrency. cryptocurrency platform",
+      "aliases": [
+        "wikidata:Q17001970"
+      ]
+    },
+    {
+      "canonical_name": "Dash",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Dash is a cryptocurrency. cryptocurrency",
+      "aliases": [
+        "wikidata:Q17155887"
+      ]
+    },
+    {
+      "canonical_name": "Gridcoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Gridcoin is a cryptocurrency. cryptocurrency that rewards BOINC",
+      "aliases": [
+        "wikidata:Q18572818"
+      ]
+    },
+    {
+      "canonical_name": "NEM",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "NEM is a cryptocurrency. cryptocurrency",
+      "aliases": [
+        "wikidata:Q18756242"
+      ]
+    },
+    {
+      "canonical_name": "PotCoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "PotCoin is a cryptocurrency. cryptocurrency",
+      "aliases": [
+        "wikidata:Q19894203"
+      ]
+    },
+    {
+      "canonical_name": "FairCoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "FairCoin is a cryptocurrency. Cryptocurrency",
+      "aliases": [
+        "wikidata:Q21002847"
+      ]
+    },
+    {
+      "canonical_name": "Titcoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Titcoin is a cryptocurrency. cryptocurrency launched in 2014",
+      "aliases": [
+        "wikidata:Q21064683"
+      ]
+    },
+    {
+      "canonical_name": "SolarCoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "SolarCoin is a cryptocurrency. crypto-currency",
+      "aliases": [
+        "wikidata:Q23199031"
+      ]
+    },
+    {
+      "canonical_name": "Lisk",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Lisk is a cryptocurrency. platform that provides decentralized blockchain apps",
+      "aliases": [
+        "wikidata:Q24526428"
+      ]
+    },
+    {
+      "canonical_name": "Duniter",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Duniter is a cryptocurrency. free software to produce libre currencies based on crypto-currency technologies",
+      "aliases": [
+        "wikidata:Q27088310"
+      ]
+    },
+    {
+      "canonical_name": "Zcash",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Zcash is a cryptocurrency. privacy-focused cryptocurrency",
+      "aliases": [
+        "wikidata:Q27148141"
+      ]
+    },
+    {
+      "canonical_name": "Bitnation",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Bitnation is a cryptocurrency. digital nation",
+      "aliases": [
+        "wikidata:Q28127134"
+      ]
+    },
+    {
+      "canonical_name": "Vertcoin",
+      "entity_type": "asset",
+      "subtype": "crypto",
+      "description": "Vertcoin is a cryptocurrency. cryptocurrency",
+      "aliases": [
+        "wikidata:Q28130189"
       ]
     },
     {
@@ -216,105 +379,6 @@
       "description": "Q is a cryptocurrency. cryptocurrency",
       "aliases": [
         "wikidata:Q58006570"
-      ]
-    },
-    {
-      "canonical_name": "PotCoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "PotCoin is a cryptocurrency. cryptocurrency",
-      "aliases": [
-        "wikidata:Q19894203"
-      ]
-    },
-    {
-      "canonical_name": "FairCoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "FairCoin is a cryptocurrency. Cryptocurrency",
-      "aliases": [
-        "wikidata:Q21002847"
-      ]
-    },
-    {
-      "canonical_name": "Titcoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Titcoin is a cryptocurrency. cryptocurrency launched in 2014",
-      "aliases": [
-        "wikidata:Q21064683"
-      ]
-    },
-    {
-      "canonical_name": "SolarCoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "SolarCoin is a cryptocurrency. crypto-currency",
-      "aliases": [
-        "wikidata:Q23199031"
-      ]
-    },
-    {
-      "canonical_name": "Lisk",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Lisk is a cryptocurrency. platform that provides decentralized blockchain apps",
-      "aliases": [
-        "wikidata:Q24526428"
-      ]
-    },
-    {
-      "canonical_name": "Duniter",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Duniter is a cryptocurrency. free software to produce libre currencies based on crypto-currency technologies",
-      "aliases": [
-        "wikidata:Q27088310"
-      ]
-    },
-    {
-      "canonical_name": "Zcash",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Zcash is a cryptocurrency. privacy-focused cryptocurrency",
-      "aliases": [
-        "wikidata:Q27148141"
-      ]
-    },
-    {
-      "canonical_name": "Bitnation",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Bitnation is a cryptocurrency. digital nation",
-      "aliases": [
-        "wikidata:Q28127134"
-      ]
-    },
-    {
-      "canonical_name": "Vertcoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Vertcoin is a cryptocurrency. cryptocurrency",
-      "aliases": [
-        "wikidata:Q28130189"
-      ]
-    },
-    {
-      "canonical_name": "Bitcoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Bitcoin is a cryptocurrency. digital cash system and associated currency",
-      "aliases": [
-        "wikidata:Q131723"
-      ]
-    },
-    {
-      "canonical_name": "Namecoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Namecoin is a cryptocurrency. cryptocurrency based on Bitcoin",
-      "aliases": [
-        "wikidata:Q2577141"
       ]
     },
     {
@@ -459,69 +523,6 @@
       "description": "Gram is a cryptocurrency. cryptocurrency project initiated by Telegram",
       "aliases": [
         "wikidata:Q53263815"
-      ]
-    },
-    {
-      "canonical_name": "Auroracoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Auroracoin is a cryptocurrency. Cryptocurrency",
-      "aliases": [
-        "wikidata:Q15981447"
-      ]
-    },
-    {
-      "canonical_name": "PTA Peseta digital",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "PTA Peseta digital is a cryptocurrency. Criptomoneda descentralizada",
-      "aliases": [
-        "wikidata:Q16324525"
-      ]
-    },
-    {
-      "canonical_name": "Ethereum",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Ethereum is a cryptocurrency. public blockchain platform with programmable transaction functionality",
-      "aliases": [
-        "wikidata:Q16783523"
-      ]
-    },
-    {
-      "canonical_name": "Counterparty",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Counterparty is a cryptocurrency. cryptocurrency platform",
-      "aliases": [
-        "wikidata:Q17001970"
-      ]
-    },
-    {
-      "canonical_name": "Dash",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Dash is a cryptocurrency. cryptocurrency",
-      "aliases": [
-        "wikidata:Q17155887"
-      ]
-    },
-    {
-      "canonical_name": "Gridcoin",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "Gridcoin is a cryptocurrency. cryptocurrency that rewards BOINC",
-      "aliases": [
-        "wikidata:Q18572818"
-      ]
-    },
-    {
-      "canonical_name": "NEM",
-      "entity_type": "asset",
-      "subtype": "crypto",
-      "description": "NEM is a cryptocurrency. cryptocurrency",
-      "aliases": [
-        "wikidata:Q18756242"
       ]
     },
     {

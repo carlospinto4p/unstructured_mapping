@@ -118,6 +118,16 @@ def load_seed(
 ) -> tuple[int, int, Counter]:
     """Load entities from ``seed_path`` into ``store``.
 
+    The seed file may declare a top-level ``"reason"``
+    string. If present, every new entity is tagged with
+    that value in the ``entity_history`` audit log;
+    otherwise the default ``"seed"`` reason is used.
+
+    The Wikidata snapshots under ``data/seed/wikidata/``
+    set ``"reason": "wikidata-seed"`` so replaying them
+    preserves the origin signal that the live
+    ``wikidata_seed`` import would have emitted.
+
     :param seed_path: Path to the seed JSON file.
     :param store: Target knowledge store.
     :param dry_run: When True, only parse and validate;
@@ -128,6 +138,7 @@ def load_seed(
     """
     data = json.loads(seed_path.read_text(encoding="utf-8"))
     raw_entities = data.get("entities", [])
+    reason = data.get("reason", "seed")
     created = 0
     skipped = 0
     counts: Counter = Counter()
@@ -140,7 +151,7 @@ def load_seed(
             skipped += 1
             continue
         if not dry_run:
-            store.save_entity(entity, reason="seed")
+            store.save_entity(entity, reason=reason)
         created += 1
         counts[entity.entity_type.value] += 1
 

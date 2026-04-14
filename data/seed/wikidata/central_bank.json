@@ -1,7 +1,1376 @@
 {
   "version": 1,
+  "reason": "wikidata-seed",
   "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
   "entities": [
+    {
+      "canonical_name": "Central Bank of Costa Rica",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Costa Rica is the central bank of Costa Rica. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q4504273"
+      ]
+    },
+    {
+      "canonical_name": "European Central Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "European Central Bank is the central bank of Germany. Sets monetary policy and influences the country's currency. central bank of the European Union and the eurozone",
+      "aliases": [
+        "wikidata:Q8901"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Slovenia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Slovenia is the central bank of Slovenia. Sets monetary policy and influences the country's currency. central bank of the Republic of Slovenia",
+      "aliases": [
+        "wikidata:Q26662"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of Angola",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of Angola is the central bank of Angola. Sets monetary policy and influences the country's currency. state-owned bank of Angola",
+      "aliases": [
+        "wikidata:Q31211"
+      ]
+    },
+    {
+      "canonical_name": "Federal Reserve System",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Federal Reserve System is the central bank of United States. Sets monetary policy and influences the country's currency. central banking system of the United States",
+      "aliases": [
+        "wikidata:Q53536"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Libya",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Libya is the central bank of Libya. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q58234"
+      ]
+    },
+    {
+      "canonical_name": "Ottoman Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Ottoman Bank is the central bank of Ottoman Empire. Sets monetary policy and influences the country's currency. former bank in Turkey",
+      "aliases": [
+        "wikidata:Q2041453"
+      ]
+    },
+    {
+      "canonical_name": "Ottoman Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Ottoman Bank is the central bank of Turkey. Sets monetary policy and influences the country's currency. former bank in Turkey",
+      "aliases": [
+        "wikidata:Q2041453"
+      ]
+    },
+    {
+      "canonical_name": "Preussische Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Preussische Bank is the central bank of Kingdom of Prussia. Sets monetary policy and influences the country's currency. former central bank",
+      "aliases": [
+        "wikidata:Q2109176"
+      ]
+    },
+    {
+      "canonical_name": "Preussische Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Preussische Bank is the central bank of Germany. Sets monetary policy and influences the country's currency. former central bank",
+      "aliases": [
+        "wikidata:Q2109176"
+      ]
+    },
+    {
+      "canonical_name": "Federal Reserve Bank of Kansas City",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Federal Reserve Bank of Kansas City is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank in Kansas City, United States",
+      "aliases": [
+        "wikidata:Q2166296"
+      ]
+    },
+    {
+      "canonical_name": "State Bank of Vietnam",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "State Bank of Vietnam is the central bank of Vietnam. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q2234553"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Somalia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Somalia is the central bank of Somalia. Sets monetary policy and influences the country's currency. state-owned bank in Somalia",
+      "aliases": [
+        "wikidata:Q2299534"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of Malawi",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reserve Bank of Malawi is the central bank of Malawi. Sets monetary policy and influences the country's currency. Financial institution of Malawi",
+      "aliases": [
+        "wikidata:Q2397584"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of Kazakhstan",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of Kazakhstan is the central bank of Kazakhstan. Sets monetary policy and influences the country's currency. central bank of Kazakhstan",
+      "aliases": [
+        "wikidata:Q2472280"
+      ]
+    },
+    {
+      "canonical_name": "Federal Reserve Bank of Minneapolis",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Federal Reserve Bank of Minneapolis is the central bank of United States. Sets monetary policy and influences the country's currency. member Bank of Federal Reserve",
+      "aliases": [
+        "wikidata:Q2503528"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Kenya",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Kenya is the central bank of Kenya. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q2510227"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Mauritania",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Mauritania is the central bank of Mauritania. Sets monetary policy and influences the country's currency. central bank of Mauritania, in northwest Africa",
+      "aliases": [
+        "wikidata:Q2528877"
+      ]
+    },
+    {
+      "canonical_name": "Transnistrian Republican Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Transnistrian Republican Bank is the central bank of Transnistria. Sets monetary policy and influences the country's currency. Central Bank of Transnistria",
+      "aliases": [
+        "wikidata:Q2560346"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Venezuela",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Venezuela is the central bank of Venezuela. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q2570775"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Central African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Central African States is the central bank of Cameroon. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q189972"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Central African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Central African States is the central bank of Gabon. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q189972"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Central African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Central African States is the central bank of Equatorial Guinea. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q189972"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Central African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Central African States is the central bank of Republic of the Congo. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q189972"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Central African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Central African States is the central bank of Central African Republic. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q189972"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Central African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Central African States is the central bank of Chad. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q189972"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Armenia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Armenia is the central bank of Armenia. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q190223"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Azerbaijan",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Azerbaijan is the central bank of Azerbaijan. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q190230"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Luxembourg",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Luxembourg is the central bank of Luxembourg. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q190234"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Sudan",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Sudan is the central bank of Sudan. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q190236"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Finland",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Finland is the central bank of Finland. Sets monetary policy and influences the country's currency. the central bank of Finland",
+      "aliases": [
+        "wikidata:Q194060"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of the Republic of China",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of the Republic of China is the central bank of Taiwan. Sets monetary policy and influences the country's currency. Central bank of the Republic of China (Taiwan)",
+      "aliases": [
+        "wikidata:Q198642"
+      ]
+    },
+    {
+      "canonical_name": "Bulgarian National Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bulgarian National Bank is the central bank of Bulgaria. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q74687"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Malta",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Malta is the central bank of Malta. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q74690"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Cyprus",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Cyprus is the central bank of Cyprus. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q74693"
+      ]
+    },
+    {
+      "canonical_name": "Federal Reserve Bank of New York",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Federal Reserve Bank of New York is the central bank of United States. Sets monetary policy and influences the country's currency. American bank",
+      "aliases": [
+        "wikidata:Q115860"
+      ]
+    },
+    {
+      "canonical_name": "German Federal Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "German Federal Bank is the central bank of Germany. Sets monetary policy and influences the country's currency. central bank of Germany (1957-)",
+      "aliases": [
+        "wikidata:Q162222"
+      ]
+    },
+    {
+      "canonical_name": "Narodowy Bank Polski",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Narodowy Bank Polski is the central bank of Poland. Sets monetary policy and influences the country's currency. central bank of Poland",
+      "aliases": [
+        "wikidata:Q168844"
+      ]
+    },
+    {
+      "canonical_name": "Bank of England",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of England is the central bank of United Kingdom. Sets monetary policy and influences the country's currency. central bank of the United Kingdom",
+      "aliases": [
+        "wikidata:Q183231"
+      ]
+    },
+    {
+      "canonical_name": "Banco de la República",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banco de la República is the central bank of Colombia. Sets monetary policy and influences the country's currency. Central Bank of Colombia",
+      "aliases": [
+        "wikidata:Q686329"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Latvia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Latvia is the central bank of Latvia. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q687709"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Joseon",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Joseon is the central bank of Korea under Japanese rule. Sets monetary policy and influences the country's currency. central bank of Colonial Korea, and of South Korea (1911-1945)",
+      "aliases": [
+        "wikidata:Q711604"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Manchou",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Manchou is the central bank of Manchukuo. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q713034"
+      ]
+    },
+    {
+      "canonical_name": "Hungarian National Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Hungarian National Bank is the central bank of Hungary. Sets monetary policy and influences the country's currency. central bank of Hungary",
+      "aliases": [
+        "wikidata:Q774636"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Spain",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Spain is the central bank of Spain. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q789966"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Somaliland",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Somaliland is the central bank of Somaliland. Sets monetary policy and influences the country's currency. central bank of Somaliland",
+      "aliases": [
+        "wikidata:Q797484"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Eritrea",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Eritrea is the central bank of Eritrea. Sets monetary policy and influences the country's currency. Central bank of Eritrea",
+      "aliases": [
+        "wikidata:Q806163"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Korea",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Korea is the central bank of South Korea. Sets monetary policy and influences the country's currency. central bank of Republic of Korea, established in 1950",
+      "aliases": [
+        "wikidata:Q485531"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Uganda",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Uganda is the central bank of Uganda. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q487300"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of The Gambia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of The Gambia is the central bank of The Gambia. Sets monetary policy and influences the country's currency. banco central",
+      "aliases": [
+        "wikidata:Q495091"
+      ]
+    },
+    {
+      "canonical_name": "Reichsbank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reichsbank is the central bank of German Reich. Sets monetary policy and influences the country's currency. bank",
+      "aliases": [
+        "wikidata:Q560183"
+      ]
+    },
+    {
+      "canonical_name": "Reichsbank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reichsbank is the central bank of Germany. Sets monetary policy and influences the country's currency. bank",
+      "aliases": [
+        "wikidata:Q560183"
+      ]
+    },
+    {
+      "canonical_name": "Sveriges Riksbank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Sveriges Riksbank is the central bank of Sweden. Sets monetary policy and influences the country's currency. central bank of Sweden",
+      "aliases": [
+        "wikidata:Q564652"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Bahrain",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Bahrain is the central bank of Bahrain. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q571182"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of the Republic of Turkey",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of the Republic of Turkey is the central bank of Turkey. Sets monetary policy and influences the country's currency. central bank of Turkey",
+      "aliases": [
+        "wikidata:Q580829"
+      ]
+    },
+    {
+      "canonical_name": "Swiss National Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Swiss National Bank is the central bank of Switzerland. Sets monetary policy and influences the country's currency. central bank of Switzerland",
+      "aliases": [
+        "wikidata:Q597394"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Tunisia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Tunisia is the central bank of Tunisia. Sets monetary policy and influences the country's currency. Tunisian central bank",
+      "aliases": [
+        "wikidata:Q600137"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Lithuania",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Lithuania is the central bank of Lithuania. Sets monetary policy and influences the country's currency. registration authority",
+      "aliases": [
+        "wikidata:Q616849"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Nicaragua",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Nicaragua is the central bank of Nicaragua. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q4504274"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Paraguay",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Paraguay is the central bank of Paraguay. Sets monetary policy and influences the country's currency. bank organisation in Paraguay",
+      "aliases": [
+        "wikidata:Q4504275"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Uzbekistan",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Uzbekistan is the central bank of Uzbekistan. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q4504278"
+      ]
+    },
+    {
+      "canonical_name": "Banco Central de Timor-Leste",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banco Central de Timor-Leste is the central bank of Timor-Leste. Sets monetary policy and influences the country's currency. central bank of East Timor",
+      "aliases": [
+        "wikidata:Q4504282"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Turkmenistan",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Turkmenistan is the central bank of Turkmenistan. Sets monetary policy and influences the country's currency. national bank of Turkmenistan",
+      "aliases": [
+        "wikidata:Q4504283"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Seychelles",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Seychelles is the central bank of Seychelles. Sets monetary policy and influences the country's currency. Central bank Seychelles",
+      "aliases": [
+        "wikidata:Q4504280"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Trinidad and Tobago",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Trinidad and Tobago is the central bank of Trinidad and Tobago. Sets monetary policy and influences the country's currency. Central bank",
+      "aliases": [
+        "wikidata:Q4504281"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Montenegro",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Montenegro is the central bank of Montenegro. Sets monetary policy and influences the country's currency. state-owned bank in Montenegro",
+      "aliases": [
+        "wikidata:Q4504284"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Uruguay",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Uruguay is the central bank of Uruguay. Sets monetary policy and influences the country's currency. central bank of the Uruguay",
+      "aliases": [
+        "wikidata:Q4504285"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of the Turkish Republic of Northern Cyprus",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of the Turkish Republic of Northern Cyprus is the central bank of Northern Cyprus. Sets monetary policy and influences the country's currency. Central Bank",
+      "aliases": [
+        "wikidata:Q5060424"
+      ]
+    },
+    {
+      "canonical_name": "East African Currency Board",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "East African Currency Board is the central bank of East Africa Protectorate. Sets monetary policy and influences the country's currency. British governmental organization that supplied and oversaw the currency of British colonies in British East Africa from 1919 to 1966",
+      "aliases": [
+        "wikidata:Q5327653"
+      ]
+    },
+    {
+      "canonical_name": "Palestine Monetary Authority",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Palestine Monetary Authority is the central bank of Palestine. Sets monetary policy and influences the country's currency. central bank of Palestine",
+      "aliases": [
+        "wikidata:Q7127309"
+      ]
+    },
+    {
+      "canonical_name": "Banque de l'Indochine",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banque de l'Indochine is the central bank of France. Sets monetary policy and influences the country's currency. French bank",
+      "aliases": [
+        "wikidata:Q7719950"
+      ]
+    },
+    {
+      "canonical_name": "Bank von Danzig",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank von Danzig is the central bank of Free City of Danzig. Sets monetary policy and influences the country's currency. Central bank of the Free City of Danzig",
+      "aliases": [
+        "wikidata:Q9164978"
+      ]
+    },
+    {
+      "canonical_name": "Bank Polski",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank Polski is the central bank of Congress Poland. Sets monetary policy and influences the country's currency. former bank in Poland",
+      "aliases": [
+        "wikidata:Q9164996"
+      ]
+    },
+    {
+      "canonical_name": "Ta-Ching Government Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Ta-Ching Government Bank is the central bank of Qing dynasty. Sets monetary policy and influences the country's currency. Central Bank of the Qing Dynasty",
+      "aliases": [
+        "wikidata:Q10936462"
+      ]
+    },
+    {
+      "canonical_name": "Central Reserve Bank of China",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Reserve Bank of China is the central bank of Wang Jingwei regime. Sets monetary policy and influences the country's currency. central bank of Wang Jingwei Regime",
+      "aliases": [
+        "wikidata:Q11363609"
+      ]
+    },
+    {
+      "canonical_name": "Andorran Financial Authority",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Andorran Financial Authority is the central bank of Andorra. Sets monetary policy and influences the country's currency. Andorian finance institute",
+      "aliases": [
+        "wikidata:Q11926724"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of Czechoslovakia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of Czechoslovakia is the central bank of Czechoslovakia. Sets monetary policy and influences the country's currency. Central bank of Czechoslovakia",
+      "aliases": [
+        "wikidata:Q12041612"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of New Zealand",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reserve Bank of New Zealand is the central bank of New Zealand. Sets monetary policy and influences the country's currency. central bank of New Zealand",
+      "aliases": [
+        "wikidata:Q1494550"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of Australia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reserve Bank of Australia is the central bank of Australia. Sets monetary policy and influences the country's currency. central bank of Australia",
+      "aliases": [
+        "wikidata:Q1506724"
+      ]
+    },
+    {
+      "canonical_name": "Administration of the Patrimony of the Apostolic See",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Administration of the Patrimony of the Apostolic See is the central bank of Vatican City. Sets monetary policy and influences the country's currency. administer the properties owned by the Holy See in order to provide the funds necessary for the Roman Curia to function. (Pastor Bonus, 172)",
+      "aliases": [
+        "wikidata:Q1562250"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong Monetary Authority",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Hong Kong Monetary Authority is the central bank of People's Republic of China. Sets monetary policy and influences the country's currency. currency board and central banking authority of Hong Kong",
+      "aliases": [
+        "wikidata:Q1595286"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Nigeria",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Nigeria is the central bank of Nigeria. Sets monetary policy and influences the country's currency. bank",
+      "aliases": [
+        "wikidata:Q1627120"
+      ]
+    },
+    {
+      "canonical_name": "Imperial Bank of Persia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Imperial Bank of Persia is the central bank of Qajar Iran. Sets monetary policy and influences the country's currency. former British bank in Iran",
+      "aliases": [
+        "wikidata:Q1660286"
+      ]
+    },
+    {
+      "canonical_name": "State Bank of the Russian Empire",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "State Bank of the Russian Empire is the central bank of Russian Empire. Sets monetary policy and influences the country's currency. Bank",
+      "aliases": [
+        "wikidata:Q1689848"
+      ]
+    },
+    {
+      "canonical_name": "Bermuda Monetary Authority",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bermuda Monetary Authority is the central bank of Bermuda. Sets monetary policy and influences the country's currency. registration authority",
+      "aliases": [
+        "wikidata:Q1774433"
+      ]
+    },
+    {
+      "canonical_name": "Cayman Islands Monetary Authority",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Cayman Islands Monetary Authority is the central bank of Cayman Islands. Sets monetary policy and influences the country's currency. registration authority",
+      "aliases": [
+        "wikidata:Q1774447"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Aruba",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Aruba is the central bank of Aruba. Sets monetary policy and influences the country's currency. Central Bank",
+      "aliases": [
+        "wikidata:Q1774469"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Algeria",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Algeria is the central bank of Algeria. Sets monetary policy and influences the country's currency. Central Bank of Algeria",
+      "aliases": [
+        "wikidata:Q1774622"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of Fiji",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reserve Bank of Fiji is the central bank of Fiji. Sets monetary policy and influences the country's currency. Central Bank of Fiji",
+      "aliases": [
+        "wikidata:Q1776552"
+      ]
+    },
+    {
+      "canonical_name": "Banque du Liban",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banque du Liban is the central bank of Lebanon. Sets monetary policy and influences the country's currency. Central bank of Lebanon",
+      "aliases": [
+        "wikidata:Q1776564"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Italy",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Italy is the central bank of Italy. Sets monetary policy and influences the country's currency. central bank of Italy",
+      "aliases": [
+        "wikidata:Q806176"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Bolivia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Bolivia is the central bank of Bolivia. Sets monetary policy and influences the country's currency. monetary Authority of Bolivia",
+      "aliases": [
+        "wikidata:Q806180"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Brazil",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Brazil is the central bank of Brazil. Sets monetary policy and influences the country's currency. central bank of Brazil",
+      "aliases": [
+        "wikidata:Q806186"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Mexico",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Mexico is the central bank of Mexico. Sets monetary policy and influences the country's currency. Mexico's central bank",
+      "aliases": [
+        "wikidata:Q806208"
+      ]
+    },
+    {
+      "canonical_name": "Bangladesh Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bangladesh Bank is the central bank of Bangladesh. Sets monetary policy and influences the country's currency. central bank of Bangladesh and member of the Asian Clearing Union",
+      "aliases": [
+        "wikidata:Q806532"
+      ]
+    },
+    {
+      "canonical_name": "Bank Negara Malaysia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank Negara Malaysia is the central bank of Malaysia. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q806646"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Russia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Russia is the central bank of Russia. Sets monetary policy and influences the country's currency. central bank of the Russian Federation established on July 13, 1990",
+      "aliases": [
+        "wikidata:Q806651"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Iraq",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Iraq is the central bank of Iraq. Sets monetary policy and influences the country's currency. central bank of the Republic of Iraq",
+      "aliases": [
+        "wikidata:Q1778674"
+      ]
+    },
+    {
+      "canonical_name": "Königliche Hauptbank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Königliche Hauptbank is the central bank of Prussia. Sets monetary policy and influences the country's currency. former bank building in Berlin",
+      "aliases": [
+        "wikidata:Q1796124"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Ecuador",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Ecuador is the central bank of Ecuador. Sets monetary policy and influences the country's currency. central bank of Ecuador",
+      "aliases": [
+        "wikidata:Q1797646"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of the Dominican Republic",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of the Dominican Republic is the central bank of Dominican Republic. Sets monetary policy and influences the country's currency. monetary authority of the Dominican Republic",
+      "aliases": [
+        "wikidata:Q1800406"
+      ]
+    },
+    {
+      "canonical_name": "Central Reserve Bank of El Salvador",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Reserve Bank of El Salvador is the central bank of El Salvador. Sets monetary policy and influences the country's currency. monetary Authority of El Salvador",
+      "aliases": [
+        "wikidata:Q1801435"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Guyana",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Guyana is the central bank of Guyana. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q1812564"
+      ]
+    },
+    {
+      "canonical_name": "Bangko Sentral ng Pilipinas",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bangko Sentral ng Pilipinas is the central bank of Philippines. Sets monetary policy and influences the country's currency. central bank of the Philippines",
+      "aliases": [
+        "wikidata:Q1853468"
+      ]
+    },
+    {
+      "canonical_name": "Bank Indonesia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank Indonesia is the central bank of Indonesia. Sets monetary policy and influences the country's currency. central bank of the Republic of Indonesia",
+      "aliases": [
+        "wikidata:Q1906161"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Myanmar",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Myanmar is the central bank of Myanmar. Sets monetary policy and influences the country's currency. central bank of Myanmar",
+      "aliases": [
+        "wikidata:Q1944374"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of Ethiopia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of Ethiopia is the central bank of Ethiopia. Sets monetary policy and influences the country's currency. central bank of Ethiopia",
+      "aliases": [
+        "wikidata:Q1967889"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of the Republic of Abkhazia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of the Republic of Abkhazia is the central bank of Republic of Abkhazia. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q2001669"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of the Republic of Abkhazia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of the Republic of Abkhazia is the central bank of Georgia. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q2001669"
+      ]
+    },
+    {
+      "canonical_name": "Allahabad Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Allahabad Bank is the central bank of India. Sets monetary policy and influences the country's currency. India national bank",
+      "aliases": [
+        "wikidata:Q2018840"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Syria",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Syria is the central bank of Syria. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q806932"
+      ]
+    },
+    {
+      "canonical_name": "Bank of the Republic of Burundi",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of the Republic of Burundi is the central bank of Burundi. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q806937"
+      ]
+    },
+    {
+      "canonical_name": "Bank of France",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of France is the central bank of France. Sets monetary policy and influences the country's currency. central bank of France",
+      "aliases": [
+        "wikidata:Q806950"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Botswana",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Botswana is the central bank of Botswana. Sets monetary policy and influences the country's currency. central bank in Botswana",
+      "aliases": [
+        "wikidata:Q859830"
+      ]
+    },
+    {
+      "canonical_name": "South African Reserve Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "South African Reserve Bank is the central bank of South Africa. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q912920"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Egypt",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Egypt is the central bank of Egypt. Sets monetary policy and influences the country's currency. central bank of Egypt",
+      "aliases": [
+        "wikidata:Q920699"
+      ]
+    },
+    {
+      "canonical_name": "Central Reserve Bank of Peru",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Reserve Bank of Peru is the central bank of Peru. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q932146"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of India",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reserve Bank of India is the central bank of India. Sets monetary policy and influences the country's currency. Central Bank of India",
+      "aliases": [
+        "wikidata:Q944085"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Senegal. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Niger. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Ivory Coast. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Guinea-Bissau. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Burkina Faso. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Benin. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Togo. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of West African States",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of West African States is the central bank of Mali. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
+      "aliases": [
+        "wikidata:Q620942"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Argentina",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Argentina is the central bank of Argentina. Sets monetary policy and influences the country's currency. the central bank of Argentina",
+      "aliases": [
+        "wikidata:Q642444"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Belize",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Belize is the central bank of Belize. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q643949"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Ghana",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Ghana is the central bank of Ghana. Sets monetary policy and influences the country's currency. central bank of Ghana",
+      "aliases": [
+        "wikidata:Q669484"
+      ]
+    },
+    {
+      "canonical_name": "Austrian National Bank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Austrian National Bank is the central bank of Austria. Sets monetary policy and influences the country's currency. Austria’s central bank",
+      "aliases": [
+        "wikidata:Q670723"
+      ]
+    },
+    {
+      "canonical_name": "Danmarks Nationalbank",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Danmarks Nationalbank is the central bank of Denmark. Sets monetary policy and influences the country's currency. Danish central bank",
+      "aliases": [
+        "wikidata:Q683252"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of Belgium",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of Belgium is the central bank of Belgium. Sets monetary policy and influences the country's currency. central bank",
+      "aliases": [
+        "wikidata:Q685918"
+      ]
+    },
+    {
+      "canonical_name": "Bank of Nauru",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Bank of Nauru is the central bank of Nauru. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q806683"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Solomon Islands",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Solomon Islands is the central bank of Solomon Islands. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q1777295"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Yemen",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Yemen is the central bank of Yemen. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q1797039"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Curaçao and Sint Maarten",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Curaçao and Sint Maarten is the central bank of Sint Maarten. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q2602290"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Curaçao and Sint Maarten",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Curaçao and Sint Maarten is the central bank of Curaçao. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q2602290"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Samoa",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Samoa is the central bank of Samoa. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q2632072"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of Sri Lanka",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of Sri Lanka is the central bank of Sri Lanka. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q2640939"
+      ]
+    },
+    {
+      "canonical_name": "Banque internationale pour l'Afrique occidentale",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banque internationale pour l'Afrique occidentale is the central bank of French West Africa. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q2883397"
+      ]
+    },
+    {
+      "canonical_name": "Currency Commission",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Currency Commission is the central bank of Irish Free State. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q5194994"
+      ]
+    },
+    {
+      "canonical_name": "State Bank of Czechoslovakia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "State Bank of Czechoslovakia is the central bank of Czechoslovakia. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q6464521"
+      ]
+    },
+    {
+      "canonical_name": "Puerto Rico fiscal agent and financing",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Puerto Rico fiscal agent and financing is the central bank of United States. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q7258814"
+      ]
+    },
+    {
+      "canonical_name": "Centralbanken for Norge",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Centralbanken for Norge is the central bank of Norway. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q11963362"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of Rhodesia",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Reserve Bank of Rhodesia is the central bank of Rhodesia. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q14827030"
+      ]
+    },
+    {
+      "canonical_name": "National Bank of Tuvalu",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "National Bank of Tuvalu is the central bank of Tuvalu. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q16740215"
+      ]
+    },
+    {
+      "canonical_name": "Banque de l'Algérie",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banque de l'Algérie is the central bank of France. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q21426958"
+      ]
+    },
+    {
+      "canonical_name": "CENTRAL BANK OF NIGERIA, LAGOS",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "CENTRAL BANK OF NIGERIA, LAGOS is a central bank.",
+      "aliases": [
+        "wikidata:Q110819711"
+      ]
+    },
+    {
+      "canonical_name": "The central bank of Nigeria",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "The central bank of Nigeria is the central bank of Nigeria. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q110819921"
+      ]
+    },
+    {
+      "canonical_name": "Landeszentralbank Hamburg",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Landeszentralbank Hamburg is the central bank of Germany. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q120064571"
+      ]
+    },
+    {
+      "canonical_name": "Central Bank of North Yemen",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Central Bank of North Yemen is the central bank of Yemen Republic. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q130598865"
+      ]
+    },
+    {
+      "canonical_name": "Banco Central do Brasil (Fortaleza)",
+      "entity_type": "organization",
+      "subtype": "central_bank",
+      "description": "Banco Central do Brasil (Fortaleza) is the central bank of Brazil. Sets monetary policy and influences the country's currency.",
+      "aliases": [
+        "wikidata:Q136416763"
+      ]
+    },
     {
       "canonical_name": "Banco de Lisboa",
       "entity_type": "organization",
@@ -246,399 +1615,210 @@
       ]
     },
     {
-      "canonical_name": "Bulgarian National Bank",
+      "canonical_name": "Bank of Namibia",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bulgarian National Bank is the central bank of Bulgaria. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Bank of Namibia is the central bank of Namibia. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q74687"
+        "wikidata:Q806684"
       ]
     },
     {
-      "canonical_name": "Central Bank of Malta",
+      "canonical_name": "Bank of North America",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Malta is the central bank of Malta. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Bank of North America is the central bank of United States. Sets monetary policy and influences the country's currency. first chartered bank in the United States (established in 1781), and served as the country's first de facto central bank",
       "aliases": [
-        "wikidata:Q74690"
+        "wikidata:Q806690"
       ]
     },
     {
-      "canonical_name": "Central Bank of Cyprus",
+      "canonical_name": "Bank of Sierra Leone",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Cyprus is the central bank of Cyprus. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Bank of Sierra Leone is the central bank of Sierra Leone. Sets monetary policy and influences the country's currency. central bank of Sierra Leone",
       "aliases": [
-        "wikidata:Q74693"
+        "wikidata:Q806691"
       ]
     },
     {
-      "canonical_name": "Federal Reserve Bank of New York",
+      "canonical_name": "Bank of Zambia",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Federal Reserve Bank of New York is the central bank of United States. Sets monetary policy and influences the country's currency. American bank",
+      "description": "Bank of Zambia is the central bank of Zambia. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q115860"
+        "wikidata:Q806694"
       ]
     },
     {
-      "canonical_name": "German Federal Bank",
+      "canonical_name": "Bank of Canada",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "German Federal Bank is the central bank of Germany. Sets monetary policy and influences the country's currency. central bank of Germany (1957-)",
+      "description": "Bank of Canada is the central bank of Canada. Sets monetary policy and influences the country's currency. central bank of Canada",
       "aliases": [
-        "wikidata:Q162222"
+        "wikidata:Q806703"
       ]
     },
     {
-      "canonical_name": "Narodowy Bank Polski",
+      "canonical_name": "Bank of Greece",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Narodowy Bank Polski is the central bank of Poland. Sets monetary policy and influences the country's currency. central bank of Poland",
+      "description": "Bank of Greece is the central bank of Greece. Sets monetary policy and influences the country's currency. central bank of Greece",
       "aliases": [
-        "wikidata:Q168844"
+        "wikidata:Q806700"
       ]
     },
     {
-      "canonical_name": "Bank of England",
+      "canonical_name": "Bank of Thailand",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of England is the central bank of United Kingdom. Sets monetary policy and influences the country's currency. central bank of the United Kingdom",
+      "description": "Bank of Thailand is the central bank of Thailand. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q183231"
+        "wikidata:Q806706"
       ]
     },
     {
-      "canonical_name": "Central Bank of Costa Rica",
+      "canonical_name": "Bank of Albania",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Costa Rica is the central bank of Costa Rica. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Bank of Albania is the central bank of Albania. Sets monetary policy and influences the country's currency. central bank of Albania",
       "aliases": [
-        "wikidata:Q4504273"
+        "wikidata:Q806714"
       ]
     },
     {
-      "canonical_name": "European Central Bank",
+      "canonical_name": "Federal Reserve Bank of Chicago",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "European Central Bank is the central bank of Germany. Sets monetary policy and influences the country's currency. central bank of the European Union and the eurozone",
+      "description": "Federal Reserve Bank of Chicago is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank in Chicago, United States",
       "aliases": [
-        "wikidata:Q8901"
+        "wikidata:Q965251"
       ]
     },
     {
-      "canonical_name": "Bank of Slovenia",
+      "canonical_name": "USSR State Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Slovenia is the central bank of Slovenia. Sets monetary policy and influences the country's currency. central bank of the Republic of Slovenia",
+      "description": "USSR State Bank is the central bank of Soviet Union. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q26662"
+        "wikidata:Q966148"
       ]
     },
     {
-      "canonical_name": "National Bank of Angola",
+      "canonical_name": "National Bank of Romania",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "National Bank of Angola is the central bank of Angola. Sets monetary policy and influences the country's currency. state-owned bank of Angola",
+      "description": "National Bank of Romania is the central bank of Romania. Sets monetary policy and influences the country's currency. central bank of Romania",
       "aliases": [
-        "wikidata:Q31211"
+        "wikidata:Q967861"
       ]
     },
     {
-      "canonical_name": "Federal Reserve System",
+      "canonical_name": "Norges Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Federal Reserve System is the central bank of United States. Sets monetary policy and influences the country's currency. central banking system of the United States",
+      "description": "Norges Bank is the central bank of Norway. Sets monetary policy and influences the country's currency. central bank of Norway",
       "aliases": [
-        "wikidata:Q53536"
+        "wikidata:Q970769"
       ]
     },
     {
-      "canonical_name": "Central Bank of Libya",
+      "canonical_name": "Monetary Authority of Macao",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Libya is the central bank of Libya. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Monetary Authority of Macao is the central bank of People's Republic of China. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q58234"
+        "wikidata:Q986615"
       ]
     },
     {
-      "canonical_name": "Central Bank of Nicaragua",
+      "canonical_name": "Reserve Bank of Zimbabwe",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Nicaragua is the central bank of Nicaragua. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Reserve Bank of Zimbabwe is the central bank of Zimbabwe. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q4504274"
+        "wikidata:Q1025119"
       ]
     },
     {
-      "canonical_name": "Central Bank of Paraguay",
+      "canonical_name": "National Bank of Ukraine",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Paraguay is the central bank of Paraguay. Sets monetary policy and influences the country's currency. bank organisation in Paraguay",
+      "description": "National Bank of Ukraine is the central bank of Ukraine. Sets monetary policy and influences the country's currency. central bank of Ukraine",
       "aliases": [
-        "wikidata:Q4504275"
+        "wikidata:Q1070388"
       ]
     },
     {
-      "canonical_name": "Central Bank of Uzbekistan",
+      "canonical_name": "Central Bank of the Democratic People's Republic of Korea",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Uzbekistan is the central bank of Uzbekistan. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Central Bank of the Democratic People's Republic of Korea is the central bank of North Korea. Sets monetary policy and influences the country's currency. central bank of North Korea",
       "aliases": [
-        "wikidata:Q4504278"
+        "wikidata:Q1141425"
       ]
     },
     {
-      "canonical_name": "Banco Central de Timor-Leste",
+      "canonical_name": "Croatian National Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Banco Central de Timor-Leste is the central bank of Timor-Leste. Sets monetary policy and influences the country's currency. central bank of East Timor",
+      "description": "Croatian National Bank is the central bank of Croatia. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q4504282"
+        "wikidata:Q1143457"
       ]
     },
     {
-      "canonical_name": "Central Bank of Turkmenistan",
+      "canonical_name": "Royal Monetary Authority of Bhutan",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Turkmenistan is the central bank of Turkmenistan. Sets monetary policy and influences the country's currency. national bank of Turkmenistan",
+      "description": "Royal Monetary Authority of Bhutan is the central bank of Bhutan. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q4504283"
+        "wikidata:Q1144649"
       ]
     },
     {
-      "canonical_name": "Central Bank of Seychelles",
+      "canonical_name": "Da Afghanistan Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Seychelles is the central bank of Seychelles. Sets monetary policy and influences the country's currency. Central bank Seychelles",
+      "description": "Da Afghanistan Bank is the central bank of Afghanistan. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q4504280"
+        "wikidata:Q1156372"
       ]
     },
     {
-      "canonical_name": "Central Bank of Trinidad and Tobago",
+      "canonical_name": "De Nederlandsche Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Trinidad and Tobago is the central bank of Trinidad and Tobago. Sets monetary policy and influences the country's currency. Central bank",
+      "description": "De Nederlandsche Bank is the central bank of Netherlands. Sets monetary policy and influences the country's currency. The Netherlands' central bank",
       "aliases": [
-        "wikidata:Q4504281"
+        "wikidata:Q1180205"
       ]
     },
     {
-      "canonical_name": "Central Bank of Montenegro",
+      "canonical_name": "Central Bank of Bosnia and Herzegovina",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Montenegro is the central bank of Montenegro. Sets monetary policy and influences the country's currency. state-owned bank in Montenegro",
+      "description": "Central Bank of Bosnia and Herzegovina is the central bank of Bosnia and Herzegovina. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q4504284"
+        "wikidata:Q1184535"
       ]
     },
     {
-      "canonical_name": "Central Bank of Uruguay",
+      "canonical_name": "Maldives Monetary Authority",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Uruguay is the central bank of Uruguay. Sets monetary policy and influences the country's currency. central bank of the Uruguay",
+      "description": "Maldives Monetary Authority is the central bank of Maldives. Sets monetary policy and influences the country's currency. central bank of Maldives",
       "aliases": [
-        "wikidata:Q4504285"
+        "wikidata:Q1188022"
       ]
     },
     {
-      "canonical_name": "Central Bank of the Turkish Republic of Northern Cyprus",
+      "canonical_name": "National Bank of Serbia",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of the Turkish Republic of Northern Cyprus is the central bank of Northern Cyprus. Sets monetary policy and influences the country's currency. Central Bank",
+      "description": "National Bank of Serbia is the central bank of Serbia. Sets monetary policy and influences the country's currency. central bank of Serbia",
       "aliases": [
-        "wikidata:Q5060424"
-      ]
-    },
-    {
-      "canonical_name": "East African Currency Board",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "East African Currency Board is the central bank of East Africa Protectorate. Sets monetary policy and influences the country's currency. British governmental organization that supplied and oversaw the currency of British colonies in British East Africa from 1919 to 1966",
-      "aliases": [
-        "wikidata:Q5327653"
-      ]
-    },
-    {
-      "canonical_name": "Palestine Monetary Authority",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Palestine Monetary Authority is the central bank of Palestine. Sets monetary policy and influences the country's currency. central bank of Palestine",
-      "aliases": [
-        "wikidata:Q7127309"
-      ]
-    },
-    {
-      "canonical_name": "Banque de l'Indochine",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Banque de l'Indochine is the central bank of France. Sets monetary policy and influences the country's currency. French bank",
-      "aliases": [
-        "wikidata:Q7719950"
-      ]
-    },
-    {
-      "canonical_name": "Bank von Danzig",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank von Danzig is the central bank of Free City of Danzig. Sets monetary policy and influences the country's currency. Central bank of the Free City of Danzig",
-      "aliases": [
-        "wikidata:Q9164978"
-      ]
-    },
-    {
-      "canonical_name": "Bank Polski",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank Polski is the central bank of Congress Poland. Sets monetary policy and influences the country's currency. former bank in Poland",
-      "aliases": [
-        "wikidata:Q9164996"
-      ]
-    },
-    {
-      "canonical_name": "Ta-Ching Government Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Ta-Ching Government Bank is the central bank of Qing dynasty. Sets monetary policy and influences the country's currency. Central Bank of the Qing Dynasty",
-      "aliases": [
-        "wikidata:Q10936462"
-      ]
-    },
-    {
-      "canonical_name": "Central Reserve Bank of China",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Reserve Bank of China is the central bank of Wang Jingwei regime. Sets monetary policy and influences the country's currency. central bank of Wang Jingwei Regime",
-      "aliases": [
-        "wikidata:Q11363609"
-      ]
-    },
-    {
-      "canonical_name": "Andorran Financial Authority",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Andorran Financial Authority is the central bank of Andorra. Sets monetary policy and influences the country's currency. Andorian finance institute",
-      "aliases": [
-        "wikidata:Q11926724"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Czechoslovakia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Czechoslovakia is the central bank of Czechoslovakia. Sets monetary policy and influences the country's currency. Central bank of Czechoslovakia",
-      "aliases": [
-        "wikidata:Q12041612"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Central African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Central African States is the central bank of Cameroon. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q189972"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Central African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Central African States is the central bank of Gabon. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q189972"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Central African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Central African States is the central bank of Equatorial Guinea. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q189972"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Central African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Central African States is the central bank of Republic of the Congo. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q189972"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Central African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Central African States is the central bank of Central African Republic. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q189972"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Central African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Central African States is the central bank of Chad. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q189972"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Armenia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Armenia is the central bank of Armenia. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q190223"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Azerbaijan",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Azerbaijan is the central bank of Azerbaijan. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q190230"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Luxembourg",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Luxembourg is the central bank of Luxembourg. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q190234"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Sudan",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Sudan is the central bank of Sudan. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q190236"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Finland",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Finland is the central bank of Finland. Sets monetary policy and influences the country's currency. the central bank of Finland",
-      "aliases": [
-        "wikidata:Q194060"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of the Republic of China",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of the Republic of China is the central bank of Taiwan. Sets monetary policy and influences the country's currency. Central bank of the Republic of China (Taiwan)",
-      "aliases": [
-        "wikidata:Q198642"
+        "wikidata:Q1194664"
       ]
     },
     {
@@ -741,588 +1921,120 @@
       ]
     },
     {
-      "canonical_name": "Bank of Italy",
+      "canonical_name": "Central Bank of Iceland",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Italy is the central bank of Italy. Sets monetary policy and influences the country's currency. central bank of Italy",
+      "description": "Central Bank of Iceland is the central bank of Iceland. Sets monetary policy and influences the country's currency. Iceland's central bank",
       "aliases": [
-        "wikidata:Q806176"
+        "wikidata:Q1195916"
       ]
     },
     {
-      "canonical_name": "Central Bank of Bolivia",
+      "canonical_name": "Deutsche Notenbank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Bolivia is the central bank of Bolivia. Sets monetary policy and influences the country's currency. monetary Authority of Bolivia",
+      "description": "Deutsche Notenbank is the central bank of German Democratic Republic. Sets monetary policy and influences the country's currency. East German central bank",
       "aliases": [
-        "wikidata:Q806180"
+        "wikidata:Q1203623"
       ]
     },
     {
-      "canonical_name": "Central Bank of Brazil",
+      "canonical_name": "Eastern Caribbean Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Brazil is the central bank of Brazil. Sets monetary policy and influences the country's currency. central bank of Brazil",
+      "description": "Eastern Caribbean Central Bank is the central bank of Dominica. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q806186"
+        "wikidata:Q1210260"
       ]
     },
     {
-      "canonical_name": "Bank of Mexico",
+      "canonical_name": "Eastern Caribbean Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Mexico is the central bank of Mexico. Sets monetary policy and influences the country's currency. Mexico's central bank",
+      "description": "Eastern Caribbean Central Bank is the central bank of Antigua and Barbuda. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q806208"
+        "wikidata:Q1210260"
       ]
     },
     {
-      "canonical_name": "Bangladesh Bank",
+      "canonical_name": "Eastern Caribbean Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bangladesh Bank is the central bank of Bangladesh. Sets monetary policy and influences the country's currency. central bank of Bangladesh and member of the Asian Clearing Union",
+      "description": "Eastern Caribbean Central Bank is the central bank of Grenada. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q806532"
+        "wikidata:Q1210260"
       ]
     },
     {
-      "canonical_name": "Bank Negara Malaysia",
+      "canonical_name": "Eastern Caribbean Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank Negara Malaysia is the central bank of Malaysia. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Eastern Caribbean Central Bank is the central bank of Saint Kitts and Nevis. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q806646"
+        "wikidata:Q1210260"
       ]
     },
     {
-      "canonical_name": "Central Bank of Russia",
+      "canonical_name": "Eastern Caribbean Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Russia is the central bank of Russia. Sets monetary policy and influences the country's currency. central bank of the Russian Federation established on July 13, 1990",
+      "description": "Eastern Caribbean Central Bank is the central bank of Saint Lucia. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q806651"
+        "wikidata:Q1210260"
       ]
     },
     {
-      "canonical_name": "Central Bank of Djibouti",
+      "canonical_name": "Eastern Caribbean Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Djibouti is the central bank of Djibouti. Sets monetary policy and influences the country's currency. monetary Authority of Djibouti",
+      "description": "Eastern Caribbean Central Bank is the central bank of Saint Vincent and the Grenadines. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q4504271"
+        "wikidata:Q1210260"
       ]
     },
     {
-      "canonical_name": "Banco de la República",
+      "canonical_name": "Central Bank of Iran",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Banco de la República is the central bank of Colombia. Sets monetary policy and influences the country's currency. Central Bank of Colombia",
+      "description": "Central Bank of Iran is the central bank of Iran. Sets monetary policy and influences the country's currency. Iranian central bank",
       "aliases": [
-        "wikidata:Q686329"
+        "wikidata:Q1261157"
       ]
     },
     {
-      "canonical_name": "Bank of Latvia",
+      "canonical_name": "Nepal Rastra Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Latvia is the central bank of Latvia. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Nepal Rastra Bank is the central bank of Nepal. Sets monetary policy and influences the country's currency. central bank of Nepal",
       "aliases": [
-        "wikidata:Q687709"
+        "wikidata:Q1318435"
       ]
     },
     {
-      "canonical_name": "Bank of Joseon",
+      "canonical_name": "Bank of Mongolia",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Joseon is the central bank of Korea under Japanese rule. Sets monetary policy and influences the country's currency. central bank of Colonial Korea, and of South Korea (1911-1945)",
+      "description": "Bank of Mongolia is the central bank of Mongolia. Sets monetary policy and influences the country's currency. central bank of Mongolia",
       "aliases": [
-        "wikidata:Q711604"
+        "wikidata:Q1320131"
       ]
     },
     {
-      "canonical_name": "Central Bank of Manchou",
+      "canonical_name": "State Bank of Pakistan",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Manchou is the central bank of Manchukuo. Sets monetary policy and influences the country's currency. central bank",
+      "description": "State Bank of Pakistan is the central bank of Pakistan. Sets monetary policy and influences the country's currency. central bank of Pakistan",
       "aliases": [
-        "wikidata:Q713034"
+        "wikidata:Q1323248"
       ]
     },
     {
-      "canonical_name": "Hungarian National Bank",
+      "canonical_name": "National Bank of Slovakia",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Hungarian National Bank is the central bank of Hungary. Sets monetary policy and influences the country's currency. central bank of Hungary",
+      "description": "National Bank of Slovakia is the central bank of Slovakia. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q774636"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Spain",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Spain is the central bank of Spain. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q789966"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Somaliland",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Somaliland is the central bank of Somaliland. Sets monetary policy and influences the country's currency. central bank of Somaliland",
-      "aliases": [
-        "wikidata:Q797484"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Eritrea",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Eritrea is the central bank of Eritrea. Sets monetary policy and influences the country's currency. Central bank of Eritrea",
-      "aliases": [
-        "wikidata:Q806163"
-      ]
-    },
-    {
-      "canonical_name": "Reserve Bank of New Zealand",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Reserve Bank of New Zealand is the central bank of New Zealand. Sets monetary policy and influences the country's currency. central bank of New Zealand",
-      "aliases": [
-        "wikidata:Q1494550"
-      ]
-    },
-    {
-      "canonical_name": "Reserve Bank of Australia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Reserve Bank of Australia is the central bank of Australia. Sets monetary policy and influences the country's currency. central bank of Australia",
-      "aliases": [
-        "wikidata:Q1506724"
-      ]
-    },
-    {
-      "canonical_name": "Administration of the Patrimony of the Apostolic See",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Administration of the Patrimony of the Apostolic See is the central bank of Vatican City. Sets monetary policy and influences the country's currency. administer the properties owned by the Holy See in order to provide the funds necessary for the Roman Curia to function. (Pastor Bonus, 172)",
-      "aliases": [
-        "wikidata:Q1562250"
-      ]
-    },
-    {
-      "canonical_name": "Hong Kong Monetary Authority",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Hong Kong Monetary Authority is the central bank of People's Republic of China. Sets monetary policy and influences the country's currency. currency board and central banking authority of Hong Kong",
-      "aliases": [
-        "wikidata:Q1595286"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Nigeria",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Nigeria is the central bank of Nigeria. Sets monetary policy and influences the country's currency. bank",
-      "aliases": [
-        "wikidata:Q1627120"
-      ]
-    },
-    {
-      "canonical_name": "Imperial Bank of Persia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Imperial Bank of Persia is the central bank of Qajar Iran. Sets monetary policy and influences the country's currency. former British bank in Iran",
-      "aliases": [
-        "wikidata:Q1660286"
-      ]
-    },
-    {
-      "canonical_name": "State Bank of the Russian Empire",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "State Bank of the Russian Empire is the central bank of Russian Empire. Sets monetary policy and influences the country's currency. Bank",
-      "aliases": [
-        "wikidata:Q1689848"
-      ]
-    },
-    {
-      "canonical_name": "Bermuda Monetary Authority",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bermuda Monetary Authority is the central bank of Bermuda. Sets monetary policy and influences the country's currency. registration authority",
-      "aliases": [
-        "wikidata:Q1774433"
-      ]
-    },
-    {
-      "canonical_name": "Cayman Islands Monetary Authority",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Cayman Islands Monetary Authority is the central bank of Cayman Islands. Sets monetary policy and influences the country's currency. registration authority",
-      "aliases": [
-        "wikidata:Q1774447"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Aruba",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Aruba is the central bank of Aruba. Sets monetary policy and influences the country's currency. Central Bank",
-      "aliases": [
-        "wikidata:Q1774469"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Algeria",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Algeria is the central bank of Algeria. Sets monetary policy and influences the country's currency. Central Bank of Algeria",
-      "aliases": [
-        "wikidata:Q1774622"
-      ]
-    },
-    {
-      "canonical_name": "Reserve Bank of Fiji",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Reserve Bank of Fiji is the central bank of Fiji. Sets monetary policy and influences the country's currency. Central Bank of Fiji",
-      "aliases": [
-        "wikidata:Q1776552"
-      ]
-    },
-    {
-      "canonical_name": "Banque du Liban",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Banque du Liban is the central bank of Lebanon. Sets monetary policy and influences the country's currency. Central bank of Lebanon",
-      "aliases": [
-        "wikidata:Q1776564"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Iraq",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Iraq is the central bank of Iraq. Sets monetary policy and influences the country's currency. central bank of the Republic of Iraq",
-      "aliases": [
-        "wikidata:Q1778674"
-      ]
-    },
-    {
-      "canonical_name": "Königliche Hauptbank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Königliche Hauptbank is the central bank of Prussia. Sets monetary policy and influences the country's currency. former bank building in Berlin",
-      "aliases": [
-        "wikidata:Q1796124"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Ecuador",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Ecuador is the central bank of Ecuador. Sets monetary policy and influences the country's currency. central bank of Ecuador",
-      "aliases": [
-        "wikidata:Q1797646"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of the Dominican Republic",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of the Dominican Republic is the central bank of Dominican Republic. Sets monetary policy and influences the country's currency. monetary authority of the Dominican Republic",
-      "aliases": [
-        "wikidata:Q1800406"
-      ]
-    },
-    {
-      "canonical_name": "Central Reserve Bank of El Salvador",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Reserve Bank of El Salvador is the central bank of El Salvador. Sets monetary policy and influences the country's currency. monetary Authority of El Salvador",
-      "aliases": [
-        "wikidata:Q1801435"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Guyana",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Guyana is the central bank of Guyana. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1812564"
-      ]
-    },
-    {
-      "canonical_name": "Bangko Sentral ng Pilipinas",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bangko Sentral ng Pilipinas is the central bank of Philippines. Sets monetary policy and influences the country's currency. central bank of the Philippines",
-      "aliases": [
-        "wikidata:Q1853468"
-      ]
-    },
-    {
-      "canonical_name": "Bank Indonesia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank Indonesia is the central bank of Indonesia. Sets monetary policy and influences the country's currency. central bank of the Republic of Indonesia",
-      "aliases": [
-        "wikidata:Q1906161"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Myanmar",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Myanmar is the central bank of Myanmar. Sets monetary policy and influences the country's currency. central bank of Myanmar",
-      "aliases": [
-        "wikidata:Q1944374"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Ethiopia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Ethiopia is the central bank of Ethiopia. Sets monetary policy and influences the country's currency. central bank of Ethiopia",
-      "aliases": [
-        "wikidata:Q1967889"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of the Republic of Abkhazia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of the Republic of Abkhazia is the central bank of Republic of Abkhazia. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q2001669"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of the Republic of Abkhazia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of the Republic of Abkhazia is the central bank of Georgia. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q2001669"
-      ]
-    },
-    {
-      "canonical_name": "Allahabad Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Allahabad Bank is the central bank of India. Sets monetary policy and influences the country's currency. India national bank",
-      "aliases": [
-        "wikidata:Q2018840"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Eswatini",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Eswatini is the central bank of Eswatini. Sets monetary policy and influences the country's currency. monetary Authority of Eswatini",
-      "aliases": [
-        "wikidata:Q3430466"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of the Kyrgyz Republic",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of the Kyrgyz Republic is the central bank of Kyrgyzstan. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q3430475"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Madagascar",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Madagascar is the central bank of Madagascar. Sets monetary policy and influences the country's currency. central bank of Madagascar",
-      "aliases": [
-        "wikidata:Q3433330"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Oman",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Oman is the central bank of Oman. Sets monetary policy and influences the country's currency. state-owned bank in Oman",
-      "aliases": [
-        "wikidata:Q3488501"
-      ]
-    },
-    {
-      "canonical_name": "National Bank in the Kingdom of Italy",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank in the Kingdom of Italy is the central bank of Kingdom of Italy. Sets monetary policy and influences the country's currency. former Italian bank",
-      "aliases": [
-        "wikidata:Q3633717"
-      ]
-    },
-    {
-      "canonical_name": "Austrian-Hungarian Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Austrian-Hungarian Bank is the central bank of Austria–Hungary. Sets monetary policy and influences the country's currency. central bank of Austria-Hungary, 1878-1922",
-      "aliases": [
-        "wikidata:Q4056136"
-      ]
-    },
-    {
-      "canonical_name": "Bank of the Lao P.D.R.",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of the Lao P.D.R. is the central bank of Laos. Sets monetary policy and influences the country's currency. central bank of Laos",
-      "aliases": [
-        "wikidata:Q4077339"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Cape Verde",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Cape Verde is the central bank of Cape Verde. Sets monetary policy and influences the country's currency. monetary Authority of Cape Verde",
-      "aliases": [
-        "wikidata:Q4077341"
-      ]
-    },
-    {
-      "canonical_name": "Russian Assignation Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Russian Assignation Bank is the central bank of Russian Empire. Sets monetary policy and influences the country's currency. former public bank in the Russian Empire",
-      "aliases": [
-        "wikidata:Q4146789"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Rwanda",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Rwanda is the central bank of Rwanda. Sets monetary policy and influences the country's currency. central bank of Rwanda",
-      "aliases": [
-        "wikidata:Q4314980"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Tajikistan",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Tajikistan is the central bank of Tajikistan. Sets monetary policy and influences the country's currency. Central Bank of Tajikistan",
-      "aliases": [
-        "wikidata:Q4314981"
-      ]
-    },
-    {
-      "canonical_name": "Federal Reserve Bank of Richmond",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Federal Reserve Bank of Richmond is the central bank of United States. Sets monetary policy and influences the country's currency. member Bank of Federal Reserve",
-      "aliases": [
-        "wikidata:Q4383722"
-      ]
-    },
-    {
-      "canonical_name": "Federal Reserve Bank of St. Louis",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Federal Reserve Bank of St. Louis is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank responsible for the eighth district, headquartered in St. Louis, United States",
-      "aliases": [
-        "wikidata:Q4383730"
-      ]
-    },
-    {
-      "canonical_name": "Federal Reserve Bank of Cleveland",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Federal Reserve Bank of Cleveland is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank in Cleveland, United States",
-      "aliases": [
-        "wikidata:Q4384538"
-      ]
-    },
-    {
-      "canonical_name": "Federal Reserve Bank of Boston",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Federal Reserve Bank of Boston is the central bank of United States. Sets monetary policy and influences the country's currency. branch of the Federal Reserve covering New England",
-      "aliases": [
-        "wikidata:Q4384803"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of The Bahamas",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of The Bahamas is the central bank of The Bahamas. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q4504270"
-      ]
-    },
-    {
-      "canonical_name": "Bank Al-Maghrib",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank Al-Maghrib is the central bank of Morocco. Sets monetary policy and influences the country's currency. the central bank of Morocco, founded in 1959",
-      "aliases": [
-        "wikidata:Q328198"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Japan",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Japan is the central bank of Japan. Sets monetary policy and influences the country's currency. the central bank of Japan",
-      "aliases": [
-        "wikidata:Q333101"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Estonia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Estonia is the central bank of Estonia. Sets monetary policy and influences the country's currency. central bank of Estonia",
-      "aliases": [
-        "wikidata:Q366960"
-      ]
-    },
-    {
-      "canonical_name": "Banco de Portugal",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Banco de Portugal is the central bank of Portugal. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q378372"
-      ]
-    },
-    {
-      "canonical_name": "African Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "African Central Bank is a central bank. financial institution of the African Union",
-      "aliases": [
-        "wikidata:Q386906"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Panama",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Panama is the central bank of Panama. Sets monetary policy and influences the country's currency. Central Bank of Panama",
-      "aliases": [
-        "wikidata:Q429235"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of the Republic of Belarus",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of the Republic of Belarus is the central bank of Belarus. Sets monetary policy and influences the country's currency. Central Bank of Belarus",
-      "aliases": [
-        "wikidata:Q431491"
+        "wikidata:Q1481791"
       ]
     },
     {
@@ -1515,102 +2227,66 @@
       ]
     },
     {
-      "canonical_name": "Bank of Korea",
+      "canonical_name": "Bank Al-Maghrib",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Korea is the central bank of South Korea. Sets monetary policy and influences the country's currency. central bank of Republic of Korea, established in 1950",
+      "description": "Bank Al-Maghrib is the central bank of Morocco. Sets monetary policy and influences the country's currency. the central bank of Morocco, founded in 1959",
       "aliases": [
-        "wikidata:Q485531"
+        "wikidata:Q328198"
       ]
     },
     {
-      "canonical_name": "Bank of Uganda",
+      "canonical_name": "Bank of Japan",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Uganda is the central bank of Uganda. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Bank of Japan is the central bank of Japan. Sets monetary policy and influences the country's currency. the central bank of Japan",
       "aliases": [
-        "wikidata:Q487300"
+        "wikidata:Q333101"
       ]
     },
     {
-      "canonical_name": "Central Bank of The Gambia",
+      "canonical_name": "Bank of Estonia",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of The Gambia is the central bank of The Gambia. Sets monetary policy and influences the country's currency. banco central",
+      "description": "Bank of Estonia is the central bank of Estonia. Sets monetary policy and influences the country's currency. central bank of Estonia",
       "aliases": [
-        "wikidata:Q495091"
+        "wikidata:Q366960"
       ]
     },
     {
-      "canonical_name": "Reichsbank",
+      "canonical_name": "Banco de Portugal",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Reichsbank is the central bank of German Reich. Sets monetary policy and influences the country's currency. bank",
+      "description": "Banco de Portugal is the central bank of Portugal. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q560183"
+        "wikidata:Q378372"
       ]
     },
     {
-      "canonical_name": "Reichsbank",
+      "canonical_name": "African Central Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Reichsbank is the central bank of Germany. Sets monetary policy and influences the country's currency. bank",
+      "description": "African Central Bank is a central bank. financial institution of the African Union",
       "aliases": [
-        "wikidata:Q560183"
+        "wikidata:Q386906"
       ]
     },
     {
-      "canonical_name": "Sveriges Riksbank",
+      "canonical_name": "National Bank of Panama",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Sveriges Riksbank is the central bank of Sweden. Sets monetary policy and influences the country's currency. central bank of Sweden",
+      "description": "National Bank of Panama is the central bank of Panama. Sets monetary policy and influences the country's currency. Central Bank of Panama",
       "aliases": [
-        "wikidata:Q564652"
+        "wikidata:Q429235"
       ]
     },
     {
-      "canonical_name": "Central Bank of Bahrain",
+      "canonical_name": "National Bank of the Republic of Belarus",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Bahrain is the central bank of Bahrain. Sets monetary policy and influences the country's currency. central bank",
+      "description": "National Bank of the Republic of Belarus is the central bank of Belarus. Sets monetary policy and influences the country's currency. Central Bank of Belarus",
       "aliases": [
-        "wikidata:Q571182"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of the Republic of Turkey",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of the Republic of Turkey is the central bank of Turkey. Sets monetary policy and influences the country's currency. central bank of Turkey",
-      "aliases": [
-        "wikidata:Q580829"
-      ]
-    },
-    {
-      "canonical_name": "Swiss National Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Swiss National Bank is the central bank of Switzerland. Sets monetary policy and influences the country's currency. central bank of Switzerland",
-      "aliases": [
-        "wikidata:Q597394"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Tunisia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Tunisia is the central bank of Tunisia. Sets monetary policy and influences the country's currency. Tunisian central bank",
-      "aliases": [
-        "wikidata:Q600137"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Lithuania",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Lithuania is the central bank of Lithuania. Sets monetary policy and influences the country's currency. registration authority",
-      "aliases": [
-        "wikidata:Q616849"
+        "wikidata:Q431491"
       ]
     },
     {
@@ -1758,831 +2434,156 @@
       ]
     },
     {
-      "canonical_name": "Bank of Namibia",
+      "canonical_name": "Central Bank of Eswatini",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Namibia is the central bank of Namibia. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Central Bank of Eswatini is the central bank of Eswatini. Sets monetary policy and influences the country's currency. monetary Authority of Eswatini",
       "aliases": [
-        "wikidata:Q806684"
+        "wikidata:Q3430466"
       ]
     },
     {
-      "canonical_name": "Bank of North America",
+      "canonical_name": "National Bank of the Kyrgyz Republic",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of North America is the central bank of United States. Sets monetary policy and influences the country's currency. first chartered bank in the United States (established in 1781), and served as the country's first de facto central bank",
+      "description": "National Bank of the Kyrgyz Republic is the central bank of Kyrgyzstan. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q806690"
+        "wikidata:Q3430475"
       ]
     },
     {
-      "canonical_name": "Bank of Sierra Leone",
+      "canonical_name": "Central Bank of Madagascar",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Sierra Leone is the central bank of Sierra Leone. Sets monetary policy and influences the country's currency. central bank of Sierra Leone",
+      "description": "Central Bank of Madagascar is the central bank of Madagascar. Sets monetary policy and influences the country's currency. central bank of Madagascar",
       "aliases": [
-        "wikidata:Q806691"
+        "wikidata:Q3433330"
       ]
     },
     {
-      "canonical_name": "Bank of Zambia",
+      "canonical_name": "Central Bank of Oman",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Zambia is the central bank of Zambia. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Central Bank of Oman is the central bank of Oman. Sets monetary policy and influences the country's currency. state-owned bank in Oman",
       "aliases": [
-        "wikidata:Q806694"
+        "wikidata:Q3488501"
       ]
     },
     {
-      "canonical_name": "Bank of Canada",
+      "canonical_name": "National Bank in the Kingdom of Italy",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Canada is the central bank of Canada. Sets monetary policy and influences the country's currency. central bank of Canada",
+      "description": "National Bank in the Kingdom of Italy is the central bank of Kingdom of Italy. Sets monetary policy and influences the country's currency. former Italian bank",
       "aliases": [
-        "wikidata:Q806703"
+        "wikidata:Q3633717"
       ]
     },
     {
-      "canonical_name": "Bank of Greece",
+      "canonical_name": "Austrian-Hungarian Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Greece is the central bank of Greece. Sets monetary policy and influences the country's currency. central bank of Greece",
+      "description": "Austrian-Hungarian Bank is the central bank of Austria–Hungary. Sets monetary policy and influences the country's currency. central bank of Austria-Hungary, 1878-1922",
       "aliases": [
-        "wikidata:Q806700"
+        "wikidata:Q4056136"
       ]
     },
     {
-      "canonical_name": "Bank of Thailand",
+      "canonical_name": "Bank of the Lao P.D.R.",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Thailand is the central bank of Thailand. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Bank of the Lao P.D.R. is the central bank of Laos. Sets monetary policy and influences the country's currency. central bank of Laos",
       "aliases": [
-        "wikidata:Q806706"
+        "wikidata:Q4077339"
       ]
     },
     {
-      "canonical_name": "Bank of Albania",
+      "canonical_name": "Bank of Cape Verde",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Bank of Albania is the central bank of Albania. Sets monetary policy and influences the country's currency. central bank of Albania",
+      "description": "Bank of Cape Verde is the central bank of Cape Verde. Sets monetary policy and influences the country's currency. monetary Authority of Cape Verde",
       "aliases": [
-        "wikidata:Q806714"
+        "wikidata:Q4077341"
       ]
     },
     {
-      "canonical_name": "Ottoman Bank",
+      "canonical_name": "Russian Assignation Bank",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Ottoman Bank is the central bank of Ottoman Empire. Sets monetary policy and influences the country's currency. former bank in Turkey",
+      "description": "Russian Assignation Bank is the central bank of Russian Empire. Sets monetary policy and influences the country's currency. former public bank in the Russian Empire",
       "aliases": [
-        "wikidata:Q2041453"
+        "wikidata:Q4146789"
       ]
     },
     {
-      "canonical_name": "Ottoman Bank",
+      "canonical_name": "National Bank of Rwanda",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Ottoman Bank is the central bank of Turkey. Sets monetary policy and influences the country's currency. former bank in Turkey",
+      "description": "National Bank of Rwanda is the central bank of Rwanda. Sets monetary policy and influences the country's currency. central bank of Rwanda",
       "aliases": [
-        "wikidata:Q2041453"
+        "wikidata:Q4314980"
       ]
     },
     {
-      "canonical_name": "Preussische Bank",
+      "canonical_name": "National Bank of Tajikistan",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Preussische Bank is the central bank of Kingdom of Prussia. Sets monetary policy and influences the country's currency. former central bank",
+      "description": "National Bank of Tajikistan is the central bank of Tajikistan. Sets monetary policy and influences the country's currency. Central Bank of Tajikistan",
       "aliases": [
-        "wikidata:Q2109176"
+        "wikidata:Q4314981"
       ]
     },
     {
-      "canonical_name": "Preussische Bank",
+      "canonical_name": "Federal Reserve Bank of Richmond",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Preussische Bank is the central bank of Germany. Sets monetary policy and influences the country's currency. former central bank",
+      "description": "Federal Reserve Bank of Richmond is the central bank of United States. Sets monetary policy and influences the country's currency. member Bank of Federal Reserve",
       "aliases": [
-        "wikidata:Q2109176"
+        "wikidata:Q4383722"
       ]
     },
     {
-      "canonical_name": "Federal Reserve Bank of Kansas City",
+      "canonical_name": "Federal Reserve Bank of St. Louis",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Federal Reserve Bank of Kansas City is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank in Kansas City, United States",
+      "description": "Federal Reserve Bank of St. Louis is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank responsible for the eighth district, headquartered in St. Louis, United States",
       "aliases": [
-        "wikidata:Q2166296"
+        "wikidata:Q4383730"
       ]
     },
     {
-      "canonical_name": "State Bank of Vietnam",
+      "canonical_name": "Federal Reserve Bank of Cleveland",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "State Bank of Vietnam is the central bank of Vietnam. Sets monetary policy and influences the country's currency. central bank",
+      "description": "Federal Reserve Bank of Cleveland is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank in Cleveland, United States",
       "aliases": [
-        "wikidata:Q2234553"
+        "wikidata:Q4384538"
       ]
     },
     {
-      "canonical_name": "Central Bank of Somalia",
+      "canonical_name": "Federal Reserve Bank of Boston",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Central Bank of Somalia is the central bank of Somalia. Sets monetary policy and influences the country's currency. state-owned bank in Somalia",
+      "description": "Federal Reserve Bank of Boston is the central bank of United States. Sets monetary policy and influences the country's currency. branch of the Federal Reserve covering New England",
       "aliases": [
-        "wikidata:Q2299534"
+        "wikidata:Q4384803"
       ]
     },
     {
-      "canonical_name": "Reserve Bank of Malawi",
+      "canonical_name": "Central Bank of The Bahamas",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "Reserve Bank of Malawi is the central bank of Malawi. Sets monetary policy and influences the country's currency. Financial institution of Malawi",
+      "description": "Central Bank of The Bahamas is the central bank of The Bahamas. Sets monetary policy and influences the country's currency. central bank",
       "aliases": [
-        "wikidata:Q2397584"
+        "wikidata:Q4504270"
       ]
     },
     {
-      "canonical_name": "National Bank of Kazakhstan",
+      "canonical_name": "Central Bank of Djibouti",
       "entity_type": "organization",
       "subtype": "central_bank",
-      "description": "National Bank of Kazakhstan is the central bank of Kazakhstan. Sets monetary policy and influences the country's currency. central bank of Kazakhstan",
+      "description": "Central Bank of Djibouti is the central bank of Djibouti. Sets monetary policy and influences the country's currency. monetary Authority of Djibouti",
       "aliases": [
-        "wikidata:Q2472280"
-      ]
-    },
-    {
-      "canonical_name": "Federal Reserve Bank of Minneapolis",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Federal Reserve Bank of Minneapolis is the central bank of United States. Sets monetary policy and influences the country's currency. member Bank of Federal Reserve",
-      "aliases": [
-        "wikidata:Q2503528"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Kenya",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Kenya is the central bank of Kenya. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q2510227"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Mauritania",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Mauritania is the central bank of Mauritania. Sets monetary policy and influences the country's currency. central bank of Mauritania, in northwest Africa",
-      "aliases": [
-        "wikidata:Q2528877"
-      ]
-    },
-    {
-      "canonical_name": "Transnistrian Republican Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Transnistrian Republican Bank is the central bank of Transnistria. Sets monetary policy and influences the country's currency. Central Bank of Transnistria",
-      "aliases": [
-        "wikidata:Q2560346"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Venezuela",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Venezuela is the central bank of Venezuela. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q2570775"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Senegal. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Niger. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Ivory Coast. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Guinea-Bissau. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Burkina Faso. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Benin. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Togo. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of West African States",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of West African States is the central bank of Mali. Sets monetary policy and influences the country's currency. central bank serving the West African Economic and Monetary Union",
-      "aliases": [
-        "wikidata:Q620942"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Argentina",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Argentina is the central bank of Argentina. Sets monetary policy and influences the country's currency. the central bank of Argentina",
-      "aliases": [
-        "wikidata:Q642444"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Belize",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Belize is the central bank of Belize. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q643949"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Ghana",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Ghana is the central bank of Ghana. Sets monetary policy and influences the country's currency. central bank of Ghana",
-      "aliases": [
-        "wikidata:Q669484"
-      ]
-    },
-    {
-      "canonical_name": "Austrian National Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Austrian National Bank is the central bank of Austria. Sets monetary policy and influences the country's currency. Austria’s central bank",
-      "aliases": [
-        "wikidata:Q670723"
-      ]
-    },
-    {
-      "canonical_name": "Danmarks Nationalbank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Danmarks Nationalbank is the central bank of Denmark. Sets monetary policy and influences the country's currency. Danish central bank",
-      "aliases": [
-        "wikidata:Q683252"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Belgium",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Belgium is the central bank of Belgium. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q685918"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Syria",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Syria is the central bank of Syria. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q806932"
-      ]
-    },
-    {
-      "canonical_name": "Bank of the Republic of Burundi",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of the Republic of Burundi is the central bank of Burundi. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q806937"
-      ]
-    },
-    {
-      "canonical_name": "Bank of France",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of France is the central bank of France. Sets monetary policy and influences the country's currency. central bank of France",
-      "aliases": [
-        "wikidata:Q806950"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Botswana",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Botswana is the central bank of Botswana. Sets monetary policy and influences the country's currency. central bank in Botswana",
-      "aliases": [
-        "wikidata:Q859830"
-      ]
-    },
-    {
-      "canonical_name": "South African Reserve Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "South African Reserve Bank is the central bank of South Africa. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q912920"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Egypt",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Egypt is the central bank of Egypt. Sets monetary policy and influences the country's currency. central bank of Egypt",
-      "aliases": [
-        "wikidata:Q920699"
-      ]
-    },
-    {
-      "canonical_name": "Central Reserve Bank of Peru",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Reserve Bank of Peru is the central bank of Peru. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q932146"
-      ]
-    },
-    {
-      "canonical_name": "Reserve Bank of India",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Reserve Bank of India is the central bank of India. Sets monetary policy and influences the country's currency. Central Bank of India",
-      "aliases": [
-        "wikidata:Q944085"
-      ]
-    },
-    {
-      "canonical_name": "Federal Reserve Bank of Chicago",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Federal Reserve Bank of Chicago is the central bank of United States. Sets monetary policy and influences the country's currency. Federal Reserve Bank in Chicago, United States",
-      "aliases": [
-        "wikidata:Q965251"
-      ]
-    },
-    {
-      "canonical_name": "USSR State Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "USSR State Bank is the central bank of Soviet Union. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q966148"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Romania",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Romania is the central bank of Romania. Sets monetary policy and influences the country's currency. central bank of Romania",
-      "aliases": [
-        "wikidata:Q967861"
-      ]
-    },
-    {
-      "canonical_name": "Norges Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Norges Bank is the central bank of Norway. Sets monetary policy and influences the country's currency. central bank of Norway",
-      "aliases": [
-        "wikidata:Q970769"
-      ]
-    },
-    {
-      "canonical_name": "Monetary Authority of Macao",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Monetary Authority of Macao is the central bank of People's Republic of China. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q986615"
-      ]
-    },
-    {
-      "canonical_name": "Reserve Bank of Zimbabwe",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Reserve Bank of Zimbabwe is the central bank of Zimbabwe. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1025119"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Ukraine",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Ukraine is the central bank of Ukraine. Sets monetary policy and influences the country's currency. central bank of Ukraine",
-      "aliases": [
-        "wikidata:Q1070388"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of the Democratic People's Republic of Korea",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of the Democratic People's Republic of Korea is the central bank of North Korea. Sets monetary policy and influences the country's currency. central bank of North Korea",
-      "aliases": [
-        "wikidata:Q1141425"
-      ]
-    },
-    {
-      "canonical_name": "Croatian National Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Croatian National Bank is the central bank of Croatia. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1143457"
-      ]
-    },
-    {
-      "canonical_name": "Royal Monetary Authority of Bhutan",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Royal Monetary Authority of Bhutan is the central bank of Bhutan. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1144649"
-      ]
-    },
-    {
-      "canonical_name": "Da Afghanistan Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Da Afghanistan Bank is the central bank of Afghanistan. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1156372"
-      ]
-    },
-    {
-      "canonical_name": "De Nederlandsche Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "De Nederlandsche Bank is the central bank of Netherlands. Sets monetary policy and influences the country's currency. The Netherlands' central bank",
-      "aliases": [
-        "wikidata:Q1180205"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Bosnia and Herzegovina",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Bosnia and Herzegovina is the central bank of Bosnia and Herzegovina. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1184535"
-      ]
-    },
-    {
-      "canonical_name": "Maldives Monetary Authority",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Maldives Monetary Authority is the central bank of Maldives. Sets monetary policy and influences the country's currency. central bank of Maldives",
-      "aliases": [
-        "wikidata:Q1188022"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Serbia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Serbia is the central bank of Serbia. Sets monetary policy and influences the country's currency. central bank of Serbia",
-      "aliases": [
-        "wikidata:Q1194664"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Iceland",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Iceland is the central bank of Iceland. Sets monetary policy and influences the country's currency. Iceland's central bank",
-      "aliases": [
-        "wikidata:Q1195916"
-      ]
-    },
-    {
-      "canonical_name": "Deutsche Notenbank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Deutsche Notenbank is the central bank of German Democratic Republic. Sets monetary policy and influences the country's currency. East German central bank",
-      "aliases": [
-        "wikidata:Q1203623"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Eastern Caribbean Central Bank is the central bank of Dominica. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1210260"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Eastern Caribbean Central Bank is the central bank of Antigua and Barbuda. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1210260"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Eastern Caribbean Central Bank is the central bank of Grenada. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1210260"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Eastern Caribbean Central Bank is the central bank of Saint Kitts and Nevis. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1210260"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Eastern Caribbean Central Bank is the central bank of Saint Lucia. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1210260"
-      ]
-    },
-    {
-      "canonical_name": "Eastern Caribbean Central Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Eastern Caribbean Central Bank is the central bank of Saint Vincent and the Grenadines. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1210260"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Iran",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Iran is the central bank of Iran. Sets monetary policy and influences the country's currency. Iranian central bank",
-      "aliases": [
-        "wikidata:Q1261157"
-      ]
-    },
-    {
-      "canonical_name": "Nepal Rastra Bank",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Nepal Rastra Bank is the central bank of Nepal. Sets monetary policy and influences the country's currency. central bank of Nepal",
-      "aliases": [
-        "wikidata:Q1318435"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Mongolia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Mongolia is the central bank of Mongolia. Sets monetary policy and influences the country's currency. central bank of Mongolia",
-      "aliases": [
-        "wikidata:Q1320131"
-      ]
-    },
-    {
-      "canonical_name": "State Bank of Pakistan",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "State Bank of Pakistan is the central bank of Pakistan. Sets monetary policy and influences the country's currency. central bank of Pakistan",
-      "aliases": [
-        "wikidata:Q1323248"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Slovakia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Slovakia is the central bank of Slovakia. Sets monetary policy and influences the country's currency. central bank",
-      "aliases": [
-        "wikidata:Q1481791"
-      ]
-    },
-    {
-      "canonical_name": "Bank of Nauru",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Bank of Nauru is the central bank of Nauru. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q806683"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Solomon Islands",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Solomon Islands is the central bank of Solomon Islands. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q1777295"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Yemen",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Yemen is the central bank of Yemen. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q1797039"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Curaçao and Sint Maarten",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Curaçao and Sint Maarten is the central bank of Sint Maarten. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q2602290"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Curaçao and Sint Maarten",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Curaçao and Sint Maarten is the central bank of Curaçao. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q2602290"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Samoa",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Samoa is the central bank of Samoa. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q2632072"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of Sri Lanka",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of Sri Lanka is the central bank of Sri Lanka. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q2640939"
-      ]
-    },
-    {
-      "canonical_name": "Banque internationale pour l'Afrique occidentale",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Banque internationale pour l'Afrique occidentale is the central bank of French West Africa. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q2883397"
-      ]
-    },
-    {
-      "canonical_name": "Currency Commission",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Currency Commission is the central bank of Irish Free State. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q5194994"
-      ]
-    },
-    {
-      "canonical_name": "State Bank of Czechoslovakia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "State Bank of Czechoslovakia is the central bank of Czechoslovakia. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q6464521"
-      ]
-    },
-    {
-      "canonical_name": "Puerto Rico fiscal agent and financing",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Puerto Rico fiscal agent and financing is the central bank of United States. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q7258814"
-      ]
-    },
-    {
-      "canonical_name": "Centralbanken for Norge",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Centralbanken for Norge is the central bank of Norway. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q11963362"
-      ]
-    },
-    {
-      "canonical_name": "Reserve Bank of Rhodesia",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Reserve Bank of Rhodesia is the central bank of Rhodesia. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q14827030"
-      ]
-    },
-    {
-      "canonical_name": "National Bank of Tuvalu",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "National Bank of Tuvalu is the central bank of Tuvalu. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q16740215"
-      ]
-    },
-    {
-      "canonical_name": "Banque de l'Algérie",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Banque de l'Algérie is the central bank of France. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q21426958"
-      ]
-    },
-    {
-      "canonical_name": "CENTRAL BANK OF NIGERIA, LAGOS",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "CENTRAL BANK OF NIGERIA, LAGOS is a central bank.",
-      "aliases": [
-        "wikidata:Q110819711"
-      ]
-    },
-    {
-      "canonical_name": "The central bank of Nigeria",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "The central bank of Nigeria is the central bank of Nigeria. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q110819921"
-      ]
-    },
-    {
-      "canonical_name": "Landeszentralbank Hamburg",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Landeszentralbank Hamburg is the central bank of Germany. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q120064571"
-      ]
-    },
-    {
-      "canonical_name": "Central Bank of North Yemen",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Central Bank of North Yemen is the central bank of Yemen Republic. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q130598865"
-      ]
-    },
-    {
-      "canonical_name": "Banco Central do Brasil (Fortaleza)",
-      "entity_type": "organization",
-      "subtype": "central_bank",
-      "description": "Banco Central do Brasil (Fortaleza) is the central bank of Brazil. Sets monetary policy and influences the country's currency.",
-      "aliases": [
-        "wikidata:Q136416763"
+        "wikidata:Q4504271"
       ]
     }
   ]

@@ -13,9 +13,12 @@ the source of truth** for KG population:
 - `data/seed/wikidata/<type>.json` — one snapshot per
   Wikidata category (`currency`, `central_bank`,
   `exchange`, `regulator`, `index`, `crypto`, `company`),
-  written by `wikidata_seed --snapshot`. Format is
-  compatible with `cli.seed`, so they can be replayed
-  offline against a fresh database.
+  written by `wikidata_seed --snapshot`. Each snapshot
+  carries a top-level ``"reason": "wikidata-seed"`` so
+  that `cli.seed` can preserve the origin signal in
+  `entity_history` on replay. Format is compatible with
+  `cli.seed`, so they can be replayed offline against a
+  fresh database.
 
 A fresh clone rebuilds the KG by running the curated
 seed first, then each Wikidata snapshot in turn. No
@@ -64,12 +67,6 @@ fetch and makes every subsequent rebuild reproducible.
   SPARQL queries or mappers should be followed by a
   snapshot refresh; otherwise the snapshots and the
   live query diverge silently.
-- **Snapshot replay loses `reason="wikidata-seed"`
-  provenance.** `cli.seed` tags its writes with
-  `reason="seed"`. A future improvement could teach the
-  loader (or add a new snapshot-replay CLI) to preserve
-  the origin reason, letting `entity_history` audits
-  still distinguish Wikidata-sourced rows.
 
 ## Rebuild workflow
 

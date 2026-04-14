@@ -223,9 +223,16 @@ def _entity_to_seed_json(entity: Entity) -> dict:
 def _write_snapshot(
     mapped: list[MappedEntity], path: Path
 ) -> None:
-    """Write mapped entities as a seed-compatible JSON file."""
+    """Write mapped entities as a seed-compatible JSON file.
+
+    The ``"reason"`` field tells :func:`cli.seed.load_seed`
+    how to tag ``entity_history`` entries on replay, so a
+    rebuild from snapshots preserves the
+    ``reason="wikidata-seed"`` origin signal.
+    """
     payload = {
         "version": 1,
+        "reason": "wikidata-seed",
         "description": (
             "Wikidata seed snapshot. Re-loadable via "
             "cli.seed for reproducibility."
