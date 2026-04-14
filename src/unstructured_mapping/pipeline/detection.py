@@ -213,11 +213,15 @@ class RuleBasedDetector(EntityDetector):
 
     :param entities: KG entities whose aliases (and
         canonical names) will be indexed for detection.
+        Pass a bounded subset — the trie is built in
+        memory, so an unbounded scan of a growing KG can
+        blow up detector-construction cost.
 
     Usage::
 
         entities = store.find_entities_by_status(
-            EntityStatus.ACTIVE
+            EntityStatus.ACTIVE,
+            limit=5000,
         )
         detector = RuleBasedDetector(entities)
         mentions = detector.detect(chunk)

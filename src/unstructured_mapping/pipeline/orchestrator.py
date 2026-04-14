@@ -225,7 +225,8 @@ class Pipeline:
         pipeline = Pipeline(
             detector=RuleBasedDetector(
                 store.find_entities_by_status(
-                    EntityStatus.ACTIVE
+                    EntityStatus.ACTIVE,
+                    limit=5000,
                 )
             ),
             resolver=AliasResolver(),
