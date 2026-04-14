@@ -67,6 +67,9 @@ from unstructured_mapping.pipeline.models import (
     EntityProposal,
     ResolutionResult,
 )
+from unstructured_mapping.pipeline.segmentation import (
+    DocumentSegmenter,
+)
 from unstructured_mapping.pipeline.resolution import (
     EntityResolver,
     LLMEntityResolver,
@@ -95,6 +98,26 @@ def _compute_run_stats(
             r.relationships_saved for r in results
         ),
     )
+
+
+@dataclass(frozen=True, slots=True)
+class _ChunkOutcome:
+    """Per-chunk outputs aggregated into an ArticleResult.
+
+    Internal to the orchestrator; an article's
+    :class:`ArticleResult` sums outcomes across chunks.
+    """
+
+    resolution: ResolutionResult = field(
+        default_factory=ResolutionResult
+    )
+    provenances_saved: int = 0
+    proposals_saved: int = 0
+    relationships_saved: int = 0
+
+    @classmethod
+    def empty(cls) -> "_ChunkOutcome":
+        return cls()
 
 
 @dataclass(frozen=True, slots=True)
@@ -278,6 +301,7 @@ class Pipeline:
         cold_start_discoverer: (
             ColdStartEntityDiscoverer | None
         ) = None,
+        segmenter: DocumentSegmenter | None = None,
         skip_processed: bool = True,
     ) -> None:
         self._detector = detector
@@ -288,6 +312,17 @@ class Pipeline:
         self._cold_start_discoverer = (
             cold_start_discoverer
         )
+        #: Optional chunker. When ``None`` every article
+        #: is processed as a single chunk (the legacy
+        #: inverted-pyramid behaviour for news). When set
+        #: — typically to a ``ResearchSegmenter``,
+        #: ``TranscriptSegmenter`` or ``FilingSegmenter``
+        #: — each article is split and every chunk flows
+        #: through the existing per-chunk stages in turn.
+        #: Cold-start mode ignores the segmenter: the LLM
+        #: discoverer sees the full article body by
+        #: design.
+        self._segmenter = segmenter
         self._skip_processed = skip_processed
 
     # -- Public API -----------------------------------------
@@ -442,79 +477,65 @@ class Pipeline:
                 document_id=doc_id, skipped=True
             )
         try:
-            chunk = Chunk(
-                document_id=doc_id,
-                chunk_index=0,
-                text=article.body,
-                section_name=None,
-            )
             if self._cold_start_discoverer is not None:
-                return self._process_cold_start(
-                    chunk, article, run_id
-                )
-            mentions = self._detector.detect(chunk)
-            resolution = self._resolver.resolve(
-                chunk, mentions
-            )
-
-            # Cascade: pass unresolved to the LLM.
-            llm_resolved: tuple = ()
-            proposals: tuple[EntityProposal, ...] = ()
-            if (
-                self._llm_resolver is not None
-                and resolution.unresolved
-            ):
-                llm_result = self._llm_resolver.resolve(
-                    chunk, resolution.unresolved
-                )
-                llm_resolved = llm_result.resolved
-                proposals = self._llm_resolver.proposals
-                resolution = ResolutionResult(
-                    resolved=(
-                        resolution.resolved
-                        + llm_resolved
-                    ),
-                )
-
-            detected_at = _utcnow()
-            provenances = [
-                Provenance(
-                    entity_id=rm.entity_id,
+                # Cold-start sees the whole article body:
+                # the LLM proposes entities from scratch,
+                # so chunking would just split prompts
+                # without benefit.
+                full_chunk = Chunk(
                     document_id=doc_id,
-                    source=article.source,
-                    mention_text=rm.surface_form,
-                    context_snippet=rm.context_snippet,
-                    detected_at=detected_at,
-                    run_id=run_id,
+                    chunk_index=0,
+                    text=article.body,
+                    section_name=None,
                 )
-                for rm in resolution.resolved
-            ]
-            inserted = self._store.save_provenances(
-                provenances
-            )
+                return self._process_cold_start(
+                    full_chunk, article, run_id
+                )
 
-            # Persist LLM entity proposals.
-            saved_proposals = self._save_proposals(
-                proposals, doc_id, article.source,
-                detected_at, run_id,
-            )
+            chunks = self._chunks_for(article, doc_id)
+            if not chunks:
+                return ArticleResult(document_id=doc_id)
 
-            # Pass 2: relationship extraction.
-            saved_rels = self._extract_relationships(
-                chunk,
-                resolution.resolved,
-                proposals,
-                doc_id,
-                detected_at,
-                run_id,
-            )
+            resolved_all: tuple = ()
+            unresolved_all: tuple = ()
+            provenances_saved = 0
+            proposals_saved = 0
+            relationships_saved = 0
+            # Wrap all chunk writes for this article in
+            # one transaction so an N-chunk document
+            # produces one fsync, not N.
+            with self._store.transaction():
+                for chunk in chunks:
+                    outcome = self._process_chunk(
+                        chunk, article, run_id
+                    )
+                    resolved_all = (
+                        resolved_all
+                        + outcome.resolution.resolved
+                    )
+                    unresolved_all = (
+                        unresolved_all
+                        + outcome.resolution.unresolved
+                    )
+                    provenances_saved += (
+                        outcome.provenances_saved
+                    )
+                    proposals_saved += (
+                        outcome.proposals_saved
+                    )
+                    relationships_saved += (
+                        outcome.relationships_saved
+                    )
 
             return ArticleResult(
                 document_id=doc_id,
-                resolution=resolution,
-                provenances_saved=inserted,
-                proposals_saved=saved_proposals,
-                relationships_saved=saved_rels,
+                resolution=ResolutionResult(
+                    resolved=resolved_all,
+                    unresolved=unresolved_all,
+                ),
+                provenances_saved=provenances_saved,
+                proposals_saved=proposals_saved,
+                relationships_saved=relationships_saved,
             )
         except Exception as exc:  # noqa: BLE001
             # Per-article isolation: log and carry on.
@@ -528,6 +549,103 @@ class Pipeline:
                 document_id=doc_id,
                 error=str(exc),
             )
+
+    def _chunks_for(
+        self, article: Article, doc_id: str
+    ) -> list[Chunk]:
+        """Return the chunks to process for this article.
+
+        When no segmenter is configured the article body
+        becomes a single chunk (preserving the legacy
+        behaviour for news). When a segmenter is set it
+        owns the split.
+        """
+        if self._segmenter is None:
+            return [
+                Chunk(
+                    document_id=doc_id,
+                    chunk_index=0,
+                    text=article.body,
+                    section_name=None,
+                )
+            ]
+        return self._segmenter.segment(doc_id, article.body)
+
+    def _process_chunk(
+        self,
+        chunk: Chunk,
+        article: Article,
+        run_id: str | None,
+    ) -> "_ChunkOutcome":
+        """Run detection / resolution / extraction on one
+        chunk and persist its outputs.
+
+        Returns a :class:`_ChunkOutcome` for the caller to
+        aggregate across chunks. Empty chunks (e.g. the
+        transcript Q&A divider) yield a zero outcome so
+        the caller can loop uniformly.
+        """
+        if not chunk.text.strip():
+            return _ChunkOutcome.empty()
+
+        doc_id = chunk.document_id
+        mentions = self._detector.detect(chunk)
+        resolution = self._resolver.resolve(chunk, mentions)
+
+        proposals: tuple[EntityProposal, ...] = ()
+        if (
+            self._llm_resolver is not None
+            and resolution.unresolved
+        ):
+            llm_result = self._llm_resolver.resolve(
+                chunk, resolution.unresolved
+            )
+            proposals = self._llm_resolver.proposals
+            resolution = ResolutionResult(
+                resolved=(
+                    resolution.resolved
+                    + llm_result.resolved
+                ),
+            )
+
+        detected_at = _utcnow()
+        provenances = [
+            Provenance(
+                entity_id=rm.entity_id,
+                document_id=doc_id,
+                source=article.source,
+                mention_text=rm.surface_form,
+                context_snippet=rm.context_snippet,
+                detected_at=detected_at,
+                run_id=run_id,
+            )
+            for rm in resolution.resolved
+        ]
+        inserted = self._store.save_provenances(provenances)
+
+        saved_proposals = self._save_proposals(
+            proposals,
+            doc_id,
+            article.source,
+            detected_at,
+            run_id,
+        )
+
+        saved_rels = self._extract_relationships(
+            chunk,
+            resolution.resolved,
+            proposals,
+            doc_id,
+            detected_at,
+            run_id,
+        )
+
+        return _ChunkOutcome(
+            resolution=resolution,
+            provenances_saved=inserted,
+            proposals_saved=saved_proposals,
+            relationships_saved=saved_rels,
+        )
 
     def _process_cold_start(
         self,

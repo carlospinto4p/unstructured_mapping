@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.40.0 - 14th April 2026
+
+- `src/unstructured_mapping/pipeline/segmentation/`:
+  - Added `_sub_chunk.py` with `estimate_tokens`, `sub_chunk_by_paragraph`, and `expand_section`. Provides the hybrid-fallback paragraph splitter designed in `docs/pipeline/09_chunking.md` §"Segmentation strategy": oversized sections split at paragraph boundaries with configurable 10–20% overlap; oversized single paragraphs pass through untouched rather than risk a mid-sentence cut.
+  - `ResearchSegmenter`, `TranscriptSegmenter`, `FilingSegmenter` gained `max_tokens` + `overlap_ratio` constructor kwargs. Default behaviour (no sub-chunking) is unchanged.
+- `src/unstructured_mapping/pipeline/orchestrator.py`:
+  - `Pipeline(segmenter=...)`: optional `DocumentSegmenter` injected at construction. When set, each article is split into chunks and every chunk flows through the existing detection / resolution / extraction stages in turn. When unset the legacy single-chunk behaviour is preserved.
+  - Extracted `_process_chunk` + `_ChunkOutcome`: per-chunk logic refactored out of `_process_article` so the per-chunk loop can accumulate counts and resolution results cleanly.
+  - Per-article writes now share one `store.transaction()` — an N-chunk research report writes N chunks' provenance / proposals / relationships with one fsync.
+  - Cold-start mode continues to see the full article body by design; segmenter is ignored in that path.
+- Added unit tests:
+  - `tests/unit/test_segmentation.py`: sub-chunk helper tests (paragraph boundary, overlap, oversized paragraph, empty input, token estimate) plus per-segmenter oversized-section tests.
+  - `tests/unit/test_pipeline.py`: `test_pipeline_with_segmenter_processes_each_chunk` and `test_pipeline_without_segmenter_preserves_legacy_behaviour`.
+
+
 ### v0.39.0 - 14th April 2026
 
 - Added `src/unstructured_mapping/pipeline/segmentation/`: document-aware chunking module following `docs/pipeline/09_chunking.md`.

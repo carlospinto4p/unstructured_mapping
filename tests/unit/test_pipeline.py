@@ -141,6 +141,79 @@ def test_pipeline_run_end_to_end(tmp_path):
     assert run.finished_at is not None
 
 
+def test_pipeline_with_segmenter_processes_each_chunk(
+    tmp_path,
+):
+    """A configured segmenter splits every article, and
+    per-chunk detection + resolution + provenance happens
+    independently. Demonstrates the v0.39.1 wiring: the
+    ``ResearchSegmenter`` fires on an article with
+    markdown headings, each section becomes its own
+    chunk, and every chunk contributes provenance."""
+    from unstructured_mapping.pipeline.segmentation import (
+        ResearchSegmenter,
+    )
+
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    msft = make_org("Microsoft", aliases=("Microsoft",))
+    article = make_article(
+        body=(
+            "## Executive Summary\n"
+            "Apple leads the pack.\n\n"
+            "## Risks\n"
+            "Microsoft competition intensifies."
+        ),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_entity(msft)
+        pipeline = Pipeline(
+            detector=RuleBasedDetector([apple, msft]),
+            resolver=AliasResolver(),
+            store=store,
+            segmenter=ResearchSegmenter(),
+        )
+        result = pipeline.run([article])
+        prov_apple = store.get_provenance(apple.entity_id)
+        prov_msft = store.get_provenance(msft.entity_id)
+
+    assert result.documents_processed == 1
+    # Two sections, each contributes one entity
+    # provenance — Apple in the Summary section,
+    # Microsoft in the Risks section.
+    assert result.provenances_saved == 2
+    assert len(prov_apple) == 1
+    assert len(prov_msft) == 1
+
+
+def test_pipeline_without_segmenter_preserves_legacy_behaviour(
+    tmp_path,
+):
+    """With no segmenter the pipeline still emits one
+    chunk per article — news-path callers see no change."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    article = make_article(
+        body=(
+            "## A heading.\n"
+            "Apple dominated the quarter."
+        ),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        pipeline = Pipeline(
+            detector=RuleBasedDetector([apple]),
+            resolver=AliasResolver(),
+            store=store,
+        )
+        # No segmenter: the markdown heading is ignored,
+        # the whole body is one chunk, one provenance is
+        # written.
+        result = pipeline.run([article])
+    assert result.provenances_saved == 1
+
+
 def test_pipeline_run_multiple_articles(tmp_path):
     """Counts aggregate across articles."""
     db = tmp_path / "kg.db"
