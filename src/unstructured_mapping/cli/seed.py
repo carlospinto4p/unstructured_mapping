@@ -17,7 +17,9 @@ Entities that already exist in the KG (matched by
 skipped, so the loader is idempotent — re-running after a
 seed file update only persists new entries. All newly
 created entities are tagged with ``reason="seed"`` in the
-entity history for provenance.
+entity history for provenance, unless the payload declares
+a different ``"reason"`` at the top level — Wikidata
+snapshots use ``"wikidata-seed"`` to round-trip origin.
 """
 
 import argparse
@@ -27,6 +29,10 @@ from collections import Counter
 from pathlib import Path
 
 from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._seed_helpers import (
+    exists_by_name_and_type,
+    import_with_dedup,
+)
 from unstructured_mapping.knowledge_graph import (
     Entity,
     EntityType,
@@ -93,23 +99,6 @@ def _parse_entity(raw: dict) -> Entity:
     )
 
 
-def _exists(
-    store: KnowledgeStore,
-    name: str,
-    entity_type: EntityType,
-) -> bool:
-    """Return True if an entity with the same canonical
-    name and type already exists in the store.
-
-    Matching is case-insensitive on the canonical name,
-    mirroring :meth:`KnowledgeStore.find_by_name`.
-    """
-    matches = store.find_by_name(name)
-    return any(
-        e.entity_type == entity_type for e in matches
-    )
-
-
 def load_seed(
     seed_path: Path,
     store: KnowledgeStore,
@@ -137,25 +126,21 @@ def load_seed(
         created entities keyed by ``entity_type.value``.
     """
     data = json.loads(seed_path.read_text(encoding="utf-8"))
-    raw_entities = data.get("entities", [])
+    entities = [
+        _parse_entity(r) for r in data.get("entities", [])
+    ]
     reason = data.get("reason", "seed")
-    created = 0
-    skipped = 0
-    counts: Counter = Counter()
-
-    for raw in raw_entities:
-        entity = _parse_entity(raw)
-        if _exists(
-            store, entity.canonical_name, entity.entity_type
-        ):
-            skipped += 1
-            continue
-        if not dry_run:
-            store.save_entity(entity, reason=reason)
-        created += 1
-        counts[entity.entity_type.value] += 1
-
-    return created, skipped, counts
+    return import_with_dedup(
+        entities,
+        store,
+        get_entity=lambda e: e,
+        is_duplicate=lambda s, e: exists_by_name_and_type(
+            s, e.canonical_name, e.entity_type
+        ),
+        counter_key=lambda e: e.entity_type.value,
+        reason=reason,
+        dry_run=dry_run,
+    )
 
 
 def main(argv: list[str] | None = None) -> None:

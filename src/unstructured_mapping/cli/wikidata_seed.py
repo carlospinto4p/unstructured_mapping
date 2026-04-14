@@ -38,6 +38,10 @@ from collections import Counter
 from pathlib import Path
 
 from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._seed_helpers import (
+    exists_by_name_and_type,
+    import_with_dedup,
+)
 from unstructured_mapping.knowledge_graph import (
     Entity,
     EntityType,
@@ -171,12 +175,10 @@ def _already_imported(
     qid_alias = f"wikidata:{mapped.qid}"
     if store.find_by_alias(qid_alias):
         return True
-    name_matches = store.find_by_name(
-        mapped.entity.canonical_name
-    )
-    return any(
-        e.entity_type == mapped.entity.entity_type
-        for e in name_matches
+    return exists_by_name_and_type(
+        store,
+        mapped.entity.canonical_name,
+        mapped.entity.entity_type,
     )
 
 
@@ -193,20 +195,15 @@ def import_entities(
     :param dry_run: When True, only run dedup; do not write.
     :return: ``(created, skipped, counts_by_subtype)``.
     """
-    created = 0
-    skipped = 0
-    counts: Counter = Counter()
-    for item in mapped:
-        if _already_imported(store, item):
-            skipped += 1
-            continue
-        if not dry_run:
-            store.save_entity(
-                item.entity, reason="wikidata-seed"
-            )
-        created += 1
-        counts[item.entity.subtype or "unknown"] += 1
-    return created, skipped, counts
+    return import_with_dedup(
+        mapped,
+        store,
+        get_entity=lambda m: m.entity,
+        is_duplicate=_already_imported,
+        counter_key=lambda e: e.subtype or "unknown",
+        reason="wikidata-seed",
+        dry_run=dry_run,
+    )
 
 
 def _entity_to_seed_json(entity: Entity) -> dict:
