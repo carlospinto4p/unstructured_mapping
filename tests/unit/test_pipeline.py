@@ -201,7 +201,6 @@ def test_pipeline_aggregator_dedupes_duplicate_proposals(
         EntityProposal,
         Mention,
         ResolutionResult,
-        ResolvedMention,
     )
     from unstructured_mapping.pipeline.segmentation import (
         ResearchSegmenter,
@@ -216,7 +215,9 @@ def test_pipeline_aggregator_dedupes_duplicate_proposals(
         def __init__(self):
             self.proposals: tuple = ()
 
-        def resolve(self, chunk, unresolved):
+        def resolve(
+            self, chunk, unresolved, *, extra_candidates=()
+        ):
             props = tuple(
                 EntityProposal(
                     canonical_name="NewCo",
@@ -280,6 +281,108 @@ def test_pipeline_aggregator_dedupes_duplicate_proposals(
     # to a single new entity.
     assert result.results[0].proposals_saved == 1
     assert len(matches) == 1
+
+
+def test_pipeline_alias_prescan_pulls_full_body_matches(
+    tmp_path,
+):
+    """End-to-end proof that when a downstream chunk has
+    no detector hit but the full body does, the pre-scan
+    candidate is still surfaced to the LLM resolver."""
+    from unstructured_mapping.pipeline.models import (
+        Mention,
+        ResolutionResult,
+    )
+    from unstructured_mapping.pipeline.segmentation import (
+        ResearchSegmenter,
+    )
+
+    apple = make_org("Apple", aliases=("Apple",))
+
+    extra_seen_per_chunk: list[tuple] = []
+
+    class Recorder:
+        def __init__(self):
+            self.proposals: tuple = ()
+
+        def resolve(
+            self,
+            chunk,
+            unresolved,
+            *,
+            extra_candidates=(),
+        ):
+            extra_seen_per_chunk.append(
+                (
+                    chunk.section_name,
+                    tuple(
+                        e.canonical_name
+                        for e in extra_candidates
+                    ),
+                )
+            )
+            return ResolutionResult(resolved=(), unresolved=())
+
+    class HybridDetector:
+        """Rule-based for the pre-scan path; stub for the
+        per-chunk path so the Risks chunk yields an
+        unresolved mention without candidate_ids."""
+
+        def __init__(self, full_detector):
+            self._full = full_detector
+
+        def detect(self, chunk):
+            # Full-body pre-scan (chunk_index == 0 and
+            # section_name is None): use the rule-based
+            # detector that knows Apple.
+            if chunk.section_name is None:
+                return self._full.detect(chunk)
+            if "Apple" in chunk.text:
+                return self._full.detect(chunk)
+            return (
+                Mention(
+                    surface_form="the company",
+                    span_start=0,
+                    span_end=11,
+                    candidate_ids=(),
+                ),
+            )
+
+    class EmptyResolver:
+        def resolve(self, chunk, mentions):
+            return ResolutionResult(
+                resolved=(),
+                unresolved=mentions,
+            )
+
+    db = tmp_path / "kg.db"
+    article = make_article(
+        body=(
+            "## Summary\n"
+            "Apple introduced a new product.\n\n"
+            "## Risks\n"
+            "The company faces supplier concentration."
+        ),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        full_detector = RuleBasedDetector([apple])
+        pipeline = Pipeline(
+            detector=HybridDetector(full_detector),
+            resolver=EmptyResolver(),
+            store=store,
+            llm_resolver=Recorder(),
+            segmenter=ResearchSegmenter(),
+        )
+        pipeline.run([article])
+
+    risks = [
+        extras
+        for section, extras in extra_seen_per_chunk
+        if section == "Risks"
+    ]
+    assert len(risks) == 1
+    assert "Apple" in risks[0]
 
 
 def test_pipeline_without_segmenter_preserves_legacy_behaviour(

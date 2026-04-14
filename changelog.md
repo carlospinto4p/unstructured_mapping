@@ -1,5 +1,22 @@
 ## Changelog
 
+### v0.41.0 - 14th April 2026
+
+- Added `src/unstructured_mapping/pipeline/aggregation.py`: cross-chunk aggregator designed in `docs/pipeline/09_chunking.md` §"Aggregation".
+  - `ChunkAggregator.aggregate(outcomes)`: dedupes proposals on lowercased `canonical_name` + `entity_type` (keeps the longest description), dedupes relationships on `(source_id, target_id, relation_type)` (keeps the richest `context_snippet`), flags same-name-different-type collisions as `ProposalConflict` records and drops both sides rather than guess.
+  - `ChunkOutcome` / `AggregatedOutcome` / `ProposalConflict` dataclasses for the in-memory handoff between per-chunk processing and persistence.
+- `src/unstructured_mapping/pipeline/orchestrator.py`:
+  - Refactored `_process_chunk` to return a `ChunkOutcome` *without* KG writes. Renamed `_save_proposals`/`_extract_relationships` to `_persist_proposals`/`_persist_relationships` (pure persistence); extraction now runs inside `_process_chunk`, persistence runs once per article after aggregation.
+  - `_process_article` drives the new flow: chunks → per-chunk outcomes → aggregator → single `store.transaction()` that writes provenance + proposal entities + relationships in one batch. Per-chunk duplicate proposals (two chunks both proposing "NewCo") now collapse to a single KG entity.
+  - Added `_document_prescan(article, doc_id)`: runs the rule-based detector over the whole article body, batch-fetches candidate entities via `store.get_entities`, returns them as a tuple. Fired only when the segmenter produces >1 chunk.
+  - Pre-scan candidates ride into every chunk's `LLMEntityResolver.resolve(..., extra_candidates=...)` call so long-range coreference ("the company" in chunk 5 referring to Apple from chunk 1) has a candidate in the KG context window.
+- `src/unstructured_mapping/pipeline/resolution.py`:
+  - `LLMEntityResolver.resolve` gained an `extra_candidates` keyword argument; `_collect_candidates` appends them after the mention-derived candidates, deduplicated by `entity_id`. Chunk-local candidates retain priority so budget clipping preserves the most locally-relevant entities.
+- Added unit tests:
+  - `tests/unit/test_aggregation.py`: 10 tests covering proposal dedup, case-insensitive name match, type-conflict handling, relationship dedup (same vs different relation types), provenance pass-through, degenerate inputs.
+  - `tests/unit/test_pipeline.py`: `test_pipeline_aggregator_dedupes_duplicate_proposals` and `test_pipeline_alias_prescan_pulls_full_body_matches`.
+
+
 ### v0.40.0 - 14th April 2026
 
 - `src/unstructured_mapping/pipeline/segmentation/`:

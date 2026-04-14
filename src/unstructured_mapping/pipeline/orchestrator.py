@@ -486,9 +486,24 @@ class Pipeline:
             if not chunks:
                 return ArticleResult(document_id=doc_id)
 
+            # Document-level alias pre-scan: run the rule-
+            # based detector over the whole article body
+            # once and hand every resolved candidate to
+            # every chunk's resolver. Solves long-range
+            # coreference — chunk 5 saying "the company"
+            # still sees Apple from chunk 1 in its KG
+            # context window. Only runs when the pipeline
+            # is actually chunking (>1 chunk); a single-
+            # chunk article is already self-contained.
+            prescan = (
+                self._document_prescan(article, doc_id)
+                if len(chunks) > 1
+                else ()
+            )
+
             outcomes = [
                 self._process_chunk(
-                    chunk, article, run_id
+                    chunk, article, run_id, prescan
                 )
                 for chunk in chunks
             ]
@@ -524,6 +539,47 @@ class Pipeline:
                 error=str(exc),
             )
 
+    def _document_prescan(
+        self, article: Article, doc_id: str
+    ) -> tuple[Entity, ...]:
+        """Run the detector over the full article body.
+
+        Returns every KG entity whose alias the rule-based
+        detector matched anywhere in the document. These
+        ride along with each chunk's LLM resolver call so
+        a mention like "the company" in chunk 5 can be
+        resolved against Apple when Apple's name appeared
+        only in chunk 1.
+
+        Implementation detail: we reuse the same
+        :class:`EntityDetector` — the alias trie is the
+        cheapest pre-scan available (pure string work, no
+        LLM call) and it already knows every alias the
+        detector knows, so the pre-scan and the per-chunk
+        detection stay consistent.
+        """
+        full_chunk = Chunk(
+            document_id=doc_id,
+            chunk_index=0,
+            text=article.body,
+            section_name=None,
+        )
+        mentions = self._detector.detect(full_chunk)
+        seen: set[str] = set()
+        ids: list[str] = []
+        for mention in mentions:
+            for eid in mention.candidate_ids:
+                if eid in seen:
+                    continue
+                seen.add(eid)
+                ids.append(eid)
+        if not ids:
+            return ()
+        found = self._store.get_entities(ids)
+        return tuple(
+            found[eid] for eid in ids if eid in found
+        )
+
     def _chunks_for(
         self, article: Article, doc_id: str
     ) -> list[Chunk]:
@@ -550,6 +606,7 @@ class Pipeline:
         chunk: Chunk,
         article: Article,
         run_id: str | None,
+        prescan: tuple[Entity, ...] = (),
     ) -> ChunkOutcome:
         """Run detection / resolution / extraction on one
         chunk and return its outputs.
@@ -559,6 +616,12 @@ class Pipeline:
         once, after cross-chunk dedup. Empty chunks (the
         transcript Q&A divider, e.g.) return an empty
         outcome so the caller can loop uniformly.
+
+        :param prescan: Document-level alias pre-scan
+            candidates passed through to the LLM
+            resolver's KG context window for cross-chunk
+            coreference. Ignored when no LLM resolver is
+            configured.
         """
         if not chunk.text.strip():
             return ChunkOutcome()
@@ -573,7 +636,9 @@ class Pipeline:
             and resolution.unresolved
         ):
             llm_result = self._llm_resolver.resolve(
-                chunk, resolution.unresolved
+                chunk,
+                resolution.unresolved,
+                extra_candidates=prescan,
             )
             proposals = self._llm_resolver.proposals
             resolution = ResolutionResult(

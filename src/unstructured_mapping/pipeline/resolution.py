@@ -289,6 +289,8 @@ class LLMEntityResolver(EntityResolver):
         self,
         chunk: Chunk,
         mentions: tuple[Mention, ...],
+        *,
+        extra_candidates: tuple[Entity, ...] = (),
     ) -> ResolutionResult:
         """Resolve mentions via an LLM call.
 
@@ -306,6 +308,16 @@ class LLMEntityResolver(EntityResolver):
 
         :param chunk: The text chunk being processed.
         :param mentions: Mentions detected in this chunk.
+        :param extra_candidates: Additional entities to
+            include in the KG context window, regardless
+            of whether their aliases appear in this
+            chunk's mentions. Set by the orchestrator from
+            a document-level alias pre-scan so long-range
+            coreference ("the company" in a later chunk
+            referring to Apple from chunk 1) has a
+            candidate to resolve against. Deduplicated
+            against the mention-derived candidates by
+            ``entity_id``.
         :return: Resolution result. Proposals for new
             entities are available via :attr:`proposals`.
         :raises LLMProviderError: After two consecutive
@@ -316,7 +328,9 @@ class LLMEntityResolver(EntityResolver):
         if not mentions:
             return ResolutionResult()
 
-        candidates = self._collect_candidates(mentions)
+        candidates = self._collect_candidates(
+            mentions, extra=extra_candidates
+        )
 
         budget = compute_budget(
             self._provider.context_window,
@@ -357,13 +371,17 @@ class LLMEntityResolver(EntityResolver):
     def _collect_candidates(
         self,
         mentions: tuple[Mention, ...],
+        *,
+        extra: tuple[Entity, ...] = (),
     ) -> list[Entity]:
         """Gather unique candidate entities from mentions.
 
         Looks up each candidate ID via the injected
         ``entity_lookup``. Missing entities (``None``)
         are silently skipped — they may have been
-        deleted between detection and resolution.
+        deleted between detection and resolution. Any
+        ``extra`` entities are appended after the
+        mention-derived candidates, deduplicated by id.
         """
         unique_ids: list[str] = []
         seen: set[str] = set()
@@ -394,4 +412,14 @@ class LLMEntityResolver(EntityResolver):
                     "Candidate %s not found in KG",
                     eid,
                 )
+        # Append pre-scan extras that aren't already
+        # covered by this chunk's mentions. Order matters:
+        # chunk-local candidates take precedence so the
+        # budget cap preserves the most locally-relevant
+        # entities.
+        for entity in extra:
+            if entity.entity_id in seen:
+                continue
+            seen.add(entity.entity_id)
+            candidates.append(entity)
         return candidates
