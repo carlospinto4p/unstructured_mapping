@@ -1,0 +1,195 @@
+{
+  "version": 1,
+  "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
+  "entities": [
+    {
+      "canonical_name": "Amsterdam Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Amsterdam Stock Exchange is a stock exchange based in Netherlands. stock exchange located in Amsterdam, Netherlands",
+      "aliases": [
+        "wikidata:Q478720"
+      ]
+    },
+    {
+      "canonical_name": "Dar es Salaam Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dar es Salaam Stock Exchange is a stock exchange based in Tanzania. stock exchange located in Dar es Salaam, Tanzania",
+      "aliases": [
+        "wikidata:Q490028"
+      ]
+    },
+    {
+      "canonical_name": "Bourse Regionale Des Valeurs Mobilieres",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bourse Regionale Des Valeurs Mobilieres is a stock exchange based in Ivory Coast. Stock exchange located in Abidjan, Ivory Coast",
+      "aliases": [
+        "wikidata:Q491031"
+      ]
+    },
+    {
+      "canonical_name": "Uganda Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Uganda Securities Exchange is a stock exchange based in Uganda. principal stock exchange of Uganda",
+      "aliases": [
+        "wikidata:Q492316"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Börse",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Deutsche Börse is a stock exchange based in Germany. financial services company of Germany",
+      "aliases": [
+        "wikidata:Q157852"
+      ]
+    },
+    {
+      "canonical_name": "London Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "London Stock Exchange is a stock exchange based in United Kingdom. stock exchange in the City of London",
+      "aliases": [
+        "wikidata:Q171240"
+      ]
+    },
+    {
+      "canonical_name": "Goldman Sachs",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Goldman Sachs is a stock exchange based in United States. American investment bank",
+      "aliases": [
+        "wikidata:Q193326"
+      ]
+    },
+    {
+      "canonical_name": "Tokyo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tokyo Stock Exchange is a stock exchange based in Japan. stock market based in Tokyo",
+      "aliases": [
+        "wikidata:Q217475"
+      ]
+    },
+    {
+      "canonical_name": "London Stock Exchange - AIM MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "London Stock Exchange - AIM MTF is a stock exchange based in United Kingdom. AIMX identifying AIM Multilateral Trading Facility (MTF) driven by the London Stock Exchange (XLON).",
+      "aliases": [
+        "wikidata:Q438511"
+      ]
+    },
+    {
+      "canonical_name": "Landesbank Baden-Württemberg",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Landesbank Baden-Württemberg is a stock exchange based in Germany. German credit institution headquartered in Stuttgart",
+      "aliases": [
+        "wikidata:Q451814"
+      ]
+    },
+    {
+      "canonical_name": "BATS Chi-X Europe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BATS Chi-X Europe is a stock exchange based in United Kingdom. Pan-European stock exchange located in London, United Kingdom",
+      "aliases": [
+        "wikidata:Q472567"
+      ]
+    },
+    {
+      "canonical_name": "Bratislava Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bratislava Stock Exchange is a stock exchange based in Slovakia. stock exchange located in Bratislava, Slovakia",
+      "aliases": [
+        "wikidata:Q74603"
+      ]
+    },
+    {
+      "canonical_name": "Luxembourg Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Luxembourg Stock Exchange is a stock exchange based in Luxembourg. registration authority",
+      "aliases": [
+        "wikidata:Q74662"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq is a stock exchange based in Sweden. American fully electronic stock exchange",
+      "aliases": [
+        "wikidata:Q82059"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq is a stock exchange based in United States. American fully electronic stock exchange",
+      "aliases": [
+        "wikidata:Q82059"
+      ]
+    },
+    {
+      "canonical_name": "New York Mercantile Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New York Mercantile Exchange is a stock exchange based in United States. commodity and futures exchange located in New York City, New York, United States",
+      "aliases": [
+        "wikidata:Q120233"
+      ]
+    },
+    {
+      "canonical_name": "Zagreb Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Zagreb Stock Exchange is a stock exchange based in Croatia. stock exchange located in Zagreb, Croatia",
+      "aliases": [
+        "wikidata:Q140388"
+      ]
+    },
+    {
+      "canonical_name": "Irish Stock Exchange - All Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Irish Stock Exchange - All Market is a stock exchange based in Ireland. stock exchange located in Dublin, Ireland",
+      "aliases": [
+        "wikidata:Q144458"
+      ]
+    },
+    {
+      "canonical_name": "Frankfurt Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Frankfurt Stock Exchange is a stock exchange based in Germany. stock exchange located in Frankfurt, Germany",
+      "aliases": [
+        "wikidata:Q151139"
+      ]
+    },
+    {
+      "canonical_name": "BayernLB",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BayernLB is a stock exchange based in Germany. company",
+      "aliases": [
+        "wikidata:Q152106"
+      ]
+    },
+    {
+      "canonical_name": "Commerzbank AG",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Commerzbank AG is a stock exchange based in Germany. major commercial bank",
+      "aliases": [
+        "wikidata:Q157617"
+      ]
+    }
+  ]
+}

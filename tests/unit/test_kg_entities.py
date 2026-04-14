@@ -43,6 +43,44 @@ def test_store_get_entity_not_found(tmp_path):
         assert store.get_entity("nonexistent") is None
 
 
+def test_store_get_entities_batch(tmp_path):
+    db = tmp_path / "kg.db"
+    a = make_entity(
+        canonical_name="A", aliases=("a1",)
+    )
+    b = make_entity(canonical_name="B")
+    c = make_entity(canonical_name="C")
+    with KnowledgeStore(db_path=db) as store:
+        for e in (a, b, c):
+            store.save_entity(e)
+        result = store.get_entities(
+            [a.entity_id, c.entity_id, "missing"]
+        )
+
+    assert set(result) == {a.entity_id, c.entity_id}
+    assert result[a.entity_id].aliases == ("a1",)
+    assert result[c.entity_id].canonical_name == "C"
+
+
+def test_store_get_entities_empty_returns_empty_dict(
+    tmp_path,
+):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        assert store.get_entities([]) == {}
+
+
+def test_store_get_entities_deduplicates_ids(tmp_path):
+    db = tmp_path / "kg.db"
+    a = make_entity(canonical_name="A")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(a)
+        result = store.get_entities(
+            [a.entity_id, a.entity_id]
+        )
+    assert len(result) == 1
+
+
 def test_store_find_by_name(tmp_path):
     db = tmp_path / "kg.db"
     e = make_entity(canonical_name="John Doe")

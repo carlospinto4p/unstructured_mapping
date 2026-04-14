@@ -227,6 +227,13 @@ class LLMEntityResolver(EntityResolver):
         ``Entity`` for a given entity ID, or ``None``
         if not found. Typically
         ``KnowledgeStore.get_entity``.
+    :param entity_batch_lookup: Optional batch variant
+        returning ``{id: Entity}`` for a list of ids.
+        When provided, the resolver loads every candidate
+        in one query instead of N round-trips — important
+        on long mention lists. Production code passes
+        ``store.get_entities``; tests may omit it and let
+        the resolver fall back to the per-id callable.
     :param prev_entities: Resolved mentions from
         earlier chunks in the same document, used for
         the running entity header. Defaults to empty.
@@ -257,9 +264,14 @@ class LLMEntityResolver(EntityResolver):
         provider: LLMProvider,
         entity_lookup: Callable[[str], Entity | None],
         prev_entities: Sequence[ResolvedMention] = (),
+        *,
+        entity_batch_lookup: (
+            Callable[[list[str]], dict[str, Entity]] | None
+        ) = None,
     ) -> None:
         self._provider = provider
         self._entity_lookup = entity_lookup
+        self._entity_batch_lookup = entity_batch_lookup
         self._prev_entities = prev_entities
         self._proposals: tuple[EntityProposal, ...] = ()
 
@@ -353,19 +365,33 @@ class LLMEntityResolver(EntityResolver):
         are silently skipped — they may have been
         deleted between detection and resolution.
         """
+        unique_ids: list[str] = []
         seen: set[str] = set()
-        candidates: list[Entity] = []
         for mention in mentions:
             for eid in mention.candidate_ids:
                 if eid in seen:
                     continue
                 seen.add(eid)
-                entity = self._entity_lookup(eid)
-                if entity is not None:
-                    candidates.append(entity)
-                else:
-                    logger.warning(
-                        "Candidate %s not found in KG",
-                        eid,
-                    )
+                unique_ids.append(eid)
+
+        if self._entity_batch_lookup is not None:
+            found = self._entity_batch_lookup(unique_ids)
+        else:
+            found = {
+                eid: ent
+                for eid in unique_ids
+                if (ent := self._entity_lookup(eid))
+                is not None
+            }
+
+        candidates: list[Entity] = []
+        for eid in unique_ids:
+            entity = found.get(eid)
+            if entity is not None:
+                candidates.append(entity)
+            else:
+                logger.warning(
+                    "Candidate %s not found in KG",
+                    eid,
+                )
         return candidates

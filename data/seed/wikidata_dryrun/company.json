@@ -1,0 +1,235 @@
+{
+  "version": 1,
+  "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
+  "entities": [
+    {
+      "canonical_name": "Olympus Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Olympus Corporation is a publicly listed company, headquartered in Japan, listed on Tokyo Stock Exchange under ticker 7733. Japanese company",
+      "aliases": [
+        "wikidata:Q688619",
+        "ticker:7733",
+        "isin:JP3201200007"
+      ]
+    },
+    {
+      "canonical_name": "Nikon",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Nikon is a publicly listed company, headquartered in Japan, listed on Tokyo Stock Exchange under ticker 7731. Japanese multinational corporation headquartered in Tokyo, Japan, specializing in optics and imaging",
+      "aliases": [
+        "wikidata:Q1218180",
+        "ticker:7731",
+        "isin:JP3657400002"
+      ]
+    },
+    {
+      "canonical_name": "Evia Oyj",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Evia Oyj is a publicly listed company, headquartered in Finland, listed on Nasdaq Helsinki Ltd under ticker EVI1V. former Finnish communications agency",
+      "aliases": [
+        "wikidata:Q5418306",
+        "ticker:EVI1V"
+      ]
+    },
+    {
+      "canonical_name": "Infrastrutture Wireless Italiane",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Infrastrutture Wireless Italiane is a publicly listed company, headquartered in Italy, listed on Italian Stock Exchange under ticker INW. Italian telecommunications infrastructure company",
+      "aliases": [
+        "wikidata:Q20756653",
+        "ticker:INW",
+        "isin:IT0005090300"
+      ]
+    },
+    {
+      "canonical_name": "Idea Cellular",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Idea Cellular is a publicly listed company, headquartered in India, listed on Bombay Stock Exchange under ticker 532822. former Indian telecommunications company",
+      "aliases": [
+        "wikidata:Q96381927",
+        "ticker:532822",
+        "isin:INE669E01016"
+      ]
+    },
+    {
+      "canonical_name": "Idea Cellular",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Idea Cellular is a publicly listed company, headquartered in India, listed on National Stock Exchange of India under ticker IDEA. former Indian telecommunications company",
+      "aliases": [
+        "wikidata:Q96381927",
+        "ticker:IDEA",
+        "isin:INE669E01016"
+      ]
+    },
+    {
+      "canonical_name": "Vantage Towers",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Vantage Towers is a publicly listed company, headquartered in Germany, listed on Frankfurt Stock Exchange under ticker VTWR. operator of mobile telecommunications tower infrastructures",
+      "aliases": [
+        "wikidata:Q98271125",
+        "ticker:VTWR",
+        "isin:DE000A3H3LL2"
+      ]
+    },
+    {
+      "canonical_name": "Sony Group",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Sony Group is a publicly listed company, headquartered in Japan, listed on New York Stock Exchange under ticker SONY. Japanese multinational conglomerate corporation",
+      "aliases": [
+        "wikidata:Q41187",
+        "ticker:SONY",
+        "isin:JP3435000009"
+      ]
+    },
+    {
+      "canonical_name": "Sony Group",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Sony Group is a publicly listed company, headquartered in Japan, listed on Tokyo Stock Exchange under ticker 6758. Japanese multinational conglomerate corporation",
+      "aliases": [
+        "wikidata:Q41187",
+        "ticker:6758",
+        "isin:JP3435000009"
+      ]
+    },
+    {
+      "canonical_name": "Panasonic Holdings Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Panasonic Holdings Corporation is a publicly listed company, headquartered in Japan, listed on OTC Markets Group under ticker PCRFY. Japanese multinational electronics corporation",
+      "aliases": [
+        "wikidata:Q53247",
+        "ticker:PCRFY",
+        "isin:JP3866800000"
+      ]
+    },
+    {
+      "canonical_name": "Panasonic Holdings Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Panasonic Holdings Corporation is a publicly listed company, headquartered in Japan, listed on Tokyo Stock Exchange under ticker 6752. Japanese multinational electronics corporation",
+      "aliases": [
+        "wikidata:Q53247",
+        "ticker:6752",
+        "isin:JP3866800000"
+      ]
+    },
+    {
+      "canonical_name": "Panasonic Holdings Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Panasonic Holdings Corporation is a publicly listed company, headquartered in Japan, listed on Philippine Stock Exchange under ticker PMPC. Japanese multinational electronics corporation",
+      "aliases": [
+        "wikidata:Q53247",
+        "ticker:PMPC",
+        "isin:JP3866800000"
+      ]
+    },
+    {
+      "canonical_name": "Panasonic Holdings Corporation",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Panasonic Holdings Corporation is a publicly listed company, headquartered in Japan, listed on Nagoya Stock Exchange under ticker 6752. Japanese multinational electronics corporation",
+      "aliases": [
+        "wikidata:Q53247",
+        "ticker:6752",
+        "isin:JP3866800000"
+      ]
+    },
+    {
+      "canonical_name": "Hewlett-Packard",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Hewlett-Packard is a publicly listed company, headquartered in United States, listed on New York Stock Exchange under ticker HWP. American information technology company",
+      "aliases": [
+        "wikidata:Q80978",
+        "ticker:HWP",
+        "isin:US4282361033"
+      ]
+    },
+    {
+      "canonical_name": "Hewlett-Packard",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Hewlett-Packard is a publicly listed company, headquartered in United States, listed on New York Stock Exchange under ticker HPQ. American information technology company",
+      "aliases": [
+        "wikidata:Q80978",
+        "ticker:HPQ",
+        "isin:US4282361033"
+      ]
+    },
+    {
+      "canonical_name": "Hewlett-Packard",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Hewlett-Packard is a publicly listed company, headquartered in United States, listed on New York Stock Exchange under ticker HWP. American information technology company",
+      "aliases": [
+        "wikidata:Q80978",
+        "ticker:HWP",
+        "isin:US40434L1052"
+      ]
+    },
+    {
+      "canonical_name": "Hewlett-Packard",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Hewlett-Packard is a publicly listed company, headquartered in United States, listed on New York Stock Exchange under ticker HPQ. American information technology company",
+      "aliases": [
+        "wikidata:Q80978",
+        "ticker:HPQ",
+        "isin:US40434L1052"
+      ]
+    },
+    {
+      "canonical_name": "Leica Camera",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Leica Camera is a publicly listed company, headquartered in Germany, listed on Frankfurt Stock Exchange under ticker LCA1. German optics company",
+      "aliases": [
+        "wikidata:Q161833",
+        "ticker:LCA1"
+      ]
+    },
+    {
+      "canonical_name": "Kodak",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Kodak is a publicly listed company, headquartered in United States, listed on New York Stock Exchange under ticker KODK. American company",
+      "aliases": [
+        "wikidata:Q486269",
+        "ticker:KODK",
+        "isin:US2774614067"
+      ]
+    },
+    {
+      "canonical_name": "Canon Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Canon Inc. is a publicly listed company, headquartered in Japan, listed on New York Stock Exchange under ticker CAJ. Japanese multinational imaging corporation",
+      "aliases": [
+        "wikidata:Q62621",
+        "ticker:CAJ",
+        "isin:JP3242800005"
+      ]
+    },
+    {
+      "canonical_name": "Canon Inc.",
+      "entity_type": "organization",
+      "subtype": "company",
+      "description": "Canon Inc. is a publicly listed company, headquartered in Japan, listed on Tokyo Stock Exchange under ticker 7751. Japanese multinational imaging corporation",
+      "aliases": [
+        "wikidata:Q62621",
+        "ticker:7751",
+        "isin:JP3242800005"
+      ]
+    }
+  ]
+}

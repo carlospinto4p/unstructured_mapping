@@ -233,6 +233,7 @@ class Pipeline:
             llm_resolver=LLMEntityResolver(
                 provider=provider,
                 entity_lookup=store.get_entity,
+                entity_batch_lookup=store.get_entities,
             ),
             extractor=LLMRelationshipExtractor(
                 provider=provider,

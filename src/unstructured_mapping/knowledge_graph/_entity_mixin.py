@@ -150,6 +150,37 @@ class EntityCRUDMixin(EntityHelpersMixin):
         aliases = self._load_aliases(entity_id)
         return row_to_entity(row, aliases)
 
+    def get_entities(
+        self, entity_ids: list[str]
+    ) -> dict[str, Entity]:
+        """Batch-load entities by id.
+
+        Single ``WHERE entity_id IN (...)`` query plus one
+        alias fetch, vs. N round-trips for a per-id loop.
+        Callers that resolve many candidates per chunk
+        (e.g. the LLM resolver) should prefer this over
+        a loop of :meth:`get_entity`.
+
+        :param entity_ids: Ids to look up. Order does not
+            matter; duplicates are deduplicated before
+            hitting SQLite.
+        :return: ``{entity_id: Entity}`` for every id that
+            resolved. Missing ids are silently absent — no
+            exception — so callers keep the per-id
+            "candidate may have been deleted" semantics.
+        """
+        unique_ids = list({eid for eid in entity_ids})
+        if not unique_ids:
+            return {}
+        placeholders = ",".join("?" * len(unique_ids))
+        rows = self._conn.execute(
+            ENTITY_SELECT
+            + f"WHERE entity_id IN ({placeholders})",
+            unique_ids,
+        ).fetchall()
+        entities = self._rows_to_entities(rows)
+        return {e.entity_id: e for e in entities}
+
     def find_by_name(
         self, name: str
     ) -> list[Entity]:
