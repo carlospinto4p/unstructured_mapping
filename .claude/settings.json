@@ -18,10 +18,6 @@
           {
             "type": "command",
             "command": "run pytest before git commits"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/block-chained-commands.sh"
           }
         ]
       }

@@ -20,6 +20,9 @@ exceeding its token budget later.
 import re
 
 from unstructured_mapping.pipeline.models import Chunk
+from unstructured_mapping.pipeline.segmentation._sub_chunk import (
+    expand_section,
+)
 from unstructured_mapping.pipeline.segmentation.base import (
     DocumentSegmenter,
 )
@@ -45,7 +48,25 @@ class ResearchSegmenter(DocumentSegmenter):
     entities. If the document has no detectable headings
     at all, the whole body is returned as a single
     chunk with ``section_name=None`` so nothing is lost.
+
+    :param max_tokens: Optional soft cap (in
+        :func:`segmentation._sub_chunk.estimate_tokens`
+        units, i.e. whitespace-word count) triggering
+        paragraph-level sub-chunking of oversized
+        sections. ``None`` disables the hybrid fallback.
+    :param overlap_ratio: Forwarded to
+        :func:`sub_chunk_by_paragraph` when
+        ``max_tokens`` fires.
     """
+
+    def __init__(
+        self,
+        *,
+        max_tokens: int | None = None,
+        overlap_ratio: float = 0.15,
+    ) -> None:
+        self._max_tokens = max_tokens
+        self._overlap_ratio = overlap_ratio
 
     def segment(
         self, document_id: str, text: str
@@ -55,28 +76,33 @@ class ResearchSegmenter(DocumentSegmenter):
 
         sections = list(_parse_sections(text))
         if not sections:
-            return [
-                Chunk(
-                    document_id=document_id,
-                    chunk_index=0,
-                    text=text.strip(),
-                )
-            ]
+            return expand_section(
+                document_id,
+                section_name=None,
+                body=text.strip(),
+                start_index=0,
+                max_tokens=self._max_tokens,
+                overlap_ratio=self._overlap_ratio,
+            )
 
         chunks: list[Chunk] = []
-        for idx, (name, body) in enumerate(sections):
+        for name, body in sections:
             body_clean = body.strip()
             if not body_clean:
                 continue
-            chunks.append(
-                Chunk(
-                    document_id=document_id,
-                    chunk_index=len(chunks),
-                    text=body_clean,
+            chunks.extend(
+                expand_section(
+                    document_id,
                     section_name=name,
+                    body=body_clean,
+                    start_index=len(chunks),
+                    max_tokens=self._max_tokens,
+                    overlap_ratio=self._overlap_ratio,
                 )
             )
         return chunks
+
+
 
 
 def _parse_sections(text: str):

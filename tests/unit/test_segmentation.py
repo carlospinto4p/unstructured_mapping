@@ -1,5 +1,7 @@
 """Tests for the pipeline.segmentation module."""
 
+import pytest
+
 from unstructured_mapping.pipeline.segmentation import (
     DocumentSegmenter,
     DocumentType,
@@ -7,6 +9,10 @@ from unstructured_mapping.pipeline.segmentation import (
     NewsSegmenter,
     ResearchSegmenter,
     TranscriptSegmenter,
+)
+from unstructured_mapping.pipeline.segmentation._sub_chunk import (
+    estimate_tokens,
+    sub_chunk_by_paragraph,
 )
 
 
@@ -253,7 +259,155 @@ def test_filing_segmenter_drops_preamble():
 
 
 def test_abstract_segmenter_rejects_instantiation():
-    import pytest
-
     with pytest.raises(TypeError):
         DocumentSegmenter()  # type: ignore[abstract]
+
+
+# -- sub_chunk_by_paragraph -------------------------------------
+
+
+def test_sub_chunk_short_text_passes_through():
+    text = "One small paragraph."
+    assert sub_chunk_by_paragraph(text, max_tokens=100) == [
+        "One small paragraph."
+    ]
+
+
+def test_sub_chunk_empty_returns_empty_list():
+    assert sub_chunk_by_paragraph("", max_tokens=10) == []
+    assert (
+        sub_chunk_by_paragraph("   \n  ", max_tokens=10)
+        == []
+    )
+
+
+def test_sub_chunk_splits_on_paragraph_boundaries():
+    para_a = " ".join(["alpha"] * 20)
+    para_b = " ".join(["beta"] * 20)
+    para_c = " ".join(["gamma"] * 20)
+    text = f"{para_a}\n\n{para_b}\n\n{para_c}"
+    pieces = sub_chunk_by_paragraph(
+        text, max_tokens=25, overlap_ratio=0.0
+    )
+    assert len(pieces) == 3
+    assert "alpha" in pieces[0]
+    assert "beta" in pieces[1]
+    assert "gamma" in pieces[2]
+    # No paragraph is split mid-body.
+    assert "alpha" not in pieces[1]
+
+
+def test_sub_chunk_overlap_prepends_prior_tail():
+    para_a = " ".join(["alpha"] * 20)
+    para_b = " ".join(["beta"] * 20)
+    text = f"{para_a}\n\n{para_b}"
+    pieces = sub_chunk_by_paragraph(
+        text, max_tokens=25, overlap_ratio=0.2
+    )
+    assert len(pieces) == 2
+    # The second sub-chunk should carry some alphas
+    # prepended as overlap, so boundary entities survive.
+    assert "alpha" in pieces[1]
+    assert "beta" in pieces[1]
+
+
+def test_sub_chunk_oversized_paragraph_emits_alone():
+    big = " ".join(["x"] * 300)
+    pieces = sub_chunk_by_paragraph(big, max_tokens=50)
+    assert pieces == [big]
+
+
+def test_sub_chunk_rejects_non_positive_max_tokens():
+    with pytest.raises(ValueError):
+        sub_chunk_by_paragraph("text", max_tokens=0)
+
+
+def test_estimate_tokens_counts_words():
+    assert estimate_tokens("one two three") == 3
+    assert estimate_tokens("") == 0
+    assert estimate_tokens("  padded   ") == 1
+
+
+# -- segmenter max_tokens fallback ------------------------------
+
+
+def _big_paragraph(word: str, count: int) -> str:
+    return " ".join([word] * count)
+
+
+def test_research_segmenter_sub_chunks_oversized_section():
+    big_body = (
+        _big_paragraph("alpha", 40)
+        + "\n\n"
+        + _big_paragraph("beta", 40)
+        + "\n\n"
+        + _big_paragraph("gamma", 40)
+    )
+    text = f"## Risks\n{big_body}"
+    seg = ResearchSegmenter(max_tokens=50, overlap_ratio=0.0)
+    chunks = seg.segment("r1", text)
+    # Three 40-word paragraphs with a 50-token cap → 3
+    # sub-chunks, all sharing the "Risks" section name.
+    assert len(chunks) == 3
+    assert all(
+        c.section_name == "Risks" for c in chunks
+    )
+    assert [c.chunk_index for c in chunks] == [0, 1, 2]
+
+
+def test_research_segmenter_no_max_tokens_keeps_one_per_section():
+    big_body = _big_paragraph("alpha", 200)
+    text = f"## Risks\n{big_body}"
+    chunks = ResearchSegmenter().segment("r1", text)
+    assert len(chunks) == 1
+
+
+def test_filing_segmenter_sub_chunks_oversized_item():
+    body = (
+        _big_paragraph("alpha", 40)
+        + "\n\n"
+        + _big_paragraph("beta", 40)
+    )
+    text = f"Item 1A. Risk Factors\n{body}"
+    chunks = FilingSegmenter(max_tokens=50).segment(
+        "f1", text
+    )
+    assert len(chunks) == 2
+    assert all(
+        c.section_name == "Item 1A. Risk Factors"
+        for c in chunks
+    )
+
+
+def test_transcript_segmenter_sub_chunks_long_turn():
+    body = (
+        _big_paragraph("alpha", 40)
+        + "\n\n"
+        + _big_paragraph("beta", 40)
+    )
+    text = f"Tim Cook - CEO: {body}"
+    chunks = TranscriptSegmenter(max_tokens=50).segment(
+        "t1", text
+    )
+    assert len(chunks) == 2
+    assert all(
+        c.section_name == "Tim Cook - CEO" for c in chunks
+    )
+
+
+def test_transcript_segmenter_qa_divider_not_sub_chunked():
+    text = (
+        "Tim Cook - CEO: Prepared remarks.\n"
+        "Q&A\n"
+        "Analyst: Question."
+    )
+    chunks = TranscriptSegmenter(max_tokens=5).segment(
+        "t1", text
+    )
+    # Q&A divider survives with zero body even under a
+    # very tight budget — it is a marker, not content.
+    qa_chunks = [
+        c for c in chunks if c.section_name == "Q&A"
+    ]
+    assert len(qa_chunks) == 1
+    assert qa_chunks[0].text == ""

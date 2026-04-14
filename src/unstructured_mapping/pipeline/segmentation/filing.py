@@ -31,6 +31,9 @@ follow-up.
 import re
 
 from unstructured_mapping.pipeline.models import Chunk
+from unstructured_mapping.pipeline.segmentation._sub_chunk import (
+    expand_section,
+)
 from unstructured_mapping.pipeline.segmentation.base import (
     DocumentSegmenter,
 )
@@ -49,7 +52,23 @@ _ITEM_HEADING = re.compile(
 
 
 class FilingSegmenter(DocumentSegmenter):
-    """Split a SEC filing by ``Item`` heading."""
+    """Split a SEC filing by ``Item`` heading.
+
+    :param max_tokens: Optional soft cap triggering the
+        hybrid paragraph-level fallback for oversized
+        Items (Risk Factors can run 30+ pages).
+    :param overlap_ratio: Forwarded when ``max_tokens``
+        fires.
+    """
+
+    def __init__(
+        self,
+        *,
+        max_tokens: int | None = None,
+        overlap_ratio: float = 0.15,
+    ) -> None:
+        self._max_tokens = max_tokens
+        self._overlap_ratio = overlap_ratio
 
     def segment(
         self, document_id: str, text: str
@@ -59,25 +78,28 @@ class FilingSegmenter(DocumentSegmenter):
 
         sections = list(_parse_items(text))
         if not sections:
-            return [
-                Chunk(
-                    document_id=document_id,
-                    chunk_index=0,
-                    text=text.strip(),
-                )
-            ]
+            return expand_section(
+                document_id,
+                section_name=None,
+                body=text.strip(),
+                start_index=0,
+                max_tokens=self._max_tokens,
+                overlap_ratio=self._overlap_ratio,
+            )
 
         chunks: list[Chunk] = []
         for name, body in sections:
             body_clean = body.strip()
             if not body_clean:
                 continue
-            chunks.append(
-                Chunk(
-                    document_id=document_id,
-                    chunk_index=len(chunks),
-                    text=body_clean,
+            chunks.extend(
+                expand_section(
+                    document_id,
                     section_name=name,
+                    body=body_clean,
+                    start_index=len(chunks),
+                    max_tokens=self._max_tokens,
+                    overlap_ratio=self._overlap_ratio,
                 )
             )
         return chunks
