@@ -28,6 +28,11 @@ credentials/
 # Build artifacts
 build/
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Exploratory / ad-hoc data artefacts (keep committed
+# snapshots under data/seed/wikidata/)
+data/seed/wikidata_dryrun/
 
 # Editor / tool tempfiles (e.g. atomic-write temp copies)
 *.tmp.*
