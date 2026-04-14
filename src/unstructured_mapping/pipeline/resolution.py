@@ -291,6 +291,9 @@ class LLMEntityResolver(EntityResolver):
         mentions: tuple[Mention, ...],
         *,
         extra_candidates: tuple[Entity, ...] = (),
+        prev_entities: (
+            Sequence[ResolvedMention] | None
+        ) = None,
     ) -> ResolutionResult:
         """Resolve mentions via an LLM call.
 
@@ -318,6 +321,18 @@ class LLMEntityResolver(EntityResolver):
             candidate to resolve against. Deduplicated
             against the mention-derived candidates by
             ``entity_id``.
+        :param prev_entities: Running entity header —
+            resolved mentions from earlier chunks in the
+            same document. When provided, overrides the
+            constructor-time ``prev_entities`` for this
+            call. The orchestrator supplies the running
+            tally when iterating an article's chunks so
+            a later chunk's LLM call has a compact
+            summary of what prior chunks already pinned
+            down. Solves long-range coreference that a
+            static KG context window cannot (an entity
+            proposed by the LLM in chunk 2, not yet in
+            the KG, still surfaces in chunk 5's prompt).
         :return: Resolution result. Proposals for new
             entities are available via :attr:`proposals`.
         :raises LLMProviderError: After two consecutive
@@ -341,8 +356,13 @@ class LLMEntityResolver(EntityResolver):
         )
 
         kg_block = build_kg_context_block(fitted)
+        running = (
+            prev_entities
+            if prev_entities is not None
+            else self._prev_entities
+        )
         user_prompt = build_pass1_user_prompt(
-            kg_block, chunk_text, self._prev_entities
+            kg_block, chunk_text, running
         )
         fitted_ids = {e.entity_id for e in fitted}
 

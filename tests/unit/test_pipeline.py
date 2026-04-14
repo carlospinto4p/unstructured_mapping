@@ -216,7 +216,12 @@ def test_pipeline_aggregator_dedupes_duplicate_proposals(
             self.proposals: tuple = ()
 
         def resolve(
-            self, chunk, unresolved, *, extra_candidates=()
+            self,
+            chunk,
+            unresolved,
+            *,
+            extra_candidates=(),
+            prev_entities=None,
         ):
             props = tuple(
                 EntityProposal(
@@ -311,6 +316,7 @@ def test_pipeline_alias_prescan_pulls_full_body_matches(
             unresolved,
             *,
             extra_candidates=(),
+            prev_entities=None,
         ):
             extra_seen_per_chunk.append(
                 (
@@ -383,6 +389,111 @@ def test_pipeline_alias_prescan_pulls_full_body_matches(
     ]
     assert len(risks) == 1
     assert "Apple" in risks[0]
+
+
+def test_pipeline_threads_running_entity_header_across_chunks(
+    tmp_path,
+):
+    """Each successive chunk's LLM resolver must receive
+    the accumulating list of entities resolved in earlier
+    chunks. Chunk 1 resolves to Apple; chunk 2's resolver
+    call must carry Apple as a prior-chunk entity."""
+    from unstructured_mapping.pipeline.models import (
+        Mention,
+        ResolutionResult,
+        ResolvedMention,
+    )
+    from unstructured_mapping.pipeline.segmentation import (
+        ResearchSegmenter,
+    )
+
+    apple = make_org("Apple", aliases=("Apple",))
+
+    prev_seen: list[tuple[str | None, tuple]] = []
+
+    class Recorder:
+        def __init__(self):
+            self.proposals: tuple = ()
+
+        def resolve(
+            self,
+            chunk,
+            unresolved,
+            *,
+            extra_candidates=(),
+            prev_entities=None,
+        ):
+            prev_seen.append(
+                (
+                    chunk.section_name,
+                    tuple(
+                        rm.entity_id
+                        for rm in (prev_entities or ())
+                    ),
+                )
+            )
+            return ResolutionResult(
+                resolved=(), unresolved=()
+            )
+
+    class FakeResolver:
+        """Resolves chunk 1 to Apple deterministically;
+        chunk 2 emits an unresolved mention so the LLM
+        resolver fires with the accumulated prior
+        entities."""
+
+        def resolve(self, chunk, mentions):
+            if chunk.section_name == "Summary":
+                return ResolutionResult(
+                    resolved=(
+                        ResolvedMention(
+                            entity_id=apple.entity_id,
+                            surface_form="Apple",
+                            context_snippet="Apple ...",
+                        ),
+                    ),
+                    unresolved=(),
+                )
+            return ResolutionResult(
+                resolved=(),
+                unresolved=mentions,
+            )
+
+    class StubDetector:
+        def detect(self, chunk):
+            if chunk.section_name == "Risks":
+                return (
+                    Mention(
+                        surface_form="the company",
+                        span_start=0,
+                        span_end=11,
+                        candidate_ids=(),
+                    ),
+                )
+            return ()
+
+    db = tmp_path / "kg.db"
+    article = make_article(
+        body=(
+            "## Summary\nApple shipped a product.\n\n"
+            "## Risks\nThe company warns on margins."
+        ),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        pipeline = Pipeline(
+            detector=StubDetector(),
+            resolver=FakeResolver(),
+            store=store,
+            llm_resolver=Recorder(),
+            segmenter=ResearchSegmenter(),
+        )
+        pipeline.run([article])
+
+    risks_call = next(
+        p for s, p in prev_seen if s == "Risks"
+    )
+    assert apple.entity_id in risks_call
 
 
 def test_pipeline_without_segmenter_preserves_legacy_behaviour(

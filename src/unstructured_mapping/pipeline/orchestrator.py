@@ -67,6 +67,7 @@ from unstructured_mapping.pipeline.models import (
     EntityProposal,
     ExtractedRelationship,
     ResolutionResult,
+    ResolvedMention,
 )
 from unstructured_mapping.pipeline.aggregation import (
     AggregatedOutcome,
@@ -501,12 +502,27 @@ class Pipeline:
                 else ()
             )
 
-            outcomes = [
-                self._process_chunk(
-                    chunk, article, run_id, prescan
+            # Thread resolved entities forward through
+            # the chunk sequence so each chunk's LLM
+            # resolver sees what earlier chunks pinned
+            # down. Chunk 5 can still coreference an
+            # entity the LLM proposed in chunk 2 even
+            # though it is not in the KG yet — the KG
+            # pre-scan only covers existing entities.
+            outcomes: list[ChunkOutcome] = []
+            running_entities: list[ResolvedMention] = []
+            for chunk in chunks:
+                outcome = self._process_chunk(
+                    chunk,
+                    article,
+                    run_id,
+                    prescan,
+                    prev_entities=tuple(running_entities),
                 )
-                for chunk in chunks
-            ]
+                outcomes.append(outcome)
+                running_entities.extend(
+                    outcome.resolution.resolved
+                )
             aggregated = self._aggregator.aggregate(
                 outcomes
             )
@@ -607,6 +623,8 @@ class Pipeline:
         article: Article,
         run_id: str | None,
         prescan: tuple[Entity, ...] = (),
+        *,
+        prev_entities: tuple[ResolvedMention, ...] = (),
     ) -> ChunkOutcome:
         """Run detection / resolution / extraction on one
         chunk and return its outputs.
@@ -622,6 +640,11 @@ class Pipeline:
             resolver's KG context window for cross-chunk
             coreference. Ignored when no LLM resolver is
             configured.
+        :param prev_entities: Running entity header —
+            resolved mentions accumulated from earlier
+            chunks in the same article. Forwarded to the
+            LLM resolver so a later chunk's prompt knows
+            what earlier chunks resolved to.
         """
         if not chunk.text.strip():
             return ChunkOutcome()
@@ -639,6 +662,7 @@ class Pipeline:
                 chunk,
                 resolution.unresolved,
                 extra_candidates=prescan,
+                prev_entities=prev_entities,
             )
             proposals = self._llm_resolver.proposals
             resolution = ResolutionResult(
