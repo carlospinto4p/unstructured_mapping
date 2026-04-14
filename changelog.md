@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.37.1 - 14th April 2026
+
+- Tightened `EXCHANGES_QUERY` in `wikidata/queries.py`:
+  - Added `MINUS` clauses for `Q22687` (bank) and `Q806735` (brokerage firm) in the inner subquery so banks and broker-dealers that Wikidata directly tags as P31 stock exchange no longer land in the import. Commerzbank and OTP banka are now filtered out. Residual noise (FXCM, Convergex, KCG Americas, Deutsche Bank ATS) is tracked in `backlog.md` — those entities are classed under forex-broker / ATS / market-maker, which need separate MINUS entries.
+  - Added `_Q_BANK` and `_Q_BROKERAGE` module constants alongside the existing class QIDs for consistency.
+- Added `test_exchange_query_excludes_banks_and_brokerages` in `tests/unit/test_wikidata_seed.py` to pin the MINUS clauses.
+- Refreshed `data/seed/wikidata/exchange.json` snapshot with the new query (511 rows, down from 513).
+
+
 ### v0.37.0 - 14th April 2026
 
 - Added `cli/populate.py`: one-command orchestrator that replays the curated seed then every Wikidata snapshot under `data/seed/wikidata/` against the KG. Supports `--seed-dir`, `--db`, `--dry-run`. Exposes `populate()` and `StageReport` for programmatic use.

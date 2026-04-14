@@ -60,6 +60,15 @@ _Q_CURRENCY = "Q8142"              # currency
 _Q_STOCK_INDEX = "Q223371"         # stock market index
 _Q_CRYPTOCURRENCY = "Q13479982"    # cryptocurrency
 
+#: Exclusion QIDs used by the exchange query. Wikidata
+#: occasionally tags banks and brokerages with P31
+#: stock-exchange, so the direct-instance filter alone
+#: lets Commerzbank, FXCM, Convergex, etc. through. The
+#: exchange query applies these as MINUS clauses to
+#: scrub them back out without touching genuine bourses.
+_Q_BANK = "Q22687"                 # bank
+_Q_BROKERAGE = "Q806735"           # brokerage firm
+
 
 #: Listed companies — instances of ``business`` (or any
 #: subclass) that have a stock-exchange listing (P414).
@@ -141,7 +150,12 @@ WHERE {{{{
 #: Stock exchanges use *direct* instance-of (no P279*
 #: subclass expansion) to exclude clearing houses,
 #: brokerages, and other adjacent entities that inherit
-#: from the exchange class.
+#: from the exchange class. The inner ``MINUS`` blocks
+#: additionally scrub banks and brokerage firms that
+#: Wikidata directly tags as P31 stock exchange
+#: (Commerzbank, FXCM, Convergex, OTP banka, KCG Americas
+#: etc.) — the direct-instance filter alone didn't catch
+#: those, see v0.37.1.
 _EXCHANGES_TEMPLATE = f"""
 SELECT ?item ?itemLabel ?description
        ?country ?countryLabel ?mic
@@ -149,6 +163,8 @@ WHERE {{{{
   {{{{
     SELECT DISTINCT ?item WHERE {{{{
       ?item wdt:P31 wd:{_Q_STOCK_EXCHANGE} .
+      MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_BANK} . }}}}
+      MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_BROKERAGE} . }}}}
     }}}}
     LIMIT {{limit}}
   }}}}

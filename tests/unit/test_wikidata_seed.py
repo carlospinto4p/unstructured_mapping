@@ -105,6 +105,20 @@ def test_queries_use_subquery_limit_pattern():
         )
 
 
+def test_exchange_query_excludes_banks_and_brokerages():
+    """v0.37.1: the exchange query must MINUS out banks
+    (``Q22687``) and brokerage firms (``Q806735``).
+    Without these clauses Wikidata lets Commerzbank, FXCM,
+    Convergex, OTP banka etc. through because they hold
+    a direct P31 stock-exchange assertion."""
+    from unstructured_mapping.wikidata import queries
+
+    template = queries.EXCHANGES_QUERY
+    assert "MINUS" in template
+    assert "wd:Q22687" in template
+    assert "wd:Q806735" in template
+
+
 def test_registered_types_cover_expected_set():
     expected = {
         "company",
