@@ -187,6 +187,101 @@ def test_pipeline_with_segmenter_processes_each_chunk(
     assert len(prov_msft) == 1
 
 
+def test_pipeline_aggregator_dedupes_duplicate_proposals(
+    tmp_path,
+):
+    """Two segmenter chunks that each surface the same
+    new entity must produce one KG entity, not two.
+    Uses a stub LLM resolver that returns an
+    `EntityProposal` for every unresolved mention."""
+    from unstructured_mapping.knowledge_graph.models import (
+        EntityType,
+    )
+    from unstructured_mapping.pipeline.models import (
+        EntityProposal,
+        Mention,
+        ResolutionResult,
+        ResolvedMention,
+    )
+    from unstructured_mapping.pipeline.segmentation import (
+        ResearchSegmenter,
+    )
+
+    class StubLLMResolver:
+        """Minimal LLMEntityResolver replacement that
+        proposes a new entity for every unresolved
+        mention seen. No network, no prompts — just
+        exercises the cascade path."""
+
+        def __init__(self):
+            self.proposals: tuple = ()
+
+        def resolve(self, chunk, unresolved):
+            props = tuple(
+                EntityProposal(
+                    canonical_name="NewCo",
+                    entity_type=EntityType.ORGANIZATION,
+                    description=(
+                        f"Seen in {chunk.section_name}"
+                    ),
+                    context_snippet="NewCo",
+                )
+                for _ in unresolved
+            )
+            self.proposals = props
+            return ResolutionResult(
+                resolved=(),
+                unresolved=(),
+            )
+
+    db = tmp_path / "kg.db"
+
+    class AlwaysUnresolvedDetector:
+        """Emits one Mention per chunk with zero
+        candidate ids, so the cascade path always fires."""
+
+        def detect(self, chunk):
+            return (
+                Mention(
+                    surface_form="NewCo",
+                    span_start=0,
+                    span_end=5,
+                    candidate_ids=(),
+                ),
+            )
+
+    class PassthroughResolver:
+        def resolve(self, chunk, mentions):
+            return ResolutionResult(
+                resolved=(),
+                unresolved=mentions,
+            )
+
+    article = make_article(
+        body=(
+            "## Summary\n"
+            "NewCo is a new startup.\n\n"
+            "## Risks\n"
+            "NewCo faces competition."
+        ),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        pipeline = Pipeline(
+            detector=AlwaysUnresolvedDetector(),
+            resolver=PassthroughResolver(),
+            store=store,
+            llm_resolver=StubLLMResolver(),
+            segmenter=ResearchSegmenter(),
+        )
+        result = pipeline.run([article])
+        matches = store.find_by_name("NewCo")
+
+    # Two chunks → two proposals → aggregator dedupes
+    # to a single new entity.
+    assert result.results[0].proposals_saved == 1
+    assert len(matches) == 1
+
+
 def test_pipeline_without_segmenter_preserves_legacy_behaviour(
     tmp_path,
 ):

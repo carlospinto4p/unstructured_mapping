@@ -65,7 +65,13 @@ from unstructured_mapping.pipeline.extraction import (
 from unstructured_mapping.pipeline.models import (
     Chunk,
     EntityProposal,
+    ExtractedRelationship,
     ResolutionResult,
+)
+from unstructured_mapping.pipeline.aggregation import (
+    AggregatedOutcome,
+    ChunkAggregator,
+    ChunkOutcome,
 )
 from unstructured_mapping.pipeline.segmentation import (
     DocumentSegmenter,
@@ -98,26 +104,6 @@ def _compute_run_stats(
             r.relationships_saved for r in results
         ),
     )
-
-
-@dataclass(frozen=True, slots=True)
-class _ChunkOutcome:
-    """Per-chunk outputs aggregated into an ArticleResult.
-
-    Internal to the orchestrator; an article's
-    :class:`ArticleResult` sums outcomes across chunks.
-    """
-
-    resolution: ResolutionResult = field(
-        default_factory=ResolutionResult
-    )
-    provenances_saved: int = 0
-    proposals_saved: int = 0
-    relationships_saved: int = 0
-
-    @classmethod
-    def empty(cls) -> "_ChunkOutcome":
-        return cls()
 
 
 @dataclass(frozen=True, slots=True)
@@ -323,6 +309,10 @@ class Pipeline:
         #: discoverer sees the full article body by
         #: design.
         self._segmenter = segmenter
+        #: Cross-chunk aggregator. Stateless; single-chunk
+        #: articles produce a no-op aggregation so the
+        #: path is uniform.
+        self._aggregator = ChunkAggregator()
         self._skip_processed = skip_processed
 
     # -- Public API -----------------------------------------
@@ -496,46 +486,30 @@ class Pipeline:
             if not chunks:
                 return ArticleResult(document_id=doc_id)
 
-            resolved_all: tuple = ()
-            unresolved_all: tuple = ()
-            provenances_saved = 0
-            proposals_saved = 0
-            relationships_saved = 0
-            # Wrap all chunk writes for this article in
-            # one transaction so an N-chunk document
-            # produces one fsync, not N.
+            outcomes = [
+                self._process_chunk(
+                    chunk, article, run_id
+                )
+                for chunk in chunks
+            ]
+            aggregated = self._aggregator.aggregate(
+                outcomes
+            )
+            # One transaction per article: all provenance,
+            # proposal-entity, and relationship writes
+            # share one COMMIT. Aggregation already
+            # dedupes within the article; the DB layer
+            # handles cross-article dedup.
             with self._store.transaction():
-                for chunk in chunks:
-                    outcome = self._process_chunk(
-                        chunk, article, run_id
-                    )
-                    resolved_all = (
-                        resolved_all
-                        + outcome.resolution.resolved
-                    )
-                    unresolved_all = (
-                        unresolved_all
-                        + outcome.resolution.unresolved
-                    )
-                    provenances_saved += (
-                        outcome.provenances_saved
-                    )
-                    proposals_saved += (
-                        outcome.proposals_saved
-                    )
-                    relationships_saved += (
-                        outcome.relationships_saved
-                    )
-
+                saved = self._persist_aggregated(
+                    aggregated, article, run_id
+                )
             return ArticleResult(
                 document_id=doc_id,
-                resolution=ResolutionResult(
-                    resolved=resolved_all,
-                    unresolved=unresolved_all,
-                ),
-                provenances_saved=provenances_saved,
-                proposals_saved=proposals_saved,
-                relationships_saved=relationships_saved,
+                resolution=aggregated.resolution,
+                provenances_saved=saved[0],
+                proposals_saved=saved[1],
+                relationships_saved=saved[2],
             )
         except Exception as exc:  # noqa: BLE001
             # Per-article isolation: log and carry on.
@@ -576,17 +550,18 @@ class Pipeline:
         chunk: Chunk,
         article: Article,
         run_id: str | None,
-    ) -> "_ChunkOutcome":
+    ) -> ChunkOutcome:
         """Run detection / resolution / extraction on one
-        chunk and persist its outputs.
+        chunk and return its outputs.
 
-        Returns a :class:`_ChunkOutcome` for the caller to
-        aggregate across chunks. Empty chunks (e.g. the
-        transcript Q&A divider) yield a zero outcome so
-        the caller can loop uniformly.
+        No KG writes happen here — the outputs are handed
+        to :class:`ChunkAggregator` and only persisted
+        once, after cross-chunk dedup. Empty chunks (the
+        transcript Q&A divider, e.g.) return an empty
+        outcome so the caller can loop uniformly.
         """
         if not chunk.text.strip():
-            return _ChunkOutcome.empty()
+            return ChunkOutcome()
 
         doc_id = chunk.document_id
         mentions = self._detector.detect(chunk)
@@ -609,7 +584,7 @@ class Pipeline:
             )
 
         detected_at = _utcnow()
-        provenances = [
+        provenances = tuple(
             Provenance(
                 entity_id=rm.entity_id,
                 document_id=doc_id,
@@ -620,32 +595,58 @@ class Pipeline:
                 run_id=run_id,
             )
             for rm in resolution.resolved
-        ]
-        inserted = self._store.save_provenances(provenances)
+        )
 
-        saved_proposals = self._save_proposals(
-            proposals,
-            doc_id,
+        extracted: tuple[ExtractedRelationship, ...] = ()
+        if (
+            self._extractor is not None
+            and resolution.resolved
+        ):
+            result = self._extractor.extract(
+                chunk, resolution.resolved
+            )
+            extracted = result.relationships
+
+        return ChunkOutcome(
+            resolution=resolution,
+            provenances=provenances,
+            proposals=proposals,
+            relationships=extracted,
+        )
+
+    def _persist_aggregated(
+        self,
+        aggregated: AggregatedOutcome,
+        article: Article,
+        run_id: str | None,
+    ) -> tuple[int, int, int]:
+        """Persist the aggregated outputs of one article.
+
+        :return: ``(provenances_saved, proposals_saved,
+            relationships_saved)``.
+        """
+        detected_at = _utcnow()
+        prov_saved = (
+            self._store.save_provenances(
+                list(aggregated.provenances)
+            )
+            if aggregated.provenances
+            else 0
+        )
+        proposals_saved = self._persist_proposals(
+            aggregated.proposals,
+            article.document_id.hex,
             article.source,
             detected_at,
             run_id,
         )
-
-        saved_rels = self._extract_relationships(
-            chunk,
-            resolution.resolved,
-            proposals,
-            doc_id,
+        rels_saved = self._persist_relationships(
+            aggregated.relationships,
+            article.document_id.hex,
             detected_at,
             run_id,
         )
-
-        return _ChunkOutcome(
-            resolution=resolution,
-            provenances_saved=inserted,
-            proposals_saved=saved_proposals,
-            relationships_saved=saved_rels,
-        )
+        return prov_saved, proposals_saved, rels_saved
 
     def _process_cold_start(
         self,
@@ -677,7 +678,7 @@ class Pipeline:
             self._cold_start_discoverer.discover(chunk)
         )
         detected_at = _utcnow()
-        saved = self._save_proposals(
+        saved = self._persist_proposals(
             proposals,
             chunk.document_id,
             article.source,
@@ -697,7 +698,7 @@ class Pipeline:
             relationships_saved=0,
         )
 
-    def _save_proposals(
+    def _persist_proposals(
         self,
         proposals: tuple[EntityProposal, ...],
         doc_id: str,
@@ -705,13 +706,12 @@ class Pipeline:
         detected_at: datetime,
         run_id: str | None,
     ) -> int:
-        """Persist LLM entity proposals as new entities.
+        """Create new entities from aggregated proposals.
 
-        Creates an :class:`Entity` for each proposal and
-        a :class:`Provenance` linking it to the source
+        The aggregator already deduped by name+type; each
+        proposal here becomes a single :class:`Entity`
+        plus a :class:`Provenance` tying it to the source
         article.
-
-        :return: Number of entities created.
         """
         if not proposals:
             return 0
@@ -755,36 +755,22 @@ class Pipeline:
             )
         return count
 
-    def _extract_relationships(
+    def _persist_relationships(
         self,
-        chunk: Chunk,
-        resolved: tuple,
-        proposals: tuple[EntityProposal, ...],
+        extracted: tuple[ExtractedRelationship, ...],
         doc_id: str,
         detected_at: datetime,
         run_id: str | None,
     ) -> int:
-        """Run pass 2 and persist extracted relationships.
+        """Persist aggregated relationships to the KG.
 
-        Calls the relationship extractor (if configured)
-        with the resolved entities, converts
-        ``ExtractedRelationship`` objects to
-        ``Relationship`` records, and bulk-inserts them
-        into the KG.
-
-        :return: Number of relationships persisted.
+        Converts each :class:`ExtractedRelationship`
+        (already cross-chunk deduped) into a
+        :class:`Relationship` tied to the source article
+        and run, then bulk-inserts.
         """
-        if self._extractor is None:
+        if not extracted:
             return 0
-        if not resolved:
-            return 0
-
-        result = self._extractor.extract(
-            chunk, resolved
-        )
-        if not result.relationships:
-            return 0
-
         relationships = [
             Relationship(
                 source_id=er.source_id,
@@ -798,13 +784,13 @@ class Pipeline:
                 discovered_at=detected_at,
                 run_id=run_id,
             )
-            for er in result.relationships
+            for er in extracted
         ]
         count = self._store.save_relationships(
             relationships
         )
         logger.info(
-            "Extracted %d relationships from %s",
+            "Persisted %d relationships from %s",
             count,
             doc_id,
         )
