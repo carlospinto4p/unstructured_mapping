@@ -36,8 +36,21 @@ Wikidata fields. This is deliberately thin — the intent is
 to give the LLM enough context to disambiguate, not to
 produce a polished profile. A later phase will optionally
 enrich descriptions through an LLM call.
+
+Factory shape
+-------------
+
+Every ``map_*_row`` function is produced by
+:func:`_make_row_mapper`: the factory centralises the
+shared boilerplate (``_extract_item``, wikidata-description
+append, ``_make_mapped``) so each type only declares its
+entity-type/subtype pair and a ``build`` function that
+turns the raw row into ``(description, extra_aliases)``.
+Adding a new type is therefore a registry entry, not a
+copy-pasted function body.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from unstructured_mapping.knowledge_graph import (
@@ -61,6 +74,18 @@ class MappedEntity:
 
     qid: str
     entity: Entity
+
+
+#: Signature of a type-specific builder: receives the
+#: resolved label and the raw SPARQL row, returns the
+#: structured-fields template description plus the list
+#: of external-id aliases (e.g. ``["ticker:AAPL"]``).
+#: The factory appends the Wikidata ``description`` field
+#: and the ``wikidata:Qxxx`` alias so builders don't need
+#: to repeat that boilerplate.
+_RowBuilder = Callable[
+    [str, dict], tuple[str, list[str]]
+]
 
 
 # -- Shared helpers --------------------------------------------
@@ -137,7 +162,51 @@ def _make_mapped(
     )
 
 
-# -- Companies --------------------------------------------------
+def _make_row_mapper(
+    entity_type: EntityType,
+    subtype: str,
+    build: _RowBuilder,
+) -> Callable[[dict], MappedEntity | None]:
+    """Return a row mapper for ``(entity_type, subtype)``.
+
+    The returned callable runs the shared row-handling
+    boilerplate and delegates description + extra-alias
+    construction to ``build``. Declaring a new type is a
+    single factory invocation plus a small builder — the
+    boilerplate lives here, not in each mapper.
+
+    :param entity_type: The :class:`EntityType` every row
+        mapped by this function will carry.
+    :param subtype: The KG subtype string (``"company"``,
+        ``"central_bank"`` etc.).
+    :param build: Receives ``(label, row)`` and returns
+        ``(template_description, extra_aliases)``. The
+        factory appends the Wikidata ``description`` field
+        and the ``wikidata:Qxxx`` alias.
+    """
+
+    def mapper(row: dict) -> MappedEntity | None:
+        item = _extract_item(row)
+        if item is None:
+            return None
+        qid, label = item
+        description, extras = build(label, row)
+        description = _append_description(
+            description, _value(row, "description")
+        )
+        return _make_mapped(
+            qid,
+            label,
+            entity_type,
+            subtype,
+            description,
+            extras,
+        )
+
+    return mapper
+
+
+# -- Type-specific builders ------------------------------------
 
 
 def _company_description(
@@ -161,50 +230,28 @@ def _company_description(
     return ", ".join(parts) + "."
 
 
-def map_company_row(row: dict) -> MappedEntity | None:
-    """Convert a listed-company SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
-
+def _build_company(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
     exchange = _value(row, "exchangeLabel")
     ticker = _value(row, "ticker")
     isin = _value(row, "isin")
-
-    description = _append_description(
-        _company_description(label, country, exchange, ticker),
-        _value(row, "description"),
+    description = _company_description(
+        label, country, exchange, ticker
     )
-
     extras: list[str] = []
     if ticker:
         extras.append(f"ticker:{ticker}")
     if isin:
         extras.append(f"isin:{isin}")
-
-    return _make_mapped(
-        qid,
-        label,
-        EntityType.ORGANIZATION,
-        "company",
-        description,
-        extras,
-    )
+    return description, extras
 
 
-# -- Central banks ---------------------------------------------
-
-
-def map_central_bank_row(row: dict) -> MappedEntity | None:
-    """Convert a central-bank SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
+def _build_central_bank(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
-
     if country:
         description = (
             f"{label} is the central bank of {country}. "
@@ -213,30 +260,13 @@ def map_central_bank_row(row: dict) -> MappedEntity | None:
         )
     else:
         description = f"{label} is a central bank."
-    description = _append_description(
-        description, _value(row, "description")
-    )
-
-    return _make_mapped(
-        qid,
-        label,
-        EntityType.ORGANIZATION,
-        "central_bank",
-        description,
-    )
+    return description, []
 
 
-# -- Regulators ------------------------------------------------
-
-
-def map_regulator_row(row: dict) -> MappedEntity | None:
-    """Convert a financial-regulator SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
+def _build_regulator(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
-
     if country:
         description = (
             f"{label} is a financial regulatory authority "
@@ -246,31 +276,14 @@ def map_regulator_row(row: dict) -> MappedEntity | None:
         description = (
             f"{label} is a financial regulatory authority."
         )
-    description = _append_description(
-        description, _value(row, "description")
-    )
-
-    return _make_mapped(
-        qid,
-        label,
-        EntityType.ORGANIZATION,
-        "regulator",
-        description,
-    )
+    return description, []
 
 
-# -- Exchanges -------------------------------------------------
-
-
-def map_exchange_row(row: dict) -> MappedEntity | None:
-    """Convert a stock-exchange SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
+def _build_exchange(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
     mic = _value(row, "mic")
-
     if country:
         description = (
             f"{label} is a stock exchange based in "
@@ -278,98 +291,47 @@ def map_exchange_row(row: dict) -> MappedEntity | None:
         )
     else:
         description = f"{label} is a stock exchange."
-    description = _append_description(
-        description, _value(row, "description")
-    )
-
     extras: list[str] = []
     if mic:
         extras.append(f"mic:{mic}")
-
-    return _make_mapped(
-        qid,
-        label,
-        EntityType.ORGANIZATION,
-        "exchange",
-        description,
-        extras,
-    )
+    return description, extras
 
 
-# -- Currencies (ASSET/currency) --------------------------------
-
-
-def map_currency_row(row: dict) -> MappedEntity | None:
-    """Convert a fiat-currency SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
+def _build_currency(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     iso = _value(row, "iso")
     country = _value(row, "countryLabel")
-
     parts = [f"{label} is a fiat currency"]
     if iso:
         parts.append(f"with ISO 4217 code {iso}")
     if country:
         parts.append(f"issued by {country}")
-    description = _append_description(
-        ", ".join(parts) + ".",
-        _value(row, "description"),
-    )
-
+    description = ", ".join(parts) + "."
     extras: list[str] = []
     if iso:
         extras.append(f"iso:{iso}")
-
-    return _make_mapped(
-        qid,
-        label,
-        EntityType.ASSET,
-        "currency",
-        description,
-        extras,
-    )
+    return description, extras
 
 
-# -- Indices (ASSET/index) --------------------------------------
-
-
-def map_index_row(row: dict) -> MappedEntity | None:
-    """Convert a stock-market-index SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
+def _build_index(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     exchange = _value(row, "exchangeLabel")
     country = _value(row, "countryLabel")
-
     parts = [f"{label} is a stock market index"]
     if exchange:
         parts.append(f"tracked on {exchange}")
     if country:
         parts.append(f"in {country}")
-    description = _append_description(
-        ", ".join(parts) + ".",
-        _value(row, "description"),
-    )
-
-    return _make_mapped(
-        qid, label, EntityType.ASSET, "index", description
-    )
+    description = ", ".join(parts) + "."
+    return description, []
 
 
-# -- Crypto (ASSET/crypto) --------------------------------------
-
-
-def map_crypto_row(row: dict) -> MappedEntity | None:
-    """Convert a cryptocurrency SPARQL row to an Entity."""
-    item = _extract_item(row)
-    if item is None:
-        return None
-    qid, label = item
+def _build_crypto(
+    label: str, row: dict
+) -> tuple[str, list[str]]:
     symbol = _value(row, "symbol")
-
     if symbol:
         description = (
             f"{label} is a cryptocurrency trading under "
@@ -377,19 +339,39 @@ def map_crypto_row(row: dict) -> MappedEntity | None:
         )
     else:
         description = f"{label} is a cryptocurrency."
-    description = _append_description(
-        description, _value(row, "description")
-    )
-
     extras: list[str] = []
     if symbol:
         extras.append(f"symbol:{symbol}")
+    return description, extras
 
-    return _make_mapped(
-        qid,
-        label,
-        EntityType.ASSET,
-        "crypto",
-        description,
-        extras,
-    )
+
+# -- Public row mappers ----------------------------------------
+#
+# Each mapper is a factory call. The public names are
+# preserved so existing imports (tests, CLI registry) are
+# unaffected. Order mirrors the SPARQL template layout in
+# ``queries.py``.
+
+map_company_row = _make_row_mapper(
+    EntityType.ORGANIZATION, "company", _build_company
+)
+map_central_bank_row = _make_row_mapper(
+    EntityType.ORGANIZATION,
+    "central_bank",
+    _build_central_bank,
+)
+map_regulator_row = _make_row_mapper(
+    EntityType.ORGANIZATION, "regulator", _build_regulator
+)
+map_exchange_row = _make_row_mapper(
+    EntityType.ORGANIZATION, "exchange", _build_exchange
+)
+map_currency_row = _make_row_mapper(
+    EntityType.ASSET, "currency", _build_currency
+)
+map_index_row = _make_row_mapper(
+    EntityType.ASSET, "index", _build_index
+)
+map_crypto_row = _make_row_mapper(
+    EntityType.ASSET, "crypto", _build_crypto
+)
