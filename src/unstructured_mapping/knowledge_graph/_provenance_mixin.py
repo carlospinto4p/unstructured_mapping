@@ -132,6 +132,32 @@ class ProvenanceMixin:
         ).fetchone()
         return row is not None
 
+    def documents_with_provenance(
+        self, document_ids: list[str]
+    ) -> set[str]:
+        """Return the subset of ids that already have
+        provenance rows.
+
+        Batches the idempotency check the pipeline runs
+        for each article in a run: a single ``IN (...)``
+        query replaces the per-article round-trip, so a
+        1000-article batch goes from 1000 queries to 1.
+
+        :param document_ids: IDs to check. Empty input
+            returns an empty set without a query.
+        :return: The set of ids that are already present
+            in the provenance table.
+        """
+        if not document_ids:
+            return set()
+        placeholders = ",".join("?" * len(document_ids))
+        rows = self._conn.execute(
+            "SELECT DISTINCT document_id FROM provenance "
+            f"WHERE document_id IN ({placeholders})",
+            document_ids,
+        ).fetchall()
+        return {row["document_id"] for row in rows}
+
     def find_recent_mentions(
         self,
         entity_id: str,

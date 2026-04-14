@@ -316,12 +316,24 @@ class Pipeline:
             run.run_id,
             len(articles),
         )
+        # Prefetch the idempotency set once rather than
+        # hitting SQLite per article: on a 1000-article
+        # batch this replaces 1000 queries with one.
+        already_processed: set[str] = set()
+        if self._skip_processed and articles:
+            already_processed = (
+                self._store.documents_with_provenance(
+                    [a.document_id.hex for a in articles]
+                )
+            )
         results: list[ArticleResult] = []
         try:
             for article in articles:
                 results.append(
                     self._process_article(
-                        article, run.run_id
+                        article,
+                        run.run_id,
+                        already_processed=already_processed,
                     )
                 )
         except Exception as exc:  # noqa: BLE001
@@ -394,17 +406,32 @@ class Pipeline:
 
     # -- Internal helpers -----------------------------------
 
+    def _is_processed(
+        self,
+        doc_id: str,
+        already_processed: set[str] | None,
+    ) -> bool:
+        """Resolve the idempotency check.
+
+        When :meth:`run` pre-fetched a batch set, use it
+        (O(1) lookup). For ad-hoc single-article calls via
+        :meth:`process_article` there is no batch, so fall
+        back to the per-row store query.
+        """
+        if already_processed is not None:
+            return doc_id in already_processed
+        return self._store.has_document_provenance(doc_id)
+
     def _process_article(
         self,
         article: Article,
         run_id: str | None,
+        *,
+        already_processed: set[str] | None = None,
     ) -> ArticleResult:
         doc_id = article.document_id.hex
-        if (
-            self._skip_processed
-            and self._store.has_document_provenance(
-                doc_id
-            )
+        if self._skip_processed and self._is_processed(
+            doc_id, already_processed
         ):
             logger.debug(
                 "Skipping already-processed article %s",
