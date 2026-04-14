@@ -221,8 +221,7 @@ def _run_report(conn: sqlite3.Connection) -> str:
     return "\n".join(lines)
 
 
-def main(argv: list[str] | None = None) -> None:
-    """Entry point for the db-health CLI."""
+def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description="Check articles database health.",
     )
@@ -230,10 +229,23 @@ def main(argv: list[str] | None = None) -> None:
         "--db",
         type=Path,
         default=_DEFAULT_DB,
-        help="Path to SQLite database "
-        "(default: data/articles.db).",
+        help=(
+            "Path to SQLite database "
+            f"(default: {_DEFAULT_DB})."
+        ),
     )
-    args = p.parse_args(argv)
+    return p
+
+
+def main(argv: list[str] | None = None) -> None:
+    """Entry point for the db-health CLI.
+
+    ``db_health`` prints its report directly rather than
+    routing through the logger: the output is the primary
+    deliverable (like ``git status``), and adding log
+    prefixes would obscure the aligned columns.
+    """
+    args = _build_parser().parse_args(argv)
     conn = _connect(args.db)
     try:
         print(_run_report(conn))
