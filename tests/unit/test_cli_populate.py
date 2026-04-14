@@ -1,10 +1,10 @@
 """Tests for the populate orchestrator CLI."""
 
-import json
 from pathlib import Path
 
 import pytest
 
+from tests.unit.conftest import write_seed_file
 from unstructured_mapping.cli.populate import (
     main,
     populate,
@@ -15,19 +15,10 @@ from unstructured_mapping.knowledge_graph import KnowledgeStore
 # -- fixtures ---------------------------------------------------
 
 
-def _write_seed(path: Path, entities: list[dict]) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps({"version": 1, "entities": entities}),
-        encoding="utf-8",
-    )
-    return path
-
-
 @pytest.fixture
 def seed_dir(tmp_path: Path) -> Path:
     base = tmp_path / "seed"
-    _write_seed(
+    write_seed_file(
         base / "financial_entities.json",
         [
             {
@@ -39,7 +30,7 @@ def seed_dir(tmp_path: Path) -> Path:
             }
         ],
     )
-    _write_seed(
+    write_seed_file(
         base / "wikidata" / "currency.json",
         [
             {
@@ -50,7 +41,7 @@ def seed_dir(tmp_path: Path) -> Path:
             }
         ],
     )
-    _write_seed(
+    write_seed_file(
         base / "wikidata" / "company.json",
         [
             {
@@ -118,7 +109,7 @@ def test_populate_curated_wins_on_name_conflict(
     tmp_path: Path,
 ):
     base = tmp_path / "seed"
-    _write_seed(
+    write_seed_file(
         base / "financial_entities.json",
         [
             {
@@ -128,7 +119,7 @@ def test_populate_curated_wins_on_name_conflict(
             }
         ],
     )
-    _write_seed(
+    write_seed_file(
         base / "wikidata" / "company.json",
         [
             {
@@ -164,7 +155,7 @@ def test_populate_runs_without_curated_file(
     tmp_path: Path,
 ):
     base = tmp_path / "seed"
-    _write_seed(
+    write_seed_file(
         base / "wikidata" / "crypto.json",
         [
             {

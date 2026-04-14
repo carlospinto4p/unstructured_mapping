@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.unit.conftest import write_seed_file
 from unstructured_mapping.cli.seed import (
     _parse_entity,
     load_seed,
@@ -19,19 +20,9 @@ from unstructured_mapping.knowledge_graph import (
 # -- fixtures ---------------------------------------------------
 
 
-def _write_seed(
-    path: Path, entities: list[dict]
-) -> Path:
-    path.write_text(
-        json.dumps({"version": 1, "entities": entities}),
-        encoding="utf-8",
-    )
-    return path
-
-
 @pytest.fixture
 def seed_file(tmp_path: Path) -> Path:
-    return _write_seed(
+    return write_seed_file(
         tmp_path / "seed.json",
         [
             {
@@ -135,7 +126,7 @@ def test_load_seed_is_idempotent(
 def test_load_seed_skip_is_case_insensitive(
     tmp_path: Path
 ):
-    seed = _write_seed(
+    seed = write_seed_file(
         tmp_path / "seed.json",
         [
             {
@@ -164,7 +155,7 @@ def test_load_seed_skip_is_case_insensitive(
 def test_load_seed_same_name_different_type_not_skipped(
     tmp_path: Path,
 ):
-    seed = _write_seed(
+    seed = write_seed_file(
         tmp_path / "seed.json",
         [
             {

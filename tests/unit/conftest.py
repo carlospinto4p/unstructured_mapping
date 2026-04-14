@@ -1,5 +1,8 @@
 """Shared test fixtures for unstructured_mapping unit tests."""
 
+import json
+from pathlib import Path
+
 from unstructured_mapping.knowledge_graph import (
     Entity,
     EntityType,
@@ -100,6 +103,24 @@ def make_resolved(
         surface_form=surface_form,
         context_snippet=snippet,
     )
+
+
+def write_seed_file(
+    path: Path, entities: list[dict]
+) -> Path:
+    """Write a seed-compatible JSON file for loader tests.
+
+    Shared between seed-loader tests (``test_cli_seed.py``)
+    and orchestrator tests (``test_cli_populate.py``) so
+    both exercise the same on-disk format. Creates missing
+    parent directories so callers can pass nested paths.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({"version": 1, "entities": entities}),
+        encoding="utf-8",
+    )
+    return path
 
 
 def make_article(
