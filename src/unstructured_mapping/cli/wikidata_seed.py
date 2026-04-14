@@ -150,7 +150,7 @@ def _already_imported(
     seed entries are not duplicated by a Wikidata import.
     """
     qid_alias = f"wikidata:{mapped.qid}"
-    if store.find_by_alias(qid_alias):
+    if store.alias_exists(qid_alias):
         return True
     return exists_by_name_and_type(
         store,

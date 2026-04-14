@@ -285,6 +285,22 @@ class EntityCRUDMixin(EntityHelpersMixin):
         ).fetchall()
         return self._rows_to_entities(rows)
 
+    def alias_exists(self, alias: str) -> bool:
+        """Return True if any entity carries this alias.
+
+        Cheaper than :meth:`find_by_alias` when the caller
+        only needs existence: no JOIN to ``entities`` and
+        no row-to-Entity conversion. Used by the Wikidata
+        seed loader's QID dedup check, which runs once per
+        candidate.
+        """
+        row = self._conn.execute(
+            "SELECT 1 FROM entity_aliases "
+            "WHERE alias COLLATE NOCASE = ? LIMIT 1",
+            (alias,),
+        ).fetchone()
+        return row is not None
+
 
 # -- Search / filter --------------------------------------------
 
