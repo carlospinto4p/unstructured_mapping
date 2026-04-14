@@ -47,10 +47,10 @@ def test_build_query_rejects_non_positive_limit():
 
 
 def test_all_registered_types_build_valid_queries():
-    for kind, (template, _mapper) in (
+    for kind, handler in (
         wikidata_seed._TYPE_HANDLERS.items()
     ):
-        sparql = build_query(template, limit=5)
+        sparql = build_query(handler.query, limit=5)
         assert "LIMIT 5" in sparql, kind
         assert "?item" in sparql, kind
         assert "?itemLabel" in sparql, kind

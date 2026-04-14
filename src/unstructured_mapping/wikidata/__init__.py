@@ -36,6 +36,10 @@ from unstructured_mapping.wikidata.queries import (
     REGULATORS_QUERY,
     build_query,
 )
+from unstructured_mapping.wikidata.registry import (
+    TYPE_REGISTRY,
+    TypeHandler,
+)
 
 __all__ = [
     "CENTRAL_BANKS_QUERY",
@@ -48,6 +52,8 @@ __all__ = [
     "REGULATORS_QUERY",
     "SparqlClient",
     "SparqlError",
+    "TYPE_REGISTRY",
+    "TypeHandler",
     "build_query",
     "map_central_bank_row",
     "map_company_row",

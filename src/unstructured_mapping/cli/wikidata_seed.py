@@ -48,45 +48,22 @@ from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
 )
 from unstructured_mapping.wikidata import (
-    CENTRAL_BANKS_QUERY,
-    CRYPTO_QUERY,
-    CURRENCIES_QUERY,
-    EXCHANGES_QUERY,
-    INDICES_QUERY,
-    LISTED_COMPANIES_QUERY,
+    TYPE_REGISTRY,
     MappedEntity,
-    REGULATORS_QUERY,
     SparqlClient,
     build_query,
-    map_central_bank_row,
-    map_company_row,
-    map_crypto_row,
-    map_currency_row,
-    map_exchange_row,
-    map_index_row,
-    map_regulator_row,
 )
 
 logger = logging.getLogger(__name__)
 
 _DEFAULT_DB = Path("data/knowledge.db")
 
-#: Registry of supported ``--type`` values. Each entry maps
-#: to the SPARQL template and the row mapper that handle it.
-#: New phases (central_bank, regulator, index, currency) add
-#: entries here without touching the CLI plumbing.
-_TYPE_HANDLERS = {
-    "company": (LISTED_COMPANIES_QUERY, map_company_row),
-    "central_bank": (
-        CENTRAL_BANKS_QUERY,
-        map_central_bank_row,
-    ),
-    "regulator": (REGULATORS_QUERY, map_regulator_row),
-    "exchange": (EXCHANGES_QUERY, map_exchange_row),
-    "currency": (CURRENCIES_QUERY, map_currency_row),
-    "index": (INDICES_QUERY, map_index_row),
-    "crypto": (CRYPTO_QUERY, map_crypto_row),
-}
+#: Canonical registry of supported ``--type`` values lives
+#: in ``wikidata.registry`` so non-CLI consumers (tests,
+#: scripts) can enumerate handlers without importing a CLI
+#: internal. Alias kept for backwards compatibility with
+#: existing tests that reach in by private name.
+_TYPE_HANDLERS = TYPE_REGISTRY
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -151,13 +128,13 @@ def _fetch_mapped(
     :return: The mapped entities with ``None`` results
         (unlabelled rows etc.) filtered out.
     """
-    template, mapper = _TYPE_HANDLERS[kind]
-    query = build_query(template, limit=limit)
+    handler = _TYPE_HANDLERS[kind]
+    query = build_query(handler.query, limit=limit)
     with SparqlClient() as client:
         rows = client.query(query)
     mapped: list[MappedEntity] = []
     for row in rows:
-        result = mapper(row)
+        result = handler.mapper(row)
         if result is not None:
             mapped.append(result)
     return mapped
