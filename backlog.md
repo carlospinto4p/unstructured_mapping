@@ -7,11 +7,11 @@
 
 ### 2026.04.14 (refactor review v0.38.0)
 
-- [ ] **HIGH / Medium** — Factor Wikidata row mappers in `wikidata/mapper.py`. All seven `map_*_row()` functions (`company`, `central_bank`, `regulator`, `exchange`, `currency`, `index`, `crypto`) share the same shape: call `_extract_item`, build a description from structured fields, call `_make_mapped`. Replace with a registry of `(EntityType, subtype, field-extraction, description-template)` driving a single mapper factory. Cuts ~40% of the module and makes adding a new category a one-entry change.
-- [ ] **MEDIUM / Small** — Share seed dedup + import loop between `cli/seed.py` and `cli/wikidata_seed.py`. `_exists()` and `_already_imported()` both check name+type; `load_seed()` and `import_entities()` both run the same `for item: if dup skip else maybe-save` loop. Extract a `_import_with_dedup(iterable, store, dedup_fn, reason, dry_run)` helper so new seed sources reuse the plumbing.
-- [ ] **MEDIUM / Small** — Harmonise the CLI modules (`seed`, `wikidata_seed`, `populate`, `db_health`, `scrape`, `scheduler`). Inconsistencies: `db_health` uses `print()` where others use `logger.*`; some have `main(argv)` + `_build_parser`, others inline; error paths mix `logger.error + SystemExit(1)` with bare exceptions; per-stage reporting formats differ across `seed`/`wikidata_seed`/`populate`. Extract shared `cli/_runner.py` (or extend `_logging.py`) with a `run_cli(parser_fn, body)` helper + a consistent report formatter.
-- [ ] **MEDIUM / Small** — Move `_TYPE_HANDLERS` out of `cli/wikidata_seed.py` into `wikidata/__init__.py` as a public `TYPE_REGISTRY` constant. The registry is a natural public API of the `wikidata` package; keeping it inside a CLI module forces any future non-CLI consumer (tests, scripts, other pipelines) to import a private CLI internal.
-- [ ] **LOW / Small** — Deduplicate the `_write_seed` helper between `tests/unit/test_cli_seed.py` and `tests/unit/test_cli_populate.py`. Move to `tests/unit/conftest.py` so the two test files (and future seed-loader tests) share one implementation.
+- [x] **HIGH / Medium** — Factor Wikidata row mappers in `wikidata/mapper.py`. All seven `map_*_row()` functions share the same shape. Done in v0.38.1: single `_make_row_mapper()` factory; each type is one builder function plus one factory call.
+- [x] **MEDIUM / Small** — Share seed dedup + import loop between `cli/seed.py` and `cli/wikidata_seed.py`. Done in v0.38.1: `cli/_seed_helpers.py` with `import_with_dedup()` + `exists_by_name_and_type()`.
+- [x] **MEDIUM / Small** — Harmonise the CLI modules. Done in v0.38.1 with a narrowed scope: `db_health` now has a `_build_parser()` matching the other CLIs. The broader "shared cli runner" proposal was dropped — the remaining divergences (db_health using `print`, per-loader reporting formats) are intentional, not accidental, so a forced merge would add complexity without clarity.
+- [x] **MEDIUM / Small** — Move `_TYPE_HANDLERS` out of `cli/wikidata_seed.py` into the `wikidata` package. Done in v0.38.1: `wikidata/registry.py` exposes `TYPE_REGISTRY` and a `TypeHandler` dataclass.
+- [x] **LOW / Small** — Deduplicate the `_write_seed` helper between test files. Done in v0.38.1: `tests/unit/conftest.write_seed_file()`.
 
 ### 2026.04.14 (Wikidata import follow-ups)
 

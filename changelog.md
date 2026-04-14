@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.38.1 - 14th April 2026
+
+- Refactor batch from the v0.38.0 review. No behaviour changes; all 460 tests still pass.
+- `src/unstructured_mapping/wikidata/`:
+  - Collapsed the seven `map_*_row()` functions in `mapper.py` through a single `_make_row_mapper()` factory. Each type is now an entity-type/subtype pair plus a small ``build(label, row) -> (description, extras)`` function; the shared boilerplate (`_extract_item`, wikidata-description append, `_make_mapped`) lives in one place. Public names unchanged.
+  - Added `registry.py` with `TYPE_REGISTRY` and `TypeHandler` dataclass. Exposed via `wikidata/__init__.py` so non-CLI consumers can enumerate supported categories without importing a CLI internal.
+- `src/unstructured_mapping/cli/`:
+  - Added `_seed_helpers.py` with `import_with_dedup()` and `exists_by_name_and_type()`. Both `cli/seed.py::load_seed` and `cli/wikidata_seed.py::import_entities` now delegate to the shared loop — the loaders only declare the per-source callbacks (entity extraction, duplicate check, counter key, reason).
+  - `cli/wikidata_seed.py`: replaced the inlined `_TYPE_HANDLERS` with an alias pointing at `wikidata.TYPE_REGISTRY`.
+  - `cli/db_health.py`: extracted `_build_parser()` to match the CLI pattern used by the other modules.
+- `tests/unit/`:
+  - Moved the duplicated `_write_seed()` helper from `test_cli_seed.py` and `test_cli_populate.py` into `conftest.write_seed_file()`.
+
+
 ### v0.38.0 - 14th April 2026
 
 - Preserved Wikidata provenance on snapshot replay:
