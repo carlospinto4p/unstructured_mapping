@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.39.0 - 14th April 2026
+
+- Added `src/unstructured_mapping/pipeline/segmentation/`: document-aware chunking module following `docs/pipeline/09_chunking.md`.
+  - `base.py`: `DocumentSegmenter` ABC and `DocumentType` enum (`news` / `research` / `transcript` / `filing`).
+  - `news.py`: `NewsSegmenter` emits one chunk per article (preserves inverted-pyramid behaviour).
+  - `research.py`: `ResearchSegmenter` splits on ATX (`## Title`) and setext (`Title`/`=====`) markdown headings; drops preamble before the first heading.
+  - `transcript.py`: `TranscriptSegmenter` splits on speaker labels (`Tim Cook - CEO:`) and emits a dedicated `Q&A` divider chunk.
+  - `filing.py`: `FilingSegmenter` splits on `Item N.` / `Item NA.` headings (case-insensitive) with long-line guards against in-body mentions.
+- Added `tests/unit/test_segmentation.py`: 19 tests covering all four segmenters, the enum, ABC instantiation guard, and edge cases (empty text, no headings, multi-line turns, oversized false-positive lines).
+- Sub-chunking of oversized sections (hybrid fallback) and pipeline wiring (document-level alias pre-scan, running entity header, aggregation) are deferred — tracked as follow-up backlog items.
+
+
 ### v0.38.2 - 14th April 2026
 
 - Optimization batch from the v0.38.1 review. Behaviour preserved; 465 unit tests pass.
