@@ -22,10 +22,6 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/block-chained-commands.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/block-raw-python.sh"
           }
         ]
       }
