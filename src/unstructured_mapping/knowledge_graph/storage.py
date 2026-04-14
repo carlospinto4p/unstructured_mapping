@@ -165,6 +165,13 @@ _CREATE_INDEXES = (
     "ON entities (status)",
     "CREATE INDEX IF NOT EXISTS idx_entity_name "
     "ON entities (canonical_name COLLATE NOCASE)",
+    # Seed dedup (see `cli._seed_helpers.exists_by_name_and_type`)
+    # hits name+type together on every row. A composite
+    # index lets SQLite filter both columns at once
+    # instead of returning every row matching the name
+    # and filtering the type in Python.
+    "CREATE INDEX IF NOT EXISTS idx_entity_name_type "
+    "ON entities (canonical_name COLLATE NOCASE, entity_type)",
     "CREATE INDEX IF NOT EXISTS idx_entity_created "
     "ON entities (created_at)",
     "CREATE INDEX IF NOT EXISTS idx_alias_lookup "

@@ -198,6 +198,29 @@ class EntityCRUDMixin(EntityHelpersMixin):
         ).fetchall()
         return self._rows_to_entities(rows)
 
+    def exists_by_name_and_type(
+        self,
+        name: str,
+        entity_type: EntityType,
+    ) -> bool:
+        """Return True if a name+type match exists.
+
+        Uses the composite index
+        ``idx_entity_name_type (canonical_name, entity_type)``
+        so SQLite can resolve the lookup without scanning
+        the alias table or returning the full row. This
+        is the hot path for seed-import dedup (every
+        candidate runs this check).
+        """
+        row = self._conn.execute(
+            "SELECT 1 FROM entities "
+            "WHERE canonical_name COLLATE NOCASE = ? "
+            "AND entity_type = ? "
+            "LIMIT 1",
+            (name, entity_type.value),
+        ).fetchone()
+        return row is not None
+
     def backfill_entity_timestamps(self) -> int:
         """Fill NULL ``created_at`` / ``updated_at`` on
         existing rows from the audit history.

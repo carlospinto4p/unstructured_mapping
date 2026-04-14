@@ -34,17 +34,12 @@ def exists_by_name_and_type(
 ) -> bool:
     """Return True if an entity with this name+type exists.
 
-    Matching on the canonical name is case-insensitive,
-    mirroring :meth:`KnowledgeStore.find_by_name`. This is
-    the fallback idempotency check for both seed loaders:
-    curated seeds have no Wikidata QID, and the Wikidata
-    loader also falls back to this check after the primary
-    ``wikidata:Qxxx`` alias hit.
+    Thin wrapper around
+    :meth:`KnowledgeStore.exists_by_name_and_type` so the
+    two seed loaders can share a single dedup signature
+    without each importing the store method directly.
     """
-    matches = store.find_by_name(name)
-    return any(
-        e.entity_type == entity_type for e in matches
-    )
+    return store.exists_by_name_and_type(name, entity_type)
 
 
 def import_with_dedup(
