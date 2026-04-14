@@ -13,6 +13,7 @@ from unstructured_mapping.knowledge_graph._helpers import (
 )
 from unstructured_mapping.knowledge_graph.models import (
     IngestionRun,
+    RunMetrics,
     RunStatus,
 )
 
@@ -84,6 +85,82 @@ class RunMixin:
             ),
         )
         self._commit()
+
+    def save_run_metrics(self, metrics: RunMetrics) -> None:
+        """Insert or replace the scorecard for a run.
+
+        Upsert semantics so callers can persist a partial
+        row mid-run (useful for long-running operations)
+        and overwrite at finalisation. The row is keyed
+        on :attr:`RunMetrics.run_id`, which must already
+        exist in ``ingestion_runs``.
+        """
+        self._conn.execute(
+            "INSERT OR REPLACE INTO run_metrics "
+            "(run_id, chunks_processed, mentions_detected, "
+            "mentions_resolved_alias, "
+            "mentions_resolved_llm, llm_resolver_calls, "
+            "llm_extractor_calls, proposals_saved, "
+            "relationships_saved, provider_name, "
+            "model_name, wall_clock_seconds) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                metrics.run_id,
+                metrics.chunks_processed,
+                metrics.mentions_detected,
+                metrics.mentions_resolved_alias,
+                metrics.mentions_resolved_llm,
+                metrics.llm_resolver_calls,
+                metrics.llm_extractor_calls,
+                metrics.proposals_saved,
+                metrics.relationships_saved,
+                metrics.provider_name,
+                metrics.model_name,
+                metrics.wall_clock_seconds,
+            ),
+        )
+        self._commit()
+
+    def get_run_metrics(
+        self, run_id: str
+    ) -> RunMetrics | None:
+        """Fetch the scorecard for a run, or None."""
+        row = self._conn.execute(
+            "SELECT run_id, chunks_processed, "
+            "mentions_detected, mentions_resolved_alias, "
+            "mentions_resolved_llm, llm_resolver_calls, "
+            "llm_extractor_calls, proposals_saved, "
+            "relationships_saved, provider_name, "
+            "model_name, wall_clock_seconds "
+            "FROM run_metrics WHERE run_id = ?",
+            (run_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return RunMetrics(
+            run_id=row["run_id"],
+            chunks_processed=row["chunks_processed"],
+            mentions_detected=row["mentions_detected"],
+            mentions_resolved_alias=(
+                row["mentions_resolved_alias"]
+            ),
+            mentions_resolved_llm=(
+                row["mentions_resolved_llm"]
+            ),
+            llm_resolver_calls=row["llm_resolver_calls"],
+            llm_extractor_calls=(
+                row["llm_extractor_calls"]
+            ),
+            proposals_saved=row["proposals_saved"],
+            relationships_saved=(
+                row["relationships_saved"]
+            ),
+            provider_name=row["provider_name"],
+            model_name=row["model_name"],
+            wall_clock_seconds=(
+                row["wall_clock_seconds"]
+            ),
+        )
 
     def get_run(
         self, run_id: str

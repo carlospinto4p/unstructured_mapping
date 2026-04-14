@@ -156,6 +156,29 @@ CREATE TABLE IF NOT EXISTS ingestion_runs (
 )
 """
 
+#: Per-run scorecard; one row per run, keyed on the same
+#: ``run_id`` as ``ingestion_runs``. Split from the main
+#: run table so adding new metrics later does not drag
+#: column changes onto every existing run record.
+_CREATE_RUN_METRICS = """
+CREATE TABLE IF NOT EXISTS run_metrics (
+    run_id                  TEXT PRIMARY KEY,
+    chunks_processed        INTEGER NOT NULL DEFAULT 0,
+    mentions_detected       INTEGER NOT NULL DEFAULT 0,
+    mentions_resolved_alias INTEGER NOT NULL DEFAULT 0,
+    mentions_resolved_llm   INTEGER NOT NULL DEFAULT 0,
+    llm_resolver_calls      INTEGER NOT NULL DEFAULT 0,
+    llm_extractor_calls     INTEGER NOT NULL DEFAULT 0,
+    proposals_saved         INTEGER NOT NULL DEFAULT 0,
+    relationships_saved     INTEGER NOT NULL DEFAULT 0,
+    provider_name           TEXT,
+    model_name              TEXT,
+    wall_clock_seconds      REAL NOT NULL DEFAULT 0.0,
+    FOREIGN KEY (run_id)
+        REFERENCES ingestion_runs (run_id)
+)
+"""
+
 _CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_entity_type "
     "ON entities (entity_type)",
@@ -235,6 +258,7 @@ class KnowledgeStore(
         _CREATE_ENTITY_HISTORY,
         _CREATE_RELATIONSHIP_HISTORY,
         _CREATE_INGESTION_RUNS,
+        _CREATE_RUN_METRICS,
     )
     _index_statements = _CREATE_INDEXES
 

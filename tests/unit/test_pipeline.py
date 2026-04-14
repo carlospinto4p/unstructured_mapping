@@ -102,10 +102,7 @@ def test_pipeline_run_end_to_end(tmp_path):
     apple = make_org("Apple", aliases=("Apple",))
     msft = make_org("Microsoft", aliases=("Microsoft",))
     article = make_article(
-        body=(
-            "Apple reported earnings. "
-            "Microsoft also reported."
-        ),
+        body=("Apple reported earnings. Microsoft also reported."),
     )
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
@@ -128,9 +125,7 @@ def test_pipeline_run_end_to_end(tmp_path):
     assert len(prov_msft) == 1
     # Provenance is attributed to the run.
     assert prov_apple[0].run_id == result.run_id
-    assert prov_apple[0].document_id == (
-        article.document_id.hex
-    )
+    assert prov_apple[0].document_id == (article.document_id.hex)
     assert prov_apple[0].source == "bbc"
     assert "Apple" in prov_apple[0].context_snippet
     # Run is finalized.
@@ -227,9 +222,7 @@ def test_pipeline_aggregator_dedupes_duplicate_proposals(
                 EntityProposal(
                     canonical_name="NewCo",
                     entity_type=EntityType.ORGANIZATION,
-                    description=(
-                        f"Seen in {chunk.section_name}"
-                    ),
+                    description=(f"Seen in {chunk.section_name}"),
                     context_snippet="NewCo",
                 )
                 for _ in unresolved
@@ -321,10 +314,7 @@ def test_pipeline_alias_prescan_pulls_full_body_matches(
             extra_seen_per_chunk.append(
                 (
                     chunk.section_name,
-                    tuple(
-                        e.canonical_name
-                        for e in extra_candidates
-                    ),
+                    tuple(e.canonical_name for e in extra_candidates),
                 )
             )
             return ResolutionResult(resolved=(), unresolved=())
@@ -426,15 +416,10 @@ def test_pipeline_threads_running_entity_header_across_chunks(
             prev_seen.append(
                 (
                     chunk.section_name,
-                    tuple(
-                        rm.entity_id
-                        for rm in (prev_entities or ())
-                    ),
+                    tuple(rm.entity_id for rm in (prev_entities or ())),
                 )
             )
-            return ResolutionResult(
-                resolved=(), unresolved=()
-            )
+            return ResolutionResult(resolved=(), unresolved=())
 
     class FakeResolver:
         """Resolves chunk 1 to Apple deterministically;
@@ -490,10 +475,119 @@ def test_pipeline_threads_running_entity_header_across_chunks(
         )
         pipeline.run([article])
 
-    risks_call = next(
-        p for s, p in prev_seen if s == "Risks"
-    )
+    risks_call = next(p for s, p in prev_seen if s == "Risks")
     assert apple.entity_id in risks_call
+
+
+def test_pipeline_saves_run_metrics(tmp_path):
+    """A completed run persists a row in ``run_metrics``
+    keyed on the run id, counting the detections, alias
+    resolutions, and wall-clock time."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    articles = [
+        make_article(body="Apple rose.", title=f"a{i}") for i in range(3)
+    ]
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        pipeline = Pipeline(
+            detector=RuleBasedDetector([apple]),
+            resolver=AliasResolver(),
+            store=store,
+        )
+        result = pipeline.run(articles)
+        metrics = store.get_run_metrics(result.run_id)
+
+    assert metrics is not None
+    # 3 articles, no segmenter = 3 chunks = 3 detections,
+    # all of them alias-resolved.
+    assert metrics.chunks_processed == 3
+    assert metrics.mentions_detected == 3
+    assert metrics.mentions_resolved_alias == 3
+    # No LLM resolver configured.
+    assert metrics.llm_resolver_calls == 0
+    assert metrics.mentions_resolved_llm == 0
+    assert metrics.provider_name is None
+    assert metrics.model_name is None
+    assert metrics.wall_clock_seconds >= 0.0
+
+
+def test_pipeline_metrics_count_llm_calls_and_provider(
+    tmp_path,
+):
+    """Metrics capture every LLM-resolver invocation and
+    record the backing provider/model so cross-run
+    comparisons can filter by them."""
+    from unstructured_mapping.pipeline.models import (
+        Mention,
+        ResolutionResult,
+    )
+    from unstructured_mapping.pipeline.segmentation import (
+        ResearchSegmenter,
+    )
+
+    class StubProvider:
+        provider_name = "stub"
+        model_name = "stub-1"
+
+    class StubLLMResolver:
+        def __init__(self):
+            self._provider = StubProvider()
+            self.proposals: tuple = ()
+
+        def resolve(
+            self,
+            chunk,
+            unresolved,
+            *,
+            extra_candidates=(),
+            prev_entities=None,
+        ):
+            return ResolutionResult(resolved=(), unresolved=())
+
+    class UnresolvedDetector:
+        def detect(self, chunk):
+            return (
+                Mention(
+                    surface_form="x",
+                    span_start=0,
+                    span_end=1,
+                    candidate_ids=(),
+                ),
+            )
+
+    class PassthroughResolver:
+        def resolve(self, chunk, mentions):
+            return ResolutionResult(
+                resolved=(),
+                unresolved=mentions,
+            )
+
+    db = tmp_path / "kg.db"
+    article = make_article(
+        body=(
+            "## One\nAlpha text.\n\n"
+            "## Two\nBeta text.\n\n"
+            "## Three\nGamma text."
+        ),
+    )
+    with KnowledgeStore(db_path=db) as store:
+        pipeline = Pipeline(
+            detector=UnresolvedDetector(),
+            resolver=PassthroughResolver(),
+            store=store,
+            llm_resolver=StubLLMResolver(),
+            segmenter=ResearchSegmenter(),
+        )
+        result = pipeline.run([article])
+        metrics = store.get_run_metrics(result.run_id)
+
+    assert metrics is not None
+    assert metrics.chunks_processed == 3
+    # One LLM call per chunk with unresolved mentions.
+    assert metrics.llm_resolver_calls == 3
+    assert metrics.provider_name == "stub"
+    assert metrics.model_name == "stub-1"
 
 
 def test_pipeline_without_segmenter_preserves_legacy_behaviour(
@@ -504,10 +598,7 @@ def test_pipeline_without_segmenter_preserves_legacy_behaviour(
     db = tmp_path / "kg.db"
     apple = make_org("Apple", aliases=("Apple",))
     article = make_article(
-        body=(
-            "## A heading.\n"
-            "Apple dominated the quarter."
-        ),
+        body=("## A heading.\nApple dominated the quarter."),
     )
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
@@ -528,8 +619,7 @@ def test_pipeline_run_multiple_articles(tmp_path):
     db = tmp_path / "kg.db"
     apple = make_org("Apple", aliases=("Apple",))
     articles = [
-        make_article(body="Apple rose.", title=f"a{i}")
-        for i in range(3)
+        make_article(body="Apple rose.", title=f"a{i}") for i in range(3)
     ]
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
@@ -543,9 +633,7 @@ def test_pipeline_run_multiple_articles(tmp_path):
     assert result.documents_processed == 3
     assert result.provenances_saved == 3
     assert len(result.results) == 3
-    assert all(
-        r.provenances_saved == 1 for r in result.results
-    )
+    assert all(r.provenances_saved == 1 for r in result.results)
 
 
 def test_pipeline_run_no_mentions(tmp_path):
@@ -598,13 +686,15 @@ def test_pipeline_skips_processed_articles(tmp_path):
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
         # Pre-seed provenance as if a prior run saw it.
-        store.save_provenance(Provenance(
-            entity_id=apple.entity_id,
-            document_id=article.document_id.hex,
-            source="bbc",
-            mention_text="Apple",
-            context_snippet="ctx",
-        ))
+        store.save_provenance(
+            Provenance(
+                entity_id=apple.entity_id,
+                document_id=article.document_id.hex,
+                source="bbc",
+                mention_text="Apple",
+                context_snippet="ctx",
+            )
+        )
         pipeline = Pipeline(
             detector=RuleBasedDetector([apple]),
             resolver=AliasResolver(),
@@ -630,13 +720,15 @@ def test_pipeline_skip_processed_false_reprocesses(
     article = make_article(body="Apple rose again.")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
-        store.save_provenance(Provenance(
-            entity_id=apple.entity_id,
-            document_id=article.document_id.hex,
-            source="bbc",
-            mention_text="Apple",
-            context_snippet="old ctx",
-        ))
+        store.save_provenance(
+            Provenance(
+                entity_id=apple.entity_id,
+                document_id=article.document_id.hex,
+                source="bbc",
+                mention_text="Apple",
+                context_snippet="old ctx",
+            )
+        )
         pipeline = Pipeline(
             detector=RuleBasedDetector([apple]),
             resolver=AliasResolver(),
@@ -783,7 +875,9 @@ def _resolved_entry(eid, form, snippet="...ctx..."):
 
 
 def _new_entry(
-    form, name, etype="organization",
+    form,
+    name,
+    etype="organization",
     desc="A new entity.",
     snippet="...ctx...",
 ):
@@ -807,27 +901,19 @@ def test_pipeline_llm_cascade_resolves_ambiguous(
     leaves unresolved."""
     db = tmp_path / "kg.db"
     apple = make_org("Apple", aliases=("Apple",))
-    fed = make_org(
-        "Federal Reserve", aliases=("the bank",)
-    )
+    fed = make_org("Federal Reserve", aliases=("the bank",))
     ecb = make_org("ECB", aliases=("the bank",))
 
     # "the bank" is ambiguous (2 candidates).
     # LLM resolves it to "fed".
-    response = _llm_response(
-        _resolved_entry(
-            fed.entity_id, "the bank"
-        )
-    )
+    response = _llm_response(_resolved_entry(fed.entity_id, "the bank"))
     provider = _FakeLLMProvider(response)
 
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(apple)
         store.save_entity(fed)
         store.save_entity(ecb)
-        detector = RuleBasedDetector(
-            [apple, fed, ecb]
-        )
+        detector = RuleBasedDetector([apple, fed, ecb])
         llm_resolver = LLMEntityResolver(
             provider=provider,
             entity_lookup=store.get_entity,
@@ -838,13 +924,9 @@ def test_pipeline_llm_cascade_resolves_ambiguous(
             store=store,
             llm_resolver=llm_resolver,
         )
-        article = make_article(
-            body="Apple and the bank both grew."
-        )
+        article = make_article(body="Apple and the bank both grew.")
         result = pipeline.run([article])
-        prov_fed = store.get_provenance(
-            fed.entity_id
-        )
+        prov_fed = store.get_provenance(fed.entity_id)
 
     ar = result.results[0]
     # Apple resolved by alias, bank resolved by LLM.
@@ -864,7 +946,9 @@ def test_pipeline_llm_cascade_creates_proposal(
     # for the unresolved "Cook" mention.
     response = _llm_response(
         _new_entry(
-            "Cook", "Tim Cook", "person",
+            "Cook",
+            "Tim Cook",
+            "person",
             desc="CEO of Apple Inc.",
             snippet="...CEO Cook announced...",
         )
@@ -893,16 +977,12 @@ def test_pipeline_llm_cascade_creates_proposal(
             entity_lookup=store.get_entity,
         )
         pipeline = Pipeline(
-            detector=_StubDetector(
-                (apple_mention, cook_mention)
-            ),
+            detector=_StubDetector((apple_mention, cook_mention)),
             resolver=AliasResolver(),
             store=store,
             llm_resolver=llm_resolver,
         )
-        article = make_article(
-            body="Apple CEO Cook announced earnings."
-        )
+        article = make_article(body="Apple CEO Cook announced earnings.")
         result = pipeline.run([article])
 
         # New entity should exist in the KG.
@@ -911,13 +991,8 @@ def test_pipeline_llm_cascade_creates_proposal(
     ar = result.results[0]
     assert ar.proposals_saved == 1
     assert len(new_entities) == 1
-    assert (
-        new_entities[0].entity_type
-        == EntityType.PERSON
-    )
-    assert new_entities[0].description == (
-        "CEO of Apple Inc."
-    )
+    assert new_entities[0].entity_type == EntityType.PERSON
+    assert new_entities[0].description == ("CEO of Apple Inc.")
 
 
 def test_pipeline_llm_cascade_proposal_provenance(
@@ -928,7 +1003,9 @@ def test_pipeline_llm_cascade_proposal_provenance(
     db = tmp_path / "kg.db"
     response = _llm_response(
         _new_entry(
-            "Powell", "Jerome Powell", "person",
+            "Powell",
+            "Jerome Powell",
+            "person",
         )
     )
     provider = _FakeLLMProvider(response)
@@ -950,17 +1027,11 @@ def test_pipeline_llm_cascade_proposal_provenance(
             store=store,
             llm_resolver=llm_resolver,
         )
-        article = make_article(
-            body="Powell spoke at the Fed."
-        )
+        article = make_article(body="Powell spoke at the Fed.")
         result = pipeline.run([article])
 
-        new_entities = store.find_by_name(
-            "Jerome Powell"
-        )
-        prov = store.get_provenance(
-            new_entities[0].entity_id
-        )
+        new_entities = store.find_by_name("Jerome Powell")
+        prov = store.get_provenance(new_entities[0].entity_id)
 
     assert len(prov) == 1
     assert prov[0].run_id == result.run_id
@@ -1030,13 +1101,9 @@ def test_pipeline_llm_cascade_skips_when_all_resolved(
 class _StubExtractor(RelationshipExtractor):
     """Returns preset relationships."""
 
-    def __init__(
-        self, result: ExtractionResult | None = None
-    ):
+    def __init__(self, result: ExtractionResult | None = None):
         self._result = result or ExtractionResult()
-        self.calls: list[
-            tuple[Chunk, tuple[ResolvedMention, ...]]
-        ] = []
+        self.calls: list[tuple[Chunk, tuple[ResolvedMention, ...]]] = []
 
     def extract(
         self,
@@ -1086,14 +1153,10 @@ def test_pipeline_extracts_relationships(tmp_path):
             store=store,
             extractor=extractor,
         )
-        article = make_article(
-            body="Apple and Microsoft both grew."
-        )
+        article = make_article(body="Apple and Microsoft both grew.")
         result = pipeline.run([article])
 
-        rels = store.get_relationships(
-            apple.entity_id
-        )
+        rels = store.get_relationships(apple.entity_id)
 
     ar = result.results[0]
     assert ar.relationships_saved == 1
@@ -1174,9 +1237,7 @@ def test_pipeline_relationship_count_in_run(tmp_path):
             store=store,
             extractor=_StubExtractor(extraction),
         )
-        article = make_article(
-            body="Apple and Microsoft both grew."
-        )
+        article = make_article(body="Apple and Microsoft both grew.")
         result = pipeline.run([article])
 
         run = store.get_run(result.run_id)
@@ -1205,9 +1266,7 @@ def test_pipeline_extractor_receives_resolved(
             store=store,
             extractor=extractor,
         )
-        article = make_article(
-            body="Apple and Microsoft both grew."
-        )
+        article = make_article(body="Apple and Microsoft both grew.")
         pipeline.run([article])
 
     assert len(extractor.calls) == 1

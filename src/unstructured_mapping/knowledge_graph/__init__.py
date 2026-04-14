@@ -20,6 +20,7 @@ from unstructured_mapping.knowledge_graph.models import (
     Provenance,
     Relationship,
     RelationshipRevision,
+    RunMetrics,
     RunStatus,
 )
 from unstructured_mapping.knowledge_graph.storage import (
@@ -49,6 +50,7 @@ __all__ = [
     "RelationshipRevision",
     "ResolutionAmbiguous",
     "RevisionNotFound",
+    "RunMetrics",
     "RunStatus",
     "ConstraintWarning",
     "ValidationError",

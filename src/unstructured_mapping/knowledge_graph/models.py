@@ -343,3 +343,63 @@ class IngestionRun:
     entity_count: int = 0
     relationship_count: int = 0
     error_message: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class RunMetrics:
+    """Per-run scorecard — pipeline quality and throughput.
+
+    Keyed on :class:`IngestionRun.run_id`; one row per
+    run. Captures what the run actually *did* at each
+    stage, so runs can be compared across prompt
+    revisions, provider swaps, and cold-start vs
+    KG-driven modes without replaying the articles.
+
+    Written at the end of a run alongside
+    :class:`IngestionRun` finalisation. Token counts are
+    deliberately absent — the :class:`LLMProvider`
+    contract does not expose usage today; tracked as a
+    separate backlog item.
+
+    :param run_id: Foreign key to :class:`IngestionRun`.
+    :param chunks_processed: Total chunks seen across all
+        articles. Equal to ``document_count`` when no
+        segmenter is active; higher otherwise.
+    :param mentions_detected: Sum of the detector's
+        output over every chunk.
+    :param mentions_resolved_alias: Mentions the rule-
+        based :class:`EntityResolver` resolved without an
+        LLM call.
+    :param mentions_resolved_llm: Mentions the LLM
+        cascade resolved after the alias resolver left
+        them unresolved.
+    :param llm_resolver_calls: Number of times the LLM
+        resolver was invoked (one call per chunk that
+        contained unresolved mentions).
+    :param llm_extractor_calls: Number of times the LLM
+        relationship extractor was invoked (one call per
+        chunk that had resolved mentions to feed it).
+    :param proposals_saved: New entities created from LLM
+        proposals during the run.
+    :param relationships_saved: Relationships persisted.
+    :param provider_name: LLM provider identifier at run
+        time (``"ollama"``, ``"claude"``, ...). ``None``
+        when no LLM stage was configured.
+    :param model_name: Model identifier at run time.
+        ``None`` when no LLM stage was configured.
+    :param wall_clock_seconds: Total wall-clock time for
+        the run, end-to-end.
+    """
+
+    run_id: str
+    chunks_processed: int = 0
+    mentions_detected: int = 0
+    mentions_resolved_alias: int = 0
+    mentions_resolved_llm: int = 0
+    llm_resolver_calls: int = 0
+    llm_extractor_calls: int = 0
+    proposals_saved: int = 0
+    relationships_saved: int = 0
+    provider_name: str | None = None
+    model_name: str | None = None
+    wall_clock_seconds: float = 0.0

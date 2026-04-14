@@ -39,6 +39,7 @@ Design notes
 """
 
 import logging
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
@@ -48,6 +49,7 @@ from unstructured_mapping.knowledge_graph.models import (
     IngestionRun,
     Provenance,
     Relationship,
+    RunMetrics,
     RunStatus,
 )
 from unstructured_mapping.knowledge_graph.storage import (
@@ -101,10 +103,49 @@ def _compute_run_stats(
         len(processed),
         sum(r.provenances_saved for r in results),
         sum(r.proposals_saved for r in results),
-        sum(
-            r.relationships_saved for r in results
-        ),
+        sum(r.relationships_saved for r in results),
     )
+
+
+@dataclass
+class _MetricsAccumulator:
+    """Mutable counter accumulated over one pipeline run.
+
+    Lives for the duration of a single :meth:`Pipeline.run`
+    call. Finalised into a :class:`RunMetrics` row at the
+    end so the aggregated scorecard is available for
+    cross-run comparison.
+    """
+
+    run_id: str
+    started_monotonic: float
+    provider_name: str | None = None
+    model_name: str | None = None
+    chunks_processed: int = 0
+    mentions_detected: int = 0
+    mentions_resolved_alias: int = 0
+    mentions_resolved_llm: int = 0
+    llm_resolver_calls: int = 0
+    llm_extractor_calls: int = 0
+    proposals_saved: int = 0
+    relationships_saved: int = 0
+
+    def finalize(self) -> RunMetrics:
+        """Return a frozen snapshot for persistence."""
+        return RunMetrics(
+            run_id=self.run_id,
+            chunks_processed=self.chunks_processed,
+            mentions_detected=self.mentions_detected,
+            mentions_resolved_alias=(self.mentions_resolved_alias),
+            mentions_resolved_llm=(self.mentions_resolved_llm),
+            llm_resolver_calls=self.llm_resolver_calls,
+            llm_extractor_calls=(self.llm_extractor_calls),
+            proposals_saved=self.proposals_saved,
+            relationships_saved=(self.relationships_saved),
+            provider_name=self.provider_name,
+            model_name=self.model_name,
+            wall_clock_seconds=(time.monotonic() - self.started_monotonic),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,9 +179,7 @@ class ArticleResult:
     """
 
     document_id: str
-    resolution: ResolutionResult = field(
-        default_factory=ResolutionResult
-    )
+    resolution: ResolutionResult = field(default_factory=ResolutionResult)
     provenances_saved: int = 0
     proposals_saved: int = 0
     relationships_saved: int = 0
@@ -282,12 +321,8 @@ class Pipeline:
         store: KnowledgeStore,
         *,
         llm_resolver: LLMEntityResolver | None = None,
-        extractor: (
-            RelationshipExtractor | None
-        ) = None,
-        cold_start_discoverer: (
-            ColdStartEntityDiscoverer | None
-        ) = None,
+        extractor: (RelationshipExtractor | None) = None,
+        cold_start_discoverer: (ColdStartEntityDiscoverer | None) = None,
         segmenter: DocumentSegmenter | None = None,
         skip_processed: bool = True,
     ) -> None:
@@ -296,9 +331,7 @@ class Pipeline:
         self._store = store
         self._llm_resolver = llm_resolver
         self._extractor = extractor
-        self._cold_start_discoverer = (
-            cold_start_discoverer
-        )
+        self._cold_start_discoverer = cold_start_discoverer
         #: Optional chunker. When ``None`` every article
         #: is processed as a single chunk (the legacy
         #: inverted-pyramid behaviour for news). When set
@@ -315,12 +348,20 @@ class Pipeline:
         #: path is uniform.
         self._aggregator = ChunkAggregator()
         self._skip_processed = skip_processed
+        #: Metrics accumulator. Re-created at the start of
+        #: every :meth:`run` so cross-call counters don't
+        #: leak. A placeholder is set here so ad-hoc
+        #: :meth:`process_article` calls (which bypass
+        #: :meth:`run`) don't crash on the attribute —
+        #: they just don't persist a scorecard.
+        self._metrics = _MetricsAccumulator(
+            run_id="",
+            started_monotonic=time.monotonic(),
+        )
 
     # -- Public API -----------------------------------------
 
-    def run(
-        self, articles: list[Article]
-    ) -> PipelineResult:
+    def run(self, articles: list[Article]) -> PipelineResult:
         """Process a batch of articles inside one run.
 
         A new :class:`IngestionRun` is created and saved
@@ -343,15 +384,19 @@ class Pipeline:
             run.run_id,
             len(articles),
         )
+        self._metrics = _MetricsAccumulator(
+            run_id=run.run_id,
+            started_monotonic=time.monotonic(),
+            provider_name=self._provider_name(),
+            model_name=self._model_name(),
+        )
         # Prefetch the idempotency set once rather than
         # hitting SQLite per article: on a 1000-article
         # batch this replaces 1000 queries with one.
         already_processed: set[str] = set()
         if self._skip_processed and articles:
-            already_processed = (
-                self._store.documents_with_provenance(
-                    [a.document_id.hex for a in articles]
-                )
+            already_processed = self._store.documents_with_provenance(
+                [a.document_id.hex for a in articles]
             )
         results: list[ArticleResult] = []
         try:
@@ -373,15 +418,12 @@ class Pipeline:
                 relationship_count=stats[3],
                 error_message=str(exc),
             )
-            logger.exception(
-                "Pipeline run %s failed", run.run_id
-            )
+            self._store.save_run_metrics(self._metrics.finalize())
+            logger.exception("Pipeline run %s failed", run.run_id)
             raise
 
         stats = _compute_run_stats(results)
-        doc_count, prov_count, prop_count, rel_count = (
-            stats
-        )
+        doc_count, prov_count, prop_count, rel_count = stats
         self._store.finish_run(
             run.run_id,
             status=RunStatus.COMPLETED,
@@ -389,6 +431,7 @@ class Pipeline:
             entity_count=prov_count,
             relationship_count=rel_count,
         )
+        self._store.save_run_metrics(self._metrics.finalize())
         logger.info(
             "Pipeline run %s completed: %d processed, "
             "%d skipped, %d provenances, "
@@ -433,6 +476,37 @@ class Pipeline:
 
     # -- Internal helpers -----------------------------------
 
+    def _provider_name(self) -> str | None:
+        """Read the LLM provider's identifier, if any.
+
+        Returns whichever of the resolver or extractor has
+        a backing provider (the first hit wins — in
+        practice both are configured with the same
+        provider). ``None`` when no LLM stage is wired.
+        """
+        for stage in (
+            self._llm_resolver,
+            self._extractor,
+            self._cold_start_discoverer,
+        ):
+            provider = getattr(stage, "_provider", None)
+            name = getattr(provider, "provider_name", None)
+            if name is not None:
+                return name
+        return None
+
+    def _model_name(self) -> str | None:
+        for stage in (
+            self._llm_resolver,
+            self._extractor,
+            self._cold_start_discoverer,
+        ):
+            provider = getattr(stage, "_provider", None)
+            name = getattr(provider, "model_name", None)
+            if name is not None:
+                return name
+        return None
+
     def _is_processed(
         self,
         doc_id: str,
@@ -464,9 +538,7 @@ class Pipeline:
                 "Skipping already-processed article %s",
                 doc_id,
             )
-            return ArticleResult(
-                document_id=doc_id, skipped=True
-            )
+            return ArticleResult(document_id=doc_id, skipped=True)
         try:
             if self._cold_start_discoverer is not None:
                 # Cold-start sees the whole article body:
@@ -479,9 +551,7 @@ class Pipeline:
                     text=article.body,
                     section_name=None,
                 )
-                return self._process_cold_start(
-                    full_chunk, article, run_id
-                )
+                return self._process_cold_start(full_chunk, article, run_id)
 
             chunks = self._chunks_for(article, doc_id)
             if not chunks:
@@ -520,21 +590,17 @@ class Pipeline:
                     prev_entities=tuple(running_entities),
                 )
                 outcomes.append(outcome)
-                running_entities.extend(
-                    outcome.resolution.resolved
-                )
-            aggregated = self._aggregator.aggregate(
-                outcomes
-            )
+                running_entities.extend(outcome.resolution.resolved)
+            aggregated = self._aggregator.aggregate(outcomes)
             # One transaction per article: all provenance,
             # proposal-entity, and relationship writes
             # share one COMMIT. Aggregation already
             # dedupes within the article; the DB layer
             # handles cross-article dedup.
             with self._store.transaction():
-                saved = self._persist_aggregated(
-                    aggregated, article, run_id
-                )
+                saved = self._persist_aggregated(aggregated, article, run_id)
+            self._metrics.proposals_saved += saved[1]
+            self._metrics.relationships_saved += saved[2]
             return ArticleResult(
                 document_id=doc_id,
                 resolution=aggregated.resolution,
@@ -547,9 +613,7 @@ class Pipeline:
             # Pipeline-level errors should be raised by
             # the store directly and propagate out of
             # :meth:`run`.
-            logger.exception(
-                "Failed to process article %s", doc_id
-            )
+            logger.exception("Failed to process article %s", doc_id)
             return ArticleResult(
                 document_id=doc_id,
                 error=str(exc),
@@ -592,13 +656,9 @@ class Pipeline:
         if not ids:
             return ()
         found = self._store.get_entities(ids)
-        return tuple(
-            found[eid] for eid in ids if eid in found
-        )
+        return tuple(found[eid] for eid in ids if eid in found)
 
-    def _chunks_for(
-        self, article: Article, doc_id: str
-    ) -> list[Chunk]:
+    def _chunks_for(self, article: Article, doc_id: str) -> list[Chunk]:
         """Return the chunks to process for this article.
 
         When no segmenter is configured the article body
@@ -653,11 +713,12 @@ class Pipeline:
         mentions = self._detector.detect(chunk)
         resolution = self._resolver.resolve(chunk, mentions)
 
+        self._metrics.chunks_processed += 1
+        self._metrics.mentions_detected += len(mentions)
+        self._metrics.mentions_resolved_alias += len(resolution.resolved)
+
         proposals: tuple[EntityProposal, ...] = ()
-        if (
-            self._llm_resolver is not None
-            and resolution.unresolved
-        ):
+        if self._llm_resolver is not None and resolution.unresolved:
             llm_result = self._llm_resolver.resolve(
                 chunk,
                 resolution.unresolved,
@@ -665,11 +726,10 @@ class Pipeline:
                 prev_entities=prev_entities,
             )
             proposals = self._llm_resolver.proposals
+            self._metrics.llm_resolver_calls += 1
+            self._metrics.mentions_resolved_llm += len(llm_result.resolved)
             resolution = ResolutionResult(
-                resolved=(
-                    resolution.resolved
-                    + llm_result.resolved
-                ),
+                resolved=(resolution.resolved + llm_result.resolved),
             )
 
         detected_at = _utcnow()
@@ -687,14 +747,10 @@ class Pipeline:
         )
 
         extracted: tuple[ExtractedRelationship, ...] = ()
-        if (
-            self._extractor is not None
-            and resolution.resolved
-        ):
-            result = self._extractor.extract(
-                chunk, resolution.resolved
-            )
+        if self._extractor is not None and resolution.resolved:
+            result = self._extractor.extract(chunk, resolution.resolved)
             extracted = result.relationships
+            self._metrics.llm_extractor_calls += 1
 
         return ChunkOutcome(
             resolution=resolution,
@@ -716,9 +772,7 @@ class Pipeline:
         """
         detected_at = _utcnow()
         prov_saved = (
-            self._store.save_provenances(
-                list(aggregated.provenances)
-            )
+            self._store.save_provenances(list(aggregated.provenances))
             if aggregated.provenances
             else 0
         )
@@ -763,9 +817,7 @@ class Pipeline:
         assert (
             self._cold_start_discoverer is not None
         )  # caller guarantees this
-        proposals = (
-            self._cold_start_discoverer.discover(chunk)
-        )
+        proposals = self._cold_start_discoverer.discover(chunk)
         detected_at = _utcnow()
         saved = self._persist_proposals(
             proposals,
@@ -774,6 +826,11 @@ class Pipeline:
             detected_at,
             run_id,
         )
+        # Cold-start bypasses the chunk loop; record a
+        # single chunk and the saved count so the
+        # scorecard still reflects the work done.
+        self._metrics.chunks_processed += 1
+        self._metrics.proposals_saved += saved
         logger.info(
             "Cold-start discovered %d entities from %s",
             saved,
@@ -824,12 +881,8 @@ class Pipeline:
                         entity_id=entity.entity_id,
                         document_id=doc_id,
                         source=source,
-                        mention_text=(
-                            proposal.canonical_name
-                        ),
-                        context_snippet=(
-                            proposal.context_snippet
-                        ),
+                        mention_text=(proposal.canonical_name),
+                        context_snippet=(proposal.context_snippet),
                         detected_at=detected_at,
                         run_id=run_id,
                     )
@@ -837,8 +890,7 @@ class Pipeline:
             )
             count += 1
             logger.info(
-                "Created entity %s (%s) from LLM "
-                "proposal",
+                "Created entity %s (%s) from LLM proposal",
                 entity.canonical_name,
                 entity.entity_id,
             )
@@ -875,9 +927,7 @@ class Pipeline:
             )
             for er in extracted
         ]
-        count = self._store.save_relationships(
-            relationships
-        )
+        count = self._store.save_relationships(relationships)
         logger.info(
             "Persisted %d relationships from %s",
             count,

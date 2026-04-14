@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.42.0 - 15th April 2026
+
+- Added running entity header across chunks:
+  - `pipeline/resolution.py`: `LLMEntityResolver.resolve` gained a `prev_entities` keyword argument that overrides the constructor-time list for that call. The prompt builder receives whichever is provided.
+  - `pipeline/orchestrator.py`: `_process_article` accumulates `resolution.resolved` across chunks and passes the running tuple into each subsequent `_process_chunk` → `_llm_resolver.resolve` call. Later chunks' prompts now carry every entity earlier chunks resolved to — including LLM proposals that haven't landed in the KG yet, so the pre-scan gap is closed.
+- Added run scorecard:
+  - `knowledge_graph/models.py`: new `RunMetrics` dataclass capturing chunks_processed, mentions_detected, mentions_resolved_alias, mentions_resolved_llm, llm_resolver_calls, llm_extractor_calls, proposals_saved, relationships_saved, provider_name, model_name, wall_clock_seconds.
+  - `knowledge_graph/storage.py`: `run_metrics` table keyed on `run_id` (FK to `ingestion_runs`). Split from the main run table so future metric additions don't churn existing rows.
+  - `knowledge_graph/_run_mixin.py`: `save_run_metrics()` (upsert) and `get_run_metrics(run_id)`.
+  - `pipeline/orchestrator.py`: `_MetricsAccumulator` tracks counters throughout a run; `Pipeline.run` finalises and persists the scorecard on both success and failure.
+  - `Pipeline` reads `provider_name` / `model_name` from whichever configured LLM stage (`_llm_resolver`, `_extractor`, `_cold_start_discoverer`) has a provider attached. Token counts deliberately excluded — the `LLMProvider` contract does not expose usage yet; tracked as a follow-up.
+- Added unit tests:
+  - `tests/unit/test_pipeline.py`: `test_pipeline_threads_running_entity_header_across_chunks`, `test_pipeline_saves_run_metrics`, `test_pipeline_metrics_count_llm_calls_and_provider`.
+
+
 ### v0.41.0 - 14th April 2026
 
 - Added `src/unstructured_mapping/pipeline/aggregation.py`: cross-chunk aggregator designed in `docs/pipeline/09_chunking.md` §"Aggregation".
