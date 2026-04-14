@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.42.1 - 15th April 2026
+
+- `.claude/`: cross-project migration landed today:
+  - Removed `.claude/hooks/block-raw-python.sh`; now provided globally at `~/.claude/hooks/` (PreToolUse Bash guard).
+
+
 ### v0.42.0 - 15th April 2026
 
 - Added running entity header across chunks:
