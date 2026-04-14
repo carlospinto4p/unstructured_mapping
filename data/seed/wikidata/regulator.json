@@ -1,0 +1,879 @@
+{
+  "version": 1,
+  "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
+  "entities": [
+    {
+      "canonical_name": "Missouri Division of Finance",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Missouri Division of Finance is a financial regulatory authority in United States. division of the Missouri Department of Commerce and Insurance",
+      "aliases": [
+        "wikidata:Q114892642"
+      ]
+    },
+    {
+      "canonical_name": "Security and exchange commission abuja",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Security and exchange commission abuja is a financial regulatory authority in Nigeria. Capital markets regulator",
+      "aliases": [
+        "wikidata:Q115020768"
+      ]
+    },
+    {
+      "canonical_name": "Missouri Division of Credit Unions",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Missouri Division of Credit Unions is a financial regulatory authority in United States. division of the Missouri Department of Commerce and Insurance",
+      "aliases": [
+        "wikidata:Q115679004"
+      ]
+    },
+    {
+      "canonical_name": "Massachusetts Division of Banks",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Massachusetts Division of Banks is a financial regulatory authority in United States. division of the Massachusetts Office of Consumer Affairs and Business Regulation",
+      "aliases": [
+        "wikidata:Q117062745"
+      ]
+    },
+    {
+      "canonical_name": "North Carolina Office of the Commissioner of Banks",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "North Carolina Office of the Commissioner of Banks is a financial regulatory authority in United States. office of the government of the U.S. state of North Carolina",
+      "aliases": [
+        "wikidata:Q117421855"
+      ]
+    },
+    {
+      "canonical_name": "Syrian Commission on Financial Markets and Securities",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Syrian Commission on Financial Markets and Securities is a financial regulatory authority in Syria. A body responsible for supervising and controlling the securities sector in Syria and related operations.",
+      "aliases": [
+        "wikidata:Q119939123"
+      ]
+    },
+    {
+      "canonical_name": "Qatar Financial Centre Regulatory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Qatar Financial Centre Regulatory Authority is a financial regulatory authority in Qatar. The QFC Regulatory Authority is the independent regulator of the Qatar Financial Centre (QFC), established to authorise and regulate firms and individuals conducting financial services in or from the QFC.",
+      "aliases": [
+        "wikidata:Q120186972"
+      ]
+    },
+    {
+      "canonical_name": "Financial Markets Authority of the West African Monetary Union",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Markets Authority of the West African Monetary Union is a financial regulatory authority. african supranational securities authority",
+      "aliases": [
+        "wikidata:Q123600865"
+      ]
+    },
+    {
+      "canonical_name": "Securities Market Agency",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Securities Market Agency is a financial regulatory authority in Slovenia. government agency overseeing securities exchanges in Slovenia",
+      "aliases": [
+        "wikidata:Q125845315"
+      ]
+    },
+    {
+      "canonical_name": "West Virginia Division of Financial Institutions",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "West Virginia Division of Financial Institutions is a financial regulatory authority in United States. division of the West Virginia Department of Tax and Revenue",
+      "aliases": [
+        "wikidata:Q130383997"
+      ]
+    },
+    {
+      "canonical_name": "Commission de Surveillance du Secteur Financier",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Commission de Surveillance du Secteur Financier is a financial regulatory authority in Luxembourg. registration authority",
+      "aliases": [
+        "wikidata:Q202750"
+      ]
+    },
+    {
+      "canonical_name": "Federal Financial Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Federal Financial Supervisory Authority is a financial regulatory authority in Germany. German financial regulatory authority",
+      "aliases": [
+        "wikidata:Q314211"
+      ]
+    },
+    {
+      "canonical_name": "Cyprus Securities and Exchange Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Cyprus Securities and Exchange Commission is a financial regulatory authority in Cyprus. registration authority",
+      "aliases": [
+        "wikidata:Q570231"
+      ]
+    },
+    {
+      "canonical_name": "United States Commodity Futures Trading Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "United States Commodity Futures Trading Commission is a financial regulatory authority in United States. government agency",
+      "aliases": [
+        "wikidata:Q611748"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Agency",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Agency is a financial regulatory authority in Japan. registration authority of Japan",
+      "aliases": [
+        "wikidata:Q615316"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Commission is a financial regulatory authority in South Korea. South Korean government agency",
+      "aliases": [
+        "wikidata:Q624674"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Authority is a financial regulatory authority in Saint Vincent and the Grenadines. former quasi-judicial body in the UK",
+      "aliases": [
+        "wikidata:Q638053"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Authority is a financial regulatory authority in United Kingdom. former quasi-judicial body in the UK",
+      "aliases": [
+        "wikidata:Q638053"
+      ]
+    },
+    {
+      "canonical_name": "United States Department of the Treasury",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "United States Department of the Treasury is a financial regulatory authority in United States. United States federal executive department",
+      "aliases": [
+        "wikidata:Q648666"
+      ]
+    },
+    {
+      "canonical_name": "Financial Market Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Market Supervisory Authority is a financial regulatory authority in Switzerland. registration authority",
+      "aliases": [
+        "wikidata:Q681362"
+      ]
+    },
+    {
+      "canonical_name": "Financial Supervision Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Supervision Authority is a financial regulatory authority in Poland. organization in Poland",
+      "aliases": [
+        "wikidata:Q773485"
+      ]
+    },
+    {
+      "canonical_name": "Autorité des marchés financiers",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Autorité des marchés financiers is a financial regulatory authority in France. French financial markets regulator",
+      "aliases": [
+        "wikidata:Q788606"
+      ]
+    },
+    {
+      "canonical_name": "Bangladesh Bank",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Bangladesh Bank is a financial regulatory authority in Bangladesh. central bank of Bangladesh and member of the Asian Clearing Union",
+      "aliases": [
+        "wikidata:Q806532"
+      ]
+    },
+    {
+      "canonical_name": "China Insurance Regulatory Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "China Insurance Regulatory Commission is a financial regulatory authority in People's Republic of China. government agency",
+      "aliases": [
+        "wikidata:Q843516"
+      ]
+    },
+    {
+      "canonical_name": "National Credit Union Administration",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "National Credit Union Administration is a financial regulatory authority in United States. independent federal agency of United States",
+      "aliases": [
+        "wikidata:Q949761"
+      ]
+    },
+    {
+      "canonical_name": "United States Securities and Exchange Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "United States Securities and Exchange Commission is a financial regulatory authority in United States. U.S. federal agency that enforces securities laws and regulates securities markets and major market participants (public companies, brokers, exchanges, and asset managers)",
+      "aliases": [
+        "wikidata:Q953944"
+      ]
+    },
+    {
+      "canonical_name": "China Banking Regulatory Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "China Banking Regulatory Commission is a financial regulatory authority in People's Republic of China. agency of the People's Republic of China",
+      "aliases": [
+        "wikidata:Q1073219"
+      ]
+    },
+    {
+      "canonical_name": "Consumer Financial Protection Bureau",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Consumer Financial Protection Bureau is a financial regulatory authority in United States. agency of the United States government responsible for consumer protection in the financial sector",
+      "aliases": [
+        "wikidata:Q1091543"
+      ]
+    },
+    {
+      "canonical_name": "The Italian Companies and Stock Exchange Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "The Italian Companies and Stock Exchange Commission is a financial regulatory authority in Italy. Italian securities market regulator",
+      "aliases": [
+        "wikidata:Q1115638"
+      ]
+    },
+    {
+      "canonical_name": "Financial Market Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Market Authority is a financial regulatory authority in Liechtenstein. government agency in Liechtenstein",
+      "aliases": [
+        "wikidata:Q1270586"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services and Markets Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services and Markets Authority is a financial regulatory authority in Belgium. Belgian financial regulatory agency",
+      "aliases": [
+        "wikidata:Q1416207"
+      ]
+    },
+    {
+      "canonical_name": "Reserve Bank of New Zealand",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Reserve Bank of New Zealand is a financial regulatory authority in New Zealand. central bank of New Zealand",
+      "aliases": [
+        "wikidata:Q1494550"
+      ]
+    },
+    {
+      "canonical_name": "Securities and Exchange Board of India",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Securities and Exchange Board of India is a financial regulatory authority in India. registration authority",
+      "aliases": [
+        "wikidata:Q2615692"
+      ]
+    },
+    {
+      "canonical_name": "Monetary Authority of Singapore",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Monetary Authority of Singapore is a financial regulatory authority in Singapore. registration authority",
+      "aliases": [
+        "wikidata:Q2661296"
+      ]
+    },
+    {
+      "canonical_name": "Financial Consumer Agency of Canada",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Consumer Agency of Canada is a financial regulatory authority in Canada. Canadian government agency",
+      "aliases": [
+        "wikidata:Q2826603"
+      ]
+    },
+    {
+      "canonical_name": "Autorité des marchés financiers",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Autorité des marchés financiers is a financial regulatory authority in Canada. organisation responsible for financial regulation in the Canadian province of Québec",
+      "aliases": [
+        "wikidata:Q2872797"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Commission of Ontario",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Commission of Ontario is a financial regulatory authority. Crown agency in Ontario, Canada",
+      "aliases": [
+        "wikidata:Q2986582"
+      ]
+    },
+    {
+      "canonical_name": "Ontario Securities Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Ontario Securities Commission is a financial regulatory authority in Canada. government agency",
+      "aliases": [
+        "wikidata:Q2986586"
+      ]
+    },
+    {
+      "canonical_name": "Federal Financial Institutions Examination Council",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Federal Financial Institutions Examination Council is a financial regulatory authority in United States. U.S. regulatory body",
+      "aliases": [
+        "wikidata:Q3740862"
+      ]
+    },
+    {
+      "canonical_name": "Office of Thrift Supervision",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Office of Thrift Supervision is a financial regulatory authority in United States. U.S. Treasury Department agency",
+      "aliases": [
+        "wikidata:Q3881025"
+      ]
+    },
+    {
+      "canonical_name": "Australian Securities & Investments Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Australian Securities & Investments Commission is a financial regulatory authority in Australia. independent Australian government body that acts as Australia's corporate regulator",
+      "aliases": [
+        "wikidata:Q4056092"
+      ]
+    },
+    {
+      "canonical_name": "Australian Transaction Reports and Analysis Centre",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Australian Transaction Reports and Analysis Centre is a financial regulatory authority in Australia. Australian government agency",
+      "aliases": [
+        "wikidata:Q4056102"
+      ]
+    },
+    {
+      "canonical_name": "Ministry of Finance of Ukraine",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Ministry of Finance of Ukraine is a financial regulatory authority in Ukraine. finance ministry of Ukraine",
+      "aliases": [
+        "wikidata:Q4294799"
+      ]
+    },
+    {
+      "canonical_name": "Financial Stability and Development Council",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Stability and Development Council is a financial regulatory authority in India. apex-level body constituted by the Indian government",
+      "aliases": [
+        "wikidata:Q4426305"
+      ]
+    },
+    {
+      "canonical_name": "Alberta Securities Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Alberta Securities Commission is a financial regulatory authority in Canada. Canadian securities regulatory body",
+      "aliases": [
+        "wikidata:Q4711814"
+      ]
+    },
+    {
+      "canonical_name": "National Securities Market Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "National Securities Market Commission is a financial regulatory authority in Spain. the body responsible for the supervision and inspection of Spanish securities markets",
+      "aliases": [
+        "wikidata:Q4894522"
+      ]
+    },
+    {
+      "canonical_name": "British Columbia Securities Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "British Columbia Securities Commission is a financial regulatory authority in Canada. regulatory agency in British Columbia, Canada",
+      "aliases": [
+        "wikidata:Q4969759"
+      ]
+    },
+    {
+      "canonical_name": "British Virgin Islands Financial Services Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "British Virgin Islands Financial Services Commission is a financial regulatory authority in British Virgin Islands. financial supervisory authority of the BVI",
+      "aliases": [
+        "wikidata:Q4971202"
+      ]
+    },
+    {
+      "canonical_name": "Canadian Securities Administrators",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Canadian Securities Administrators is a financial regulatory authority in Canada. Government regulatory organization",
+      "aliases": [
+        "wikidata:Q5030548"
+      ]
+    },
+    {
+      "canonical_name": "Egyptian Financial Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Egyptian Financial Supervisory Authority is a financial regulatory authority in Egypt. financial regulatory authority in Egypt",
+      "aliases": [
+        "wikidata:Q5348408"
+      ]
+    },
+    {
+      "canonical_name": "Farm Credit Administration",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Farm Credit Administration is a financial regulatory authority in United States. US federal government independent agency regulating farm loans",
+      "aliases": [
+        "wikidata:Q5435482"
+      ]
+    },
+    {
+      "canonical_name": "Federal Housing Finance Agency",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Federal Housing Finance Agency is a financial regulatory authority in United States. U.S. federal agency",
+      "aliases": [
+        "wikidata:Q5440255"
+      ]
+    },
+    {
+      "canonical_name": "Financial Conduct Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Conduct Authority is a financial regulatory authority in United Kingdom. quasi-governmental agency in the United Kingdom",
+      "aliases": [
+        "wikidata:Q5449586"
+      ]
+    },
+    {
+      "canonical_name": "Financial Crimes Enforcement Network",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Crimes Enforcement Network is a financial regulatory authority in United States. bureau of the United States Department of the Treasury",
+      "aliases": [
+        "wikidata:Q5449587"
+      ]
+    },
+    {
+      "canonical_name": "Financial Markets Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Markets Authority is a financial regulatory authority in New Zealand. Financial regulator in New Zealand",
+      "aliases": [
+        "wikidata:Q5449620"
+      ]
+    },
+    {
+      "canonical_name": "Financial Reporting Council",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Reporting Council is a financial regulatory authority in United Kingdom. regulator responsible for promoting high quality corporate governance",
+      "aliases": [
+        "wikidata:Q5449639"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Board",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Board is a financial regulatory authority. financial regulatory authority",
+      "aliases": [
+        "wikidata:Q5449655"
+      ]
+    },
+    {
+      "canonical_name": "Financial Stability Oversight Council",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Stability Oversight Council is a financial regulatory authority in United States. United States systemic risk agency (2010-)",
+      "aliases": [
+        "wikidata:Q5449664"
+      ]
+    },
+    {
+      "canonical_name": "Financial Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Supervisory Authority is a financial regulatory authority in Sweden. Swedish government agency",
+      "aliases": [
+        "wikidata:Q5449671"
+      ]
+    },
+    {
+      "canonical_name": "Financial Supervisory Service",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Supervisory Service is a financial regulatory authority in South Korea. South Korea's integrated financial regulator",
+      "aliases": [
+        "wikidata:Q5449673"
+      ]
+    },
+    {
+      "canonical_name": "Financial Transactions and Reports Analysis Centre of Canada",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Transactions and Reports Analysis Centre of Canada is a financial regulatory authority in Canada. National financial intelligence agency of Canada",
+      "aliases": [
+        "wikidata:Q5449682"
+      ]
+    },
+    {
+      "canonical_name": "National Credit Regulator",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "National Credit Regulator is a financial regulatory authority in South Africa. South African government agency",
+      "aliases": [
+        "wikidata:Q6971986"
+      ]
+    },
+    {
+      "canonical_name": "National Futures Association",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "National Futures Association is a financial regulatory authority. United States self-regulatory organization for derivatives",
+      "aliases": [
+        "wikidata:Q6972823"
+      ]
+    },
+    {
+      "canonical_name": "Dutch Authority for the Financial Markets",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Dutch Authority for the Financial Markets is a financial regulatory authority in Netherlands. registration authority",
+      "aliases": [
+        "wikidata:Q6999143"
+      ]
+    },
+    {
+      "canonical_name": "New Jersey Department of Banking and Insurance",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "New Jersey Department of Banking and Insurance is a financial regulatory authority in United States. state agency of New Jersey, United States",
+      "aliases": [
+        "wikidata:Q7009174"
+      ]
+    },
+    {
+      "canonical_name": "Office of the Superintendent of Financial Institutions",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Office of the Superintendent of Financial Institutions is a financial regulatory authority in Canada. Canadian regulatory agency",
+      "aliases": [
+        "wikidata:Q7079419"
+      ]
+    },
+    {
+      "canonical_name": "Panel on Takeovers and Mergers",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Panel on Takeovers and Mergers is a financial regulatory authority in United Kingdom. UK government agency",
+      "aliases": [
+        "wikidata:Q7130827"
+      ]
+    },
+    {
+      "canonical_name": "Securities Market Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Securities Market Commission is a financial regulatory authority in Portugal. registration authority of Portugal",
+      "aliases": [
+        "wikidata:Q7232685"
+      ]
+    },
+    {
+      "canonical_name": "Prudential Regulation Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Prudential Regulation Authority is a financial regulatory authority in United Kingdom. United Kingdom financial services regulator",
+      "aliases": [
+        "wikidata:Q7252987"
+      ]
+    },
+    {
+      "canonical_name": "Securities Commission Malaysia",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Securities Commission Malaysia is a financial regulatory authority in Malaysia. statutory body",
+      "aliases": [
+        "wikidata:Q7444145"
+      ]
+    },
+    {
+      "canonical_name": "Securities and Exchange Surveillance Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Securities and Exchange Surveillance Commission is a financial regulatory authority. Japanese financial regulatory organization",
+      "aliases": [
+        "wikidata:Q7444929"
+      ]
+    },
+    {
+      "canonical_name": "Superannuation Complaints Tribunal",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Superannuation Complaints Tribunal is a financial regulatory authority in Australia. body dealing superannuation complaints",
+      "aliases": [
+        "wikidata:Q7643004"
+      ]
+    },
+    {
+      "canonical_name": "Financial Services Commission of Mauritius",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Services Commission of Mauritius is a financial regulatory authority. financial regulatory authority of Mauritius",
+      "aliases": [
+        "wikidata:Q8563189"
+      ]
+    },
+    {
+      "canonical_name": "Forward Markets Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Forward Markets Commission is a financial regulatory authority in India. part of the Indian Ministry of Finance",
+      "aliases": [
+        "wikidata:Q8564863"
+      ]
+    },
+    {
+      "canonical_name": "Dubai Financial Services Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Dubai Financial Services Authority is a financial regulatory authority. financial regulatory agency, Dubai",
+      "aliases": [
+        "wikidata:Q12216496"
+      ]
+    },
+    {
+      "canonical_name": "Malta Financial Services Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Malta Financial Services Authority is a financial regulatory authority in Malta. financial regulator of Malta",
+      "aliases": [
+        "wikidata:Q15833457"
+      ]
+    },
+    {
+      "canonical_name": "Comptroller General of the State",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Comptroller General of the State is a financial regulatory authority in Spain. position in the Ministry of the Treasury of Spain",
+      "aliases": [
+        "wikidata:Q16579506"
+      ]
+    },
+    {
+      "canonical_name": "California Department of Financial Protection and Innovation",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "California Department of Financial Protection and Innovation is a financial regulatory authority in United States. California state department",
+      "aliases": [
+        "wikidata:Q16850544"
+      ]
+    },
+    {
+      "canonical_name": "Investment Industry Regulatory Organization of Canada",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Investment Industry Regulatory Organization of Canada is a financial regulatory authority in Canada. Canadian regulatory organization",
+      "aliases": [
+        "wikidata:Q16987312"
+      ]
+    },
+    {
+      "canonical_name": "Securities and Exchange Commission of Pakistan",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Securities and Exchange Commission of Pakistan is a financial regulatory authority in Pakistan. Financial regulator in Pakistan",
+      "aliases": [
+        "wikidata:Q17018130"
+      ]
+    },
+    {
+      "canonical_name": "Indonesian Financial Services Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Indonesian Financial Services Authority is a financial regulatory authority. Indonesian company",
+      "aliases": [
+        "wikidata:Q17051470"
+      ]
+    },
+    {
+      "canonical_name": "Romanian Financial Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Romanian Financial Supervisory Authority is a financial regulatory authority in Romania. romanian financial regulatory agency",
+      "aliases": [
+        "wikidata:Q18537588"
+      ]
+    },
+    {
+      "canonical_name": "Anguilla Financial Services Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Anguilla Financial Services Commission is a financial regulatory authority. Organization based in Anguilla",
+      "aliases": [
+        "wikidata:Q19600188"
+      ]
+    },
+    {
+      "canonical_name": "International Financial Services Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "International Financial Services Commission is a financial regulatory authority in Belize. Securities and exchange commission of Belize",
+      "aliases": [
+        "wikidata:Q22905851"
+      ]
+    },
+    {
+      "canonical_name": "Banks Board Bureau",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Banks Board Bureau is a financial regulatory authority in India. an autonomous body of the Government of India",
+      "aliases": [
+        "wikidata:Q25589641"
+      ]
+    },
+    {
+      "canonical_name": "Insolvency and Bankruptcy Board of India",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Insolvency and Bankruptcy Board of India is a financial regulatory authority. Regulator of insolvency proceedings in India",
+      "aliases": [
+        "wikidata:Q28136938"
+      ]
+    },
+    {
+      "canonical_name": "Bureau des services financiers",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Bureau des services financiers is a financial regulatory authority. Quebec Financial Regulator Organization",
+      "aliases": [
+        "wikidata:Q29886635"
+      ]
+    },
+    {
+      "canonical_name": "China Banking and Insurance Regulatory Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "China Banking and Insurance Regulatory Commission is a financial regulatory authority in People's Republic of China. government agency",
+      "aliases": [
+        "wikidata:Q54870704"
+      ]
+    },
+    {
+      "canonical_name": "Federal Banking Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Federal Banking Commission is a financial regulatory authority.",
+      "aliases": [
+        "wikidata:Q1302489"
+      ]
+    },
+    {
+      "canonical_name": "Danish Financial Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Danish Financial Supervisory Authority is a financial regulatory authority in Denmark.",
+      "aliases": [
+        "wikidata:Q3437062"
+      ]
+    },
+    {
+      "canonical_name": "Canadian Investor Protection Fund",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Canadian Investor Protection Fund is a financial regulatory authority in Canada.",
+      "aliases": [
+        "wikidata:Q5030221"
+      ]
+    },
+    {
+      "canonical_name": "Comisión Nacional Bancaria y de Valores",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Comisión Nacional Bancaria y de Valores is a financial regulatory authority in Mexico.",
+      "aliases": [
+        "wikidata:Q5779137"
+      ]
+    },
+    {
+      "canonical_name": "Municipal Securities Rulemaking Board",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Municipal Securities Rulemaking Board is a financial regulatory authority in United States.",
+      "aliases": [
+        "wikidata:Q6936275"
+      ]
+    },
+    {
+      "canonical_name": "Auditing and Assurance Standards Board",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Auditing and Assurance Standards Board is a financial regulatory authority in Canada.",
+      "aliases": [
+        "wikidata:Q16835297"
+      ]
+    },
+    {
+      "canonical_name": "Chambre de l'assurance de dommages",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Chambre de l'assurance de dommages is a financial regulatory authority in Canada.",
+      "aliases": [
+        "wikidata:Q28494454"
+      ]
+    },
+    {
+      "canonical_name": "Financial Stability and Development Committee",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Stability and Development Committee is a financial regulatory authority.",
+      "aliases": [
+        "wikidata:Q48889836"
+      ]
+    },
+    {
+      "canonical_name": "Financial Market Supervisory Authority of Azerbaijan",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Financial Market Supervisory Authority of Azerbaijan is a financial regulatory authority.",
+      "aliases": [
+        "wikidata:Q55639715"
+      ]
+    }
+  ]
+}

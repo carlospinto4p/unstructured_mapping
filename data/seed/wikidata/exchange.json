@@ -1,0 +1,4623 @@
+{
+  "version": 1,
+  "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
+  "entities": [
+    {
+      "canonical_name": "Bratislava Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bratislava Stock Exchange is a stock exchange based in Slovakia. stock exchange located in Bratislava, Slovakia",
+      "aliases": [
+        "wikidata:Q74603"
+      ]
+    },
+    {
+      "canonical_name": "Luxembourg Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Luxembourg Stock Exchange is a stock exchange based in Luxembourg. registration authority",
+      "aliases": [
+        "wikidata:Q74662"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq is a stock exchange based in Sweden. American fully electronic stock exchange",
+      "aliases": [
+        "wikidata:Q82059"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq is a stock exchange based in United States. American fully electronic stock exchange",
+      "aliases": [
+        "wikidata:Q82059"
+      ]
+    },
+    {
+      "canonical_name": "New York Mercantile Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New York Mercantile Exchange is a stock exchange based in United States. commodity and futures exchange located in New York City, New York, United States",
+      "aliases": [
+        "wikidata:Q120233"
+      ]
+    },
+    {
+      "canonical_name": "Zagreb Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Zagreb Stock Exchange is a stock exchange based in Croatia. stock exchange located in Zagreb, Croatia",
+      "aliases": [
+        "wikidata:Q140388"
+      ]
+    },
+    {
+      "canonical_name": "Irish Stock Exchange - All Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Irish Stock Exchange - All Market is a stock exchange based in Ireland. stock exchange located in Dublin, Ireland",
+      "aliases": [
+        "wikidata:Q144458"
+      ]
+    },
+    {
+      "canonical_name": "Frankfurt Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Frankfurt Stock Exchange is a stock exchange based in Germany. stock exchange located in Frankfurt, Germany",
+      "aliases": [
+        "wikidata:Q151139"
+      ]
+    },
+    {
+      "canonical_name": "BayernLB",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BayernLB is a stock exchange based in Germany. company",
+      "aliases": [
+        "wikidata:Q152106"
+      ]
+    },
+    {
+      "canonical_name": "Commerzbank AG",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Commerzbank AG is a stock exchange based in Germany. major commercial bank",
+      "aliases": [
+        "wikidata:Q157617"
+      ]
+    },
+    {
+      "canonical_name": "Burgundy",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Burgundy is a stock exchange based in Norway. alternative stock exchange",
+      "aliases": [
+        "wikidata:Q4405553"
+      ]
+    },
+    {
+      "canonical_name": "Swaziland Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Swaziland Stock Exchange is a stock exchange based in Eswatini. Stock exchange located in Mbabane, Swaziland",
+      "aliases": [
+        "wikidata:Q4409921"
+      ]
+    },
+    {
+      "canonical_name": "Spokane Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Spokane Stock Exchange is a stock exchange. Former stock exchange in Spokane, US",
+      "aliases": [
+        "wikidata:Q4437992"
+      ]
+    },
+    {
+      "canonical_name": "Pacific Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Pacific Exchange is a stock exchange based in United States. regional stock exchange in California (1956–2006)",
+      "aliases": [
+        "wikidata:Q4458741"
+      ]
+    },
+    {
+      "canonical_name": "Ukrainian Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ukrainian Exchange is a stock exchange based in Ukraine. Registered market for equities and bonds",
+      "aliases": [
+        "wikidata:Q4470480"
+      ]
+    },
+    {
+      "canonical_name": "Moldova Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Moldova Stock Exchange is a stock exchange based in Moldova. stock exchange in Moldova",
+      "aliases": [
+        "wikidata:Q4491710"
+      ]
+    },
+    {
+      "canonical_name": "Aquis Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Aquis Stock Exchange is a stock exchange based in United Kingdom. defunct stock exchange from Montenegro",
+      "aliases": [
+        "wikidata:Q4491711"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Valores De Montevideo",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Valores De Montevideo is a stock exchange based in Uruguay. Stock exchange located in Montevideo, Uruguay",
+      "aliases": [
+        "wikidata:Q4491714"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Valores De Nicaragua",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Valores De Nicaragua is a stock exchange based in Nicaragua. Stock exchange located in Managua, Nicaragua",
+      "aliases": [
+        "wikidata:Q4491712"
+      ]
+    },
+    {
+      "canonical_name": "Stock Exchange Of Mauritius Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Stock Exchange Of Mauritius Ltd is a stock exchange based in Mauritius. stock exchange in Port Louis, Mauritius",
+      "aliases": [
+        "wikidata:Q4491713"
+      ]
+    },
+    {
+      "canonical_name": "Trinidad And Tobago Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Trinidad And Tobago Stock Exchange is a stock exchange based in Trinidad and Tobago. Stock exchange located in Port of Spain, Trinidad and Tobago",
+      "aliases": [
+        "wikidata:Q4491717"
+      ]
+    },
+    {
+      "canonical_name": "Central Japan Commodities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Central Japan Commodities Exchange is a stock exchange based in Japan. commodities exchange in Japan",
+      "aliases": [
+        "wikidata:Q4504097"
+      ]
+    },
+    {
+      "canonical_name": "Montenegro Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Montenegro Stock Exchange is a stock exchange based in Montenegro. Stock exchange located in Podgorica, Montenegro",
+      "aliases": [
+        "wikidata:Q4513926"
+      ]
+    },
+    {
+      "canonical_name": "Alberta Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Alberta Stock Exchange is a stock exchange based in Canada. defunct stock exchange in Calgary",
+      "aliases": [
+        "wikidata:Q4711828"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Divida e Valores De Angola (BODIVA) - Angola Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Divida e Valores De Angola (BODIVA) - Angola Securities Exchange is a stock exchange based in Angola. Regulated markets for securities trading",
+      "aliases": [
+        "wikidata:Q4763744"
+      ]
+    },
+    {
+      "canonical_name": "Arizona Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Arizona Stock Exchange is a stock exchange based in United States. former electronic enabled stock exchange",
+      "aliases": [
+        "wikidata:Q4791441"
+      ]
+    },
+    {
+      "canonical_name": "BELFOX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BELFOX is a stock exchange based in Belgium. derivatives exchange of Belgium",
+      "aliases": [
+        "wikidata:Q4835428"
+      ]
+    },
+    {
+      "canonical_name": "BMO Capital Markets Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BMO Capital Markets Limited is a stock exchange based in United Kingdom. American financial services provider",
+      "aliases": [
+        "wikidata:Q4835978"
+      ]
+    },
+    {
+      "canonical_name": "BMO Capital Markets Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BMO Capital Markets Limited is a stock exchange based in Canada. American financial services provider",
+      "aliases": [
+        "wikidata:Q4835978"
+      ]
+    },
+    {
+      "canonical_name": "Bahamas International Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bahamas International Securities Exchange is a stock exchange based in The Bahamas. Securities exchange located in Nassau, Bahamas",
+      "aliases": [
+        "wikidata:Q4842346"
+      ]
+    },
+    {
+      "canonical_name": "Barbados Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Barbados Stock Exchange is a stock exchange based in Barbados. Main market",
+      "aliases": [
+        "wikidata:Q4858621"
+      ]
+    },
+    {
+      "canonical_name": "Bendigo Stock Exchange Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bendigo Stock Exchange Limited is a stock exchange based in Australia. former small stock exchange in Australia",
+      "aliases": [
+        "wikidata:Q4887097"
+      ]
+    },
+    {
+      "canonical_name": "Bhubaneshwar Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bhubaneshwar Stock Exchange is a stock exchange based in India. defunct Indian regional exchange for financial securities",
+      "aliases": [
+        "wikidata:Q4902082"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa de Comercio de Bahía Blanca",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa de Comercio de Bahía Blanca is a stock exchange based in Argentina. Stock exchange and chamber of commerce located in the City of Bahía Blanca, Argentina",
+      "aliases": [
+        "wikidata:Q4940039"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa y Mercados de Valores de la República Dominicana",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa y Mercados de Valores de la República Dominicana is a stock exchange based in Dominican Republic. Stock Market located in Santo Domingo, Dominican Republic",
+      "aliases": [
+        "wikidata:Q4940041"
+      ]
+    },
+    {
+      "canonical_name": "BOX Options Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BOX Options Exchange is a stock exchange based in United States. Options exchange located in Boston, Massachusetts, United States",
+      "aliases": [
+        "wikidata:Q4948015"
+      ]
+    },
+    {
+      "canonical_name": "Bourse des Valeurs d'Abidjan",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bourse des Valeurs d'Abidjan is a stock exchange. Stock exchange in add other related wikiproject per [[WP:PROJSCOPE]]",
+      "aliases": [
+        "wikidata:Q4950351"
+      ]
+    },
+    {
+      "canonical_name": "Palestine Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Palestine Stock Exchange is a stock exchange based in Palestine. Stock exchange located in Nablus, State of Palestine",
+      "aliases": [
+        "wikidata:Q4992224"
+      ]
+    },
+    {
+      "canonical_name": "Canadian Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Canadian Securities Exchange is a stock exchange based in Canada. Formerly known as Pure (CSE other listed) formerly known as the Canadian National Stock Exchange (CNSX).",
+      "aliases": [
+        "wikidata:Q5013179"
+      ]
+    },
+    {
+      "canonical_name": "Cambodia Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cambodia Securities Exchange is a stock exchange based in Cambodia. national stock exchange of Cambodia",
+      "aliases": [
+        "wikidata:Q5025115"
+      ]
+    },
+    {
+      "canonical_name": "Cayman Islands Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cayman Islands Stock Exchange is a stock exchange based in Cayman Islands. Stock exchange located in Grand Cayman, Cayman Islands",
+      "aliases": [
+        "wikidata:Q5055359"
+      ]
+    },
+    {
+      "canonical_name": "Cayman Islands Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cayman Islands Stock Exchange is a stock exchange based in United Kingdom. Stock exchange located in Grand Cayman, Cayman Islands",
+      "aliases": [
+        "wikidata:Q5055359"
+      ]
+    },
+    {
+      "canonical_name": "CETIP S.A. - Mercados Organizados",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CETIP S.A. - Mercados Organizados is a stock exchange based in Brazil. Electronic trading, trade registration and financial settlement for transactions involving fixed income securities and OTC derivatives.",
+      "aliases": [
+        "wikidata:Q5065671"
+      ]
+    },
+    {
+      "canonical_name": "Channel Islands Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Channel Islands Stock Exchange is a stock exchange based in Guernsey. stock exchange",
+      "aliases": [
+        "wikidata:Q5072409"
+      ]
+    },
+    {
+      "canonical_name": "Coimbatore Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Coimbatore Stock Exchange is a stock exchange based in India. defunct stock exchange in India",
+      "aliases": [
+        "wikidata:Q5141510"
+      ]
+    },
+    {
+      "canonical_name": "Commodity Exchange Bratislava",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Commodity Exchange Bratislava is a stock exchange based in Slovakia. commodity exchange in Slovakia",
+      "aliases": [
+        "wikidata:Q5153151"
+      ]
+    },
+    {
+      "canonical_name": "Eastern Caribbean Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Eastern Caribbean Securities Exchange is a stock exchange based in Saint Kitts and Nevis. Regional securities market established by the Eastern Caribbean Central Bank, located in Basseterre, St. Kitts",
+      "aliases": [
+        "wikidata:Q5330044"
+      ]
+    },
+    {
+      "canonical_name": "Edinburgh Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Edinburgh Stock Exchange is a stock exchange based in United Kingdom. stock exchange in City of Edinburgh, Scotland, UK",
+      "aliases": [
+        "wikidata:Q5338265"
+      ]
+    },
+    {
+      "canonical_name": "Climex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Climex is a stock exchange based in Netherlands. energy contracts",
+      "aliases": [
+        "wikidata:Q5380042"
+      ]
+    },
+    {
+      "canonical_name": "The Faroese Securities Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Faroese Securities Market is a stock exchange based in Faroe Islands. the stock exchange of the Faroe Islands",
+      "aliases": [
+        "wikidata:Q5436092"
+      ]
+    },
+    {
+      "canonical_name": "Finesti S.A.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Finesti S.A. is a stock exchange based in Luxembourg. Formerly Centrale de Communications Luxembourg S.A. (CClux)",
+      "aliases": [
+        "wikidata:Q5450169"
+      ]
+    },
+    {
+      "canonical_name": "Fukuoka Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Fukuoka Stock Exchange is a stock exchange based in Japan. Stock exchange located in Fukuoka, Japan",
+      "aliases": [
+        "wikidata:Q5507703"
+      ]
+    },
+    {
+      "canonical_name": "Glasgow Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Glasgow Stock Exchange is a stock exchange based in United Kingdom. stock exchange in Glasgow City, Scotland, UK",
+      "aliases": [
+        "wikidata:Q5566927"
+      ]
+    },
+    {
+      "canonical_name": "Taipei Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Taipei Exchange is a stock exchange based in Taiwan. Foundation which serves the over-the-counter (OTC) market and bond trading of Taiwan",
+      "aliases": [
+        "wikidata:Q5598539"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong Growth Enterprises Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hong Kong Growth Enterprises Market is a stock exchange based in Hong Kong. board of the Hong Kong Stock Exchange",
+      "aliases": [
+        "wikidata:Q5611733"
+      ]
+    },
+    {
+      "canonical_name": "Geneva Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Geneva Stock Exchange is a stock exchange based in Switzerland. stock exchange in Geneva, Switzerland",
+      "aliases": [
+        "wikidata:Q60764114"
+      ]
+    },
+    {
+      "canonical_name": "China Foreign Exchange Trade System",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "China Foreign Exchange Trade System is a stock exchange based in People's Republic of China. Financial infrastructure and trading platform in China, affiliated with the PBOC",
+      "aliases": [
+        "wikidata:Q61161720"
+      ]
+    },
+    {
+      "canonical_name": "A2X",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "A2X is a stock exchange based in South Africa. South African stock exchange",
+      "aliases": [
+        "wikidata:Q65058525"
+      ]
+    },
+    {
+      "canonical_name": "Long-Term Stock Exchange, Inc.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Long-Term Stock Exchange, Inc. is a stock exchange based in United States. nationally-registered stock exchange",
+      "aliases": [
+        "wikidata:Q65069286"
+      ]
+    },
+    {
+      "canonical_name": "Borsa di Bologna",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Borsa di Bologna is a stock exchange. stock exchange in Bologna, Italy",
+      "aliases": [
+        "wikidata:Q65130035"
+      ]
+    },
+    {
+      "canonical_name": "Palermo stock exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Palermo stock exchange is a stock exchange based in Italy. former exchange, succeeded by the Italian Stock Exchange",
+      "aliases": [
+        "wikidata:Q65130248"
+      ]
+    },
+    {
+      "canonical_name": "42 Financial Services",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "42 Financial Services is a stock exchange based in Czech Republic. Czech company",
+      "aliases": [
+        "wikidata:Q67812730"
+      ]
+    },
+    {
+      "canonical_name": "Albania Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Albania Securities Exchange is a stock exchange based in Albania. All classes of securities",
+      "aliases": [
+        "wikidata:Q76186164"
+      ]
+    },
+    {
+      "canonical_name": "Bakkt",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bakkt is a stock exchange based in United States. Spot market for crypto currency and derivatives",
+      "aliases": [
+        "wikidata:Q83768717"
+      ]
+    },
+    {
+      "canonical_name": "Saint Vincent and the Grenadines Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Saint Vincent and the Grenadines Securities Exchange is a stock exchange based in Saint Vincent and the Grenadines. SVGEX is a private securities exchange platform for global private companies for listing.",
+      "aliases": [
+        "wikidata:Q85847135"
+      ]
+    },
+    {
+      "canonical_name": "Nxchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nxchange is a stock exchange based in Netherlands. trading platform (regulated market)",
+      "aliases": [
+        "wikidata:Q89211279"
+      ]
+    },
+    {
+      "canonical_name": "Assent ATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Assent ATS is a stock exchange based in United States. US equity Dark Pool operated by Assent, LLC - a Subsidiary of Sungard",
+      "aliases": [
+        "wikidata:Q93355251"
+      ]
+    },
+    {
+      "canonical_name": "ACE Derivatives & Commodity Exchange Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ACE Derivatives & Commodity Exchange Ltd is a stock exchange based in India. Derivatives exchange for commodities trading in India",
+      "aliases": [
+        "wikidata:Q93355255"
+      ]
+    },
+    {
+      "canonical_name": "Aqua Equities L.P.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Aqua Equities L.P. is a stock exchange based in United States. Registered market for block equities",
+      "aliases": [
+        "wikidata:Q93355266"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Cereales De Buenos Aires",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Cereales De Buenos Aires is a stock exchange based in Argentina. Commodity exchange",
+      "aliases": [
+        "wikidata:Q93355277"
+      ]
+    },
+    {
+      "canonical_name": "Bank Of America - Merrill Lynch Instinct X ATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bank Of America - Merrill Lynch Instinct X ATS is a stock exchange based in United States. Registered ATS (ATS 2)",
+      "aliases": [
+        "wikidata:Q93355287"
+      ]
+    },
+    {
+      "canonical_name": "Baltpool",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Baltpool is a stock exchange based in Lithuania. electricity market operator of Lithuania",
+      "aliases": [
+        "wikidata:Q93355294"
+      ]
+    },
+    {
+      "canonical_name": "Barclays ATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Barclays ATS is a stock exchange based in United States. Registered ATS",
+      "aliases": [
+        "wikidata:Q93355297"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Cereais E Mercadorias De Maringá",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Cereais E Mercadorias De Maringá is a stock exchange based in Brazil. Commodities market",
+      "aliases": [
+        "wikidata:Q93355305"
+      ]
+    },
+    {
+      "canonical_name": "Bahrain Financial Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bahrain Financial Exchange is a stock exchange based in Bahrain. The BFX is the first multi-asset class exchange in the Middle East region and will be internationally accessible to trade cash instruments, structured products and sharia-compliant financial instruments as well as derivatives.",
+      "aliases": [
+        "wikidata:Q93355313"
+      ]
+    },
+    {
+      "canonical_name": "Cinnober Boat",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cinnober Boat is a stock exchange based in United Kingdom. OTC equities trade reporting platform",
+      "aliases": [
+        "wikidata:Q93355338"
+      ]
+    },
+    {
+      "canonical_name": "Brazilian Energy Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Brazilian Energy Exchange is a stock exchange based in Brazil. Electronic trading platform for OTC derivatives",
+      "aliases": [
+        "wikidata:Q93355345"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa Electronica De Valores Del Uruguay",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa Electronica De Valores Del Uruguay is a stock exchange based in Uruguay. Registered electronic stock exchange.",
+      "aliases": [
+        "wikidata:Q93355351"
+      ]
+    },
+    {
+      "canonical_name": "CATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CATS is a stock exchange based in Germany. Electronic Trading Platform (ETP) for structured products.Owner changed from Citigroup to Boerse Stuttgart",
+      "aliases": [
+        "wikidata:Q93355362"
+      ]
+    },
+    {
+      "canonical_name": "Citigroup Global Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Citigroup Global Markets is a stock exchange based in United States. stock exchange",
+      "aliases": [
+        "wikidata:Q93355376"
+      ]
+    },
+    {
+      "canonical_name": "CBOE Australia",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CBOE Australia is a stock exchange based in Australia. stock exchange in Australia",
+      "aliases": [
+        "wikidata:Q93355385"
+      ]
+    },
+    {
+      "canonical_name": "Chi-X Canada ATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Chi-X Canada ATS is a stock exchange based in Canada. Market model focused on equal opportunity trading and market-level innovation to drive growth in the Canadian equity market",
+      "aliases": [
+        "wikidata:Q93355391"
+      ]
+    },
+    {
+      "canonical_name": "Chi-X Japan",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Chi-X Japan is a stock exchange based in Japan. Market for Japanese equities and ETF, electronic trading platform.",
+      "aliases": [
+        "wikidata:Q93355395"
+      ]
+    },
+    {
+      "canonical_name": "Citi Match - JP",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Citi Match - JP is a stock exchange based in Japan. Citimatch PTS (Proprietary Trading System) license in japan.",
+      "aliases": [
+        "wikidata:Q93355399"
+      ]
+    },
+    {
+      "canonical_name": "Cleartrade Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cleartrade Exchange is a stock exchange based in Singapore. Fully integrated futures execution platform regulated by the Monetary Authority of Singapore as a RMO). it also offers an electronic trading platform for OTC cleared commodity swaps which is fully integrated to partner clearing houses",
+      "aliases": [
+        "wikidata:Q93355403"
+      ]
+    },
+    {
+      "canonical_name": "La Cote Alpha",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "La Cote Alpha is a stock exchange based in France. Source of prices for investment funds",
+      "aliases": [
+        "wikidata:Q93355408"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Bank Hong Kong ATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Deutsche Bank Hong Kong ATS is a stock exchange based in Hong Kong. Alternative trading system for trading asian exchange-traded equity products",
+      "aliases": [
+        "wikidata:Q93355417"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Bank Off Exchange Trading",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Deutsche Bank Off Exchange Trading is a stock exchange based in Germany. Deutsche Bank AG electronic off-exchange trading platform",
+      "aliases": [
+        "wikidata:Q93355421"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Bank Super X",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Deutsche Bank Super X is a stock exchange based in United States. Registered ATS for equities. This MIC code is a global product with having a presence in US (New York), UK (London) and APAC (Hong Kong)",
+      "aliases": [
+        "wikidata:Q93355424"
+      ]
+    },
+    {
+      "canonical_name": "DCX (Derivatives Currency Exchange)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "DCX (Derivatives Currency Exchange) is a stock exchange based in United States. Multi-bank electronic trading platform for FX options",
+      "aliases": [
+        "wikidata:Q93355431"
+      ]
+    },
+    {
+      "canonical_name": "E-OTC",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "E-OTC is a stock exchange based in Hong Kong. Internet-based bulletin board for posting indications of interest in buying and selling OTC derivatives, primarily focused on credit default swaps.",
+      "aliases": [
+        "wikidata:Q93355892"
+      ]
+    },
+    {
+      "canonical_name": "ETS Eurasian Trading System Commodity Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ETS Eurasian Trading System Commodity Exchange is a stock exchange based in Kazakhstan. The regional financial centre of Almaty City (RFCA) and OJSC \"Russian trading system\" stock exchange have set up a commodity exchange, jsc \"eurasian trading system\" headquartered in Almaty, Kazakhstan.",
+      "aliases": [
+        "wikidata:Q93355897"
+      ]
+    },
+    {
+      "canonical_name": "Euronext FX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Euronext FX is a stock exchange based in United States. Electronic trading platform for OTC foreign exchange products",
+      "aliases": [
+        "wikidata:Q93355904"
+      ]
+    },
+    {
+      "canonical_name": "Gate US Llc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Gate US Llc is a stock exchange based in United States. Alternative trading system",
+      "aliases": [
+        "wikidata:Q93355931"
+      ]
+    },
+    {
+      "canonical_name": "Govex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Govex is a stock exchange based in United States. Trading platform for US treasury securities - operated by State Street",
+      "aliases": [
+        "wikidata:Q93355932"
+      ]
+    },
+    {
+      "canonical_name": "The Green Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Green Exchange is a stock exchange based in United States. Electronic trading platform for various environmental contracts",
+      "aliases": [
+        "wikidata:Q93355937"
+      ]
+    },
+    {
+      "canonical_name": "KCG Americas Llc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "KCG Americas Llc is a stock exchange based in United States. Registered ATS for trading US cash equities. FINRA member and reg ATS on file with the SEC",
+      "aliases": [
+        "wikidata:Q93355941"
+      ]
+    },
+    {
+      "canonical_name": "HSBC-X Hong Kong",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "HSBC-X Hong Kong is a stock exchange based in Hong Kong. Trading platform which is specifically trading Asia Pacific cash equities with the focus of Hong Kong cash equities.",
+      "aliases": [
+        "wikidata:Q93355962"
+      ]
+    },
+    {
+      "canonical_name": "Daiwa Drect",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Daiwa Drect is a stock exchange based in Japan. Daiwa equities electronic crossing platform",
+      "aliases": [
+        "wikidata:Q93355968"
+      ]
+    },
+    {
+      "canonical_name": "Indian Commodity Exchange Ltd.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Indian Commodity Exchange Ltd. is a stock exchange based in India. screen-based online derivatives exchange for commodities",
+      "aliases": [
+        "wikidata:Q93355974"
+      ]
+    },
+    {
+      "canonical_name": "CBOE Europe Equities",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CBOE Europe Equities is a stock exchange based in United Kingdom. Pan-european recognised investment exchange",
+      "aliases": [
+        "wikidata:Q93355972"
+      ]
+    },
+    {
+      "canonical_name": "ICE Futures Europe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ICE Futures Europe is a stock exchange based in United Kingdom. Electronic platform to trade futures and options products.",
+      "aliases": [
+        "wikidata:Q93355979"
+      ]
+    },
+    {
+      "canonical_name": "ISWAP UK MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ISWAP UK MTF is a stock exchange based in United Kingdom. Authorised MTF for Euro Interest Rate Swaps.",
+      "aliases": [
+        "wikidata:Q93355980"
+      ]
+    },
+    {
+      "canonical_name": "ITG - Posit",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ITG - Posit is a stock exchange based in United States. an ATSS",
+      "aliases": [
+        "wikidata:Q93355986"
+      ]
+    },
+    {
+      "canonical_name": "Amsterdam Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Amsterdam Stock Exchange is a stock exchange based in Netherlands. stock exchange located in Amsterdam, Netherlands",
+      "aliases": [
+        "wikidata:Q478720"
+      ]
+    },
+    {
+      "canonical_name": "Dar es Salaam Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dar es Salaam Stock Exchange is a stock exchange based in Tanzania. stock exchange located in Dar es Salaam, Tanzania",
+      "aliases": [
+        "wikidata:Q490028"
+      ]
+    },
+    {
+      "canonical_name": "Bourse Regionale Des Valeurs Mobilieres",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bourse Regionale Des Valeurs Mobilieres is a stock exchange based in Ivory Coast. Stock exchange located in Abidjan, Ivory Coast",
+      "aliases": [
+        "wikidata:Q491031"
+      ]
+    },
+    {
+      "canonical_name": "Uganda Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Uganda Securities Exchange is a stock exchange based in Uganda. principal stock exchange of Uganda",
+      "aliases": [
+        "wikidata:Q492316"
+      ]
+    },
+    {
+      "canonical_name": "Korea Exchange (Stock Market)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Korea Exchange (Stock Market) is a stock exchange based in South Korea. stock market",
+      "aliases": [
+        "wikidata:Q495364"
+      ]
+    },
+    {
+      "canonical_name": "Korean Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Korean Stock Exchange is a stock exchange based in South Korea. securities exchange operator in South Korea",
+      "aliases": [
+        "wikidata:Q495372"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hong Kong Stock Exchange is a stock exchange based in People's Republic of China. stock exchange based in Hong Kong, operating under Hong Kong’s distinct regulatory framework, which allows greater access to foreign investors",
+      "aliases": [
+        "wikidata:Q496672"
+      ]
+    },
+    {
+      "canonical_name": "Vontobel Liquidity Extender",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Vontobel Liquidity Extender is a stock exchange based in Switzerland. Internal market",
+      "aliases": [
+        "wikidata:Q502421"
+      ]
+    },
+    {
+      "canonical_name": "Shenzhen Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Shenzhen Stock Exchange is a stock exchange based in People's Republic of China. stock exchange in the People's Republic of China",
+      "aliases": [
+        "wikidata:Q517750"
+      ]
+    },
+    {
+      "canonical_name": "Taiwan Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Taiwan Stock Exchange is a stock exchange based in Taiwan. financial institution located in Taipei, Taiwan",
+      "aliases": [
+        "wikidata:Q548621"
+      ]
+    },
+    {
+      "canonical_name": "Belgrade Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Belgrade Stock Exchange is a stock exchange based in Serbia. stock exchange located in Belgrade, Serbia",
+      "aliases": [
+        "wikidata:Q550050"
+      ]
+    },
+    {
+      "canonical_name": "somalia stock exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "somalia stock exchange is a stock exchange based in Somalia. national bourse in Somalia",
+      "aliases": [
+        "wikidata:Q17070547"
+      ]
+    },
+    {
+      "canonical_name": "Scottish Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Scottish Stock Exchange is a stock exchange based in United Kingdom. stock exchange in Scotland",
+      "aliases": [
+        "wikidata:Q17079610"
+      ]
+    },
+    {
+      "canonical_name": "Singapore Mercantile Exchange Pte Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Singapore Mercantile Exchange Pte Ltd is a stock exchange based in Singapore. SMX is Asia's first multi-product global commodity derivatives exchange.",
+      "aliases": [
+        "wikidata:Q17125759"
+      ]
+    },
+    {
+      "canonical_name": "Automated Equity Finance Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Automated Equity Finance Markets is a stock exchange based in United States. ATS for stock lending and borrowing",
+      "aliases": [
+        "wikidata:Q17146849"
+      ]
+    },
+    {
+      "canonical_name": "CanDeal.ca Inc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CanDeal.ca Inc is a stock exchange based in Canada. CanDeal is an electronic trading platform for fixed income securities and derivatives. It operates an Alternative Trading System (ATS) in Canada and is regulated by the Canadian Securities Administrators under National Instrument 21-101.",
+      "aliases": [
+        "wikidata:Q17152597"
+      ]
+    },
+    {
+      "canonical_name": "Morgan Stanley MUFG Securities Co.,  Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Morgan Stanley MUFG Securities Co.,  Ltd is a stock exchange based in Japan. Morgan Stanley’s securities joint venture with Mitsubishi UFJ financial group in Japan",
+      "aliases": [
+        "wikidata:Q17230560"
+      ]
+    },
+    {
+      "canonical_name": "Jane Street Capital",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Jane Street Capital is a stock exchange based in United States. wholesaling platform",
+      "aliases": [
+        "wikidata:Q17630723"
+      ]
+    },
+    {
+      "canonical_name": "TOM",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "TOM is a stock exchange based in Netherlands. former Dutch stock exchange",
+      "aliases": [
+        "wikidata:Q18088773"
+      ]
+    },
+    {
+      "canonical_name": "FXAll",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "FXAll is a stock exchange based in United States. Foreign exchange aggregator",
+      "aliases": [
+        "wikidata:Q18150157"
+      ]
+    },
+    {
+      "canonical_name": "Galaxy",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Galaxy is a stock exchange based in France. Multilateral trading facility for Euro-denominated government and corporate bonds",
+      "aliases": [
+        "wikidata:Q18157247"
+      ]
+    },
+    {
+      "canonical_name": "Galaxy",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Galaxy is a stock exchange based in United States. Multilateral trading facility for Euro-denominated government and corporate bonds",
+      "aliases": [
+        "wikidata:Q18157247"
+      ]
+    },
+    {
+      "canonical_name": "Two Sigma",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Two Sigma is a stock exchange based in United States. investment firm",
+      "aliases": [
+        "wikidata:Q18355352"
+      ]
+    },
+    {
+      "canonical_name": "Romanian Power Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Romanian Power Market is a stock exchange based in Romania. Romanian power market operator (OPCOM).",
+      "aliases": [
+        "wikidata:Q18544563"
+      ]
+    },
+    {
+      "canonical_name": "Tabriz Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tabriz Stock Exchange is a stock exchange based in Iran. Stock exchange located in Tabriz, Iran",
+      "aliases": [
+        "wikidata:Q18643578"
+      ]
+    },
+    {
+      "canonical_name": "Tradeweb Llc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tradeweb Llc is a stock exchange based in United Kingdom. American financial services company",
+      "aliases": [
+        "wikidata:Q18754966"
+      ]
+    },
+    {
+      "canonical_name": "Tradeweb Llc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tradeweb Llc is a stock exchange based in United States. American financial services company",
+      "aliases": [
+        "wikidata:Q18754966"
+      ]
+    },
+    {
+      "canonical_name": "Yangon Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Yangon Stock Exchange is a stock exchange based in Myanmar. financial building in Yangon, Myanmar",
+      "aliases": [
+        "wikidata:Q20992132"
+      ]
+    },
+    {
+      "canonical_name": "Flow Traders",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Flow Traders is a stock exchange based in Netherlands. Dutch company",
+      "aliases": [
+        "wikidata:Q21009903"
+      ]
+    },
+    {
+      "canonical_name": "Consolidated Stock Exchange of New York",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Consolidated Stock Exchange of New York is a stock exchange based in United States. Former US stock exchange",
+      "aliases": [
+        "wikidata:Q21070704"
+      ]
+    },
+    {
+      "canonical_name": "El Salvador Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "El Salvador Stock Exchange is a stock exchange based in El Salvador. stock exchange located in Santa Tecla, La Libertad, El Salvador",
+      "aliases": [
+        "wikidata:Q21071009"
+      ]
+    },
+    {
+      "canonical_name": "Equilend Europe Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Equilend Europe Limited is a stock exchange based in United Kingdom. Multilateral trading facility (MTF) for securities financing",
+      "aliases": [
+        "wikidata:Q21072594"
+      ]
+    },
+    {
+      "canonical_name": "Equilend Europe Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Equilend Europe Limited is a stock exchange based in United States. Multilateral trading facility (MTF) for securities financing",
+      "aliases": [
+        "wikidata:Q21072594"
+      ]
+    },
+    {
+      "canonical_name": "Equilend Europe Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Equilend Europe Limited is a stock exchange based in Ireland. Multilateral trading facility (MTF) for securities financing",
+      "aliases": [
+        "wikidata:Q21072594"
+      ]
+    },
+    {
+      "canonical_name": "Pirum",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Pirum is a stock exchange based in United Kingdom. Securities lending CCP flow provider",
+      "aliases": [
+        "wikidata:Q21597594"
+      ]
+    },
+    {
+      "canonical_name": "Pakistan Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Pakistan Stock Exchange is a stock exchange based in Pakistan. Merger of the three stock exchanges in Pakistan. PSX successfully started to operate from January 11, 2016, onwards.",
+      "aliases": [
+        "wikidata:Q22907578"
+      ]
+    },
+    {
+      "canonical_name": "Hungarian Power Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hungarian Power Exchange is a stock exchange based in Hungary. energy exchange in Hungary",
+      "aliases": [
+        "wikidata:Q22909085"
+      ]
+    },
+    {
+      "canonical_name": "National Equities Exchange And Quotations",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "National Equities Exchange And Quotations is a stock exchange based in People's Republic of China. equities exchange",
+      "aliases": [
+        "wikidata:Q23308122"
+      ]
+    },
+    {
+      "canonical_name": "Seattle Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Seattle Stock Exchange is a stock exchange based in United States. Regional stock exchange in Washington, US",
+      "aliases": [
+        "wikidata:Q24260672"
+      ]
+    },
+    {
+      "canonical_name": "East Africa Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "East Africa Exchange is a stock exchange based in Rwanda. stock exchange in Kigali, Rwanda - East Africa",
+      "aliases": [
+        "wikidata:Q24911104"
+      ]
+    },
+    {
+      "canonical_name": "MERJ Exchange Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "MERJ Exchange Limited is a stock exchange based in Seychelles. Securities exchange offering a multi-asset, multi-currency trading platform. Offer issuers listing services on three boards-main board, small and medium enterprise (SME) board and venture capital (VCap) board.",
+      "aliases": [
+        "wikidata:Q25212170"
+      ]
+    },
+    {
+      "canonical_name": "Hudson River Trading",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hudson River Trading is a stock exchange based in United States. Single dealer platform",
+      "aliases": [
+        "wikidata:Q25245262"
+      ]
+    },
+    {
+      "canonical_name": "Central Eastern European Gas Exchange Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Central Eastern European Gas Exchange Ltd is a stock exchange based in Hungary. CEEGEX is an organised natural gas market providing services for the gas market players within the European Economic Area (EEA).",
+      "aliases": [
+        "wikidata:Q25452293"
+      ]
+    },
+    {
+      "canonical_name": "K-OTC",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "K-OTC is a stock exchange based in South Korea. dealer network run by the Korea Financial Investment Association (Kofia)",
+      "aliases": [
+        "wikidata:Q27953248"
+      ]
+    },
+    {
+      "canonical_name": "India International Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "India International Exchange is a stock exchange based in India. India's first international stock exchange",
+      "aliases": [
+        "wikidata:Q28419378"
+      ]
+    },
+    {
+      "canonical_name": "Natwest Markets NV",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Natwest Markets NV is a stock exchange based in United Kingdom. investment banking arm of The Royal Bank of Scotland Group",
+      "aliases": [
+        "wikidata:Q28963183"
+      ]
+    },
+    {
+      "canonical_name": "Natwest Markets NV",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Natwest Markets NV is a stock exchange based in Netherlands. investment banking arm of The Royal Bank of Scotland Group",
+      "aliases": [
+        "wikidata:Q28963183"
+      ]
+    },
+    {
+      "canonical_name": "New-York Petroleum Exchange and Stock Board",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New-York Petroleum Exchange and Stock Board is a stock exchange based in United States. former U.S. stock exchange",
+      "aliases": [
+        "wikidata:Q29094335"
+      ]
+    },
+    {
+      "canonical_name": "Baltimore Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Baltimore Stock Exchange is a stock exchange. regional stock exchange based in Baltimore, Maryland, US",
+      "aliases": [
+        "wikidata:Q29098199"
+      ]
+    },
+    {
+      "canonical_name": "MEMX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "MEMX is a stock exchange based in United States. company in Sunnyvale, United States",
+      "aliases": [
+        "wikidata:Q30290565"
+      ]
+    },
+    {
+      "canonical_name": "Intermountain Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Intermountain Stock Exchange is a stock exchange based in United States. defunct stock exchange",
+      "aliases": [
+        "wikidata:Q30642151"
+      ]
+    },
+    {
+      "canonical_name": "Los Angeles Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Los Angeles Stock Exchange is a stock exchange based in United States. defunct regional stock exchange in Los Angeles, California",
+      "aliases": [
+        "wikidata:Q30642442"
+      ]
+    },
+    {
+      "canonical_name": "San Francisco Curb Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "San Francisco Curb Exchange is a stock exchange based in United States. San Fransico Curb Exchange Organisation",
+      "aliases": [
+        "wikidata:Q30643136"
+      ]
+    },
+    {
+      "canonical_name": "OTP banka",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "OTP banka is a stock exchange based in Croatia. Croatian bank",
+      "aliases": [
+        "wikidata:Q31198593"
+      ]
+    },
+    {
+      "canonical_name": "Cboe Canada",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cboe Canada is a stock exchange based in Canada. Canadian Stock Exchange",
+      "aliases": [
+        "wikidata:Q39052382"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa Institucional de Valores",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa Institucional de Valores is a stock exchange based in Mexico. stock exchange",
+      "aliases": [
+        "wikidata:Q39059835"
+      ]
+    },
+    {
+      "canonical_name": "Metropolitan Stock Exchange of India Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Metropolitan Stock Exchange of India Limited is a stock exchange based in India. India's new stock exchange, launched October 7, 2008. Regulated by Securities & Exchange Board Of India (SEBI)",
+      "aliases": [
+        "wikidata:Q43080281"
+      ]
+    },
+    {
+      "canonical_name": "360T",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "360T is a stock exchange based in Germany. Provider of web-based trading technology",
+      "aliases": [
+        "wikidata:Q43236848"
+      ]
+    },
+    {
+      "canonical_name": "Instinet",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Instinet is a stock exchange based in United States. financial brokerage company in New York, part of Nomura Group",
+      "aliases": [
+        "wikidata:Q1651946"
+      ]
+    },
+    {
+      "canonical_name": "Indonesia Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Indonesia Stock Exchange is a stock exchange based in Indonesia. Merger of Jakarta (JSX) and Surabaya (SSX) stock exchanges",
+      "aliases": [
+        "wikidata:Q1661737"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Iceland Hf.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Iceland Hf. is a stock exchange based in Iceland. stock exchange located in Reykjavík, Iceland",
+      "aliases": [
+        "wikidata:Q1674303"
+      ]
+    },
+    {
+      "canonical_name": "Tokyo Stock Exchange Jasdaq",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tokyo Stock Exchange Jasdaq is a stock exchange based in Japan. former stock exchange in Japan",
+      "aliases": [
+        "wikidata:Q1683760"
+      ]
+    },
+    {
+      "canonical_name": "Kazakhstan Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Kazakhstan Stock Exchange is a stock exchange based in Kazakhstan. Stock exchange located in Almaty, Kazakhstan",
+      "aliases": [
+        "wikidata:Q1734773"
+      ]
+    },
+    {
+      "canonical_name": "Prague Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Prague Stock Exchange is a stock exchange based in Czech Republic. the largest securities market organizer in the Czech Republic",
+      "aliases": [
+        "wikidata:Q1752646"
+      ]
+    },
+    {
+      "canonical_name": "Mongolian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mongolian Stock Exchange is a stock exchange based in Mongolia. stock exchange located in Ulaanbaatar, Mongolia",
+      "aliases": [
+        "wikidata:Q1752885"
+      ]
+    },
+    {
+      "canonical_name": "LCH Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "LCH Ltd is a stock exchange based in United Kingdom. financial market infrastructure company",
+      "aliases": [
+        "wikidata:Q1797919"
+      ]
+    },
+    {
+      "canonical_name": "Tehran Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tehran Stock Exchange is a stock exchange based in Iran. Iranian stock exchange",
+      "aliases": [
+        "wikidata:Q1805567"
+      ]
+    },
+    {
+      "canonical_name": "Sydney Stock Exchange Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Sydney Stock Exchange Limited is a stock exchange based in Australia. stock exchange based in Sydney, Australia",
+      "aliases": [
+        "wikidata:Q1817538"
+      ]
+    },
+    {
+      "canonical_name": "Ljubljana Stock Exchange (Official Market)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ljubljana Stock Exchange (Official Market) is a stock exchange based in Slovenia. Stock exchange located in Ljubljana, Slovenia",
+      "aliases": [
+        "wikidata:Q1866749"
+      ]
+    },
+    {
+      "canonical_name": "London Platinum And Palladium Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "London Platinum And Palladium Market is a stock exchange based in United Kingdom. platinum and palladium market",
+      "aliases": [
+        "wikidata:Q1868997"
+      ]
+    },
+    {
+      "canonical_name": "Lusaka Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Lusaka Stock Exchange is a stock exchange based in Zambia. Stock exchange located in Lusaka, Zambia",
+      "aliases": [
+        "wikidata:Q1877680"
+      ]
+    },
+    {
+      "canonical_name": "OTC Markets Group",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "OTC Markets Group is a stock exchange based in United States. American financial market providing price and liquidity information for over-the-counter securities",
+      "aliases": [
+        "wikidata:Q1930860"
+      ]
+    },
+    {
+      "canonical_name": "Bahrain Bourse",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bahrain Bourse is a stock exchange based in Bahrain. Stock Exchange in Bahrain",
+      "aliases": [
+        "wikidata:Q1972649"
+      ]
+    },
+    {
+      "canonical_name": "Dubai Financial Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dubai Financial Market is a stock exchange based in United Arab Emirates. Stock exchange located in Dubai, United Arab Emirates",
+      "aliases": [
+        "wikidata:Q1973019"
+      ]
+    },
+    {
+      "canonical_name": "Dhaka Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dhaka Stock Exchange is a stock exchange based in Bangladesh. Stock exchange located in Dhaka, Bangladesh",
+      "aliases": [
+        "wikidata:Q1974408"
+      ]
+    },
+    {
+      "canonical_name": "Georgian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Georgian Stock Exchange is a stock exchange based in Georgia. Stock exchange located in Tbilisi, Georgia",
+      "aliases": [
+        "wikidata:Q1975312"
+      ]
+    },
+    {
+      "canonical_name": "Swiss Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Swiss Stock Exchange is a stock exchange based in Switzerland. Switzerland's main stock exchange",
+      "aliases": [
+        "wikidata:Q661834"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Stoxx Limited is a stock exchange based in Switzerland. globally integrated index provider",
+      "aliases": [
+        "wikidata:Q681317"
+      ]
+    },
+    {
+      "canonical_name": "Börse München",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Börse München is a stock exchange based in Germany. Stock exchange located in Munich, Germany",
+      "aliases": [
+        "wikidata:Q681683"
+      ]
+    },
+    {
+      "canonical_name": "Armenia Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Armenia Stock Exchange is a stock exchange based in Armenia. Stock exchange located in Yerevan, Armenia",
+      "aliases": [
+        "wikidata:Q683787"
+      ]
+    },
+    {
+      "canonical_name": "Wiener Boerse AG",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Wiener Boerse AG is a stock exchange based in Austria. stock exchange in Vienna, Austria",
+      "aliases": [
+        "wikidata:Q698535"
+      ]
+    },
+    {
+      "canonical_name": "Australian Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Australian Securities Exchange is a stock exchange based in Australia. public company that operates Australia's primary securities exchange",
+      "aliases": [
+        "wikidata:Q732670"
+      ]
+    },
+    {
+      "canonical_name": "Shanghai Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Shanghai Stock Exchange is a stock exchange based in People's Republic of China. stock exchange based in Shanghai, China",
+      "aliases": [
+        "wikidata:Q739514"
+      ]
+    },
+    {
+      "canonical_name": "Athens Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Athens Stock Exchange is a stock exchange based in Greece. stock exchange located in Athens, Greece",
+      "aliases": [
+        "wikidata:Q755341"
+      ]
+    },
+    {
+      "canonical_name": "Turquoise",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Turquoise is a stock exchange based in United Kingdom. equities trading platform",
+      "aliases": [
+        "wikidata:Q774731"
+      ]
+    },
+    {
+      "canonical_name": "BATS Global Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BATS Global Markets is a stock exchange based in United States. Stock exchange located in Lenexa, Kansas",
+      "aliases": [
+        "wikidata:Q795469"
+      ]
+    },
+    {
+      "canonical_name": "ODDO BHF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ODDO BHF is a stock exchange based in Germany. German private bank based in Frankfurt am Main",
+      "aliases": [
+        "wikidata:Q795936"
+      ]
+    },
+    {
+      "canonical_name": "Boerse Stuttgart",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Boerse Stuttgart is a stock exchange based in Germany. Stock exchange located in Stuttgart, Germany",
+      "aliases": [
+        "wikidata:Q558524"
+      ]
+    },
+    {
+      "canonical_name": "Boerse Hamburg - Regulierter Markt",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Boerse Hamburg - Regulierter Markt is a stock exchange based in Germany. Stock exchange located in Hamburg, Germany",
+      "aliases": [
+        "wikidata:Q558551"
+      ]
+    },
+    {
+      "canonical_name": "Boerse Berlin",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Boerse Berlin is a stock exchange based in Germany. Stock exchange located in Berlin, Germany",
+      "aliases": [
+        "wikidata:Q571760"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Helsinki Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Helsinki Ltd is a stock exchange based in Finland. stock exchange located in Helsinki, Finland",
+      "aliases": [
+        "wikidata:Q581755"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Vilnius, AB",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Vilnius, AB is a stock exchange based in Lithuania. public company based in Lithuania",
+      "aliases": [
+        "wikidata:Q600958"
+      ]
+    },
+    {
+      "canonical_name": "Bolsas y Mercados Españoles",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsas y Mercados Españoles is a stock exchange based in Spain. Spanish Stock Exchange broker",
+      "aliases": [
+        "wikidata:Q609159"
+      ]
+    },
+    {
+      "canonical_name": "Madrid Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Madrid Stock Exchange is a stock exchange based in Spain. stock exchange in Madrid, Spain",
+      "aliases": [
+        "wikidata:Q617426"
+      ]
+    },
+    {
+      "canonical_name": "New Zealand Exchange Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New Zealand Exchange Ltd is a stock exchange based in New Zealand. national stock exchange for New Zealand",
+      "aliases": [
+        "wikidata:Q627019"
+      ]
+    },
+    {
+      "canonical_name": "Johannesburg Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Johannesburg Stock Exchange is a stock exchange based in South Africa. stock exchange in Johannesburg, South Africa",
+      "aliases": [
+        "wikidata:Q627514"
+      ]
+    },
+    {
+      "canonical_name": "Bombay Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bombay Stock Exchange is a stock exchange based in India. Indian stock exchange in Mumbai",
+      "aliases": [
+        "wikidata:Q638398"
+      ]
+    },
+    {
+      "canonical_name": "National Stock Exchange of India",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "National Stock Exchange of India is a stock exchange based in India. stock exchange in Mumbai, India",
+      "aliases": [
+        "wikidata:Q638740"
+      ]
+    },
+    {
+      "canonical_name": "Guwahati Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Guwahati Stock Exchange is a stock exchange based in India. stock exchange located in Gauhati, Assam",
+      "aliases": [
+        "wikidata:Q5622003"
+      ]
+    },
+    {
+      "canonical_name": "The Guyana Association Of Securities Companies And Intermediaries Inc.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Guyana Association Of Securities Companies And Intermediaries Inc. is a stock exchange based in Guyana. This company is the local stock exchange that organises and supervises the stock market in Guyana.",
+      "aliases": [
+        "wikidata:Q5622746"
+      ]
+    },
+    {
+      "canonical_name": "Haitian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Haitian Stock Exchange is a stock exchange based in Haiti. Stock exchange located in Port-au-Prince, Haiti",
+      "aliases": [
+        "wikidata:Q5639731"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa de Valores Nacional",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa de Valores Nacional is a stock exchange based in Guatemala. Guatemalan stock exchange",
+      "aliases": [
+        "wikidata:Q5672209"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Corredores - Bolsa De Valores",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Corredores - Bolsa De Valores is a stock exchange based in Chile. Equity and bond market",
+      "aliases": [
+        "wikidata:Q5731659"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong Mercantile Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hong Kong Mercantile Exchange is a stock exchange based in Hong Kong. Hong Kong electronic securities trading company",
+      "aliases": [
+        "wikidata:Q5894850"
+      ]
+    },
+    {
+      "canonical_name": "Hong Kong Mercantile Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hong Kong Mercantile Exchange is a stock exchange based in People's Republic of China. Hong Kong electronic securities trading company",
+      "aliases": [
+        "wikidata:Q5894850"
+      ]
+    },
+    {
+      "canonical_name": "Ibercaja",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ibercaja is a stock exchange based in Spain. Spanish bank based in Aragon",
+      "aliases": [
+        "wikidata:Q5907815"
+      ]
+    },
+    {
+      "canonical_name": "Hyderabad Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hyderabad Stock Exchange is a stock exchange. stock exchange located in Hyderabad, India",
+      "aliases": [
+        "wikidata:Q5953944"
+      ]
+    },
+    {
+      "canonical_name": "Iran Fara Bourse",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Iran Fara Bourse is a stock exchange based in Iran. Over-the-counter market for securities and other financial instruments located in Tehran, Iran",
+      "aliases": [
+        "wikidata:Q5961076"
+      ]
+    },
+    {
+      "canonical_name": "FXCM",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "FXCM is a stock exchange based in United Kingdom. Registered & regulated market for OTC foreign exchange options trading. market for spot FX and options.",
+      "aliases": [
+        "wikidata:Q5973741"
+      ]
+    },
+    {
+      "canonical_name": "FXCM",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "FXCM is a stock exchange based in United States. Registered & regulated market for OTC foreign exchange options trading. market for spot FX and options.",
+      "aliases": [
+        "wikidata:Q5973741"
+      ]
+    },
+    {
+      "canonical_name": "International Martime Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "International Martime Exchange is a stock exchange based in Norway. Exchange for trading forward freight agreements located in Oslo, Norway",
+      "aliases": [
+        "wikidata:Q6003405"
+      ]
+    },
+    {
+      "canonical_name": "Iran Mercantile Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Iran Mercantile Exchange is a stock exchange based in Iran. Commodities exchange",
+      "aliases": [
+        "wikidata:Q6066844"
+      ]
+    },
+    {
+      "canonical_name": "Jaipur Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Jaipur Stock Exchange is a stock exchange based in India. defunct Indian securities market",
+      "aliases": [
+        "wikidata:Q6124145"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Valores De Guayaquil",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Valores De Guayaquil is a stock exchange based in Ecuador. stock exchange",
+      "aliases": [
+        "wikidata:Q6397522"
+      ]
+    },
+    {
+      "canonical_name": "Kish Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Kish Stock Exchange is a stock exchange based in Iran. stock exchange in Kish, Iran",
+      "aliases": [
+        "wikidata:Q6416502"
+      ]
+    },
+    {
+      "canonical_name": "Nepal Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nepal Stock Exchange is a stock exchange based in Nepal. the only Stock Exchange of Nepal",
+      "aliases": [
+        "wikidata:Q6529599"
+      ]
+    },
+    {
+      "canonical_name": "Libyan Stock Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Libyan Stock Market is a stock exchange based in Libya. Registered market for 7 equities",
+      "aliases": [
+        "wikidata:Q6542917"
+      ]
+    },
+    {
+      "canonical_name": "Liquidnet,  Inc.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Liquidnet,  Inc. is a stock exchange based in United States. US registered broker-dealer operating two ATS and offering trading and algorithmic trading services",
+      "aliases": [
+        "wikidata:Q6557516"
+      ]
+    },
+    {
+      "canonical_name": "Market For Alternative Investment",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Market For Alternative Investment is a stock exchange based in Thailand. The MAT’s purpose is to create new fund-raising opportunities for innovative business with high potential growth as well as provide a greater range of investment alternatives.",
+      "aliases": [
+        "wikidata:Q6578261"
+      ]
+    },
+    {
+      "canonical_name": "Ludhiana Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ludhiana Stock Exchange is a stock exchange based in India. defunct stock exchange",
+      "aliases": [
+        "wikidata:Q6698775"
+      ]
+    },
+    {
+      "canonical_name": "Madhya Pradesh Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Madhya Pradesh Stock Exchange is a stock exchange. stock exchange in India",
+      "aliases": [
+        "wikidata:Q6727612"
+      ]
+    },
+    {
+      "canonical_name": "Maldives Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Maldives Stock Exchange is a stock exchange based in Maldives. Registered market for equities",
+      "aliases": [
+        "wikidata:Q6742812"
+      ]
+    },
+    {
+      "canonical_name": "Mangalore Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mangalore Stock Exchange is a stock exchange based in India. stock exchange in India",
+      "aliases": [
+        "wikidata:Q6748717"
+      ]
+    },
+    {
+      "canonical_name": "Marex Spectron International Limited OTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Marex Spectron International Limited OTF is a stock exchange based in United Kingdom. Organised trading facility for OTC derivatives",
+      "aliases": [
+        "wikidata:Q6759012"
+      ]
+    },
+    {
+      "canonical_name": "Nordic Growth Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nordic Growth Market is a stock exchange based in Sweden. Reinstated. Confirmed by exchange.",
+      "aliases": [
+        "wikidata:Q6857641"
+      ]
+    },
+    {
+      "canonical_name": "NASDAQ Dubai",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NASDAQ Dubai is a stock exchange based in United Arab Emirates. On Tuesday 18th November, 2008, the Dubai International Financial Market was rebranded as nasdaq dubai.",
+      "aliases": [
+        "wikidata:Q6952530"
+      ]
+    },
+    {
+      "canonical_name": "Nadex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nadex is a stock exchange based in United States. US based binary options exchange",
+      "aliases": [
+        "wikidata:Q6957592"
+      ]
+    },
+    {
+      "canonical_name": "National Stock Exchange Of Australia Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "National Stock Exchange Of Australia Limited is a stock exchange based in Australia. stock exchange in Australia, originally named Newcastle Stock Exchange",
+      "aliases": [
+        "wikidata:Q6978710"
+      ]
+    },
+    {
+      "canonical_name": "National Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "National Stock Exchange is a stock exchange based in United States. electronic stock exchange located in Jersey City, New Jersey, United States",
+      "aliases": [
+        "wikidata:Q6978708"
+      ]
+    },
+    {
+      "canonical_name": "Nord Pool Spot AS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nord Pool Spot AS is a stock exchange based in Norway. Nord Pool Spot as energy exchange for nordic physical markets",
+      "aliases": [
+        "wikidata:Q7050551"
+      ]
+    },
+    {
+      "canonical_name": "Nordic Derivatives Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nordic Derivatives Exchange is a stock exchange based in Sweden. derivatives market",
+      "aliases": [
+        "wikidata:Q7050685"
+      ]
+    },
+    {
+      "canonical_name": "PEX-Private Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "PEX-Private Exchange is a stock exchange based in Portugal. stock exchange in Lisbon",
+      "aliases": [
+        "wikidata:Q7072823"
+      ]
+    },
+    {
+      "canonical_name": "OTC Exchange Of India",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "OTC Exchange Of India is a stock exchange based in India. stock exchange located in Mumbai, India",
+      "aliases": [
+        "wikidata:Q7073080"
+      ]
+    },
+    {
+      "canonical_name": "Options Price Reporting Authority",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Options Price Reporting Authority is a stock exchange based in United States. Trading consolidator",
+      "aliases": [
+        "wikidata:Q7099028"
+      ]
+    },
+    {
+      "canonical_name": "Pune Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Pune Stock Exchange is a stock exchange. stock exchange located in Pune, India",
+      "aliases": [
+        "wikidata:Q7260118"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Comercio Rosario",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Comercio Rosario is a stock exchange based in Argentina. Forum for the conduct of trade negotiations",
+      "aliases": [
+        "wikidata:Q7367381"
+      ]
+    },
+    {
+      "canonical_name": "Rwanda Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Rwanda Stock Exchange is a stock exchange based in Rwanda. Principal stock market for equity and bonds",
+      "aliases": [
+        "wikidata:Q7383727"
+      ]
+    },
+    {
+      "canonical_name": "Saurashtra Kutch Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Saurashtra Kutch Stock Exchange is a stock exchange based in India. defunct stock exchange in India",
+      "aliases": [
+        "wikidata:Q7427526"
+      ]
+    },
+    {
+      "canonical_name": "Secfinex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Secfinex is a stock exchange based in United Kingdom. Multilateral trading facility - electronic exchange for stock borrowing and lending transactions",
+      "aliases": [
+        "wikidata:Q7442849"
+      ]
+    },
+    {
+      "canonical_name": "Spreadex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Spreadex is a stock exchange based in United Kingdom. Electronic trading platform for OTC derivatives",
+      "aliases": [
+        "wikidata:Q7580277"
+      ]
+    },
+    {
+      "canonical_name": "State Street Bank and Trust Company",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "State Street Bank and Trust Company is a stock exchange based in United Kingdom. stock exchange",
+      "aliases": [
+        "wikidata:Q7603549"
+      ]
+    },
+    {
+      "canonical_name": "State Street Bank and Trust Company",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "State Street Bank and Trust Company is a stock exchange based in United States. stock exchange",
+      "aliases": [
+        "wikidata:Q7603549"
+      ]
+    },
+    {
+      "canonical_name": "Td Securities",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Td Securities is a stock exchange based in Ireland. Canadian investment bank and financial services provider",
+      "aliases": [
+        "wikidata:Q7669903"
+      ]
+    },
+    {
+      "canonical_name": "Td Securities",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Td Securities is a stock exchange based in Canada. Canadian investment bank and financial services provider",
+      "aliases": [
+        "wikidata:Q7669903"
+      ]
+    },
+    {
+      "canonical_name": "TSX Venture Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "TSX Venture Exchange is a stock exchange based in Canada. stock exchange in Calgary, Canada",
+      "aliases": [
+        "wikidata:Q7671764"
+      ]
+    },
+    {
+      "canonical_name": "Vadodara Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Vadodara Stock Exchange is a stock exchange based in India. defunct stock exchange in the city of Vadodara",
+      "aliases": [
+        "wikidata:Q7908342"
+      ]
+    },
+    {
+      "canonical_name": "Vancouver Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Vancouver Stock Exchange is a stock exchange based in Canada. Canadian stock exchange (1906–1999)",
+      "aliases": [
+        "wikidata:Q7914256"
+      ]
+    },
+    {
+      "canonical_name": "Varaždin Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Varaždin Stock Exchange is a stock exchange based in Croatia. defunct stock exchange in Varaždin, Croatia",
+      "aliases": [
+        "wikidata:Q7915496"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa de Valores de Asunción",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa de Valores de Asunción is a stock exchange based in Paraguay. bolsa de valores de Paraguay",
+      "aliases": [
+        "wikidata:Q8250595"
+      ]
+    },
+    {
+      "canonical_name": "Abanca",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Abanca is a stock exchange based in Spain. Spanish bank",
+      "aliases": [
+        "wikidata:Q9598744"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Valores Minas-Espírito Santo-Brasília",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Valores Minas-Espírito Santo-Brasília is a stock exchange based in Brazil. Commodities market",
+      "aliases": [
+        "wikidata:Q9660710"
+      ]
+    },
+    {
+      "canonical_name": "Spotlight Stock Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Spotlight Stock Market is a stock exchange based in Sweden. stock exchange in Stockholm",
+      "aliases": [
+        "wikidata:Q10404117"
+      ]
+    },
+    {
+      "canonical_name": "Warsaw Stock Exchange/ Equities/New Connect-MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Warsaw Stock Exchange/ Equities/New Connect-MTF is a stock exchange based in Poland. Market financing the growth of young companies with a large growth potential, organised and operated by the WSE",
+      "aliases": [
+        "wikidata:Q10855618"
+      ]
+    },
+    {
+      "canonical_name": "Sapporo Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Sapporo Securities Exchange is a stock exchange based in Japan. securities exchange in Japan",
+      "aliases": [
+        "wikidata:Q11093491"
+      ]
+    },
+    {
+      "canonical_name": "Tokyo Stock Exchange-Tokyo Pro Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tokyo Stock Exchange-Tokyo Pro Market is a stock exchange based in Japan. Registered market for equities in Japan",
+      "aliases": [
+        "wikidata:Q11249728"
+      ]
+    },
+    {
+      "canonical_name": "Ambitious",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ambitious is a stock exchange based in Japan. Stock market in Sapporo, JP",
+      "aliases": [
+        "wikidata:Q11285412"
+      ]
+    },
+    {
+      "canonical_name": "NIPPON NEW MARKET - HERCULES",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NIPPON NEW MARKET - HERCULES is a stock exchange based in Japan. former exchange, deleted due to organizational merger of OSE and JASDAQ",
+      "aliases": [
+        "wikidata:Q11336603"
+      ]
+    },
+    {
+      "canonical_name": "Mothers",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mothers is a stock exchange based in Japan. section of Tokyo Stock Exchange for high-growth startup companies.",
+      "aliases": [
+        "wikidata:Q11340130"
+      ]
+    },
+    {
+      "canonical_name": "Japan Exchange Group",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Japan Exchange Group is a stock exchange based in Japan. Japanese financial services corporation",
+      "aliases": [
+        "wikidata:Q11507487"
+      ]
+    },
+    {
+      "canonical_name": "Japan Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Japan Securities Exchange is a stock exchange based in Japan. historic Japanese exchange",
+      "aliases": [
+        "wikidata:Q11509107"
+      ]
+    },
+    {
+      "canonical_name": "Norwegian Over The Counter Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Norwegian Over The Counter Market is a stock exchange based in Norway. Norwegian market place for OTC securities",
+      "aliases": [
+        "wikidata:Q12005867"
+      ]
+    },
+    {
+      "canonical_name": "RM-System Czech Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "RM-System Czech Stock Exchange is a stock exchange based in Czech Republic. company in the Czech Republic",
+      "aliases": [
+        "wikidata:Q12048417"
+      ]
+    },
+    {
+      "canonical_name": "Kubi",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Kubi is a stock exchange based in Ukraine. index of the Ukrainian Stock Exchange",
+      "aliases": [
+        "wikidata:Q12071462"
+      ]
+    },
+    {
+      "canonical_name": "PJSC National Depository Of Ukraine",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "PJSC National Depository Of Ukraine is a stock exchange based in Ukraine. a National Depository",
+      "aliases": [
+        "wikidata:Q12132906"
+      ]
+    },
+    {
+      "canonical_name": "Stock Exchange Perspectiva",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Stock Exchange Perspectiva is a stock exchange based in Ukraine. High-tech stock exchange located in Dnipropetrovsk, Ukraine",
+      "aliases": [
+        "wikidata:Q12165943"
+      ]
+    },
+    {
+      "canonical_name": "Damascus Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Damascus Securities Exchange is a stock exchange based in Syria. Registered market for equities and bonds",
+      "aliases": [
+        "wikidata:Q12217405"
+      ]
+    },
+    {
+      "canonical_name": "Australian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Australian Stock Exchange is a stock exchange. formerly entity from 2006",
+      "aliases": [
+        "wikidata:Q12721279"
+      ]
+    },
+    {
+      "canonical_name": "Romanian Commodities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Romanian Commodities Exchange is a stock exchange based in Romania. commodities exchange in Romania",
+      "aliases": [
+        "wikidata:Q12723070"
+      ]
+    },
+    {
+      "canonical_name": "Cleveland Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cleveland Stock Exchange is a stock exchange based in United States. stock exchange in Cleveland, Ohio, U.S",
+      "aliases": [
+        "wikidata:Q14687455"
+      ]
+    },
+    {
+      "canonical_name": "Chinese Gold & Silver Exchange Society",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Chinese Gold & Silver Exchange Society is a stock exchange based in Hong Kong. gold & silver exchange in China",
+      "aliases": [
+        "wikidata:Q15143739"
+      ]
+    },
+    {
+      "canonical_name": "The International Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The International Stock Exchange is a stock exchange based in Guernsey. Regulated market",
+      "aliases": [
+        "wikidata:Q15675825"
+      ]
+    },
+    {
+      "canonical_name": "Isdafix",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Isdafix is a stock exchange based in United States. Screen service for swap rates for swap transactions worldwide",
+      "aliases": [
+        "wikidata:Q16215229"
+      ]
+    },
+    {
+      "canonical_name": "Bloomberg Tradebook Llc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bloomberg Tradebook Llc is a stock exchange based in United States. agency broker of Bloomberg",
+      "aliases": [
+        "wikidata:Q16246480"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa Boliviana De Valores S.A.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa Boliviana De Valores S.A. is a stock exchange based in Bolivia. stock exchange in La Paz, Bolivia",
+      "aliases": [
+        "wikidata:Q16538401"
+      ]
+    },
+    {
+      "canonical_name": "Dundee Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dundee Stock Exchange is a stock exchange. former stock exchange in Dundee, Scotland",
+      "aliases": [
+        "wikidata:Q16834028"
+      ]
+    },
+    {
+      "canonical_name": "Dutch Caribbean Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dutch Caribbean Securities Exchange is a stock exchange based in Curaçao. International exchange for the listing and trading in domestic and international securities.",
+      "aliases": [
+        "wikidata:Q16834116"
+      ]
+    },
+    {
+      "canonical_name": "IEX Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "IEX Market is a stock exchange based in United States. equity trading venue based in the United States",
+      "aliases": [
+        "wikidata:Q16846407"
+      ]
+    },
+    {
+      "canonical_name": "IMC Financial Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "IMC Financial Markets is a stock exchange based in Netherlands. electronic trading platform",
+      "aliases": [
+        "wikidata:Q16920292"
+      ]
+    },
+    {
+      "canonical_name": "IMC Financial Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "IMC Financial Markets is a stock exchange based in United States. electronic trading platform",
+      "aliases": [
+        "wikidata:Q16920292"
+      ]
+    },
+    {
+      "canonical_name": "Aequitas NEO Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Aequitas NEO Exchange is a stock exchange based in Canada. Stock exchange located in Toronto, Ontario, Canada",
+      "aliases": [
+        "wikidata:Q16920541"
+      ]
+    },
+    {
+      "canonical_name": "Jamaica Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Jamaica Stock Exchange is a stock exchange based in Jamaica. stock exchange located in Kingston, Jamaica",
+      "aliases": [
+        "wikidata:Q16948316"
+      ]
+    },
+    {
+      "canonical_name": "Rangoon Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Rangoon Stock Exchange is a stock exchange based in Myanmar. stock market",
+      "aliases": [
+        "wikidata:Q17046380"
+      ]
+    },
+    {
+      "canonical_name": "Inter-Connected Stock Exchange Of India Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Inter-Connected Stock Exchange Of India Ltd is a stock exchange based in India. stock exchange in India",
+      "aliases": [
+        "wikidata:Q17050115"
+      ]
+    },
+    {
+      "canonical_name": "Island ECN Ltd,  The",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Island ECN Ltd,  The is a stock exchange based in United States. network for stock trading, now part of Inet",
+      "aliases": [
+        "wikidata:Q17058909"
+      ]
+    },
+    {
+      "canonical_name": "Khartoum Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Khartoum Stock Exchange is a stock exchange based in Sudan. Stock exchange located in Khartoum, Sudan",
+      "aliases": [
+        "wikidata:Q17062148"
+      ]
+    },
+    {
+      "canonical_name": "Myanmar Securities Exchange Centre",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Myanmar Securities Exchange Centre is a stock exchange based in Myanmar. Stock Exchange",
+      "aliases": [
+        "wikidata:Q17068012"
+      ]
+    },
+    {
+      "canonical_name": "Magadh Stock Exchange Association",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Magadh Stock Exchange Association is a stock exchange based in India. stock exchange located in Patna, India",
+      "aliases": [
+        "wikidata:Q17068063"
+      ]
+    },
+    {
+      "canonical_name": "São Paulo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "São Paulo Stock Exchange is a stock exchange based in Brazil. stock exchange located in São Paulo, Brazil",
+      "aliases": [
+        "wikidata:Q796297"
+      ]
+    },
+    {
+      "canonical_name": "Toronto Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Toronto Stock Exchange is a stock exchange based in Canada. stock exchange in Canada",
+      "aliases": [
+        "wikidata:Q818723"
+      ]
+    },
+    {
+      "canonical_name": "Xetra",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Xetra is a stock exchange based in Germany. trading venue",
+      "aliases": [
+        "wikidata:Q819468"
+      ]
+    },
+    {
+      "canonical_name": "BX Swiss AG",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BX Swiss AG is a stock exchange based in Switzerland. BX Worldcaps, BX Local Shares",
+      "aliases": [
+        "wikidata:Q824533"
+      ]
+    },
+    {
+      "canonical_name": "The Nigerian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Nigerian Stock Exchange is a stock exchange based in Nigeria. Electronic trading platform",
+      "aliases": [
+        "wikidata:Q838766"
+      ]
+    },
+    {
+      "canonical_name": "Nomura Securities Co Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nomura Securities Co Ltd is a stock exchange based in United States. Nomura Japan equity trading",
+      "aliases": [
+        "wikidata:Q843944"
+      ]
+    },
+    {
+      "canonical_name": "Nomura Securities Co Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nomura Securities Co Ltd is a stock exchange based in Japan. Nomura Japan equity trading",
+      "aliases": [
+        "wikidata:Q843944"
+      ]
+    },
+    {
+      "canonical_name": "NYSE American",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NYSE American is a stock exchange based in United States. stock exchange located in New York City, New York, United States",
+      "aliases": [
+        "wikidata:Q846626"
+      ]
+    },
+    {
+      "canonical_name": "Budapest Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Budapest Stock Exchange is a stock exchange based in Hungary. stock exchange located in Budapest, Hungary",
+      "aliases": [
+        "wikidata:Q851259"
+      ]
+    },
+    {
+      "canonical_name": "Mexican Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mexican Stock Exchange is a stock exchange based in Mexico. Stock exchange located in Mexico City, Mexico",
+      "aliases": [
+        "wikidata:Q891559"
+      ]
+    },
+    {
+      "canonical_name": "Caracas Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Caracas Stock Exchange is a stock exchange based in Venezuela. Market for equities and bonds",
+      "aliases": [
+        "wikidata:Q891563"
+      ]
+    },
+    {
+      "canonical_name": "Buenos Aires Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Buenos Aires Stock Exchange is a stock exchange based in Argentina. Stock exchange located in Buenos Aires, Argentina",
+      "aliases": [
+        "wikidata:Q891560"
+      ]
+    },
+    {
+      "canonical_name": "Santiago Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Santiago Stock Exchange is a stock exchange based in Chile. Stock exchange located in Santiago, Chile",
+      "aliases": [
+        "wikidata:Q891561"
+      ]
+    },
+    {
+      "canonical_name": "Oslo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Oslo Stock Exchange is a stock exchange based in Norway. stock exchange located in Oslo, Norway",
+      "aliases": [
+        "wikidata:Q909158"
+      ]
+    },
+    {
+      "canonical_name": "Deutsche Börse",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Deutsche Börse is a stock exchange based in Germany. financial services company of Germany",
+      "aliases": [
+        "wikidata:Q157852"
+      ]
+    },
+    {
+      "canonical_name": "London Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "London Stock Exchange is a stock exchange based in United Kingdom. stock exchange in the City of London",
+      "aliases": [
+        "wikidata:Q171240"
+      ]
+    },
+    {
+      "canonical_name": "Goldman Sachs",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Goldman Sachs is a stock exchange based in United States. American investment bank",
+      "aliases": [
+        "wikidata:Q193326"
+      ]
+    },
+    {
+      "canonical_name": "Tokyo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tokyo Stock Exchange is a stock exchange based in Japan. stock market based in Tokyo",
+      "aliases": [
+        "wikidata:Q217475"
+      ]
+    },
+    {
+      "canonical_name": "London Stock Exchange - AIM MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "London Stock Exchange - AIM MTF is a stock exchange based in United Kingdom. AIMX identifying AIM Multilateral Trading Facility (MTF) driven by the London Stock Exchange (XLON).",
+      "aliases": [
+        "wikidata:Q438511"
+      ]
+    },
+    {
+      "canonical_name": "Landesbank Baden-Württemberg",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Landesbank Baden-Württemberg is a stock exchange based in Germany. German credit institution headquartered in Stuttgart",
+      "aliases": [
+        "wikidata:Q451814"
+      ]
+    },
+    {
+      "canonical_name": "BATS Chi-X Europe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BATS Chi-X Europe is a stock exchange based in United Kingdom. Pan-European stock exchange located in London, United Kingdom",
+      "aliases": [
+        "wikidata:Q472567"
+      ]
+    },
+    {
+      "canonical_name": "Chicago Curb Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Chicago Curb Exchange is a stock exchange. defunct stock exchange",
+      "aliases": [
+        "wikidata:Q54952753"
+      ]
+    },
+    {
+      "canonical_name": "Power Exchange Central Europe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Power Exchange Central Europe is a stock exchange based in Czech Republic. company in the Czech Republic",
+      "aliases": [
+        "wikidata:Q54983063"
+      ]
+    },
+    {
+      "canonical_name": "Ulaanbaatar Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ulaanbaatar Securities Exchange is a stock exchange based in Mongolia. stock exchange in Ulaanbaatar, Mongolia",
+      "aliases": [
+        "wikidata:Q55643195"
+      ]
+    },
+    {
+      "canonical_name": "London Bullion Market Association",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "London Bullion Market Association is a stock exchange based in United Kingdom. trade association for precious metals",
+      "aliases": [
+        "wikidata:Q55648272"
+      ]
+    },
+    {
+      "canonical_name": "Mercado Organizado Del Gas",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mercado Organizado Del Gas is a stock exchange based in Spain. Regulated market operator for the organised gas market in Spain.",
+      "aliases": [
+        "wikidata:Q56418319"
+      ]
+    },
+    {
+      "canonical_name": "Patria Finance",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Patria Finance is a stock exchange based in Czech Republic. Czech company",
+      "aliases": [
+        "wikidata:Q58205982"
+      ]
+    },
+    {
+      "canonical_name": "XTX Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "XTX Markets is a stock exchange based in United Kingdom. Equity, FX, Fixed Income and Commodity Products",
+      "aliases": [
+        "wikidata:Q60742651"
+      ]
+    },
+    {
+      "canonical_name": "XTX Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "XTX Markets is a stock exchange based in France. Equity, FX, Fixed Income and Commodity Products",
+      "aliases": [
+        "wikidata:Q60742651"
+      ]
+    },
+    {
+      "canonical_name": "New York Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New York Stock Exchange is a stock exchange based in United States. American stock exchange",
+      "aliases": [
+        "wikidata:Q13677"
+      ]
+    },
+    {
+      "canonical_name": "NYSE Euronext Liffe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NYSE Euronext Liffe is a stock exchange based in United Kingdom. former securities market",
+      "aliases": [
+        "wikidata:Q13683"
+      ]
+    },
+    {
+      "canonical_name": "NYSE Euronext Liffe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NYSE Euronext Liffe is a stock exchange based in United States. former securities market",
+      "aliases": [
+        "wikidata:Q13683"
+      ]
+    },
+    {
+      "canonical_name": "Shanghai Gold Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Shanghai Gold Exchange is a stock exchange based in People's Republic of China. organization for precious metal trade in China",
+      "aliases": [
+        "wikidata:Q30009"
+      ]
+    },
+    {
+      "canonical_name": "Bursa Malaysia",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bursa Malaysia is a stock exchange based in Malaysia. formerly known as Kuala Lumpur Stock Exchange, exchange holding company located in Kuala Lumpur, Malaysia",
+      "aliases": [
+        "wikidata:Q43335"
+      ]
+    },
+    {
+      "canonical_name": "Sarajevo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Sarajevo Stock Exchange is a stock exchange based in Bosnia and Herzegovina. stock exchange located in Sarajevo, Bosnia and Herzegovina",
+      "aliases": [
+        "wikidata:Q47057"
+      ]
+    },
+    {
+      "canonical_name": "Warsaw Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Warsaw Stock Exchange is a stock exchange based in Poland. stock exchange located in Warsaw, Poland",
+      "aliases": [
+        "wikidata:Q59551"
+      ]
+    },
+    {
+      "canonical_name": "Italian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Italian Stock Exchange is a stock exchange based in Italy. Italy's main stock exchange",
+      "aliases": [
+        "wikidata:Q936563"
+      ]
+    },
+    {
+      "canonical_name": "Bucharest Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bucharest Stock Exchange is a stock exchange based in Romania. Stock exchange in Romania",
+      "aliases": [
+        "wikidata:Q1003245"
+      ]
+    },
+    {
+      "canonical_name": "Bulgarian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bulgarian Stock Exchange is a stock exchange based in Bulgaria. Stock exchange located in Sofia, Bulgaria",
+      "aliases": [
+        "wikidata:Q1003968"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Copenhagen A/S",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Copenhagen A/S is a stock exchange based in Denmark. stock exchange located in Copenhagen, Denmark",
+      "aliases": [
+        "wikidata:Q1019983"
+      ]
+    },
+    {
+      "canonical_name": "Namibia Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Namibia Securities Exchange is a stock exchange based in Namibia. Securities exchange in located in Windhoek, Namibia",
+      "aliases": [
+        "wikidata:Q1019981"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Stockholm AB",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Stockholm AB is a stock exchange based in Sweden. stock exchange located in Stockholm, Sweden",
+      "aliases": [
+        "wikidata:Q1019992"
+      ]
+    },
+    {
+      "canonical_name": "CME Group",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CME Group is a stock exchange based in United Kingdom. futures company and one of the largest options and futures exchanges, located in Chicago, Illinois, United States",
+      "aliases": [
+        "wikidata:Q1023876"
+      ]
+    },
+    {
+      "canonical_name": "CME Group",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CME Group is a stock exchange based in United States. futures company and one of the largest options and futures exchanges, located in Chicago, Illinois, United States",
+      "aliases": [
+        "wikidata:Q1023876"
+      ]
+    },
+    {
+      "canonical_name": "Euronext Brussels",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Euronext Brussels is a stock exchange based in Belgium. stock exchange in Brussels, Belgium",
+      "aliases": [
+        "wikidata:Q1146518"
+      ]
+    },
+    {
+      "canonical_name": "D.E. Shaw",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "D.E. Shaw is a stock exchange based in United States. company",
+      "aliases": [
+        "wikidata:Q1151402"
+      ]
+    },
+    {
+      "canonical_name": "Nagoya Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nagoya Stock Exchange is a stock exchange based in Japan. stock trading market in Nagoya, Japan",
+      "aliases": [
+        "wikidata:Q1188840"
+      ]
+    },
+    {
+      "canonical_name": "Swisscanto Funds Centre Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Swisscanto Funds Centre Limited is a stock exchange based in United Kingdom. Primary Market for Funds",
+      "aliases": [
+        "wikidata:Q1249498"
+      ]
+    },
+    {
+      "canonical_name": "Epex Spot SE",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Epex Spot SE is a stock exchange based in France. European power exchange (day ahead and intraday markets for electricity in Central Europe)",
+      "aliases": [
+        "wikidata:Q1275627"
+      ]
+    },
+    {
+      "canonical_name": "Tradegate Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tradegate Exchange is a stock exchange based in Germany. German stock exchange",
+      "aliases": [
+        "wikidata:Q1305960"
+      ]
+    },
+    {
+      "canonical_name": "GFI Brokers",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "GFI Brokers is a stock exchange based in United Kingdom. company",
+      "aliases": [
+        "wikidata:Q1328736"
+      ]
+    },
+    {
+      "canonical_name": "Surabaya Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Surabaya Stock Exchange is a stock exchange based in Indonesia. The Jakarta (JSX) and Surabaya (SSX) Stock Exchanges have merged to become the Indonesia Stock Exchange (IDX)",
+      "aliases": [
+        "wikidata:Q1975332"
+      ]
+    },
+    {
+      "canonical_name": "Ahmedabad Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ahmedabad Stock Exchange is a stock exchange based in India. the second oldest exchange in India",
+      "aliases": [
+        "wikidata:Q1976823"
+      ]
+    },
+    {
+      "canonical_name": "Malawi Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Malawi Stock Exchange is a stock exchange based in Malawi. Stock exchange located in Blantyre, Malawi",
+      "aliases": [
+        "wikidata:Q1976933"
+      ]
+    },
+    {
+      "canonical_name": "Karachi Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Karachi Stock Exchange is a stock exchange based in Pakistan. Stock exchange located in Karachi, Pakistan",
+      "aliases": [
+        "wikidata:Q1977283"
+      ]
+    },
+    {
+      "canonical_name": "Rio de Janeiro Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Rio de Janeiro Stock Exchange is a stock exchange based in Brazil. Stock exchange located in Rio de Janeiro, Brazil",
+      "aliases": [
+        "wikidata:Q1978239"
+      ]
+    },
+    {
+      "canonical_name": "Singapore International Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Singapore International Stock Exchange is a stock exchange based in Singapore. Singaporean futures exchange",
+      "aliases": [
+        "wikidata:Q1979782"
+      ]
+    },
+    {
+      "canonical_name": "PFTS Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "PFTS Stock Exchange is a stock exchange based in Ukraine. Stock exchange located in Kyiv, Ukraine",
+      "aliases": [
+        "wikidata:Q1984912"
+      ]
+    },
+    {
+      "canonical_name": "Saudi Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Saudi Stock Exchange is a stock exchange based in Saudi Arabia. stock exchange in Saudi Arabia",
+      "aliases": [
+        "wikidata:Q2006583"
+      ]
+    },
+    {
+      "canonical_name": "Tirana Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tirana Stock Exchange is a stock exchange based in Albania. Stock exchange located in Tirana, Albania",
+      "aliases": [
+        "wikidata:Q2024538"
+      ]
+    },
+    {
+      "canonical_name": "Belarus Currency And Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Belarus Currency And Stock Exchange is a stock exchange based in Belarus. Stock exchange located in Minsk, Belarus",
+      "aliases": [
+        "wikidata:Q2068453"
+      ]
+    },
+    {
+      "canonical_name": "Macedonian Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Macedonian Stock Exchange is a stock exchange based in North Macedonia. Stock exchange located in Skopje",
+      "aliases": [
+        "wikidata:Q2073220"
+      ]
+    },
+    {
+      "canonical_name": "Amman Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Amman Stock Exchange is a stock exchange based in Jordan. Stock exchange located in Amman, Jordan",
+      "aliases": [
+        "wikidata:Q2122308"
+      ]
+    },
+    {
+      "canonical_name": "Hanoi Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hanoi Stock Exchange is a stock exchange based in Vietnam. formerly Hanoi Securities Trading Centre",
+      "aliases": [
+        "wikidata:Q2227403"
+      ]
+    },
+    {
+      "canonical_name": "SPB Exchange - All Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "SPB Exchange - All Markets is a stock exchange based in Russia. Shares, depositary receipts, government bonds, structured finance products, spot commodities.",
+      "aliases": [
+        "wikidata:Q2306284"
+      ]
+    },
+    {
+      "canonical_name": "Colombo Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Colombo Stock Exchange is a stock exchange based in Sri Lanka. The main stock exchange of Sri Lanka, located in Colombo",
+      "aliases": [
+        "wikidata:Q2359996"
+      ]
+    },
+    {
+      "canonical_name": "OTFlink",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "OTFlink is a stock exchange based in France. OTF for bonds and derivatives",
+      "aliases": [
+        "wikidata:Q2374114"
+      ]
+    },
+    {
+      "canonical_name": "Botswana Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Botswana Stock Exchange is a stock exchange based in Botswana. Stock exchange located in Gaborone, Botswana",
+      "aliases": [
+        "wikidata:Q2380000"
+      ]
+    },
+    {
+      "canonical_name": "Lima Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Lima Stock Exchange is a stock exchange based in Peru. Stock exchange located in Lima, Peru",
+      "aliases": [
+        "wikidata:Q2380045"
+      ]
+    },
+    {
+      "canonical_name": "Bourse De Tunis",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bourse De Tunis is a stock exchange based in Tunisia. Stock exchange located in Tunis, Tunisia",
+      "aliases": [
+        "wikidata:Q2380163"
+      ]
+    },
+    {
+      "canonical_name": "Cape Verde Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cape Verde Stock Exchange is a stock exchange based in Cape Verde. stock exchange in Cape Verde",
+      "aliases": [
+        "wikidata:Q2381261"
+      ]
+    },
+    {
+      "canonical_name": "Douala Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Douala Stock Exchange is a stock exchange based in Cameroon. Registered market for equities",
+      "aliases": [
+        "wikidata:Q2381309"
+      ]
+    },
+    {
+      "canonical_name": "Bermuda Stock Exchange Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bermuda Stock Exchange Ltd is a stock exchange based in Bermuda. Stock exchange located in Hamilton, Bermuda",
+      "aliases": [
+        "wikidata:Q2382352"
+      ]
+    },
+    {
+      "canonical_name": "Bermuda Stock Exchange Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bermuda Stock Exchange Ltd is a stock exchange based in United Kingdom. Stock exchange located in Hamilton, Bermuda",
+      "aliases": [
+        "wikidata:Q2382352"
+      ]
+    },
+    {
+      "canonical_name": "Banja Luka Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Banja Luka Stock Exchange is a stock exchange based in Bosnia and Herzegovina. Stock exchange located in Banja Luka, Bosnia and Herzegovina",
+      "aliases": [
+        "wikidata:Q2384000"
+      ]
+    },
+    {
+      "canonical_name": "Nairobi Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nairobi Stock Exchange is a stock exchange based in Kenya. stock exchange in Kenya",
+      "aliases": [
+        "wikidata:Q2384385"
+      ]
+    },
+    {
+      "canonical_name": "Euronext Paris",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Euronext Paris is a stock exchange based in France. Securities market located in Paris, France",
+      "aliases": [
+        "wikidata:Q2385849"
+      ]
+    },
+    {
+      "canonical_name": "South Pacific Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "South Pacific Stock Exchange is a stock exchange based in Fiji. stock exchange in Fiji",
+      "aliases": [
+        "wikidata:Q2386780"
+      ]
+    },
+    {
+      "canonical_name": "Colombia Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Colombia Stock Exchange is a stock exchange based in Colombia. Stock exchange located in Bogotá, Colombia",
+      "aliases": [
+        "wikidata:Q2387368"
+      ]
+    },
+    {
+      "canonical_name": "Euronext Lisbon",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Euronext Lisbon is a stock exchange based in Portugal. stock exchange in Lisbon, Portugal",
+      "aliases": [
+        "wikidata:Q2415561"
+      ]
+    },
+    {
+      "canonical_name": "U.S. Futures Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "U.S. Futures Exchange is a stock exchange based in United States. defunct American futures exchange",
+      "aliases": [
+        "wikidata:Q2466297"
+      ]
+    },
+    {
+      "canonical_name": "Baku Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Baku Stock Exchange is a stock exchange based in Azerbaijan. Stock exchange located in Baku, Azerbaijan",
+      "aliases": [
+        "wikidata:Q2480956"
+      ]
+    },
+    {
+      "canonical_name": "Egyptian Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Egyptian Exchange is a stock exchange based in Egypt. formerly Cairo and Alexandria Stock Exchanges (CASE)",
+      "aliases": [
+        "wikidata:Q2509254"
+      ]
+    },
+    {
+      "canonical_name": "Vienna stock exchange building",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Vienna stock exchange building is a stock exchange based in Austria. building in Vienna that used the house the stock exchange",
+      "aliases": [
+        "wikidata:Q2568865"
+      ]
+    },
+    {
+      "canonical_name": "Casablanca Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Casablanca Stock Exchange is a stock exchange based in Morocco. Stock exchange located in Casablanca, Morocco.",
+      "aliases": [
+        "wikidata:Q2602796"
+      ]
+    },
+    {
+      "canonical_name": "Moscow Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Moscow Exchange is a stock exchange based in Russia. Moscow stock exchange that deals in equities, bonds, currencies, money market instruments, commodities and runs the MOEX board",
+      "aliases": [
+        "wikidata:Q2632892"
+      ]
+    },
+    {
+      "canonical_name": "NYSE Chicago, Inc.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NYSE Chicago, Inc. is a stock exchange based in United States. Stock exchange located in Chicago, Illinois, United States",
+      "aliases": [
+        "wikidata:Q2633007"
+      ]
+    },
+    {
+      "canonical_name": "NASDAQ OMX BX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "NASDAQ OMX BX is a stock exchange based in United States. Nasdaq OMX has acquired the Boston Stock Exchange (BSE).",
+      "aliases": [
+        "wikidata:Q2636119"
+      ]
+    },
+    {
+      "canonical_name": "Chicago Climate Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Chicago Climate Exchange is a stock exchange based in United States. former emissions trading exchange from 2003 to 2010",
+      "aliases": [
+        "wikidata:Q2736100"
+      ]
+    },
+    {
+      "canonical_name": "Aurel",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Aurel is a stock exchange based in France. French enterprise, part of BGC Partners",
+      "aliases": [
+        "wikidata:Q2871850"
+      ]
+    },
+    {
+      "canonical_name": "Cyprus Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cyprus Stock Exchange is a stock exchange based in Cyprus. Stock exchange located in Nicosia, Cyprus",
+      "aliases": [
+        "wikidata:Q2888321"
+      ]
+    },
+    {
+      "canonical_name": "Algiers Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Algiers Stock Exchange is a stock exchange based in Algeria. stock exchange market founded in 1997 in Algeria",
+      "aliases": [
+        "wikidata:Q2922433"
+      ]
+    },
+    {
+      "canonical_name": "San Francisco Stock and Bond Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "San Francisco Stock and Bond Exchange is a stock exchange based in United States. regional stock exchange (1882–1957)",
+      "aliases": [
+        "wikidata:Q2922439"
+      ]
+    },
+    {
+      "canonical_name": "Malta Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Malta Stock Exchange is a stock exchange based in Malta. stock exchange of the Maltese Islands",
+      "aliases": [
+        "wikidata:Q2922440"
+      ]
+    },
+    {
+      "canonical_name": "Lao Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Lao Securities Exchange is a stock exchange based in Laos. primary stock exchange in Laos",
+      "aliases": [
+        "wikidata:Q2922448"
+      ]
+    },
+    {
+      "canonical_name": "Qatar Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Qatar Exchange is a stock exchange based in Qatar. securities market Doha, Qatar",
+      "aliases": [
+        "wikidata:Q1648198"
+      ]
+    },
+    {
+      "canonical_name": "Stock Exchange of Thailand",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Stock Exchange of Thailand is a stock exchange based in Thailand. national stock exchange of Thailand, located in Bangkok",
+      "aliases": [
+        "wikidata:Q1330208"
+      ]
+    },
+    {
+      "canonical_name": "Mf Global Energy MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mf Global Energy MTF is a stock exchange based in United Kingdom. global financial derivatives broker, bankrupted 2011",
+      "aliases": [
+        "wikidata:Q1339791"
+      ]
+    },
+    {
+      "canonical_name": "Mf Global Energy MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mf Global Energy MTF is a stock exchange based in United States. global financial derivatives broker, bankrupted 2011",
+      "aliases": [
+        "wikidata:Q1339791"
+      ]
+    },
+    {
+      "canonical_name": "Russian Trading System",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Russian Trading System is a stock exchange based in Russia. stock market",
+      "aliases": [
+        "wikidata:Q1344438"
+      ]
+    },
+    {
+      "canonical_name": "Iraq Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Iraq Stock Exchange is a stock exchange based in Iraq. Stock exchange located in Baghdad, Iraq",
+      "aliases": [
+        "wikidata:Q1369913"
+      ]
+    },
+    {
+      "canonical_name": "European Climate Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "European Climate Exchange is a stock exchange based in Netherlands. climate/energy exchange (closed)",
+      "aliases": [
+        "wikidata:Q1376433"
+      ]
+    },
+    {
+      "canonical_name": "European Commodity Clearing AG",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "European Commodity Clearing AG is a stock exchange based in Germany. company",
+      "aliases": [
+        "wikidata:Q1376458"
+      ]
+    },
+    {
+      "canonical_name": "OTCBB",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "OTCBB is a stock exchange based in United States. American electronic quotation system",
+      "aliases": [
+        "wikidata:Q1391676"
+      ]
+    },
+    {
+      "canonical_name": "Borsa Istanbul",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Borsa Istanbul is a stock exchange based in Turkey. Turkish stock exchange (2013-)",
+      "aliases": [
+        "wikidata:Q1407995"
+      ]
+    },
+    {
+      "canonical_name": "Moscow Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Moscow Stock Exchange is a stock exchange based in Russia. currency exchange located in Moscow, Russia",
+      "aliases": [
+        "wikidata:Q1421543"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Tallinn AS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Tallinn AS is a stock exchange based in Estonia. Estonian stock exchange in Tallinn",
+      "aliases": [
+        "wikidata:Q1433248"
+      ]
+    },
+    {
+      "canonical_name": "Latibex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Latibex is a stock exchange based in Spain. Latin America securities mmarket",
+      "aliases": [
+        "wikidata:Q1476760"
+      ]
+    },
+    {
+      "canonical_name": "Tel Aviv Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tel Aviv Stock Exchange is a stock exchange based in Israel. stock exchange located in Tel Aviv, Israel",
+      "aliases": [
+        "wikidata:Q1507974"
+      ]
+    },
+    {
+      "canonical_name": "Singapore Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Singapore Stock Exchange is a stock exchange based in Singapore. investment holding company in Singapore providing services related to securities and derivatives trading and others",
+      "aliases": [
+        "wikidata:Q1515558"
+      ]
+    },
+    {
+      "canonical_name": "ICMA",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ICMA is a stock exchange based in United Kingdom. company",
+      "aliases": [
+        "wikidata:Q1516125"
+      ]
+    },
+    {
+      "canonical_name": "ICMA",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "ICMA is a stock exchange based in Switzerland. company",
+      "aliases": [
+        "wikidata:Q1516125"
+      ]
+    },
+    {
+      "canonical_name": "Ghana Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Ghana Stock Exchange is a stock exchange based in Ghana. Stock exchange located in Accra, Ghana",
+      "aliases": [
+        "wikidata:Q1521374"
+      ]
+    },
+    {
+      "canonical_name": "Philippine Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Philippine Stock Exchange is a stock exchange based in Philippines. national stock exchange of the Philippines",
+      "aliases": [
+        "wikidata:Q1526647"
+      ]
+    },
+    {
+      "canonical_name": "PNGX Markets Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "PNGX Markets Limited is a stock exchange based in Papua New Guinea. stock exchange",
+      "aliases": [
+        "wikidata:Q1568967"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Riga AS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq Riga AS is a stock exchange based in Latvia. Stock exchange located in Riga, Latvia",
+      "aliases": [
+        "wikidata:Q1624698"
+      ]
+    },
+    {
+      "canonical_name": "Tullett Prebon Europe - OTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tullett Prebon Europe - OTF is a stock exchange based in United Kingdom. Organised Trading Facility",
+      "aliases": [
+        "wikidata:Q1637548"
+      ]
+    },
+    {
+      "canonical_name": "Tower Research Capital",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tower Research Capital is a stock exchange based in United Kingdom. UK business",
+      "aliases": [
+        "wikidata:Q7829724"
+      ]
+    },
+    {
+      "canonical_name": "Tower Research Capital",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tower Research Capital is a stock exchange based in United States. UK business",
+      "aliases": [
+        "wikidata:Q7829724"
+      ]
+    },
+    {
+      "canonical_name": "Trueex Llc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Trueex Llc is a stock exchange based in United States. Electronic market for trading futures, options on futures, swaps and other derivatives",
+      "aliases": [
+        "wikidata:Q7847316"
+      ]
+    },
+    {
+      "canonical_name": "Turkish Derivatives Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Turkish Derivatives Exchange is a stock exchange based in Turkey. exchange of derivatives",
+      "aliases": [
+        "wikidata:Q7854998"
+      ]
+    },
+    {
+      "canonical_name": "UP Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "UP Stock Exchange is a stock exchange based in India. Kanpur-based stock exchange",
+      "aliases": [
+        "wikidata:Q7865562"
+      ]
+    },
+    {
+      "canonical_name": "United Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "United Stock Exchange is a stock exchange based in India. Registered stock exchange with securities and exchange board of India for offerring currency derivatives",
+      "aliases": [
+        "wikidata:Q7893570"
+      ]
+    },
+    {
+      "canonical_name": "Hochiminh Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hochiminh Stock Exchange is a stock exchange based in Vietnam. Stock exchange in located in Ho Chi Minh City, Vietnam",
+      "aliases": [
+        "wikidata:Q2922455"
+      ]
+    },
+    {
+      "canonical_name": "CLSA",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CLSA is a stock exchange based in Hong Kong. Capital markets and investment group",
+      "aliases": [
+        "wikidata:Q2931701"
+      ]
+    },
+    {
+      "canonical_name": "CartaX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CartaX is a stock exchange based in United States. stock exchange in United States of America",
+      "aliases": [
+        "wikidata:Q2940449"
+      ]
+    },
+    {
+      "canonical_name": "Calcutta Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Calcutta Stock Exchange is a stock exchange based in India. stock exchange located in Kolkata",
+      "aliases": [
+        "wikidata:Q2997295"
+      ]
+    },
+    {
+      "canonical_name": "Exane BNP Paribas",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Exane BNP Paribas is a stock exchange based in France. crossing mechanisms operated by Exane BNP Paribas",
+      "aliases": [
+        "wikidata:Q3061761"
+      ]
+    },
+    {
+      "canonical_name": "Lahore Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Lahore Stock Exchange is a stock exchange based in Pakistan. Stock Exchange located in Lahore. Merged to PAKISTAN STOCK EXCHANGE",
+      "aliases": [
+        "wikidata:Q3300824"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq CXD",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nasdaq CXD is a stock exchange based in Canada. non-displayed market for equities in Canada",
+      "aliases": [
+        "wikidata:Q3334202"
+      ]
+    },
+    {
+      "canonical_name": "Chittagong Stock Exchange Ltd.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Chittagong Stock Exchange Ltd. is a stock exchange based in Bangladesh. Stock exchange located in the port city of Chittagong, Bangladesh",
+      "aliases": [
+        "wikidata:Q3349831"
+      ]
+    },
+    {
+      "canonical_name": "Vega-Chi",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Vega-Chi is a stock exchange based in United Kingdom. Electronic trading platform for OTC securities. FSA approval received on January 2010.",
+      "aliases": [
+        "wikidata:Q3555202"
+      ]
+    },
+    {
+      "canonical_name": "Madras Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Madras Stock Exchange is a stock exchange based in India. stock exchange in Chennai, India",
+      "aliases": [
+        "wikidata:Q3633944"
+      ]
+    },
+    {
+      "canonical_name": "Cassa Di Compensazione E Garanzia Spa",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cassa Di Compensazione E Garanzia Spa is a stock exchange based in Italy. Range of asset classes",
+      "aliases": [
+        "wikidata:Q3661907"
+      ]
+    },
+    {
+      "canonical_name": "E-Mid",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "E-Mid is a stock exchange based in Italy. Market for interbank deposits in Europe.",
+      "aliases": [
+        "wikidata:Q3717073"
+      ]
+    },
+    {
+      "canonical_name": "MTAX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "MTAX is a stock exchange based in Italy. UNIFICATION OF MTA AND MTAX ON MARCH 3RD 2008. MTAA IS THE MIC TO USE.",
+      "aliases": [
+        "wikidata:Q3841552"
+      ]
+    },
+    {
+      "canonical_name": "Interactive Brokers LLC - ATS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Interactive Brokers LLC - ATS is a stock exchange based in United States. IATS is an alternative trading system operated pursuant to regulation ATS by Interactive Brokers LLC.",
+      "aliases": [
+        "wikidata:Q3901581"
+      ]
+    },
+    {
+      "canonical_name": "SEDEX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "SEDEX is a stock exchange based in Italy. Italian trading platform",
+      "aliases": [
+        "wikidata:Q3943566"
+      ]
+    },
+    {
+      "canonical_name": "Bangalore Stock Exchange Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bangalore Stock Exchange Ltd is a stock exchange based in India. former stock exchange based in Bangalore, India",
+      "aliases": [
+        "wikidata:Q4077204"
+      ]
+    },
+    {
+      "canonical_name": "Bourse De Beyrouth - Beirut Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bourse De Beyrouth - Beirut Stock Exchange is a stock exchange based in Lebanon. Stock exchange located in Beirut, Lebanon",
+      "aliases": [
+        "wikidata:Q4081230"
+      ]
+    },
+    {
+      "canonical_name": "Muscat Securities Market",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Muscat Securities Market is a stock exchange based in Oman. Stock exchange located in Muscat, Oman",
+      "aliases": [
+        "wikidata:Q4117996"
+      ]
+    },
+    {
+      "canonical_name": "Abu Dhabi Securities Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Abu Dhabi Securities Exchange is a stock exchange based in United Arab Emirates. Stock exchange located in Abu Dhabi, United Arab Emirates",
+      "aliases": [
+        "wikidata:Q4119825"
+      ]
+    },
+    {
+      "canonical_name": "The Gibraltar Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Gibraltar Stock Exchange is a stock exchange based in Gibraltar. EU-regulated market for technical listings in collective investment schemes",
+      "aliases": [
+        "wikidata:Q4137946"
+      ]
+    },
+    {
+      "canonical_name": "Kuwait Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Kuwait Stock Exchange is a stock exchange based in Kuwait. stock exchange located in Kuwait City, Kuwait",
+      "aliases": [
+        "wikidata:Q4164626"
+      ]
+    },
+    {
+      "canonical_name": "GXG Markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "GXG Markets is a stock exchange based in Denmark. Stock exchange located in Horsens, Denmark",
+      "aliases": [
+        "wikidata:Q4164912"
+      ]
+    },
+    {
+      "canonical_name": "Zimbabwe Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Zimbabwe Stock Exchange is a stock exchange based in Zimbabwe. Stock exchange located in Harare, Zimbabwe",
+      "aliases": [
+        "wikidata:Q4191917"
+      ]
+    },
+    {
+      "canonical_name": "Barcelona Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Barcelona Stock Exchange is a stock exchange based in Spain. stock exchange in Barcelona",
+      "aliases": [
+        "wikidata:Q4202960"
+      ]
+    },
+    {
+      "canonical_name": "Islamabad Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Islamabad Stock Exchange is a stock exchange based in Pakistan. former exchange; merged to the Pakistan Stock Exchange in January 2017",
+      "aliases": [
+        "wikidata:Q4204030"
+      ]
+    },
+    {
+      "canonical_name": "Kyrgyz Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Kyrgyz Stock Exchange is a stock exchange based in Kyrgyzstan. Kyrgyz stock exchange",
+      "aliases": [
+        "wikidata:Q4221187"
+      ]
+    },
+    {
+      "canonical_name": "Delhi Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Delhi Stock Exchange is a stock exchange based in India. stock exchange located in New Delhi",
+      "aliases": [
+        "wikidata:Q4251268"
+      ]
+    },
+    {
+      "canonical_name": "Mozambique Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Mozambique Stock Exchange is a stock exchange based in Mozambique. Registered Market For Equities, Bonds, Commercial Paper And Other Financial Instruments",
+      "aliases": [
+        "wikidata:Q4281000"
+      ]
+    },
+    {
+      "canonical_name": "First North",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "First North is a stock exchange based in Iceland. Stock exchange in Northern countries",
+      "aliases": [
+        "wikidata:Q4346290"
+      ]
+    },
+    {
+      "canonical_name": "First North",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "First North is a stock exchange based in Sweden. Stock exchange in Northern countries",
+      "aliases": [
+        "wikidata:Q4346290"
+      ]
+    },
+    {
+      "canonical_name": "First North",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "First North is a stock exchange based in Finland. Stock exchange in Northern countries",
+      "aliases": [
+        "wikidata:Q4346290"
+      ]
+    },
+    {
+      "canonical_name": "Stock Exchange of Singapore",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Stock Exchange of Singapore is a stock exchange based in Singapore. national Stock Exchange of Singapore",
+      "aliases": [
+        "wikidata:Q4351979"
+      ]
+    },
+    {
+      "canonical_name": "Pittsburgh Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Pittsburgh Stock Exchange is a stock exchange. regional stock market located in Pittsburgh, Pennsylvania",
+      "aliases": [
+        "wikidata:Q4363919"
+      ]
+    },
+    {
+      "canonical_name": "Tashkent Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Tashkent Stock Exchange is a stock exchange based in Uzbekistan. stock exchange in Uzbekistan",
+      "aliases": [
+        "wikidata:Q4393626"
+      ]
+    },
+    {
+      "canonical_name": "Boerse Duesseldorf",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Boerse Duesseldorf is a stock exchange based in Germany.",
+      "aliases": [
+        "wikidata:Q1019978"
+      ]
+    },
+    {
+      "canonical_name": "Elx",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Elx is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q1275141"
+      ]
+    },
+    {
+      "canonical_name": "Greenmarket Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Greenmarket Exchange is a stock exchange based in Germany.",
+      "aliases": [
+        "wikidata:Q1544745"
+      ]
+    },
+    {
+      "canonical_name": "Eurex Clearing AG",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Eurex Clearing AG is a stock exchange based in Germany.",
+      "aliases": [
+        "wikidata:Q3060505"
+      ]
+    },
+    {
+      "canonical_name": "Nouveau marché",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Nouveau marché is a stock exchange based in France.",
+      "aliases": [
+        "wikidata:Q3345069"
+      ]
+    },
+    {
+      "canonical_name": "Stock Exchange in Milano",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Stock Exchange in Milano is a stock exchange.",
+      "aliases": [
+        "wikidata:Q3642744"
+      ]
+    },
+    {
+      "canonical_name": "Rome stock exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Rome stock exchange is a stock exchange based in Italy.",
+      "aliases": [
+        "wikidata:Q3642745"
+      ]
+    },
+    {
+      "canonical_name": "Eurotlx",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Eurotlx is a stock exchange based in Italy.",
+      "aliases": [
+        "wikidata:Q3734661"
+      ]
+    },
+    {
+      "canonical_name": "MESDAQ",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "MESDAQ is a stock exchange.",
+      "aliases": [
+        "wikidata:Q4043406"
+      ]
+    },
+    {
+      "canonical_name": "Midwest Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Midwest Stock Exchange is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q4438533"
+      ]
+    },
+    {
+      "canonical_name": "Sheffield Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Sheffield Stock Exchange is a stock exchange.",
+      "aliases": [
+        "wikidata:Q4523492"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa Centroamericana De Valores S.A.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa Centroamericana De Valores S.A. is a stock exchange based in Honduras.",
+      "aliases": [
+        "wikidata:Q5731643"
+      ]
+    },
+    {
+      "canonical_name": "La Bolsa Electronica De Chile",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "La Bolsa Electronica De Chile is a stock exchange based in Chile.",
+      "aliases": [
+        "wikidata:Q5731645"
+      ]
+    },
+    {
+      "canonical_name": "Kuala Lumpur Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Kuala Lumpur Stock Exchange is a stock exchange based in Malaysia.",
+      "aliases": [
+        "wikidata:Q6441033"
+      ]
+    },
+    {
+      "canonical_name": "MCX Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "MCX Stock Exchange is a stock exchange based in India.",
+      "aliases": [
+        "wikidata:Q6715038"
+      ]
+    },
+    {
+      "canonical_name": "Miami Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Miami Stock Exchange is a stock exchange.",
+      "aliases": [
+        "wikidata:Q6827417"
+      ]
+    },
+    {
+      "canonical_name": "Options Market France",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Options Market France is a stock exchange.",
+      "aliases": [
+        "wikidata:Q7099027"
+      ]
+    },
+    {
+      "canonical_name": "Sibiu Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Sibiu Stock Exchange is a stock exchange based in Romania.",
+      "aliases": [
+        "wikidata:Q7507109"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Valores De Quito",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Valores De Quito is a stock exchange based in Ecuador.",
+      "aliases": [
+        "wikidata:Q12156180"
+      ]
+    },
+    {
+      "canonical_name": "Bahia Sergipe Alagoas Exchanges",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bahia Sergipe Alagoas Exchanges is a stock exchange based in Brazil.",
+      "aliases": [
+        "wikidata:Q16501993"
+      ]
+    },
+    {
+      "canonical_name": "Osaka Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Osaka Stock Exchange is a stock exchange based in Japan.",
+      "aliases": [
+        "wikidata:Q17239431"
+      ]
+    },
+    {
+      "canonical_name": "The Far East Exchange Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Far East Exchange Limited is a stock exchange based in British Hong Kong.",
+      "aliases": [
+        "wikidata:Q18236250"
+      ]
+    },
+    {
+      "canonical_name": "Universal Commodity Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Universal Commodity Exchange is a stock exchange based in India.",
+      "aliases": [
+        "wikidata:Q18357082"
+      ]
+    },
+    {
+      "canonical_name": "İzmir Commodity Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "İzmir Commodity Exchange is a stock exchange based in Turkey.",
+      "aliases": [
+        "wikidata:Q28220102"
+      ]
+    },
+    {
+      "canonical_name": "New-York Mining Stock and National Petroleum Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New-York Mining Stock and National Petroleum Exchange is a stock exchange.",
+      "aliases": [
+        "wikidata:Q29094284"
+      ]
+    },
+    {
+      "canonical_name": "American Mining and Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "American Mining and Stock Exchange is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q30594153"
+      ]
+    },
+    {
+      "canonical_name": "California Oil Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "California Oil Exchange is a stock exchange.",
+      "aliases": [
+        "wikidata:Q30642930"
+      ]
+    },
+    {
+      "canonical_name": "New Orleans Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "New Orleans Stock Exchange is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q48977404"
+      ]
+    },
+    {
+      "canonical_name": "Basel Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Basel Stock Exchange is a stock exchange based in Switzerland.",
+      "aliases": [
+        "wikidata:Q60764145"
+      ]
+    },
+    {
+      "canonical_name": "BSP Regional Energy Exchange - South Pool",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BSP Regional Energy Exchange - South Pool is a stock exchange based in Slovenia.",
+      "aliases": [
+        "wikidata:Q61356408"
+      ]
+    },
+    {
+      "canonical_name": "Borsa Valori di Torino",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Borsa Valori di Torino is a stock exchange.",
+      "aliases": [
+        "wikidata:Q64519493"
+      ]
+    },
+    {
+      "canonical_name": "Saudi Parallel Market (Nomu)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Saudi Parallel Market (Nomu) is a stock exchange based in Saudi Arabia.",
+      "aliases": [
+        "wikidata:Q76160048"
+      ]
+    },
+    {
+      "canonical_name": "Agricultural Futures Exchange Of Thailand",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Agricultural Futures Exchange Of Thailand is a stock exchange based in Thailand.",
+      "aliases": [
+        "wikidata:Q93355259"
+      ]
+    },
+    {
+      "canonical_name": "Australian Wheat Board",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Australian Wheat Board is a stock exchange based in Australia.",
+      "aliases": [
+        "wikidata:Q93355269"
+      ]
+    },
+    {
+      "canonical_name": "Australian Wool Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Australian Wool Exchange is a stock exchange based in Australia.",
+      "aliases": [
+        "wikidata:Q93355272"
+      ]
+    },
+    {
+      "canonical_name": "The Baltic Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "The Baltic Exchange is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355280"
+      ]
+    },
+    {
+      "canonical_name": "Bolsa De Comercio De Santa Fe",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bolsa De Comercio De Santa Fe is a stock exchange based in Argentina.",
+      "aliases": [
+        "wikidata:Q93355301"
+      ]
+    },
+    {
+      "canonical_name": "Bond Electronic Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bond Electronic Exchange is a stock exchange based in Thailand.",
+      "aliases": [
+        "wikidata:Q93355309"
+      ]
+    },
+    {
+      "canonical_name": "BGC Financial Inc",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BGC Financial Inc is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q93355315"
+      ]
+    },
+    {
+      "canonical_name": "BGC Brokers Lp",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BGC Brokers Lp is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355319"
+      ]
+    },
+    {
+      "canonical_name": "Bids Trading L.P.",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bids Trading L.P. is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q93355326"
+      ]
+    },
+    {
+      "canonical_name": "Belgian Power Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Belgian Power Exchange is a stock exchange based in Belgium.",
+      "aliases": [
+        "wikidata:Q93355330"
+      ]
+    },
+    {
+      "canonical_name": "Convergex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Convergex is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q93355333"
+      ]
+    },
+    {
+      "canonical_name": "Bondscape",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Bondscape is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355340"
+      ]
+    },
+    {
+      "canonical_name": "Icap Electronic Broking (Us)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Icap Electronic Broking (Us) is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q93355348"
+      ]
+    },
+    {
+      "canonical_name": "Cannex Financial Exchange Lts",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cannex Financial Exchange Lts is a stock exchange based in Canada.",
+      "aliases": [
+        "wikidata:Q93355355"
+      ]
+    },
+    {
+      "canonical_name": "Cantorco2E.Com Limited",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cantorco2E.Com Limited is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355365"
+      ]
+    },
+    {
+      "canonical_name": "Citi Match - GB",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Citi Match - GB is a stock exchange based in Hong Kong.",
+      "aliases": [
+        "wikidata:Q93355375"
+      ]
+    },
+    {
+      "canonical_name": "CA Cheuvreux",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "CA Cheuvreux is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355382"
+      ]
+    },
+    {
+      "canonical_name": "Citi Match Mx",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Citi Match Mx is a stock exchange based in Mexico.",
+      "aliases": [
+        "wikidata:Q93355380"
+      ]
+    },
+    {
+      "canonical_name": "Credit Suisse (US)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Credit Suisse (US) is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q93355411"
+      ]
+    },
+    {
+      "canonical_name": "China Stainless Steel Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "China Stainless Steel Exchange is a stock exchange based in People's Republic of China.",
+      "aliases": [
+        "wikidata:Q93355414"
+      ]
+    },
+    {
+      "canonical_name": "East European Stock Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "East European Stock Exchange is a stock exchange based in Ukraine.",
+      "aliases": [
+        "wikidata:Q93355439"
+      ]
+    },
+    {
+      "canonical_name": "Dansk OTC",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Dansk OTC is a stock exchange based in Denmark.",
+      "aliases": [
+        "wikidata:Q93355436"
+      ]
+    },
+    {
+      "canonical_name": "Cantor Spreadfair",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Cantor Spreadfair is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355901"
+      ]
+    },
+    {
+      "canonical_name": "Fishex",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Fishex is a stock exchange based in Norway.",
+      "aliases": [
+        "wikidata:Q93355910"
+      ]
+    },
+    {
+      "canonical_name": "MTS France SAS",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "MTS France SAS is a stock exchange based in France.",
+      "aliases": [
+        "wikidata:Q93355908"
+      ]
+    },
+    {
+      "canonical_name": "Gilt Edged Market Makers' Association",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Gilt Edged Market Makers' Association is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355919"
+      ]
+    },
+    {
+      "canonical_name": "GFI Securities Ltd",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "GFI Securities Ltd is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355927"
+      ]
+    },
+    {
+      "canonical_name": "GX Marketcenter",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "GX Marketcenter is a stock exchange based in Vanuatu.",
+      "aliases": [
+        "wikidata:Q93355946"
+      ]
+    },
+    {
+      "canonical_name": "Electronic Secondary Securities Market (Hdat)",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Electronic Secondary Securities Market (Hdat) is a stock exchange based in Greece.",
+      "aliases": [
+        "wikidata:Q93355947"
+      ]
+    },
+    {
+      "canonical_name": "Hi-MTF",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hi-MTF is a stock exchange based in Italy.",
+      "aliases": [
+        "wikidata:Q93355951"
+      ]
+    },
+    {
+      "canonical_name": "Hotspot FX",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Hotspot FX is a stock exchange based in United States.",
+      "aliases": [
+        "wikidata:Q93355954"
+      ]
+    },
+    {
+      "canonical_name": "BrokerTec Europe Limited - All markets",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "BrokerTec Europe Limited - All markets is a stock exchange based in United Kingdom.",
+      "aliases": [
+        "wikidata:Q93355965"
+      ]
+    },
+    {
+      "canonical_name": "Joint Asian Derivatives Exchange",
+      "entity_type": "organization",
+      "subtype": "exchange",
+      "description": "Joint Asian Derivatives Exchange is a stock exchange based in Singapore.",
+      "aliases": [
+        "wikidata:Q93355988"
+      ]
+    }
+  ]
+}

@@ -20,11 +20,11 @@ instead of bulk-dumping.
 | CLI `--type`    | KG mapping                    | Wikidata class filter      |
 |-----------------|-------------------------------|----------------------------|
 | `company`       | `ORGANIZATION / company`      | `Q4830453` + listing (P414), ordered by market cap (P2226) |
-| `central_bank`  | `ORGANIZATION / central_bank` | `Q46825`                   |
-| `regulator`     | `ORGANIZATION / regulator`    | `Q17278032`                |
+| `central_bank`  | `ORGANIZATION / central_bank` | `Q66344`                   |
+| `regulator`     | `ORGANIZATION / regulator`    | `Q105062392`               |
 | `exchange`      | `ORGANIZATION / exchange`     | `Q11691`                   |
 | `currency`      | `ASSET / currency`            | `Q8142` + ISO code (P498)  |
-| `index`         | `ASSET / index`               | `Q167270`                  |
+| `index`         | `ASSET / index`               | `Q223371`                  |
 | `crypto`        | `ASSET / crypto`              | `Q13479982`                |
 
 New types plug in via three small additions — a SPARQL
@@ -136,6 +136,11 @@ uv run python -m unstructured_mapping.cli.wikidata_seed \
 The snapshot file is compatible with `cli.seed`, so a
 captured import can be re-played offline against a fresh
 database without hitting the SPARQL endpoint again.
+
+Committed snapshots under `data/seed/wikidata/` are the
+source of truth for KG population — see
+[`reproducibility.md`](reproducibility.md) for the
+rationale and rebuild workflow.
 
 ## Why not `SPARQLWrapper`?
 

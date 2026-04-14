@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.36.0 - 14th April 2026
+
+- Committed Wikidata seed snapshots as the reproducibility source of truth:
+  - Added `data/seed/wikidata/`:
+    - `currency.json`, `central_bank.json`, `exchange.json`, `regulator.json`, `index.json`, `crypto.json`, `company.json`.
+  - The populated `data/knowledge.db` stays gitignored; a fresh clone rebuilds the KG by replaying the curated seed then each Wikidata snapshot via `cli.seed`.
+- Added `docs/seed/reproducibility.md`: documents the hybrid strategy (seeds committed, DB local), the alternatives considered (commit `.db`, rebuild live from Wikidata), and the accepted trade-offs.
+- Updated `docs/seed/wikidata.md`:
+  - Fixed stale class QIDs in the type matrix to reflect the v0.35.2 corrections (`Q66344` central bank, `Q105062392` regulator, `Q223371` stock index).
+  - Cross-linked the snapshot section to `reproducibility.md`.
+
+
 ### v0.35.2 - 14th April 2026
 
 - Fixed Wikidata SPARQL query templates in `wikidata/queries.py`:

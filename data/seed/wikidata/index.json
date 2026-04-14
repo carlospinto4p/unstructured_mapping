@@ -1,0 +1,5415 @@
+{
+  "version": 1,
+  "description": "Wikidata seed snapshot. Re-loadable via cli.seed for reproducibility.",
+  "entities": [
+    {
+      "canonical_name": "TecDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TecDAX is a stock market index, in Germany. stock market index",
+      "aliases": [
+        "wikidata:Q378967"
+      ]
+    },
+    {
+      "canonical_name": "OMX Copenhagen 20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Copenhagen 20 is a stock market index, tracked on Nasdaq Copenhagen A/S, in Denmark. Blue-chip index consisting of the 20 major Danish companies trading on Nasdaq Copenhagen",
+      "aliases": [
+        "wikidata:Q384302"
+      ]
+    },
+    {
+      "canonical_name": "Renewable Energy Industrial Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Renewable Energy Industrial Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q422147"
+      ]
+    },
+    {
+      "canonical_name": "Hang Seng Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Hang Seng Index is a stock market index, in Hong Kong. Stock market index in Hong Kong",
+      "aliases": [
+        "wikidata:Q424846"
+      ]
+    },
+    {
+      "canonical_name": "SDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SDAX is a stock market index. Stock index of 70 German Small Caps",
+      "aliases": [
+        "wikidata:Q448445"
+      ]
+    },
+    {
+      "canonical_name": "Taiwan Stock Exchange Capitalization Weighted Stock Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Taiwan Stock Exchange Capitalization Weighted Stock Index is a stock market index, tracked on Taiwan Stock Exchange, in Taiwan. Taiwan stock market index",
+      "aliases": [
+        "wikidata:Q448773"
+      ]
+    },
+    {
+      "canonical_name": "FTSE 100 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE 100 Index is a stock market index, tracked on London Stock Exchange, in United Kingdom. British stock market index",
+      "aliases": [
+        "wikidata:Q466496"
+      ]
+    },
+    {
+      "canonical_name": "SOFIX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SOFIX is a stock market index. BSE stock market index",
+      "aliases": [
+        "wikidata:Q474557"
+      ]
+    },
+    {
+      "canonical_name": "CAC Next 20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC Next 20 is a stock market index, tracked on Euronext Paris, in France. stock market index",
+      "aliases": [
+        "wikidata:Q477139"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 50 is a stock market index. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q489978"
+      ]
+    },
+    {
+      "canonical_name": "Korea Exchange (Kosdaq)",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Korea Exchange (Kosdaq) is a stock market index, in South Korea. Electronic stock market located in Seoul, South Korea",
+      "aliases": [
+        "wikidata:Q491503"
+      ]
+    },
+    {
+      "canonical_name": "S&P/TSX 60",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/TSX 60 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q503065"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq-100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Nasdaq-100 is a stock market index, tracked on Nasdaq, in United States. blue-chip index consisting of the 100 major companies trading on NASDAQ",
+      "aliases": [
+        "wikidata:Q507306"
+      ]
+    },
+    {
+      "canonical_name": "MASI index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MASI index is a stock market index, tracked on Casablanca Stock Exchange, in Morocco. Moroccan stock index",
+      "aliases": [
+        "wikidata:Q3324278"
+      ]
+    },
+    {
+      "canonical_name": "NIFTY Next 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NIFTY Next 50 is a stock market index. Indian stock market index",
+      "aliases": [
+        "wikidata:Q3341340"
+      ]
+    },
+    {
+      "canonical_name": "S&P/ASX 200",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/ASX 200 is a stock market index, tracked on Australian Securities Exchange, in Australia. Australian stock market index",
+      "aliases": [
+        "wikidata:Q3458980"
+      ]
+    },
+    {
+      "canonical_name": "S&P Global 100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Global 100 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q3458985"
+      ]
+    },
+    {
+      "canonical_name": "SBF 120",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SBF 120 is a stock market index, tracked on Euronext Paris, in France. French stock market index",
+      "aliases": [
+        "wikidata:Q3459242"
+      ]
+    },
+    {
+      "canonical_name": "SBF 250",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SBF 250 is a stock market index. French stock market exchange",
+      "aliases": [
+        "wikidata:Q3459241"
+      ]
+    },
+    {
+      "canonical_name": "STX EU Enlarge 15",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "STX EU Enlarge 15 is a stock market index. stock market index in the EU",
+      "aliases": [
+        "wikidata:Q3460163"
+      ]
+    },
+    {
+      "canonical_name": "Tanzania All Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Tanzania All Share Index is a stock market index. tanzanian stock market",
+      "aliases": [
+        "wikidata:Q3515379"
+      ]
+    },
+    {
+      "canonical_name": "Índice General de la Bolsa de Valores de Lima",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Índice General de la Bolsa de Valores de Lima is a stock market index, tracked on Lima Stock Exchange, in Peru. Peruvian stock market index",
+      "aliases": [
+        "wikidata:Q3592982"
+      ]
+    },
+    {
+      "canonical_name": "Amex Major Market Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Amex Major Market Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q4033914"
+      ]
+    },
+    {
+      "canonical_name": "MICEX 10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MICEX 10 is a stock market index. unweighted stock price index in Russia",
+      "aliases": [
+        "wikidata:Q4204277"
+      ]
+    },
+    {
+      "canonical_name": "All Share Price Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "All Share Price Index is a stock market index, in Sri Lanka. stock indices of the Colombo Stock Exchange in Sri Lanka",
+      "aliases": [
+        "wikidata:Q4729617"
+      ]
+    },
+    {
+      "canonical_name": "BUMIX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BUMIX is a stock market index, in Hungary. Hungarian stock market index",
+      "aliases": [
+        "wikidata:Q4836798"
+      ]
+    },
+    {
+      "canonical_name": "OMX Iceland 8",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Iceland 8 is a stock market index, in Iceland. stock market index",
+      "aliases": [
+        "wikidata:Q4992587"
+      ]
+    },
+    {
+      "canonical_name": "CBOE S&P 500 PutWrite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBOE S&P 500 PutWrite Index is a stock market index. ticker symbol",
+      "aliases": [
+        "wikidata:Q5009160"
+      ]
+    },
+    {
+      "canonical_name": "CBV Sectors",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV Sectors is a stock market index. Vietnam economic indices",
+      "aliases": [
+        "wikidata:Q5009334"
+      ]
+    },
+    {
+      "canonical_name": "CBV SmallCap",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV SmallCap is a stock market index. Vietnamese stock market index",
+      "aliases": [
+        "wikidata:Q5009335"
+      ]
+    },
+    {
+      "canonical_name": "CBV Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV Index is a stock market index. index",
+      "aliases": [
+        "wikidata:Q5009332"
+      ]
+    },
+    {
+      "canonical_name": "CBV MidCap",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV MidCap is a stock market index, in Vietnam. Vietnamese stock market index",
+      "aliases": [
+        "wikidata:Q5009333"
+      ]
+    },
+    {
+      "canonical_name": "CBV Total",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV Total is a stock market index. Vietnamese stock market index",
+      "aliases": [
+        "wikidata:Q5009336"
+      ]
+    },
+    {
+      "canonical_name": "Calvert Social Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Calvert Social Index is a stock market index. Large cap stock market index",
+      "aliases": [
+        "wikidata:Q5024282"
+      ]
+    },
+    {
+      "canonical_name": "ERS10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "ERS10 is a stock market index, in Bosnia and Herzegovina. stock market index",
+      "aliases": [
+        "wikidata:Q5324076"
+      ]
+    },
+    {
+      "canonical_name": "FTSE All-Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE All-Share Index is a stock market index. Capitalization-weighted index",
+      "aliases": [
+        "wikidata:Q5427227"
+      ]
+    },
+    {
+      "canonical_name": "FTSE Global Equity Index Series",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE Global Equity Index Series is a stock market index. stock market indices",
+      "aliases": [
+        "wikidata:Q5427234"
+      ]
+    },
+    {
+      "canonical_name": "MSCI KLD 400 Social Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI KLD 400 Social Index is a stock market index. American stock index",
+      "aliases": [
+        "wikidata:Q5427238"
+      ]
+    },
+    {
+      "canonical_name": "S&P/BVL General",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/BVL General is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q5907161"
+      ]
+    },
+    {
+      "canonical_name": "IBEX Medium Cap",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "IBEX Medium Cap is a stock market index, tracked on Madrid Stock Exchange, in Spain. index consisting of mid-cap companies trading on Bolsa de Madrid",
+      "aliases": [
+        "wikidata:Q5907868"
+      ]
+    },
+    {
+      "canonical_name": "India Index Services and Products",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "India Index Services and Products is a stock market index, in India. Indian stock market index provider",
+      "aliases": [
+        "wikidata:Q6019342"
+      ]
+    },
+    {
+      "canonical_name": "KMI 30 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "KMI 30 Index is a stock market index. Pakistani stock market index",
+      "aliases": [
+        "wikidata:Q6333612"
+      ]
+    },
+    {
+      "canonical_name": "TA-SME60 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-SME60 Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q6572683"
+      ]
+    },
+    {
+      "canonical_name": "Russell Midcap Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell Midcap Index is a stock market index. ticker symbol for a Stock market index",
+      "aliases": [
+        "wikidata:Q7381685"
+      ]
+    },
+    {
+      "canonical_name": "Russell Small Cap Completeness Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell Small Cap Completeness Index is a stock market index. Stock market index",
+      "aliases": [
+        "wikidata:Q7381781"
+      ]
+    },
+    {
+      "canonical_name": "Russell Top 200 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell Top 200 Index is a stock market index. measuring Index for large company performance",
+      "aliases": [
+        "wikidata:Q7381827"
+      ]
+    },
+    {
+      "canonical_name": "Russell Top 50 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell Top 50 Index is a stock market index. American stock market index",
+      "aliases": [
+        "wikidata:Q7381828"
+      ]
+    },
+    {
+      "canonical_name": "S&P/ASX 300",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/ASX 300 is a stock market index, tracked on Australian Securities Exchange, in Australia. Australian stock market index",
+      "aliases": [
+        "wikidata:Q7386988"
+      ]
+    },
+    {
+      "canonical_name": "S&P/ASX 20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/ASX 20 is a stock market index, in Australia. Australian stock market index",
+      "aliases": [
+        "wikidata:Q7386989"
+      ]
+    },
+    {
+      "canonical_name": "S&P 400",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 400 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q7386994"
+      ]
+    },
+    {
+      "canonical_name": "S&P 600",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 600 is a stock market index. Standard and Poors index comprising of small capitalized stocks.",
+      "aliases": [
+        "wikidata:Q7386995"
+      ]
+    },
+    {
+      "canonical_name": "S&P 1500",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 1500 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q7386992"
+      ]
+    },
+    {
+      "canonical_name": "S&P CNX 500",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P CNX 500 is a stock market index, in India. index of the Indian stock market",
+      "aliases": [
+        "wikidata:Q7386996"
+      ]
+    },
+    {
+      "canonical_name": "S&P Europe 350",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Europe 350 is a stock market index. stock index",
+      "aliases": [
+        "wikidata:Q7386997"
+      ]
+    },
+    {
+      "canonical_name": "SZSE Component Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SZSE Component Index is a stock market index. Chinese stock index",
+      "aliases": [
+        "wikidata:Q7395326"
+      ]
+    },
+    {
+      "canonical_name": "TA Global-BlueTech Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA Global-BlueTech Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q7669458"
+      ]
+    },
+    {
+      "canonical_name": "Thomson Reuters Realized Volatility Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Thomson Reuters Realized Volatility Index is a stock market index. Stock market index",
+      "aliases": [
+        "wikidata:Q7795898"
+      ]
+    },
+    {
+      "canonical_name": "Vietnam Securities Indexes",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Vietnam Securities Indexes is a stock market index. overview about Vietnam Securities Indexes",
+      "aliases": [
+        "wikidata:Q7928547"
+      ]
+    },
+    {
+      "canonical_name": "Zimbabwe Industrial Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Zimbabwe Industrial Index is a stock market index. Zimbabwean stock index",
+      "aliases": [
+        "wikidata:Q8071988"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Luxembourg Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Warsaw Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Germany. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in United Kingdom. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in France. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Netherlands. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Portugal. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Austria. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Switzerland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Italy. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Poland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Denmark. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Sweden. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Finland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Luxembourg. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Belgium. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Spain. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Ireland. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Lisbon, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Paris, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Euronext Brussels, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Stockholm AB, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Copenhagen A/S, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Italian Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Oslo Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Wiener Boerse AG, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Swiss Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Madrid Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Nasdaq Helsinki Ltd, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Amsterdam Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on London Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Frankfurt Stock Exchange, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "Stoxx Europe 600 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Stoxx Europe 600 Index is a stock market index, tracked on Irish Stock Exchange - All Market, in Norway. Pan-European stock market index",
+      "aliases": [
+        "wikidata:Q10366645"
+      ]
+    },
+    {
+      "canonical_name": "VINX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "VINX is a stock market index. Index of all Nordic stock exchanges",
+      "aliases": [
+        "wikidata:Q10711834"
+      ]
+    },
+    {
+      "canonical_name": "FTSE China A50 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE China A50 Index is a stock market index. Chinese stock market index",
+      "aliases": [
+        "wikidata:Q10954323"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX Core 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX Core 30 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q11249846"
+      ]
+    },
+    {
+      "canonical_name": "BG40",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BG40 is a stock market index. Bulgarian stock index",
+      "aliases": [
+        "wikidata:Q12270574"
+      ]
+    },
+    {
+      "canonical_name": "TA-Biomed Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-Biomed Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q12408839"
+      ]
+    },
+    {
+      "canonical_name": "SBI20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SBI20 is a stock market index, in Slovenia. index of Slovenian stock market",
+      "aliases": [
+        "wikidata:Q12802995"
+      ]
+    },
+    {
+      "canonical_name": "WIG30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "WIG30 is a stock market index, in Poland. blue chip stock market index",
+      "aliases": [
+        "wikidata:Q14946445"
+      ]
+    },
+    {
+      "canonical_name": "Índice Bursátil de Capitalización",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Índice Bursátil de Capitalización is a stock market index. main and most important index of Caracas Stock Exchange",
+      "aliases": [
+        "wikidata:Q15640913"
+      ]
+    },
+    {
+      "canonical_name": "Barron's 400 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Barron's 400 Index is a stock market index. American stock market index",
+      "aliases": [
+        "wikidata:Q16822441"
+      ]
+    },
+    {
+      "canonical_name": "TA-90 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-90 Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q16866125"
+      ]
+    },
+    {
+      "canonical_name": "S&P Sri Lanka 20 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Sri Lanka 20 Index is a stock market index, in Sri Lanka. Sri Lankan stock market index",
+      "aliases": [
+        "wikidata:Q17026865"
+      ]
+    },
+    {
+      "canonical_name": "Tech Icons Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Tech Icons Index is a stock market index. Proprietary benchmark index system designed to track structural dynamics, capital positioning, and competitive hierarchy across global technology-driven markets.",
+      "aliases": [
+        "wikidata:Q138019671"
+      ]
+    },
+    {
+      "canonical_name": "WIG20short",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "WIG20short is a stock market index, tracked on Warsaw Stock Exchange, in Poland. Stock index",
+      "aliases": [
+        "wikidata:Q9369356"
+      ]
+    },
+    {
+      "canonical_name": "DAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "DAX is a stock market index, tracked on Frankfurt Stock Exchange, in Germany. Blue-chip index consisting of the 40 major German companies trading on the Frankfurt Stock Exchange",
+      "aliases": [
+        "wikidata:Q155718"
+      ]
+    },
+    {
+      "canonical_name": "SSE Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SSE Composite Index is a stock market index, tracked on Shanghai Stock Exchange, in People's Republic of China. stock market index",
+      "aliases": [
+        "wikidata:Q174453"
+      ]
+    },
+    {
+      "canonical_name": "VDAX-NEW",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "VDAX-NEW is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q176386"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Industrial Average",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Industrial Average is a stock market index, tracked on Nasdaq, in United States. stock market index",
+      "aliases": [
+        "wikidata:Q180816"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Industrial Average",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Industrial Average is a stock market index, tracked on New York Stock Exchange, in United States. stock market index",
+      "aliases": [
+        "wikidata:Q180816"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX is a stock market index, tracked on Tokyo Stock Exchange, in Japan. Japanese stock market index",
+      "aliases": [
+        "wikidata:Q238974"
+      ]
+    },
+    {
+      "canonical_name": "S&P 500",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 500 is a stock market index, in United States. American stock market index",
+      "aliases": [
+        "wikidata:Q242345"
+      ]
+    },
+    {
+      "canonical_name": "AEX index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "AEX index is a stock market index, tracked on Amsterdam Stock Exchange. blue-chip index consisting of the 30 major companies trading on Euronext Amsterdam",
+      "aliases": [
+        "wikidata:Q291539"
+      ]
+    },
+    {
+      "canonical_name": "Indice de Precios y Cotizaciones ICR Conglomerados Co.",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Indice de Precios y Cotizaciones ICR Conglomerados Co. is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q291740"
+      ]
+    },
+    {
+      "canonical_name": "ÖkoDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "ÖkoDAX is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q294848"
+      ]
+    },
+    {
+      "canonical_name": "AMX index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "AMX index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q295459"
+      ]
+    },
+    {
+      "canonical_name": "S&P Merval",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Merval is a stock market index, tracked on Buenos Aires Stock Exchange, in Argentina. stock market index",
+      "aliases": [
+        "wikidata:Q366943"
+      ]
+    },
+    {
+      "canonical_name": "BIST 100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BIST 100 is a stock market index. blue chip stock market index",
+      "aliases": [
+        "wikidata:Q1654598"
+      ]
+    },
+    {
+      "canonical_name": "KASE Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "KASE Index is a stock market index, in Kazakhstan. Kazakhstan stock exchange index",
+      "aliases": [
+        "wikidata:Q1718413"
+      ]
+    },
+    {
+      "canonical_name": "PSE Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PSE Composite Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1754476"
+      ]
+    },
+    {
+      "canonical_name": "OMX Iceland 15",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Iceland 15 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1761862"
+      ]
+    },
+    {
+      "canonical_name": "LQ-45",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "LQ-45 is a stock market index, in Indonesia. stock market index",
+      "aliases": [
+        "wikidata:Q1798296"
+      ]
+    },
+    {
+      "canonical_name": "OMX Stockholm PI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Stockholm PI is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1812039"
+      ]
+    },
+    {
+      "canonical_name": "NIFTY 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NIFTY 50 is a stock market index. Indian stock market and benchmark index",
+      "aliases": [
+        "wikidata:Q1853402"
+      ]
+    },
+    {
+      "canonical_name": "MSCI Emerging Markets",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI Emerging Markets is a stock market index. Stock market index that consists of 23 countries representing emerging markets",
+      "aliases": [
+        "wikidata:Q1881817"
+      ]
+    },
+    {
+      "canonical_name": "MSCI World",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI World is a stock market index. Broad global equity benchmark representing large and mid-cap equity performance across 23 developed market countries",
+      "aliases": [
+        "wikidata:Q1881843"
+      ]
+    },
+    {
+      "canonical_name": "Euronext 100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Euronext 100 is a stock market index, in France. blue chip index of the pan-European exchange, Euronext NV",
+      "aliases": [
+        "wikidata:Q1922499"
+      ]
+    },
+    {
+      "canonical_name": "HUI Gold Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "HUI Gold Index is a stock market index, tracked on Nasdaq. modified equal dollar weighted index of companies involved in gold mining",
+      "aliases": [
+        "wikidata:Q1961738"
+      ]
+    },
+    {
+      "canonical_name": "NYSE Composite",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NYSE Composite is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1961761"
+      ]
+    },
+    {
+      "canonical_name": "NZX 50 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NZX 50 Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1961782"
+      ]
+    },
+    {
+      "canonical_name": "Natur-Aktien-Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Natur-Aktien-Index is a stock market index, tracked on Boerse Stuttgart. stock market index",
+      "aliases": [
+        "wikidata:Q1969854"
+      ]
+    },
+    {
+      "canonical_name": "OMX Baltic 10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Baltic 10 is a stock market index, in Latvia. regional stock market index",
+      "aliases": [
+        "wikidata:Q2007738"
+      ]
+    },
+    {
+      "canonical_name": "OMX Baltic 10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Baltic 10 is a stock market index, in Estonia. regional stock market index",
+      "aliases": [
+        "wikidata:Q2007738"
+      ]
+    },
+    {
+      "canonical_name": "OMX Baltic 10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Baltic 10 is a stock market index, in Lithuania. regional stock market index",
+      "aliases": [
+        "wikidata:Q2007738"
+      ]
+    },
+    {
+      "canonical_name": "Talse index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Talse index is a stock market index, in Estonia. main stock market index in Estonia",
+      "aliases": [
+        "wikidata:Q2007741"
+      ]
+    },
+    {
+      "canonical_name": "PSI-20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PSI-20 is a stock market index, tracked on Euronext Lisbon, in Portugal. Portuguese stock market index",
+      "aliases": [
+        "wikidata:Q2044697"
+      ]
+    },
+    {
+      "canonical_name": "NASDAQ Biotechnology Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NASDAQ Biotechnology Index is a stock market index, tracked on Nasdaq, in United States. United States stock market index",
+      "aliases": [
+        "wikidata:Q2063056"
+      ]
+    },
+    {
+      "canonical_name": "WIG",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "WIG is a stock market index, in Poland. Polish stock market index",
+      "aliases": [
+        "wikidata:Q2063317"
+      ]
+    },
+    {
+      "canonical_name": "Philadelphia Gold and Silver Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Philadelphia Gold and Silver Index is a stock market index. stock exchange index",
+      "aliases": [
+        "wikidata:Q2085792"
+      ]
+    },
+    {
+      "canonical_name": "Straits Times Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Straits Times Index is a stock market index, in Singapore. Benchmark index for the Singapore stock market",
+      "aliases": [
+        "wikidata:Q2096641"
+      ]
+    },
+    {
+      "canonical_name": "Russell 3000 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell 3000 Index is a stock market index. capitalization-weighted stock market index, that seeks to be a benchmark of the entire U.S stock market",
+      "aliases": [
+        "wikidata:Q2176898"
+      ]
+    },
+    {
+      "canonical_name": "S&P 500 Banks Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 500 Banks Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q2204325"
+      ]
+    },
+    {
+      "canonical_name": "S&P 500 Short Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 500 Short Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q2204340"
+      ]
+    },
+    {
+      "canonical_name": "S&P/TSX Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/TSX Composite Index is a stock market index, tracked on Toronto Stock Exchange, in Canada. Canadian Stock market index",
+      "aliases": [
+        "wikidata:Q2204346"
+      ]
+    },
+    {
+      "canonical_name": "S&P Global 1200",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Global 1200 is a stock market index. free-float weighted stock market index",
+      "aliases": [
+        "wikidata:Q2204377"
+      ]
+    },
+    {
+      "canonical_name": "S&P/ASX 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/ASX 50 is a stock market index, tracked on Australian Securities Exchange, in Australia. Australian stock market index",
+      "aliases": [
+        "wikidata:Q2204387"
+      ]
+    },
+    {
+      "canonical_name": "SSE 50 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SSE 50 Index is a stock market index. blue chip index of top 50 companies of the Shanghai Stock Exchange",
+      "aliases": [
+        "wikidata:Q2276942"
+      ]
+    },
+    {
+      "canonical_name": "Shanghai Stock Exchange 180 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Shanghai Stock Exchange 180 Index is a stock market index. Shanghai Stock Exchange top 180 index",
+      "aliases": [
+        "wikidata:Q2276947"
+      ]
+    },
+    {
+      "canonical_name": "Swiss Performance Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Swiss Performance Index is a stock market index. stock index in Switzerland",
+      "aliases": [
+        "wikidata:Q2373174"
+      ]
+    },
+    {
+      "canonical_name": "Tadawul All-Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Tadawul All-Share Index is a stock market index. Saudi stock market index",
+      "aliases": [
+        "wikidata:Q2387131"
+      ]
+    },
+    {
+      "canonical_name": "MICEX Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MICEX Index is a stock market index. Russian stock market index",
+      "aliases": [
+        "wikidata:Q2388317"
+      ]
+    },
+    {
+      "canonical_name": "Jakarta Islamic Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Jakarta Islamic Index is a stock market index, in Indonesia. Stock market index in Indonesia",
+      "aliases": [
+        "wikidata:Q17051755"
+      ]
+    },
+    {
+      "canonical_name": "Thomson Reuters Indices",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Thomson Reuters Indices is a stock market index. line of indices and index services",
+      "aliases": [
+        "wikidata:Q17056023"
+      ]
+    },
+    {
+      "canonical_name": "SMIM",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SMIM is a stock market index, in Switzerland. stock index which lists Switzerland's mid-cap companies",
+      "aliases": [
+        "wikidata:Q17591621"
+      ]
+    },
+    {
+      "canonical_name": "NASDAQ Financial-100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NASDAQ Financial-100 is a stock market index. specialty index operated by NASDAQ",
+      "aliases": [
+        "wikidata:Q21070901"
+      ]
+    },
+    {
+      "canonical_name": "TA-Technology Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-Technology Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q25489566"
+      ]
+    },
+    {
+      "canonical_name": "TA Tech - Elite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA Tech - Elite Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q25489574"
+      ]
+    },
+    {
+      "canonical_name": "Hang Seng China Enterprises Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Hang Seng China Enterprises Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q42425330"
+      ]
+    },
+    {
+      "canonical_name": "SZSE 200 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SZSE 200 Index is a stock market index, tracked on Shenzhen Stock Exchange, in People's Republic of China. stock market index",
+      "aliases": [
+        "wikidata:Q42973972"
+      ]
+    },
+    {
+      "canonical_name": "CAC Large 60",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC Large 60 is a stock market index, tracked on Euronext Paris, in France. blue-chip index consisting of the 60 major companies trading on Euronext Paris",
+      "aliases": [
+        "wikidata:Q56317396"
+      ]
+    },
+    {
+      "canonical_name": "CAC All-Tradable",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC All-Tradable is a stock market index, tracked on Euronext Paris. French stock market index",
+      "aliases": [
+        "wikidata:Q56317416"
+      ]
+    },
+    {
+      "canonical_name": "BG TR30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BG TR30 is a stock market index. BSE stock index",
+      "aliases": [
+        "wikidata:Q68534211"
+      ]
+    },
+    {
+      "canonical_name": "BG REIT",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BG REIT is a stock market index. BSE stock market index",
+      "aliases": [
+        "wikidata:Q68534320"
+      ]
+    },
+    {
+      "canonical_name": "BGBX40",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BGBX40 is a stock market index. BSE stock market index",
+      "aliases": [
+        "wikidata:Q68534390"
+      ]
+    },
+    {
+      "canonical_name": "OMX Iceland 10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Iceland 10 is a stock market index, in Iceland. stock market index",
+      "aliases": [
+        "wikidata:Q85790095"
+      ]
+    },
+    {
+      "canonical_name": "Volfefe index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Volfefe index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q85813461"
+      ]
+    },
+    {
+      "canonical_name": "TA-Retail Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-Retail Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q109353011"
+      ]
+    },
+    {
+      "canonical_name": "OMX Riga index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Riga index is a stock market index, tracked on Nasdaq Riga AS. all-share index consisting of all the shares listed on the Riga Stock Exchange",
+      "aliases": [
+        "wikidata:Q113147402"
+      ]
+    },
+    {
+      "canonical_name": "TA-125 Fossil Free Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-125 Fossil Free Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q113563928"
+      ]
+    },
+    {
+      "canonical_name": "UBS 100 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "UBS 100 Index is a stock market index. Swiss share index",
+      "aliases": [
+        "wikidata:Q114344725"
+      ]
+    },
+    {
+      "canonical_name": "CAC All-Share",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC All-Share is a stock market index, tracked on Euronext Paris, in France. stock market index",
+      "aliases": [
+        "wikidata:Q121464151"
+      ]
+    },
+    {
+      "canonical_name": "GIFT Nifty",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "GIFT Nifty is a stock market index, tracked on National Stock Exchange of India, in India. Financial index that serves as an indicator for the Indian stock market.",
+      "aliases": [
+        "wikidata:Q122676988"
+      ]
+    },
+    {
+      "canonical_name": "VLEU",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "VLEU is a stock market index. Volatility Index",
+      "aliases": [
+        "wikidata:Q125365521"
+      ]
+    },
+    {
+      "canonical_name": "VSMI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "VSMI is a stock market index. VSMI Volatility",
+      "aliases": [
+        "wikidata:Q125365560"
+      ]
+    },
+    {
+      "canonical_name": "UCI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "UCI is a stock market index, tracked on Tashkent Stock Exchange, in Uzbekistan. Uzbek stock market index",
+      "aliases": [
+        "wikidata:Q125505868"
+      ]
+    },
+    {
+      "canonical_name": "Global Challenges Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Global Challenges Index is a stock market index. sustainability focused stock market index",
+      "aliases": [
+        "wikidata:Q1531575"
+      ]
+    },
+    {
+      "canonical_name": "S&P 100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P 100 is a stock market index, in United States. stock market index",
+      "aliases": [
+        "wikidata:Q1546793"
+      ]
+    },
+    {
+      "canonical_name": "HASPAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "HASPAX is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1562742"
+      ]
+    },
+    {
+      "canonical_name": "EGX 30 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "EGX 30 Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1581320"
+      ]
+    },
+    {
+      "canonical_name": "PFTS index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PFTS index is a stock market index, tracked on PFTS Stock Exchange. stock market index",
+      "aliases": [
+        "wikidata:Q1593991"
+      ]
+    },
+    {
+      "canonical_name": "MADEX index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MADEX index is a stock market index, tracked on Casablanca Stock Exchange, in Morocco. Moroccan stock index",
+      "aliases": [
+        "wikidata:Q1603883"
+      ]
+    },
+    {
+      "canonical_name": "STOXX Nordic 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "STOXX Nordic 30 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1621332"
+      ]
+    },
+    {
+      "canonical_name": "EURO STOXX 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "EURO STOXX 50 is a stock market index. Eurozone stock market index",
+      "aliases": [
+        "wikidata:Q981010"
+      ]
+    },
+    {
+      "canonical_name": "KSE-30 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "KSE-30 Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q999190"
+      ]
+    },
+    {
+      "canonical_name": "CAC Small",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC Small is a stock market index, tracked on Euronext Paris, in France. stock market index",
+      "aliases": [
+        "wikidata:Q1022714"
+      ]
+    },
+    {
+      "canonical_name": "CEETX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CEETX is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1023316"
+      ]
+    },
+    {
+      "canonical_name": "CROBEX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CROBEX is a stock market index, tracked on Zagreb Stock Exchange, in Croatia. stock market index on Zagreb Stock Exchange",
+      "aliases": [
+        "wikidata:Q1024301"
+      ]
+    },
+    {
+      "canonical_name": "IDX Composite",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "IDX Composite is a stock market index, in Indonesia. stock market index",
+      "aliases": [
+        "wikidata:Q1029649"
+      ]
+    },
+    {
+      "canonical_name": "S&P GSCI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P GSCI is a stock market index. investment benchmark",
+      "aliases": [
+        "wikidata:Q1106538"
+      ]
+    },
+    {
+      "canonical_name": "CTX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CTX is a stock market index, in Austria. stock market index",
+      "aliases": [
+        "wikidata:Q1149381"
+      ]
+    },
+    {
+      "canonical_name": "TA-125 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-125 Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q1164198"
+      ]
+    },
+    {
+      "canonical_name": "DivDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "DivDAX is a stock market index, in Germany. stock market index",
+      "aliases": [
+        "wikidata:Q1230458"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Sustainability Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Sustainability Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1253025"
+      ]
+    },
+    {
+      "canonical_name": "EPIX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "EPIX is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1275651"
+      ]
+    },
+    {
+      "canonical_name": "EPRA index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "EPRA index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1275690"
+      ]
+    },
+    {
+      "canonical_name": "Value Line Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Value Line Composite Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1298678"
+      ]
+    },
+    {
+      "canonical_name": "Russell 2000",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell 2000 is a stock market index, tracked on Nasdaq. stock market index",
+      "aliases": [
+        "wikidata:Q1329524"
+      ]
+    },
+    {
+      "canonical_name": "Russell 2000",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell 2000 is a stock market index, tracked on New York Stock Exchange. stock market index",
+      "aliases": [
+        "wikidata:Q1329524"
+      ]
+    },
+    {
+      "canonical_name": "FTSE/JSE All-Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE/JSE All-Share Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1340317"
+      ]
+    },
+    {
+      "canonical_name": "OMX Helsinki 25",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Helsinki 25 is a stock market index, tracked on Nasdaq Helsinki Ltd, in Finland. Blue-chip index consisting of the 25 major Finnish companies trading on Nasdaq Helsinki",
+      "aliases": [
+        "wikidata:Q1359526"
+      ]
+    },
+    {
+      "canonical_name": "FTSE 350 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE 350 Index is a stock market index. British stock market index",
+      "aliases": [
+        "wikidata:Q1389783"
+      ]
+    },
+    {
+      "canonical_name": "Kuala Lumpur Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Kuala Lumpur Composite Index is a stock market index, in Malaysia. stock market index",
+      "aliases": [
+        "wikidata:Q1389786"
+      ]
+    },
+    {
+      "canonical_name": "FTSE 250 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE 250 Index is a stock market index, tracked on London Stock Exchange, in United Kingdom. British stock market index",
+      "aliases": [
+        "wikidata:Q1389790"
+      ]
+    },
+    {
+      "canonical_name": "FTSE MIB",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE MIB is a stock market index, tracked on Italian Stock Exchange, in Italy. Blue-chip index consisting of the 40 major Italian companies trading on the Italian Stock Exchange",
+      "aliases": [
+        "wikidata:Q1389807"
+      ]
+    },
+    {
+      "canonical_name": "FT 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FT 30 is a stock market index. blue chip stock market index",
+      "aliases": [
+        "wikidata:Q1389811"
+      ]
+    },
+    {
+      "canonical_name": "RTS Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "RTS Index is a stock market index. Russian stock market index",
+      "aliases": [
+        "wikidata:Q1472308"
+      ]
+    },
+    {
+      "canonical_name": "NISAX20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NISAX20 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1498916"
+      ]
+    },
+    {
+      "canonical_name": "German Entrepreneurial Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "German Entrepreneurial Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q1513884"
+      ]
+    },
+    {
+      "canonical_name": "SAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SAX is a stock market index, tracked on Bratislava Stock Exchange. stock market index",
+      "aliases": [
+        "wikidata:Q2431665"
+      ]
+    },
+    {
+      "canonical_name": "CAC Mid 60",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC Mid 60 is a stock market index, tracked on Euronext Paris, in France. stock market index used by the Paris Bourse",
+      "aliases": [
+        "wikidata:Q2442030"
+      ]
+    },
+    {
+      "canonical_name": "PHLX Semiconductor Sector",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PHLX Semiconductor Sector is a stock market index, tracked on Nasdaq. widely used stock market index",
+      "aliases": [
+        "wikidata:Q2443320"
+      ]
+    },
+    {
+      "canonical_name": "ISEQ 20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "ISEQ 20 is a stock market index. Blue-chip index consisting of the 20 major Irish companies trading on Euronext Dublin",
+      "aliases": [
+        "wikidata:Q2502048"
+      ]
+    },
+    {
+      "canonical_name": "PX Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PX Index is a stock market index, tracked on Prague Stock Exchange, in Czech Republic. Czech stock market index",
+      "aliases": [
+        "wikidata:Q2567030"
+      ]
+    },
+    {
+      "canonical_name": "FT Wilshire 5000",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FT Wilshire 5000 is a stock market index. US stock market index",
+      "aliases": [
+        "wikidata:Q2582545"
+      ]
+    },
+    {
+      "canonical_name": "World Water Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "World Water Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q2593863"
+      ]
+    },
+    {
+      "canonical_name": "All Ordinaries",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "All Ordinaries is a stock market index, tracked on Australian Securities Exchange, in Australia. primary index of the Australian securities market",
+      "aliases": [
+        "wikidata:Q2603489"
+      ]
+    },
+    {
+      "canonical_name": "BIRS",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BIRS is a stock market index. Bosnian stock market index",
+      "aliases": [
+        "wikidata:Q2636279"
+      ]
+    },
+    {
+      "canonical_name": "The Global Dow",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "The Global Dow is a stock market index. global stock index",
+      "aliases": [
+        "wikidata:Q2640735"
+      ]
+    },
+    {
+      "canonical_name": "S&P Latin America 40",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Latin America 40 is a stock market index. stock market index from Standard & Poor's",
+      "aliases": [
+        "wikidata:Q2833571"
+      ]
+    },
+    {
+      "canonical_name": "S&P Asia 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Asia 50 is a stock market index. stock index of Asian stocks",
+      "aliases": [
+        "wikidata:Q2833581"
+      ]
+    },
+    {
+      "canonical_name": "BBC Global 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BBC Global 30 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q2876727"
+      ]
+    },
+    {
+      "canonical_name": "BELEXline",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BELEXline is a stock market index. stock market index of the Belgrade stock exchange (BELEX), Serbia",
+      "aliases": [
+        "wikidata:Q2876982"
+      ]
+    },
+    {
+      "canonical_name": "BRVM Composite",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BRVM Composite is a stock market index. stock index calculated from the value of each stock",
+      "aliases": [
+        "wikidata:Q2877468"
+      ]
+    },
+    {
+      "canonical_name": "TA-35 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TA-35 Index is a stock market index, in Israel. Israeli stock market index",
+      "aliases": [
+        "wikidata:Q2909302"
+      ]
+    },
+    {
+      "canonical_name": "CAC Mid & Small",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC Mid & Small is a stock market index, tracked on Euronext Paris, in France. stock market index",
+      "aliases": [
+        "wikidata:Q2930892"
+      ]
+    },
+    {
+      "canonical_name": "COLCAP",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "COLCAP is a stock market index, in Colombia. stock market index of Colombia",
+      "aliases": [
+        "wikidata:Q2931832"
+      ]
+    },
+    {
+      "canonical_name": "Nikkei 225",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Nikkei 225 is a stock market index, tracked on Tokyo Stock Exchange, in Japan. Japanese stock market index",
+      "aliases": [
+        "wikidata:Q507338"
+      ]
+    },
+    {
+      "canonical_name": "KOSPI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "KOSPI is a stock market index, tracked on Korean Stock Exchange, in South Korea. stock market index",
+      "aliases": [
+        "wikidata:Q561968"
+      ]
+    },
+    {
+      "canonical_name": "Nasdaq Composite",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Nasdaq Composite is a stock market index. stock market index of the common stocks and similar securities",
+      "aliases": [
+        "wikidata:Q575782"
+      ]
+    },
+    {
+      "canonical_name": "MDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MDAX is a stock market index, tracked on Frankfurt Stock Exchange, in Germany. stock market index",
+      "aliases": [
+        "wikidata:Q595622"
+      ]
+    },
+    {
+      "canonical_name": "WIG20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "WIG20 is a stock market index, in Poland. stock market index",
+      "aliases": [
+        "wikidata:Q608856"
+      ]
+    },
+    {
+      "canonical_name": "OBX Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OBX Index is a stock market index, tracked on Oslo Stock Exchange, in Norway. Blue-chip index consisting of the 25 major Norwegian companies trading on Oslo Stock Exchange",
+      "aliases": [
+        "wikidata:Q633280"
+      ]
+    },
+    {
+      "canonical_name": "National Stock Exchange of India",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "National Stock Exchange of India is a stock market index, in India. stock exchange in Mumbai, India",
+      "aliases": [
+        "wikidata:Q638740"
+      ]
+    },
+    {
+      "canonical_name": "CAC 40",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CAC 40 is a stock market index, tracked on Euronext Paris, in France. blue-chip index consisting of the 40 major companies trading on Euronext Paris",
+      "aliases": [
+        "wikidata:Q648828"
+      ]
+    },
+    {
+      "canonical_name": "Photovoltaik Global 30 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Photovoltaik Global 30 Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q2088967"
+      ]
+    },
+    {
+      "canonical_name": "S&P Africa 40 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Africa 40 Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q2204343"
+      ]
+    },
+    {
+      "canonical_name": "Swiss Leader Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Swiss Leader Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q2373017"
+      ]
+    },
+    {
+      "canonical_name": "TEPIX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TEPIX is a stock market index.",
+      "aliases": [
+        "wikidata:Q2383978"
+      ]
+    },
+    {
+      "canonical_name": "MIBTel",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MIBTel is a stock market index.",
+      "aliases": [
+        "wikidata:Q2517744"
+      ]
+    },
+    {
+      "canonical_name": "NSE 20 Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NSE 20 Share Index is a stock market index, tracked on Nairobi Stock Exchange.",
+      "aliases": [
+        "wikidata:Q3334574"
+      ]
+    },
+    {
+      "canonical_name": "Next 150",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Next 150 is a stock market index.",
+      "aliases": [
+        "wikidata:Q3339194"
+      ]
+    },
+    {
+      "canonical_name": "SBI TOP",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SBI TOP is a stock market index, in Slovenia.",
+      "aliases": [
+        "wikidata:Q3459248"
+      ]
+    },
+    {
+      "canonical_name": "FTSE Italia Small Cap",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE Italia Small Cap is a stock market index.",
+      "aliases": [
+        "wikidata:Q3737359"
+      ]
+    },
+    {
+      "canonical_name": "FTSE Italia All-Share",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE Italia All-Share is a stock market index, tracked on Italian Stock Exchange, in Italy.",
+      "aliases": [
+        "wikidata:Q3737357"
+      ]
+    },
+    {
+      "canonical_name": "FTSE Italia STAR",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE Italia STAR is a stock market index.",
+      "aliases": [
+        "wikidata:Q3737360"
+      ]
+    },
+    {
+      "canonical_name": "Amex Oil Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Amex Oil Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q3820441"
+      ]
+    },
+    {
+      "canonical_name": "NYSE ARCA Tech 100 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NYSE ARCA Tech 100 Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q4045011"
+      ]
+    },
+    {
+      "canonical_name": "CBOE DJIA BuyWrite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBOE DJIA BuyWrite Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q5009158"
+      ]
+    },
+    {
+      "canonical_name": "CBOE S&P 500 BuyWrite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBOE S&P 500 BuyWrite Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q5009159"
+      ]
+    },
+    {
+      "canonical_name": "CBV-Total-Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV-Total-Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q5009314"
+      ]
+    },
+    {
+      "canonical_name": "CBV 10",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV 10 is a stock market index.",
+      "aliases": [
+        "wikidata:Q5009328"
+      ]
+    },
+    {
+      "canonical_name": "CBV 20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CBV 20 is a stock market index.",
+      "aliases": [
+        "wikidata:Q5009329"
+      ]
+    },
+    {
+      "canonical_name": "CSI Cross-Straits 500 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CSI Cross-Straits 500 Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q5014131"
+      ]
+    },
+    {
+      "canonical_name": "Madrid Stock Exchange General Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Madrid Stock Exchange General Index is a stock market index, tracked on Madrid Stock Exchange, in Spain.",
+      "aliases": [
+        "wikidata:Q5657510"
+      ]
+    },
+    {
+      "canonical_name": "Total Index of the Madrid Stock Exchange",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Total Index of the Madrid Stock Exchange is a stock market index, in Spain.",
+      "aliases": [
+        "wikidata:Q5907213"
+      ]
+    },
+    {
+      "canonical_name": "IBEX Small Cap",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "IBEX Small Cap is a stock market index, tracked on Madrid Stock Exchange, in Spain.",
+      "aliases": [
+        "wikidata:Q5907871"
+      ]
+    },
+    {
+      "canonical_name": "Jantzi Social Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Jantzi Social Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q6155623"
+      ]
+    },
+    {
+      "canonical_name": "NASDAQ Transportation Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NASDAQ Transportation Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q6952546"
+      ]
+    },
+    {
+      "canonical_name": "PSE All Shares Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PSE All Shares Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7120627"
+      ]
+    },
+    {
+      "canonical_name": "PSE Mining and Oil Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PSE Mining and Oil Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7120630"
+      ]
+    },
+    {
+      "canonical_name": "PSE Financials Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PSE Financials Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7120629"
+      ]
+    },
+    {
+      "canonical_name": "Russell 2500 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell 2500 Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7381316"
+      ]
+    },
+    {
+      "canonical_name": "Russell Microcap Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell Microcap Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7381684"
+      ]
+    },
+    {
+      "canonical_name": "Russian Industrial Leaders Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russian Industrial Leaders Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7382064"
+      ]
+    },
+    {
+      "canonical_name": "S&P/TOPIX 150",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/TOPIX 150 is a stock market index.",
+      "aliases": [
+        "wikidata:Q7386990"
+      ]
+    },
+    {
+      "canonical_name": "S&P/TSX Venture Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/TSX Venture Composite Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q7386991"
+      ]
+    },
+    {
+      "canonical_name": "S&P Vietnam 10 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Vietnam 10 Index is a stock market index, in Vietnam.",
+      "aliases": [
+        "wikidata:Q7387001"
+      ]
+    },
+    {
+      "canonical_name": "TSE 300 index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TSE 300 index is a stock market index, tracked on Toronto Stock Exchange, in Canada.",
+      "aliases": [
+        "wikidata:Q7671580"
+      ]
+    },
+    {
+      "canonical_name": "Wilshire 4500",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Wilshire 4500 is a stock market index.",
+      "aliases": [
+        "wikidata:Q8022890"
+      ]
+    },
+    {
+      "canonical_name": "ShortDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "ShortDAX is a stock market index.",
+      "aliases": [
+        "wikidata:Q9336103"
+      ]
+    },
+    {
+      "canonical_name": "VN index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "VN index is a stock market index, in Vietnam.",
+      "aliases": [
+        "wikidata:Q10832924"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX Large 70",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX Large 70 is a stock market index.",
+      "aliases": [
+        "wikidata:Q11249848"
+      ]
+    },
+    {
+      "canonical_name": "Moe-X 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Moe-X 30 is a stock market index.",
+      "aliases": [
+        "wikidata:Q11279893"
+      ]
+    },
+    {
+      "canonical_name": "Hercules Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Hercules Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q11336605"
+      ]
+    },
+    {
+      "canonical_name": "J30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "J30 is a stock market index, in Japan.",
+      "aliases": [
+        "wikidata:Q11508294"
+      ]
+    },
+    {
+      "canonical_name": "Nikkei Japan 1000",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Nikkei Japan 1000 is a stock market index.",
+      "aliases": [
+        "wikidata:Q11510162"
+      ]
+    },
+    {
+      "canonical_name": "Indexcat",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Indexcat is a stock market index, in Spain.",
+      "aliases": [
+        "wikidata:Q11926610"
+      ]
+    },
+    {
+      "canonical_name": "OSESX stock index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OSESX stock index is a stock market index, tracked on Oslo Stock Exchange, in Norway.",
+      "aliases": [
+        "wikidata:Q11992998"
+      ]
+    },
+    {
+      "canonical_name": "BET-C",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BET-C is a stock market index, tracked on Bucharest Stock Exchange.",
+      "aliases": [
+        "wikidata:Q12730399"
+      ]
+    },
+    {
+      "canonical_name": "S&P/ASX 200 VIX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P/ASX 200 VIX is a stock market index.",
+      "aliases": [
+        "wikidata:Q17026875"
+      ]
+    },
+    {
+      "canonical_name": "TSX Venture 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TSX Venture 50 is a stock market index.",
+      "aliases": [
+        "wikidata:Q17056296"
+      ]
+    },
+    {
+      "canonical_name": "OTCQX 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OTCQX 30 is a stock market index, tracked on OTCQX Marketplace.",
+      "aliases": [
+        "wikidata:Q18355668"
+      ]
+    },
+    {
+      "canonical_name": "OSEBX stock index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OSEBX stock index is a stock market index, tracked on Oslo Stock Exchange, in Norway.",
+      "aliases": [
+        "wikidata:Q19384277"
+      ]
+    },
+    {
+      "canonical_name": "FTSE Italia Growth",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE Italia Growth is a stock market index, tracked on Italian Stock Exchange, in Italy.",
+      "aliases": [
+        "wikidata:Q23492996"
+      ]
+    },
+    {
+      "canonical_name": "Slovak Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Slovak Share Index is a stock market index, in Slovakia.",
+      "aliases": [
+        "wikidata:Q37947241"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX 100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX 100 is a stock market index, in Japan.",
+      "aliases": [
+        "wikidata:Q40847142"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX Mid 400",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX Mid 400 is a stock market index, in Japan.",
+      "aliases": [
+        "wikidata:Q40847213"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX 500",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX 500 is a stock market index, in Japan.",
+      "aliases": [
+        "wikidata:Q40847332"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX 1000",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX 1000 is a stock market index, in Japan.",
+      "aliases": [
+        "wikidata:Q40847393"
+      ]
+    },
+    {
+      "canonical_name": "TOPIX New Index Series",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TOPIX New Index Series is a stock market index.",
+      "aliases": [
+        "wikidata:Q40847574"
+      ]
+    },
+    {
+      "canonical_name": "STOXX Global Select Dividend 100",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "STOXX Global Select Dividend 100 is a stock market index.",
+      "aliases": [
+        "wikidata:Q47492123"
+      ]
+    },
+    {
+      "canonical_name": "TPEx Exchange Capitalization Weighted Stock Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "TPEx Exchange Capitalization Weighted Stock Index is a stock market index, in Taiwan.",
+      "aliases": [
+        "wikidata:Q48935793"
+      ]
+    },
+    {
+      "canonical_name": "Dzair Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dzair Index is a stock market index, in Algeria.",
+      "aliases": [
+        "wikidata:Q84845710"
+      ]
+    },
+    {
+      "canonical_name": "Hang Seng TECH",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Hang Seng TECH is a stock market index, tracked on Hong Kong Exchanges and Clearing Limited.",
+      "aliases": [
+        "wikidata:Q97582103"
+      ]
+    },
+    {
+      "canonical_name": "masi.20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "masi.20 is a stock market index, tracked on Casablanca Stock Exchange, in Morocco.",
+      "aliases": [
+        "wikidata:Q109045468"
+      ]
+    },
+    {
+      "canonical_name": "MSCI Europe",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI Europe is a stock market index.",
+      "aliases": [
+        "wikidata:Q130195023"
+      ]
+    },
+    {
+      "canonical_name": "Yomiuri Stock Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Yomiuri Stock Index is a stock market index, in Japan.",
+      "aliases": [
+        "wikidata:Q131387919"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Cyprus Titans Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Cyprus Titans Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q131985714"
+      ]
+    },
+    {
+      "canonical_name": "Cyprus General Market Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Cyprus General Market Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q131985788"
+      ]
+    },
+    {
+      "canonical_name": "PHLX Oil Service Sector Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "PHLX Oil Service Sector Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q131993929"
+      ]
+    },
+    {
+      "canonical_name": "FTSE ADX General Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE ADX General Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q132131342"
+      ]
+    },
+    {
+      "canonical_name": "Dubai Financial Market General Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dubai Financial Market General Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q132145595"
+      ]
+    },
+    {
+      "canonical_name": "Hang Seng MidCap Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Hang Seng MidCap Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q132154329"
+      ]
+    },
+    {
+      "canonical_name": "NSE All-Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NSE All-Share Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q132188779"
+      ]
+    },
+    {
+      "canonical_name": "Rwanda Stock Exchange Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Rwanda Stock Exchange Share Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q132188781"
+      ]
+    },
+    {
+      "canonical_name": "S&P Financials Select Sector",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P Financials Select Sector is a stock market index.",
+      "aliases": [
+        "wikidata:Q132197163"
+      ]
+    },
+    {
+      "canonical_name": "KSE All Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "KSE All Share Index is a stock market index, in Pakistan.",
+      "aliases": [
+        "wikidata:Q132201233"
+      ]
+    },
+    {
+      "canonical_name": "Nemax All Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Nemax All Share Index is a stock market index, in Germany.",
+      "aliases": [
+        "wikidata:Q132202997"
+      ]
+    },
+    {
+      "canonical_name": "MSCI Taiwan Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI Taiwan Index is a stock market index, in Taiwan.",
+      "aliases": [
+        "wikidata:Q136659936"
+      ]
+    },
+    {
+      "canonical_name": "MSCI Taiwan Small Cap Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI Taiwan Small Cap Index is a stock market index, in Taiwan.",
+      "aliases": [
+        "wikidata:Q136659953"
+      ]
+    },
+    {
+      "canonical_name": "East Africa Exchanges 20 Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "East Africa Exchanges 20 Share Index is a stock market index.",
+      "aliases": [
+        "wikidata:Q137837239"
+      ]
+    },
+    {
+      "canonical_name": "Swiss Market Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Swiss Market Index is a stock market index, tracked on Swiss Stock Exchange, in Switzerland. Blue-chip index consisting of the 20 major companies trading on the SIX Swiss Exchange",
+      "aliases": [
+        "wikidata:Q666714"
+      ]
+    },
+    {
+      "canonical_name": "FTSE/Athex 20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE/Athex 20 is a stock market index. Greek stock market index",
+      "aliases": [
+        "wikidata:Q675008"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Utility Average",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Utility Average is a stock market index, tracked on New York Stock Exchange, in United States. stock market index",
+      "aliases": [
+        "wikidata:Q688556"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Transportation Average",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Transportation Average is a stock market index, tracked on New York Stock Exchange, in United States. stock market index",
+      "aliases": [
+        "wikidata:Q688712"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Composite Average",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Composite Average is a stock market index, tracked on New York Stock Exchange, in United States. stock market index",
+      "aliases": [
+        "wikidata:Q696830"
+      ]
+    },
+    {
+      "canonical_name": "Austrian Traded Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Austrian Traded Index is a stock market index, in Austria. stock market index",
+      "aliases": [
+        "wikidata:Q696997"
+      ]
+    },
+    {
+      "canonical_name": "OMX Stockholm 30",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "OMX Stockholm 30 is a stock market index, tracked on Nasdaq Stockholm AB, in Sweden. Blue-chip index consisting of the 30 major Swedish companies trading on Nasdaq Stockholm",
+      "aliases": [
+        "wikidata:Q767273"
+      ]
+    },
+    {
+      "canonical_name": "Dow Jones Global Titans 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Dow Jones Global Titans 50 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q773026"
+      ]
+    },
+    {
+      "canonical_name": "Indice General de la Bolsa de Valores de Colombia",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Indice General de la Bolsa de Valores de Colombia is a stock market index, in Colombia. Colombian stock market index",
+      "aliases": [
+        "wikidata:Q775686"
+      ]
+    },
+    {
+      "canonical_name": "BUX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BUX is a stock market index, in Hungary. Hungarian stock market index",
+      "aliases": [
+        "wikidata:Q787725"
+      ]
+    },
+    {
+      "canonical_name": "BELEX15",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BELEX15 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q795820"
+      ]
+    },
+    {
+      "canonical_name": "BEL20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BEL20 is a stock market index. Blue-chip index consisting of the 20 major Belgian companies trading on the Euronext Brussels",
+      "aliases": [
+        "wikidata:Q795831"
+      ]
+    },
+    {
+      "canonical_name": "BET-20",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "BET-20 is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q795840"
+      ]
+    },
+    {
+      "canonical_name": "S&P BSE Sensex",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "S&P BSE Sensex is a stock market index, tracked on Bombay Stock Exchange, in India. stock market index used by Bombay Stock Exchange (BSE)",
+      "aliases": [
+        "wikidata:Q796994"
+      ]
+    },
+    {
+      "canonical_name": "CDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CDAX is a stock market index, in Germany. German stock market index calculated by Deutsche Börse",
+      "aliases": [
+        "wikidata:Q874430"
+      ]
+    },
+    {
+      "canonical_name": "HDAX",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "HDAX is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q880281"
+      ]
+    },
+    {
+      "canonical_name": "Índice Bovespa",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Índice Bovespa is a stock market index, tracked on São Paulo Stock Exchange, in Brazil. stock market index",
+      "aliases": [
+        "wikidata:Q895360"
+      ]
+    },
+    {
+      "canonical_name": "Russell 1000 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Russell 1000 Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q921581"
+      ]
+    },
+    {
+      "canonical_name": "CSI 300 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "CSI 300 Index is a stock market index, in People's Republic of China. stock market index",
+      "aliases": [
+        "wikidata:Q925897"
+      ]
+    },
+    {
+      "canonical_name": "IBEX 35",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "IBEX 35 is a stock market index, tracked on Madrid Stock Exchange, in Spain. blue-chip index consisting of the 35 major companies trading on Bolsa de Madrid",
+      "aliases": [
+        "wikidata:Q938032"
+      ]
+    },
+    {
+      "canonical_name": "LuxX Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "LuxX Index is a stock market index, in Luxembourg. Luxembourgish main stock market index",
+      "aliases": [
+        "wikidata:Q939992"
+      ]
+    },
+    {
+      "canonical_name": "SET Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "SET Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q964664"
+      ]
+    },
+    {
+      "canonical_name": "AScX index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "AScX index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q969313"
+      ]
+    },
+    {
+      "canonical_name": "FTSE/JSE Top 40 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE/JSE Top 40 Index is a stock market index, tracked on Johannesburg Stock Exchange, in South Africa. index consisting of the 40 major companies trading on the JSE",
+      "aliases": [
+        "wikidata:Q3063443"
+      ]
+    },
+    {
+      "canonical_name": "FTSE4Good Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE4Good Index is a stock market index. Series of stock market indices",
+      "aliases": [
+        "wikidata:Q3063447"
+      ]
+    },
+    {
+      "canonical_name": "KSE 100 Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "KSE 100 Index is a stock market index. Pakistani stock market index",
+      "aliases": [
+        "wikidata:Q3066478"
+      ]
+    },
+    {
+      "canonical_name": "GSE All-Share Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "GSE All-Share Index is a stock market index, tracked on Ghana Stock Exchange, in Ghana. Ghanaian stock market index",
+      "aliases": [
+        "wikidata:Q3093414"
+      ]
+    },
+    {
+      "canonical_name": "Índice de Precio Selectivo de Acciones",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Índice de Precio Selectivo de Acciones is a stock market index, tracked on Santiago Stock Exchange, in Chile. Chilean stock market index",
+      "aliases": [
+        "wikidata:Q3146807"
+      ]
+    },
+    {
+      "canonical_name": "MSCI EAFE index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI EAFE index is a stock market index. stock market index that is designed to measure the equity market performance of developed markets outside of the U.S. & Canada",
+      "aliases": [
+        "wikidata:Q3150377"
+      ]
+    },
+    {
+      "canonical_name": "MSCI ACWI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI ACWI is a stock market index. global stock market index maintained by MSCI",
+      "aliases": [
+        "wikidata:Q131918530"
+      ]
+    },
+    {
+      "canonical_name": "FTSE All-World",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "FTSE All-World is a stock market index. global stock market index maintained by FTSE Russell",
+      "aliases": [
+        "wikidata:Q131918531"
+      ]
+    },
+    {
+      "canonical_name": "MSCI ACWI IMI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI ACWI IMI is a stock market index. global stock market index",
+      "aliases": [
+        "wikidata:Q131918529"
+      ]
+    },
+    {
+      "canonical_name": "NYSE Amex Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "NYSE Amex Composite Index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q134293582"
+      ]
+    },
+    {
+      "canonical_name": "MSCI nuam index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "MSCI nuam index is a stock market index. stock market index",
+      "aliases": [
+        "wikidata:Q135267728"
+      ]
+    }
+  ]
+}

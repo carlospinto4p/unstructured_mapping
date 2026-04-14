@@ -12,7 +12,7 @@
   5. `index` (no limit, expect noise)
   6. `crypto --limit 100` (long tail is low-value)
   7. `company --limit 500` (ordered by market cap)
-- [ ] **MEDIUM / Small** — Decide: commit the populated `data/knowledge.db`, or keep it local and rely on `--snapshot` JSONs for reproducibility?
+- [x] **MEDIUM / Small** — Decide: commit the populated `data/knowledge.db`, or keep it local and rely on `--snapshot` JSONs for reproducibility? Hybrid chosen: snapshots committed to `data/seed/wikidata/`, `.db` stays gitignored. Documented in `docs/seed/reproducibility.md`.
 - [ ] **MEDIUM / Medium** — Add `cli/populate.py` orchestrator that runs the whole seed + Wikidata sequence with a single command and writes a summary report. Alternative: keep manual per-type invocation so each stage can be inspected before proceeding. Decide before implementing.
 - [ ] **MEDIUM / Small** — After population, review the `entity_history` audit log for `reason="wikidata-seed"` conflicts (Wikidata rows skipped because a curated entry covered them) — those are the most interesting signals for improving the curated seed.
 
