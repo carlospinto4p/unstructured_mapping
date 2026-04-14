@@ -131,7 +131,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
             entity.entity_id, entity.aliases
         )
         self._log_entity(entity, operation, reason)
-        self._conn.commit()
+        self._commit()
 
     def get_entity(
         self, entity_id: str
@@ -240,7 +240,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
                 for row in rows
             ],
         )
-        self._conn.commit()
+        self._commit()
         return len(rows)
 
     def find_by_alias(
@@ -457,7 +457,7 @@ class EntityMergeMixin(EntityHelpersMixin):
             merged_dep, "merge", merge_reason
         )
         self._log_entity(surv, "merge", merge_reason)
-        self._conn.commit()
+        self._commit()
         logger.info(
             "Merged entity %s into %s",
             deprecated_id,

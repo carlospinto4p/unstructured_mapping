@@ -85,13 +85,19 @@ def import_with_dedup(
     created = 0
     skipped = 0
     counts: Counter = Counter()
-    for item in items:
-        if is_duplicate(store, item):
-            skipped += 1
-            continue
-        entity = get_entity(item)
-        if not dry_run:
-            store.save_entity(entity, reason=reason)
-        created += 1
-        counts[counter_key(entity)] += 1
+    # Wrap the whole batch in one transaction: every
+    # `save_entity` still commits logically, but the
+    # underlying COMMIT fires once on exit instead of N
+    # times. Populate runs (~2000 rows) go from ~2000
+    # fsyncs to one.
+    with store.transaction():
+        for item in items:
+            if is_duplicate(store, item):
+                skipped += 1
+                continue
+            entity = get_entity(item)
+            if not dry_run:
+                store.save_entity(entity, reason=reason)
+            created += 1
+            counts[counter_key(entity)] += 1
     return created, skipped, counts

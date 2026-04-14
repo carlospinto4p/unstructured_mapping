@@ -70,6 +70,36 @@ def test_store_get_entities_empty_returns_empty_dict(
         assert store.get_entities([]) == {}
 
 
+def test_transaction_defers_commit_and_rolls_back_on_error(
+    tmp_path,
+):
+    """The bulk-write transaction wrapper must both defer
+    the per-call COMMIT (so N writes are one fsync) and
+    roll the whole batch back on failure. Used by
+    `import_with_dedup` to cut populate-run fsyncs from
+    ~2000 to ~1."""
+    db = tmp_path / "kg.db"
+    a = make_entity(canonical_name="Alpha")
+    with KnowledgeStore(db_path=db) as store:
+        with pytest.raises(RuntimeError):
+            with store.transaction():
+                store.save_entity(a)
+                raise RuntimeError("boom")
+        assert store.get_entity(a.entity_id) is None
+
+
+def test_transaction_commits_on_exit(tmp_path):
+    db = tmp_path / "kg.db"
+    a = make_entity(canonical_name="Alpha")
+    b = make_entity(canonical_name="Beta")
+    with KnowledgeStore(db_path=db) as store:
+        with store.transaction():
+            store.save_entity(a)
+            store.save_entity(b)
+        assert store.get_entity(a.entity_id) is not None
+        assert store.get_entity(b.entity_id) is not None
+
+
 def test_store_get_entities_deduplicates_ids(tmp_path):
     db = tmp_path / "kg.db"
     a = make_entity(canonical_name="A")

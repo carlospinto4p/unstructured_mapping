@@ -77,7 +77,7 @@ class RelationshipMixin:
             self._log_relationship(
                 relationship, "create", reason
             )
-        self._conn.commit()
+        self._commit()
 
     def save_relationships(
         self,
@@ -176,7 +176,7 @@ class RelationshipMixin:
             self._log_relationship(
                 rel, "create", reason
             )
-        self._conn.commit()
+        self._commit()
         return len(new_rels)
 
     def get_relationships(

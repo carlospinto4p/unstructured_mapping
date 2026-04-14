@@ -93,7 +93,7 @@ class ArticleStore(SQLiteStore):
                 "WHERE url = ?",
                 (str(uuid4()), url),
             )
-        self._conn.commit()
+        self._commit()
         logger.info(
             "Backfilled document_id for %d articles",
             len(rows),
@@ -125,7 +125,7 @@ class ArticleStore(SQLiteStore):
         self._conn.execute(
             "DROP TABLE _articles_old"
         )
-        self._conn.commit()
+        self._commit()
         logger.info(
             "Rebuilt articles table with "
             "document_id constraints"
@@ -146,7 +146,7 @@ class ArticleStore(SQLiteStore):
                 "WHERE url = ?",
                 (str(UUID(hex_id)), url),
             )
-        self._conn.commit()
+        self._commit()
         logger.info(
             "Normalized %d hex document_ids to UUID",
             len(hex_rows),
@@ -157,7 +157,7 @@ class ArticleStore(SQLiteStore):
         self._conn.execute(
             "DROP INDEX IF EXISTS idx_source"
         )
-        self._conn.commit()
+        self._commit()
 
     def save(self, articles: list[Article]) -> int:
         """Save articles, skipping duplicates by URL.
@@ -192,7 +192,7 @@ class ArticleStore(SQLiteStore):
             "VALUES (?, ?, ?, ?, ?, ?, ?)",
             rows,
         )
-        self._conn.commit()
+        self._commit()
         return self._conn.total_changes - before
 
     def load(

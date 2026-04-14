@@ -44,7 +44,7 @@ class RunMixin:
                 run.error_message,
             ),
         )
-        self._conn.commit()
+        self._commit()
 
     def finish_run(
         self,
@@ -83,7 +83,7 @@ class RunMixin:
                 run_id,
             ),
         )
-        self._conn.commit()
+        self._commit()
 
     def get_run(
         self, run_id: str

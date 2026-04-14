@@ -58,7 +58,7 @@ class ProvenanceMixin:
                 provenance.run_id,
             ),
         )
-        self._conn.commit()
+        self._commit()
 
     def save_provenances(
         self, provenances: list[Provenance]
@@ -90,7 +90,7 @@ class ProvenanceMixin:
                 for p in provenances
             ],
         )
-        self._conn.commit()
+        self._commit()
         return self._conn.total_changes - before
 
     def get_provenance(
