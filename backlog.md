@@ -4,7 +4,7 @@
 
 - [x] **HIGH / Small** — Run the curated seed first (`cli.seed` against `data/seed/financial_entities.json`) so hand-tuned LLM-facing descriptions define canonical names before any Wikidata import.
 - [x] **HIGH / Small** — Dry-run each Wikidata type at `--limit 20` and eyeball the results before committing. The SPARQL class filters (especially `Q17278032` for regulators) are best guesses and may need tuning.
-- [ ] **HIGH / Medium** — Staged Wikidata imports, smallest/cleanest first, validating between stages (`db_health`, 10-row spot checks, conflict log review):
+- [x] **HIGH / Medium** — Staged Wikidata imports, smallest/cleanest first, validating between stages (`db_health`, 10-row spot checks, conflict log review):
   1. `currency` (no limit — population is ~180)
   2. `central_bank` (no limit — ~200)
   3. `exchange` (no limit — ~100)
