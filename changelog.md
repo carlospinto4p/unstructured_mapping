@@ -1,5 +1,35 @@
 ## Changelog
 
+### v0.38.2 - 14th April 2026
+
+- Optimization batch from the v0.38.1 review. Behaviour preserved; 465 unit tests pass.
+- `src/unstructured_mapping/storage_base.py`:
+  - Added `SQLiteStore._commit()` and reentrant `transaction()` context manager. Write helpers now defer the actual COMMIT to the enclosing transaction block; rollback on exception.
+- `src/unstructured_mapping/knowledge_graph/`:
+  - Replaced every direct `self._conn.commit()` in `_entity_mixin.py`, `_provenance_mixin.py`, `_relationship_mixin.py`, and `_run_mixin.py` with `self._commit()` so the transaction wrapper is honoured everywhere.
+  - `storage.py`: added composite index `idx_entity_name_type` on `(canonical_name COLLATE NOCASE, entity_type)`.
+  - `_entity_mixin.py`:
+    - `get_entities(ids)`: batch-load by id with a single `WHERE IN (...)` query.
+    - `exists_by_name_and_type(name, type)`: direct SQL existence check using the new composite index.
+    - `alias_exists(alias)`: lightweight `SELECT 1` existence probe — no JOIN, no entity hydration.
+  - `_provenance_mixin.py`: `documents_with_provenance(ids) -> set[str]` batch idempotency lookup.
+- `src/unstructured_mapping/pipeline/`:
+  - `resolution.py`: `LLMEntityResolver` accepts an optional `entity_batch_lookup`; `_collect_candidates` loads every candidate in one query when available.
+  - `orchestrator.py`: `run()` pre-fetches `documents_with_provenance` once; `_process_article` takes a pre-computed `already_processed` set via `_is_processed` helper.
+  - `detection.py`: `RuleBasedDetector` docstring documents the bounded-fetch contract; example code passes `limit=5000`.
+- `src/unstructured_mapping/cli/`:
+  - `_seed_helpers.import_with_dedup` wraps its loop in `store.transaction()` — populate-run fsyncs drop from ~2000 to 1.
+  - `_seed_helpers.exists_by_name_and_type` is now a thin wrapper over the store method.
+  - `wikidata_seed._already_imported` uses `alias_exists` instead of `find_by_alias`.
+- `src/unstructured_mapping/web_scraping/storage.py`:
+  - Routed article-store commits through `_commit()` so the same `transaction()` wrapper works for batched scrapes.
+- Added unit tests in `tests/unit/test_kg_entities.py`:
+  - `test_store_get_entities_batch`, `test_store_get_entities_empty_returns_empty_dict`, `test_store_get_entities_deduplicates_ids`.
+  - `test_transaction_defers_commit_and_rolls_back_on_error`, `test_transaction_commits_on_exit`.
+- `.gitignore`:
+  - Ignored `.claude/scheduled_tasks.lock` and `data/seed/wikidata_dryrun/` (runtime/exploratory artefacts accidentally tracked earlier).
+
+
 ### v0.38.1 - 14th April 2026
 
 - Refactor batch from the v0.38.0 review. No behaviour changes; all 460 tests still pass.
