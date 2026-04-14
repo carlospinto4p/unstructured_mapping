@@ -73,22 +73,26 @@ fetch and makes every subsequent rebuild reproducible.
 
 ## Rebuild workflow
 
-```bash
-# 1. Curated seed first — canonical names and
-#    LLM-facing descriptions take precedence.
-uv run python -m unstructured_mapping.cli.seed \
-    --seed data/seed/financial_entities.json
+One command replays the curated seed then every Wikidata
+snapshot, in order:
 
-# 2. Replay each Wikidata snapshot.
-for f in data/seed/wikidata/*.json; do
-    uv run python -m unstructured_mapping.cli.seed \
-        --seed "$f"
-done
+```bash
+uv run python -m unstructured_mapping.cli.populate
 ```
 
+The orchestrator loads `data/seed/financial_entities.json`
+first, then every file in `data/seed/wikidata/*.json`.
 Dedup is by `canonical_name` + `entity_type`
 (case-insensitive), so the order matters: curated entries
 win over Wikidata rows that happen to share a name.
 
-A `cli/populate.py` orchestrator that wraps this
-sequence into a single command is tracked in `backlog.md`.
+Flags:
+
+- `--seed-dir` — override the root seed directory.
+- `--db` — override the target SQLite database.
+- `--dry-run` — validate every file and print counts
+  without writing.
+
+Per-stage replays are still available via `cli.seed`
+against an individual JSON file, e.g. when refreshing one
+Wikidata category.

@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.37.0 - 14th April 2026
+
+- Added `cli/populate.py`: one-command orchestrator that replays the curated seed then every Wikidata snapshot under `data/seed/wikidata/` against the KG. Supports `--seed-dir`, `--db`, `--dry-run`. Exposes `populate()` and `StageReport` for programmatic use.
+- Added unit tests in `tests/unit/test_cli_populate.py`: 9 tests covering stage ordering (curated first), idempotence, dry-run, curated-wins-on-conflict, empty-seed-dir error, and missing-curated-file fallback.
+- Updated `docs/seed/reproducibility.md`: replaced the shell-loop rebuild recipe with the single `cli.populate` invocation.
+
+
 ### v0.36.0 - 14th April 2026
 
 - Committed Wikidata seed snapshots as the reproducibility source of truth:
