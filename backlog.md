@@ -3,7 +3,7 @@
 ### 2026.04.16 (refactor review v0.48.1)
 
 - [x] **HIGH / Small** — Extract provenance mention-count queries into `ProvenanceMixin`. Done in v0.48.2: `count_mentions_for_entity` + `find_mentions_with_entities` added; `audit_aliases`, `benchmark_cold_start`, and `preview` migrated off direct `store._conn` joins (3 `# noqa: SLF001` removed).
-- [ ] **HIGH / Medium** — Move audit finding queries into a `AuditMixin` on `KnowledgeStore`. `cli/audit_provenance.py` owns `find_short_snippets` / `find_thin_mentions` / `find_narrow_spread` with direct SQL; move the three functions and their dataclasses into `knowledge_graph/_audit_mixin.py` so CLIs become thin presentation layers.
+- [x] **HIGH / Medium** — Move audit finding queries into a `AuditMixin` on `KnowledgeStore`. Done in v0.48.3: three methods + dataclasses live in `knowledge_graph/_audit_mixin.py`; `cli/audit_provenance.py` is now thin wrappers. 3 `# noqa: SLF001` removed.
 - [ ] **MEDIUM / Small** — Consolidate CLI argparse boilerplate into `cli/_argparse_helpers.py` with `add_db_argument`, `add_csv_output_argument`, etc. Some CLIs use `required=True`, others validate manually in `main()` — pick one idiom and apply it across every CLI.
 - [ ] **MEDIUM / Small** — Move the `preview._collect_preview` joins into a store method (`get_mentions_for_document(document_id)` on `EntityMixin` or a new reporting mixin). Removes 2× `# noqa: SLF001` from `preview.py`.
 - [ ] **MEDIUM / Small** — Consolidate test helpers. `test_cli_audit_provenance.py::_mention` and `test_cli_audit_aliases.py::_add_mentions` each rebuild provenance fixtures; promote both to `tests/unit/conftest.py` as `make_provenance(...)` and `add_mentions_to_store(...)`.

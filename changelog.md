@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.48.3 - 16th April 2026
+
+- Refactored audit queries into a new `AuditMixin`:
+  - `knowledge_graph/_audit_mixin.py`: `find_short_snippets`, `find_thin_mentions`, `find_narrow_spread` plus their finding dataclasses (`ShortSnippetFinding`, `ThinMentionFinding`, `NarrowSpreadFinding`). Token estimate inlined as `ceil(chars / 4)` so the KG layer does not import `pipeline`.
+  - `knowledge_graph/storage.py`: `KnowledgeStore` composes `AuditMixin`.
+  - `cli/audit_provenance.py`: three `# noqa: SLF001` SQL helpers dropped in favour of store methods; the module now keeps thin free-function wrappers for backward-compatible test imports.
+
+
 ### v0.48.2 - 16th April 2026
 
 - Refactored provenance reads out of CLIs:

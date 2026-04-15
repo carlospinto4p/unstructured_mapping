@@ -21,6 +21,9 @@ See ``docs/knowledge_graph/`` for table schema rationale.
 
 from pathlib import Path
 
+from unstructured_mapping.knowledge_graph._audit_mixin import (
+    AuditMixin,
+)
 from unstructured_mapping.knowledge_graph._entity_mixin import (
     EntityMixin,
 )
@@ -233,6 +236,7 @@ class KnowledgeStore(
     ProvenanceMixin,
     RelationshipMixin,
     RunMixin,
+    AuditMixin,
     SQLiteStore,
 ):
     """SQLite-backed store for knowledge graph data.

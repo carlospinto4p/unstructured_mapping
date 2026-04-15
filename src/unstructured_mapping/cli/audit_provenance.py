@@ -36,16 +36,16 @@ import argparse
 import csv
 import logging
 import sys
-from dataclasses import dataclass
-from datetime import timedelta
 from pathlib import Path
 
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
 )
-from unstructured_mapping.pipeline.budget import (
-    estimate_tokens,
+from unstructured_mapping.knowledge_graph._audit_mixin import (
+    NarrowSpreadFinding,
+    ShortSnippetFinding,
+    ThinMentionFinding,
 )
 
 logger = logging.getLogger(__name__)
@@ -67,169 +67,33 @@ _DEFAULT_MIN_MENTIONS = 2
 _DEFAULT_MIN_DAYS = 1
 
 
-@dataclass(frozen=True, slots=True)
-class ShortSnippetFinding:
-    """A provenance row whose context is too short."""
-
-    entity_id: str
-    canonical_name: str
-    entity_type: str
-    document_id: str
-    mention_text: str
-    token_estimate: int
-
-
-@dataclass(frozen=True, slots=True)
-class ThinMentionFinding:
-    """An entity with too few distinct mentions."""
-
-    entity_id: str
-    canonical_name: str
-    entity_type: str
-    mention_count: int
-
-
-@dataclass(frozen=True, slots=True)
-class NarrowSpreadFinding:
-    """An entity whose mentions cluster in a short
-    window."""
-
-    entity_id: str
-    canonical_name: str
-    entity_type: str
-    mention_count: int
-    span_seconds: float
-
-
 def find_short_snippets(
-    store: KnowledgeStore,
-    *,
-    min_tokens: int,
+    store: KnowledgeStore, *, min_tokens: int
 ) -> list[ShortSnippetFinding]:
-    """Return provenance rows whose context is thin.
+    """Thin wrapper around
+    :meth:`AuditMixin.find_short_snippets`.
 
-    The token estimate reuses :func:`estimate_tokens`
-    (len / 4) so the threshold matches the same budget
-    math the pipeline uses elsewhere.
+    Kept so the public ``cli.audit_provenance`` module
+    surface (used by tests and any external scripts)
+    stays stable after the query moved into the store.
     """
-    rows = store._conn.execute(  # noqa: SLF001
-        "SELECT p.entity_id, p.document_id, "
-        "p.mention_text, p.context_snippet, "
-        "e.canonical_name, e.entity_type "
-        "FROM provenance p "
-        "JOIN entities e ON e.entity_id = p.entity_id"
-    ).fetchall()
-    findings: list[ShortSnippetFinding] = []
-    for r in rows:
-        tokens = estimate_tokens(r["context_snippet"])
-        if tokens < min_tokens:
-            findings.append(
-                ShortSnippetFinding(
-                    entity_id=r["entity_id"],
-                    canonical_name=r["canonical_name"],
-                    entity_type=r["entity_type"],
-                    document_id=r["document_id"],
-                    mention_text=r["mention_text"],
-                    token_estimate=tokens,
-                )
-            )
-    return findings
+    return store.find_short_snippets(min_tokens=min_tokens)
 
 
 def find_thin_mentions(
-    store: KnowledgeStore,
-    *,
-    min_mentions: int,
+    store: KnowledgeStore, *, min_mentions: int
 ) -> list[ThinMentionFinding]:
-    """Return entities with fewer distinct mentions than
-    ``min_mentions``.
-
-    "Distinct mention" = distinct ``(document_id,
-    mention_text)`` pair, matching the provenance
-    primary key so reprocessing the same article does
-    not inflate counts.
-    """
-    rows = store._conn.execute(  # noqa: SLF001
-        "SELECT e.entity_id, e.canonical_name, "
-        "e.entity_type, "
-        "COUNT(DISTINCT p.document_id || '|' || "
-        "p.mention_text) AS mention_count "
-        "FROM entities e "
-        "LEFT JOIN provenance p "
-        "ON p.entity_id = e.entity_id "
-        "GROUP BY e.entity_id "
-        "HAVING mention_count < ? "
-        "ORDER BY mention_count, e.canonical_name",
-        (min_mentions,),
-    ).fetchall()
-    return [
-        ThinMentionFinding(
-            entity_id=r["entity_id"],
-            canonical_name=r["canonical_name"],
-            entity_type=r["entity_type"],
-            mention_count=int(r["mention_count"]),
-        )
-        for r in rows
-    ]
+    """Thin wrapper around
+    :meth:`AuditMixin.find_thin_mentions`."""
+    return store.find_thin_mentions(min_mentions=min_mentions)
 
 
 def find_narrow_spread(
-    store: KnowledgeStore,
-    *,
-    min_days: float,
+    store: KnowledgeStore, *, min_days: float
 ) -> list[NarrowSpreadFinding]:
-    """Return entities whose mention timestamps span
-    less than ``min_days``.
-
-    Entities with a single mention are excluded — they
-    are covered by :func:`find_thin_mentions` and would
-    always have a zero-second span, drowning out the
-    useful multi-mention findings.
-    """
-    threshold = timedelta(days=min_days).total_seconds()
-    rows = store._conn.execute(  # noqa: SLF001
-        "SELECT e.entity_id, e.canonical_name, "
-        "e.entity_type, "
-        "COUNT(*) AS mention_count, "
-        "MIN(p.detected_at) AS earliest, "
-        "MAX(p.detected_at) AS latest "
-        "FROM entities e "
-        "JOIN provenance p "
-        "ON p.entity_id = e.entity_id "
-        "WHERE p.detected_at IS NOT NULL "
-        "GROUP BY e.entity_id "
-        "HAVING mention_count > 1"
-    ).fetchall()
-    findings: list[NarrowSpreadFinding] = []
-    for r in rows:
-        span = _spread_seconds(r["earliest"], r["latest"])
-        if span is None or span >= threshold:
-            continue
-        findings.append(
-            NarrowSpreadFinding(
-                entity_id=r["entity_id"],
-                canonical_name=r["canonical_name"],
-                entity_type=r["entity_type"],
-                mention_count=int(r["mention_count"]),
-                span_seconds=span,
-            )
-        )
-    findings.sort(key=lambda f: (f.span_seconds, f.canonical_name))
-    return findings
-
-
-def _spread_seconds(earliest: str | None, latest: str | None) -> float | None:
-    """Safely compute the gap between two ISO strings."""
-    if not earliest or not latest:
-        return None
-    from datetime import datetime
-
-    try:
-        e = datetime.fromisoformat(earliest)
-        l_ = datetime.fromisoformat(latest)
-    except ValueError:
-        return None
-    return (l_ - e).total_seconds()
+    """Thin wrapper around
+    :meth:`AuditMixin.find_narrow_spread`."""
+    return store.find_narrow_spread(min_days=min_days)
 
 
 def _report_text(
