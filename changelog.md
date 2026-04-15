@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.46.0 - 15th April 2026
+
+- Added pipeline dry-run preview CLI:
+  - `cli/preview.py`: runs detection + (optional) LLM resolution + relationship extraction on a single article against a throwaway copy of the target KG. Emits mentions / proposals / relationships / token usage as JSON (stdout or `--output`). Supports `--article-file` (JSON) or `--text` (inline body), `--cold-start` mode, and `--no-llm` for alias-only debugging. Never mutates the source KG.
+- Added unit tests:
+  - `tests/unit/test_cli_preview.py`: 7 tests covering article loading (file / text / guards), KG-driven preview without an LLM, cold-start provider guard, and isolation of the source KG.
+
+
 ### v0.45.0 - 15th April 2026
 
 - Added `confidence` qualifier on relationships:
