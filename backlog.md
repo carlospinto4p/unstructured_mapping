@@ -1,5 +1,15 @@
 ## Backlog
 
+### 2026.04.16 (refactor review v0.48.1)
+
+- [ ] **HIGH / Small** — Extract provenance mention-count queries into `ProvenanceMixin`. Four CLIs (`audit_aliases.py`, `audit_provenance.py`, `preview.py`, `benchmark_cold_start.py`) execute `SELECT COUNT(*) FROM provenance WHERE entity_id = ?` or multi-table joins directly on `store._conn` with `# noqa: SLF001`. Add `count_mentions_for_entity(entity_id)` and `find_mentions_with_entities(document_id)` to the mixin so CLIs stop reaching into private state.
+- [ ] **HIGH / Medium** — Move audit finding queries into a `AuditMixin` on `KnowledgeStore`. `cli/audit_provenance.py` owns `find_short_snippets` / `find_thin_mentions` / `find_narrow_spread` with direct SQL; move the three functions and their dataclasses into `knowledge_graph/_audit_mixin.py` so CLIs become thin presentation layers.
+- [ ] **MEDIUM / Small** — Consolidate CLI argparse boilerplate into `cli/_argparse_helpers.py` with `add_db_argument`, `add_csv_output_argument`, etc. Some CLIs use `required=True`, others validate manually in `main()` — pick one idiom and apply it across every CLI.
+- [ ] **MEDIUM / Small** — Move the `preview._collect_preview` joins into a store method (`get_mentions_for_document(document_id)` on `EntityMixin` or a new reporting mixin). Removes 2× `# noqa: SLF001` from `preview.py`.
+- [ ] **MEDIUM / Small** — Consolidate test helpers. `test_cli_audit_provenance.py::_mention` and `test_cli_audit_aliases.py::_add_mentions` each rebuild provenance fixtures; promote both to `tests/unit/conftest.py` as `make_provenance(...)` and `add_mentions_to_store(...)`.
+- [ ] **LOW / Small** — Extract DB-open helper. `cli/db_health.py` validates DB existence before opening; other CLIs let `KnowledgeStore` fail. Add `cli/_db_helpers.py::open_kg_store(path, *, create_if_missing=False)` for a single failure mode.
+- [ ] **LOW / Small** — Drop the unused `ConstraintWarning` re-export from `knowledge_graph/__init__.py`. No production module imports it; keep it internal to `validation.py`.
+
 ### 2026.04.14 (improvements review v0.38.2)
 
 - [x] **MEDIUM / Medium** — Temporal + confidence qualifiers on relationships. Done in v0.45.0: `Relationship.confidence` + `relationships.confidence` column (nullable REAL); Pass 2 prompt + parser capture an optional 0–1 score (clamped, non-numeric → None); new `store.find_relationships(entity_id, *, at=date, min_confidence=N)` combines an at-date window with a confidence floor. `valid_from` / `valid_until` inference continues via the existing Pass 2 prompt fields.
