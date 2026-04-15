@@ -6,7 +6,7 @@
 - [x] **MEDIUM / Small** — Pipeline dry-run / preview mode. Done in v0.46.0: new `cli/preview.py` runs one article against a throwaway copy of the KG and emits mentions / proposals / relationships / token usage as JSON. Supports `--article-file`, `--text`, `--cold-start`, and `--no-llm`. Source KG is never mutated.
 - [x] **MEDIUM / Small** — Alias-collision CLI. Done in v0.47.0: `cli/audit_aliases.py` ranks collisions by total mention count, proposes same-type merges with an interactive `[y/N]` confirm, and leaves cross-type collisions for human review. `--auto-confirm` is a scripted escape hatch gated on `--apply`.
 - [x] **LOW / Small** — Provenance quality audit CLI. Done in v0.48.0: `cli/audit_provenance.py` flags short snippets, thin mentions (including zero-mention orphans), and narrow temporal spreads; text report or combined CSV via `--csv`.
-- [ ] **LOW / Small** — Query cookbook. Add `docs/examples/queries.sql` with a handful of labelled queries (most-mentioned entities this week, entity merge history, relationships by relation_type, provenance timeline per entity) so an analyst can explore the KG without reading the schema doc first.
+- [x] **LOW / Small** — Query cookbook. Done in v0.48.1: `docs/examples/queries.sql` ships ten labelled queries; a smoke test (`tests/unit/test_docs_queries.py`) executes each against a fresh KG so schema drift breaks the docs fast.
 
 ### 2026.04.14 (Wikidata import follow-ups)
 

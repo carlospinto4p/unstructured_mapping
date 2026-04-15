@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.48.1 - 16th April 2026
+
+- Added `docs/examples/queries.sql`: a ten-query cookbook for analysts — top mentions this week, top mentions by type, entity merge history, relationship types with average confidence, currently-active high-confidence edges, provenance timeline, co-mentioned entities, per-run scorecard summary, alias-collision report, and entities proposed by a specific run.
+- Added `tests/unit/test_docs_queries.py`: parses the cookbook, enforces the ten-query count, and smoke-tests each statement against a fresh `KnowledgeStore` so schema drift breaks the docs fast.
+
+
 ### v0.48.0 - 16th April 2026
 
 - Added provenance quality audit CLI:
