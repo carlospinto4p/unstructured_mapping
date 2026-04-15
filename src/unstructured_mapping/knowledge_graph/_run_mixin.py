@@ -102,8 +102,10 @@ class RunMixin:
             "mentions_resolved_llm, llm_resolver_calls, "
             "llm_extractor_calls, proposals_saved, "
             "relationships_saved, provider_name, "
-            "model_name, wall_clock_seconds) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "model_name, wall_clock_seconds, "
+            "input_tokens, output_tokens) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+            "?, ?)",
             (
                 metrics.run_id,
                 metrics.chunks_processed,
@@ -117,13 +119,13 @@ class RunMixin:
                 metrics.provider_name,
                 metrics.model_name,
                 metrics.wall_clock_seconds,
+                metrics.input_tokens,
+                metrics.output_tokens,
             ),
         )
         self._commit()
 
-    def get_run_metrics(
-        self, run_id: str
-    ) -> RunMetrics | None:
+    def get_run_metrics(self, run_id: str) -> RunMetrics | None:
         """Fetch the scorecard for a run, or None."""
         row = self._conn.execute(
             "SELECT run_id, chunks_processed, "
@@ -131,7 +133,8 @@ class RunMixin:
             "mentions_resolved_llm, llm_resolver_calls, "
             "llm_extractor_calls, proposals_saved, "
             "relationships_saved, provider_name, "
-            "model_name, wall_clock_seconds "
+            "model_name, wall_clock_seconds, "
+            "input_tokens, output_tokens "
             "FROM run_metrics WHERE run_id = ?",
             (run_id,),
         ).fetchone()
@@ -141,30 +144,20 @@ class RunMixin:
             run_id=row["run_id"],
             chunks_processed=row["chunks_processed"],
             mentions_detected=row["mentions_detected"],
-            mentions_resolved_alias=(
-                row["mentions_resolved_alias"]
-            ),
-            mentions_resolved_llm=(
-                row["mentions_resolved_llm"]
-            ),
+            mentions_resolved_alias=(row["mentions_resolved_alias"]),
+            mentions_resolved_llm=(row["mentions_resolved_llm"]),
             llm_resolver_calls=row["llm_resolver_calls"],
-            llm_extractor_calls=(
-                row["llm_extractor_calls"]
-            ),
+            llm_extractor_calls=(row["llm_extractor_calls"]),
             proposals_saved=row["proposals_saved"],
-            relationships_saved=(
-                row["relationships_saved"]
-            ),
+            relationships_saved=(row["relationships_saved"]),
             provider_name=row["provider_name"],
             model_name=row["model_name"],
-            wall_clock_seconds=(
-                row["wall_clock_seconds"]
-            ),
+            wall_clock_seconds=(row["wall_clock_seconds"]),
+            input_tokens=row["input_tokens"],
+            output_tokens=row["output_tokens"],
         )
 
-    def get_run(
-        self, run_id: str
-    ) -> IngestionRun | None:
+    def get_run(self, run_id: str) -> IngestionRun | None:
         """Fetch an ingestion run by ID.
 
         :param run_id: The run's unique identifier.

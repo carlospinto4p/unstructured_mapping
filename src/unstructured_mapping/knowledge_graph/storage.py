@@ -174,18 +174,18 @@ CREATE TABLE IF NOT EXISTS run_metrics (
     provider_name           TEXT,
     model_name              TEXT,
     wall_clock_seconds      REAL NOT NULL DEFAULT 0.0,
+    input_tokens            INTEGER NOT NULL DEFAULT 0,
+    output_tokens           INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (run_id)
         REFERENCES ingestion_runs (run_id)
 )
 """
 
 _CREATE_INDEXES = (
-    "CREATE INDEX IF NOT EXISTS idx_entity_type "
-    "ON entities (entity_type)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_type ON entities (entity_type)",
     "CREATE INDEX IF NOT EXISTS idx_entity_type_subtype "
     "ON entities (entity_type, subtype)",
-    "CREATE INDEX IF NOT EXISTS idx_entity_status "
-    "ON entities (status)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_status ON entities (status)",
     "CREATE INDEX IF NOT EXISTS idx_entity_name "
     "ON entities (canonical_name COLLATE NOCASE)",
     # Seed dedup (see `cli._seed_helpers.exists_by_name_and_type`)
@@ -195,8 +195,7 @@ _CREATE_INDEXES = (
     # and filtering the type in Python.
     "CREATE INDEX IF NOT EXISTS idx_entity_name_type "
     "ON entities (canonical_name COLLATE NOCASE, entity_type)",
-    "CREATE INDEX IF NOT EXISTS idx_entity_created "
-    "ON entities (created_at)",
+    "CREATE INDEX IF NOT EXISTS idx_entity_created ON entities (created_at)",
     "CREATE INDEX IF NOT EXISTS idx_alias_lookup "
     "ON entity_aliases (alias COLLATE NOCASE)",
     "CREATE INDEX IF NOT EXISTS idx_prov_document "
@@ -205,22 +204,17 @@ _CREATE_INDEXES = (
     "ON provenance (document_id, entity_id)",
     "CREATE INDEX IF NOT EXISTS idx_prov_temporal "
     "ON provenance (entity_id, detected_at)",
-    "CREATE INDEX IF NOT EXISTS idx_rel_source "
-    "ON relationships (source_id)",
-    "CREATE INDEX IF NOT EXISTS idx_rel_target "
-    "ON relationships (target_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_source ON relationships (source_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_target ON relationships (target_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_qualifier "
     "ON relationships (qualifier_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_kind "
     "ON relationships (relation_kind_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_type "
     "ON relationships (relation_type)",
-    "CREATE INDEX IF NOT EXISTS idx_prov_run "
-    "ON provenance (run_id)",
-    "CREATE INDEX IF NOT EXISTS idx_rel_run "
-    "ON relationships (run_id)",
-    "CREATE INDEX IF NOT EXISTS idx_run_status "
-    "ON ingestion_runs (status)",
+    "CREATE INDEX IF NOT EXISTS idx_prov_run ON provenance (run_id)",
+    "CREATE INDEX IF NOT EXISTS idx_rel_run ON relationships (run_id)",
+    "CREATE INDEX IF NOT EXISTS idx_run_status ON ingestion_runs (status)",
     "CREATE INDEX IF NOT EXISTS idx_entity_hist "
     "ON entity_history (entity_id, changed_at)",
     "CREATE INDEX IF NOT EXISTS idx_rel_hist_source "
@@ -262,9 +256,7 @@ class KnowledgeStore(
     )
     _index_statements = _CREATE_INDEXES
 
-    def __init__(
-        self, db_path: Path = _DEFAULT_DB_PATH
-    ) -> None:
+    def __init__(self, db_path: Path = _DEFAULT_DB_PATH) -> None:
         super().__init__(
             db_path,
             pragmas=("foreign_keys = ON",),
@@ -277,24 +269,34 @@ class KnowledgeStore(
         self._migrate_relationships()
         self._migrate_entities()
         self._migrate_provenance()
+        self._migrate_run_metrics()
+
+    def _migrate_run_metrics(self) -> None:
+        """Add token counters introduced in v0.43.0."""
+        cursor = self._conn.execute("PRAGMA table_info(run_metrics)")
+        cols = {row[1] for row in cursor.fetchall()}
+        if not cols:
+            return
+        for col in ("input_tokens", "output_tokens"):
+            if col not in cols:
+                self._conn.execute(
+                    f"ALTER TABLE run_metrics "
+                    f"ADD COLUMN {col} INTEGER "
+                    f"NOT NULL DEFAULT 0"
+                )
 
     def _migrate_provenance(self) -> None:
         """Add ``run_id`` column introduced in v0.15.0."""
-        cursor = self._conn.execute(
-            "PRAGMA table_info(provenance)"
-        )
+        cursor = self._conn.execute("PRAGMA table_info(provenance)")
         cols = {row[1] for row in cursor.fetchall()}
         if "run_id" not in cols:
             self._conn.execute(
-                "ALTER TABLE provenance "
-                "ADD COLUMN run_id TEXT"
+                "ALTER TABLE provenance ADD COLUMN run_id TEXT"
             )
 
     def _migrate_relationships(self) -> None:
         """Add columns and fix NULLs from prior versions."""
-        cursor = self._conn.execute(
-            "PRAGMA table_info(relationships)"
-        )
+        cursor = self._conn.execute("PRAGMA table_info(relationships)")
         cols = {row[1] for row in cursor.fetchall()}
         for col in ("qualifier_id", "relation_kind_id"):
             if col not in cols:
@@ -305,8 +307,7 @@ class KnowledgeStore(
                 )
         if "run_id" not in cols:
             self._conn.execute(
-                "ALTER TABLE relationships "
-                "ADD COLUMN run_id TEXT"
+                "ALTER TABLE relationships ADD COLUMN run_id TEXT"
             )
         # v0.11.29: coalesce NULL valid_from to "" so
         # the PK dedup works (NULL != NULL in SQLite).
@@ -317,17 +318,11 @@ class KnowledgeStore(
 
     def _migrate_entities(self) -> None:
         """Add columns introduced in v0.10.0."""
-        cursor = self._conn.execute(
-            "PRAGMA table_info(entities)"
-        )
+        cursor = self._conn.execute("PRAGMA table_info(entities)")
         cols = {row[1] for row in cursor.fetchall()}
         if "subtype" not in cols:
-            self._conn.execute(
-                "ALTER TABLE entities "
-                "ADD COLUMN subtype TEXT"
-            )
+            self._conn.execute("ALTER TABLE entities ADD COLUMN subtype TEXT")
         if "updated_at" not in cols:
             self._conn.execute(
-                "ALTER TABLE entities "
-                "ADD COLUMN updated_at TEXT"
+                "ALTER TABLE entities ADD COLUMN updated_at TEXT"
             )

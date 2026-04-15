@@ -1,5 +1,29 @@
 ## Changelog
 
+### v0.43.0 - 15th April 2026
+
+- Added LLM token usage reporting on the provider contract:
+  - `pipeline/llm_provider.py`: new `TokenUsage` dataclass (`input_tokens`, `output_tokens`, `total_tokens`, `__add__`) and non-abstract `LLMProvider.last_token_usage` property defaulting to `None`.
+  - `pipeline/llm_ollama.py`: `OllamaProvider.last_token_usage` reads `prompt_eval_count` / `eval_count` from each `generate` response.
+  - `pipeline/llm_claude.py`: `ClaudeProvider.last_token_usage` reads `response.usage.input_tokens` / `output_tokens` from the Messages API.
+  - `pipeline/_llm_retry.py`: `retry_llm_call` now returns `(result, TokenUsage)` summed across attempts.
+- Plumbed usage through pipeline stages:
+  - `pipeline/resolution.py`: `LLMEntityResolver.last_token_usage` captures the usage reported by the last `resolve` call.
+  - `pipeline/extraction.py`: `LLMRelationshipExtractor.last_token_usage` captures extract-call usage.
+  - `pipeline/cold_start.py`: `ColdStartEntityDiscoverer.last_token_usage` captures discover-call usage.
+  - `pipeline/orchestrator.py`: `_MetricsAccumulator` sums `input_tokens` / `output_tokens` from resolver, extractor, and cold-start stages per article.
+- Extended run scorecard with token counters:
+  - `knowledge_graph/models.py`: `RunMetrics` gained `input_tokens`, `output_tokens`, and a `total_tokens` derived property.
+  - `knowledge_graph/storage.py`: `run_metrics` table gained `input_tokens` / `output_tokens` columns; added `_migrate_run_metrics` to upgrade existing databases.
+  - `knowledge_graph/_run_mixin.py`: `save_run_metrics` / `get_run_metrics` persist and hydrate the new columns.
+- Exported `TokenUsage` from `unstructured_mapping.pipeline`.
+- Added unit tests:
+  - `tests/unit/test_llm_provider.py`: `TokenUsage` arithmetic, Ollama usage surfacing, None when fields missing.
+  - `tests/unit/test_llm_claude.py`: Claude usage surfacing and None-on-missing.
+  - `tests/unit/test_resolution.py`: resolver propagates provider usage.
+  - `tests/unit/test_pipeline.py`: run metrics accumulate token counts across articles.
+
+
 ### v0.42.1 - 15th April 2026
 
 - `.claude/`: cross-project migration landed today:

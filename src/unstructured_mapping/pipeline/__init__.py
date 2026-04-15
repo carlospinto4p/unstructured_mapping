@@ -42,6 +42,7 @@ from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
     LLMProviderError,
     LLMTimeoutError,
+    TokenUsage,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -104,6 +105,7 @@ __all__ = [
     "ResolvedMention",
     "ResolutionResult",
     "RuleBasedDetector",
+    "TokenUsage",
     "build_entity_list_block",
     "build_kg_context_block",
     "build_pass1_user_prompt",

@@ -42,6 +42,7 @@ from unstructured_mapping.pipeline.llm_parsers import (
 )
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
+    TokenUsage,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -54,6 +55,7 @@ from unstructured_mapping.pipeline.prompts import (
     build_entity_list_block,
     build_pass2_user_prompt,
 )
+
 
 class RelationshipExtractor(ABC):
     """Abstract base class for relationship extraction.
@@ -136,6 +138,17 @@ class LLMRelationshipExtractor(RelationshipExtractor):
         self._entity_lookup = entity_lookup
         self._name_lookup = name_lookup
         self._proposals = proposals
+        self._last_token_usage: TokenUsage = TokenUsage()
+
+    @property
+    def last_token_usage(self) -> TokenUsage:
+        """Token usage from the last :meth:`extract` call.
+
+        Summed across retry attempts. Zero-valued when no
+        call has been made or the provider does not expose
+        usage counts.
+        """
+        return self._last_token_usage
 
     def extract(
         self,
@@ -159,39 +172,33 @@ class LLMRelationshipExtractor(RelationshipExtractor):
         :raises LLMProviderError: After two consecutive
             validation failures.
         """
+        self._last_token_usage = TokenUsage()
         if not entities:
             return ExtractionResult()
 
-        known_ids, name_to_id = (
-            self._build_lookup_maps(entities)
-        )
+        known_ids, name_to_id = self._build_lookup_maps(entities)
 
         budget = compute_budget(
             self._provider.context_window,
             PASS2_SYSTEM_PROMPT,
         )
 
-        entity_block = build_entity_list_block(
-            entities, self._proposals
-        )
+        entity_block = build_entity_list_block(entities, self._proposals)
         user_prompt = build_pass2_user_prompt(
             entity_block,
-            chunk.text[:budget.flexible * 4],
+            chunk.text[: budget.flexible * 4],
         )
 
-        relationships = retry_llm_call(
+        relationships, usage = retry_llm_call(
             self._provider,
             user_prompt,
             PASS2_SYSTEM_PROMPT,
-            lambda raw: parse_pass2_response(
-                raw, known_ids, name_to_id
-            ),
+            lambda raw: parse_pass2_response(raw, known_ids, name_to_id),
             pass_label="Pass 2",
         )
+        self._last_token_usage = usage
 
-        return ExtractionResult(
-            relationships=relationships
-        )
+        return ExtractionResult(relationships=relationships)
 
     def _build_lookup_maps(
         self,
@@ -212,18 +219,12 @@ class LLMRelationshipExtractor(RelationshipExtractor):
             known_ids.add(rm.entity_id)
             entity = self._entity_lookup(rm.entity_id)
             if entity is not None:
-                name_to_id[entity.canonical_name] = (
-                    rm.entity_id
-                )
+                name_to_id[entity.canonical_name] = rm.entity_id
 
         for proposal in self._proposals:
-            name = self._name_lookup(
-                proposal.canonical_name
-            )
+            name = self._name_lookup(proposal.canonical_name)
             if name is not None:
                 known_ids.add(name.entity_id)
-                name_to_id[
-                    proposal.canonical_name
-                ] = name.entity_id
+                name_to_id[proposal.canonical_name] = name.entity_id
 
         return known_ids, name_to_id

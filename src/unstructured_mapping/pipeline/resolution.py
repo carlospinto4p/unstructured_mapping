@@ -48,6 +48,7 @@ from unstructured_mapping.pipeline.llm_parsers import (
 )
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
+    TokenUsage,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -160,9 +161,7 @@ class AliasResolver(EntityResolver):
             print(f"{um.surface_form} needs LLM")
     """
 
-    def __init__(
-        self, context_window: int = CONTEXT_WINDOW
-    ) -> None:
+    def __init__(self, context_window: int = CONTEXT_WINDOW) -> None:
         self._context_window = context_window
 
     def resolve(
@@ -191,9 +190,7 @@ class AliasResolver(EntityResolver):
                 )
                 resolved.append(
                     ResolvedMention(
-                        entity_id=mention.candidate_ids[
-                            0
-                        ],
+                        entity_id=mention.candidate_ids[0],
                         surface_form=mention.surface_form,
                         context_snippet=snippet,
                         section_name=chunk.section_name,
@@ -274,6 +271,20 @@ class LLMEntityResolver(EntityResolver):
         self._entity_batch_lookup = entity_batch_lookup
         self._prev_entities = prev_entities
         self._proposals: tuple[EntityProposal, ...] = ()
+        self._last_token_usage: TokenUsage = TokenUsage()
+
+    @property
+    def last_token_usage(self) -> TokenUsage:
+        """Token usage from the last :meth:`resolve` call.
+
+        Summed across retry attempts so the orchestrator's
+        scorecard accumulator sees end-to-end cost of a
+        single resolver invocation. Zero-valued
+        :class:`TokenUsage` when the configured provider
+        does not expose counts or when :meth:`resolve` has
+        not been called yet.
+        """
+        return self._last_token_usage
 
     @property
     def proposals(self) -> tuple[EntityProposal, ...]:
@@ -291,9 +302,7 @@ class LLMEntityResolver(EntityResolver):
         mentions: tuple[Mention, ...],
         *,
         extra_candidates: tuple[Entity, ...] = (),
-        prev_entities: (
-            Sequence[ResolvedMention] | None
-        ) = None,
+        prev_entities: (Sequence[ResolvedMention] | None) = None,
     ) -> ResolutionResult:
         """Resolve mentions via an LLM call.
 
@@ -339,6 +348,7 @@ class LLMEntityResolver(EntityResolver):
             validation failures.
         """
         self._proposals = ()
+        self._last_token_usage = TokenUsage()
 
         if not mentions:
             return ResolutionResult()
@@ -361,12 +371,10 @@ class LLMEntityResolver(EntityResolver):
             if prev_entities is not None
             else self._prev_entities
         )
-        user_prompt = build_pass1_user_prompt(
-            kg_block, chunk_text, running
-        )
+        user_prompt = build_pass1_user_prompt(kg_block, chunk_text, running)
         fitted_ids = {e.entity_id for e in fitted}
 
-        resolved, proposals = retry_llm_call(
+        (resolved, proposals), usage = retry_llm_call(
             self._provider,
             user_prompt,
             PASS1_SYSTEM_PROMPT,
@@ -375,6 +383,7 @@ class LLMEntityResolver(EntityResolver):
             ),
             pass_label="Pass 1",
         )
+        self._last_token_usage = usage
 
         resolved = tuple(
             ResolvedMention(
@@ -418,8 +427,7 @@ class LLMEntityResolver(EntityResolver):
             found = {
                 eid: ent
                 for eid in unique_ids
-                if (ent := self._entity_lookup(eid))
-                is not None
+                if (ent := self._entity_lookup(eid)) is not None
             }
 
         candidates: list[Entity] = []

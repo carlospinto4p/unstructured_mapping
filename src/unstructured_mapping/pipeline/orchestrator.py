@@ -129,6 +129,8 @@ class _MetricsAccumulator:
     llm_extractor_calls: int = 0
     proposals_saved: int = 0
     relationships_saved: int = 0
+    input_tokens: int = 0
+    output_tokens: int = 0
 
     def finalize(self) -> RunMetrics:
         """Return a frozen snapshot for persistence."""
@@ -145,6 +147,8 @@ class _MetricsAccumulator:
             provider_name=self.provider_name,
             model_name=self.model_name,
             wall_clock_seconds=(time.monotonic() - self.started_monotonic),
+            input_tokens=self.input_tokens,
+            output_tokens=self.output_tokens,
         )
 
 
@@ -728,6 +732,14 @@ class Pipeline:
             proposals = self._llm_resolver.proposals
             self._metrics.llm_resolver_calls += 1
             self._metrics.mentions_resolved_llm += len(llm_result.resolved)
+            res_usage = getattr(
+                self._llm_resolver,
+                "last_token_usage",
+                None,
+            )
+            if res_usage is not None:
+                self._metrics.input_tokens += res_usage.input_tokens
+                self._metrics.output_tokens += res_usage.output_tokens
             resolution = ResolutionResult(
                 resolved=(resolution.resolved + llm_result.resolved),
             )
@@ -751,6 +763,14 @@ class Pipeline:
             result = self._extractor.extract(chunk, resolution.resolved)
             extracted = result.relationships
             self._metrics.llm_extractor_calls += 1
+            ext_usage = getattr(
+                self._extractor,
+                "last_token_usage",
+                None,
+            )
+            if ext_usage is not None:
+                self._metrics.input_tokens += ext_usage.input_tokens
+                self._metrics.output_tokens += ext_usage.output_tokens
 
         return ChunkOutcome(
             resolution=resolution,
@@ -818,6 +838,14 @@ class Pipeline:
             self._cold_start_discoverer is not None
         )  # caller guarantees this
         proposals = self._cold_start_discoverer.discover(chunk)
+        cs_usage = getattr(
+            self._cold_start_discoverer,
+            "last_token_usage",
+            None,
+        )
+        if cs_usage is not None:
+            self._metrics.input_tokens += cs_usage.input_tokens
+            self._metrics.output_tokens += cs_usage.output_tokens
         detected_at = _utcnow()
         saved = self._persist_proposals(
             proposals,

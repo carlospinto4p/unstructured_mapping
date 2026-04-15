@@ -1274,3 +1274,67 @@ def test_pipeline_extractor_receives_resolved(
     entity_ids = {e.entity_id for e in entities}
     assert apple.entity_id in entity_ids
     assert msft.entity_id in entity_ids
+
+
+def test_pipeline_run_metrics_accumulate_token_usage(
+    tmp_path,
+):
+    """Token usage reported by the resolver is summed
+    into the run_metrics row."""
+    from unstructured_mapping.pipeline import TokenUsage
+
+    class StubProvider:
+        provider_name = "stub"
+        model_name = "stub-1"
+
+    class UsageResolver:
+        def __init__(self):
+            self._provider = StubProvider()
+            self.proposals: tuple = ()
+            self.last_token_usage = TokenUsage(
+                input_tokens=50, output_tokens=10
+            )
+
+        def resolve(
+            self,
+            chunk,
+            unresolved,
+            *,
+            extra_candidates=(),
+            prev_entities=None,
+        ):
+            return ResolutionResult(resolved=(), unresolved=())
+
+    class UnresolvedDetector:
+        def detect(self, chunk):
+            return (
+                Mention(
+                    surface_form="x",
+                    span_start=0,
+                    span_end=1,
+                    candidate_ids=(),
+                ),
+            )
+
+    class PassthroughResolver:
+        def resolve(self, chunk, mentions):
+            return ResolutionResult(resolved=(), unresolved=mentions)
+
+    db = tmp_path / "kg.db"
+    articles = [make_article(body="x", title=f"a{i}") for i in range(2)]
+    with KnowledgeStore(db_path=db) as store:
+        pipeline = Pipeline(
+            detector=UnresolvedDetector(),
+            resolver=PassthroughResolver(),
+            store=store,
+            llm_resolver=UsageResolver(),
+        )
+        result = pipeline.run(articles)
+        metrics = store.get_run_metrics(result.run_id)
+
+    assert metrics is not None
+    # One LLM call per chunk × 2 articles.
+    assert metrics.llm_resolver_calls == 2
+    assert metrics.input_tokens == 100
+    assert metrics.output_tokens == 20
+    assert metrics.total_tokens == 120

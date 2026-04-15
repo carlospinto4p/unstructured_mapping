@@ -63,9 +63,7 @@ def _message_response(text: str) -> MagicMock:
 def test_claude_generate_text_response():
     """Text content blocks are extracted and stripped."""
     client = MagicMock()
-    client.messages.create.return_value = (
-        _message_response("  Apple Inc.  ")
-    )
+    client.messages.create.return_value = _message_response("  Apple Inc.  ")
     provider = make_claude_provider(client)
 
     out = provider.generate(
@@ -75,9 +73,7 @@ def test_claude_generate_text_response():
 
     assert out == "Apple Inc."
     client.messages.create.assert_called_once()
-    call_kwargs = (
-        client.messages.create.call_args.kwargs
-    )
+    call_kwargs = client.messages.create.call_args.kwargs
     assert call_kwargs["model"] == "test-model"
     assert call_kwargs["max_tokens"] == 4096
     assert call_kwargs["messages"] == [
@@ -89,9 +85,7 @@ def test_claude_generate_text_response():
 def test_claude_generate_no_system():
     """System prompt is omitted when None."""
     client = MagicMock()
-    client.messages.create.return_value = (
-        _message_response("Microsoft")
-    )
+    client.messages.create.return_value = _message_response("Microsoft")
     provider = make_claude_provider(client)
 
     out = provider.generate("hi")
@@ -104,9 +98,7 @@ def test_claude_generate_no_system():
 def test_claude_provider_metadata():
     """Provider metadata is exposed for run tracking."""
     client = MagicMock()
-    provider = make_claude_provider(
-        client, context_window=100_000
-    )
+    provider = make_claude_provider(client, context_window=100_000)
 
     assert provider.model_name == "test-model"
     assert provider.provider_name == "anthropic"
@@ -122,9 +114,7 @@ def test_claude_json_mode_raises():
     client = MagicMock()
     provider = make_claude_provider(client)
 
-    with pytest.raises(
-        ValueError, match="supports_json_mode"
-    ):
+    with pytest.raises(ValueError, match="supports_json_mode"):
         provider.generate("hi", json_mode=True)
 
 
@@ -135,9 +125,7 @@ def test_claude_connection_error():
     """APIConnectionError -> LLMConnectionError."""
     client = MagicMock()
     client.messages.create.side_effect = (
-        llm_claude._anthropic.APIConnectionError(
-            request=MagicMock()
-        )
+        llm_claude._anthropic.APIConnectionError(request=MagicMock())
     )
     provider = make_claude_provider(client)
 
@@ -149,9 +137,7 @@ def test_claude_timeout_error():
     """APITimeoutError -> LLMTimeoutError."""
     client = MagicMock()
     client.messages.create.side_effect = (
-        llm_claude._anthropic.APITimeoutError(
-            request=MagicMock()
-        )
+        llm_claude._anthropic.APITimeoutError(request=MagicMock())
     )
     provider = make_claude_provider(client)
 
@@ -162,25 +148,19 @@ def test_claude_timeout_error():
 def test_claude_other_exception_is_provider_error():
     """Unknown errors wrap as LLMProviderError."""
     client = MagicMock()
-    client.messages.create.side_effect = RuntimeError(
-        "unexpected"
-    )
+    client.messages.create.side_effect = RuntimeError("unexpected")
     provider = make_claude_provider(client)
 
     with pytest.raises(LLMProviderError) as exc:
         provider.generate("hi")
-    assert not isinstance(
-        exc.value, LLMConnectionError
-    )
+    assert not isinstance(exc.value, LLMConnectionError)
     assert not isinstance(exc.value, LLMTimeoutError)
 
 
 def test_claude_empty_response_raises():
     """Empty text content -> LLMEmptyResponseError."""
     client = MagicMock()
-    client.messages.create.return_value = (
-        _message_response("   ")
-    )
+    client.messages.create.return_value = _message_response("   ")
     provider = make_claude_provider(client)
 
     with pytest.raises(LLMEmptyResponseError):
@@ -217,9 +197,7 @@ def test_claude_no_text_blocks_raises():
 def test_claude_provider_missing_anthropic_package():
     """ImportError when 'llm' extras not installed."""
     with patch.object(llm_claude, "_anthropic", None):
-        with pytest.raises(
-            ImportError, match="llm"
-        ):
+        with pytest.raises(ImportError, match="llm"):
             ClaudeProvider(model="test-model")
 
 
@@ -229,14 +207,45 @@ def test_claude_provider_missing_anthropic_package():
 def test_claude_custom_max_tokens():
     """max_tokens is forwarded to the API call."""
     client = MagicMock()
-    client.messages.create.return_value = (
-        _message_response("ok")
-    )
-    provider = make_claude_provider(
-        client, max_tokens=1024
-    )
+    client.messages.create.return_value = _message_response("ok")
+    provider = make_claude_provider(client, max_tokens=1024)
 
     provider.generate("hi")
 
     kwargs = client.messages.create.call_args.kwargs
     assert kwargs["max_tokens"] == 1024
+
+
+# -- Token usage --
+
+
+def test_claude_exposes_token_usage_from_response():
+    """Anthropic's usage.input_tokens / .output_tokens
+    surface as TokenUsage on the provider after
+    generate()."""
+    from unstructured_mapping.pipeline import TokenUsage
+
+    client = MagicMock()
+    msg = _message_response("ok")
+    msg.usage = MagicMock(input_tokens=123, output_tokens=45)
+    client.messages.create.return_value = msg
+    provider = make_claude_provider(client)
+
+    provider.generate("hi")
+
+    assert provider.last_token_usage == TokenUsage(
+        input_tokens=123, output_tokens=45
+    )
+
+
+def test_claude_missing_usage_returns_none():
+    """Responses lacking a usage object report None."""
+    client = MagicMock()
+    msg = _message_response("ok")
+    del msg.usage
+    client.messages.create.return_value = msg
+    provider = make_claude_provider(client)
+
+    provider.generate("hi")
+
+    assert provider.last_token_usage is None

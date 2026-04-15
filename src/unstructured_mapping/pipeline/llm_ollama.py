@@ -35,6 +35,7 @@ from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
     LLMProviderError,
     LLMTimeoutError,
+    TokenUsage,
 )
 
 _ollama = try_import("ollama")
@@ -103,12 +104,11 @@ class OllamaProvider(LLMProvider):
         require_llm_extra(_ollama, "OllamaProvider")
         self._model = model
         self._timeout = timeout
-        self._client = _ollama.Client(
-            host=host, timeout=timeout
-        )
+        self._client = _ollama.Client(host=host, timeout=timeout)
         if context_window is None:
             context_window = self._query_context_window()
         self._context_window = context_window
+        self._last_token_usage: TokenUsage | None = None
 
     # -- LLMProvider contract ---------------------------------
 
@@ -119,6 +119,10 @@ class OllamaProvider(LLMProvider):
     @property
     def context_window(self) -> int:
         return self._context_window
+
+    @property
+    def last_token_usage(self) -> TokenUsage | None:
+        return self._last_token_usage
 
     def generate(
         self,
@@ -148,27 +152,21 @@ class OllamaProvider(LLMProvider):
             httpx.ConnectError,
             httpx.ConnectTimeout,
         ) as exc:
-            raise LLMConnectionError(
-                f"Ollama unreachable: {exc}"
-            ) from exc
+            raise LLMConnectionError(f"Ollama unreachable: {exc}") from exc
         except httpx.TimeoutException as exc:
             raise LLMTimeoutError(
-                f"Ollama call timed out after "
-                f"{self._timeout}s: {exc}"
+                f"Ollama call timed out after {self._timeout}s: {exc}"
             ) from exc
         except Exception as exc:  # noqa: BLE001
             # ollama.ResponseError and anything else the
             # client might raise. Wrap so callers only
             # have to handle LLMProviderError subclasses.
-            raise LLMProviderError(
-                f"Ollama generate failed: {exc}"
-            ) from exc
+            raise LLMProviderError(f"Ollama generate failed: {exc}") from exc
 
+        self._last_token_usage = _extract_usage(response)
         text = _extract_response_text(response)
         if not text:
-            raise LLMEmptyResponseError(
-                "Ollama returned an empty response"
-            )
+            raise LLMEmptyResponseError("Ollama returned an empty response")
         return text
 
     # -- Internal helpers -------------------------------------
@@ -190,8 +188,7 @@ class OllamaProvider(LLMProvider):
             info = self._client.show(self._model)
         except Exception as exc:  # noqa: BLE001
             logger.debug(
-                "Ollama show(%s) failed, using default "
-                "context window %d: %s",
+                "Ollama show(%s) failed, using default context window %d: %s",
                 self._model,
                 DEFAULT_CONTEXT_WINDOW,
                 exc,
@@ -201,13 +198,38 @@ class OllamaProvider(LLMProvider):
         num_ctx = _find_num_ctx(info)
         if num_ctx is None:
             logger.debug(
-                "Ollama show(%s) did not report "
-                "num_ctx, using default %d",
+                "Ollama show(%s) did not report num_ctx, using default %d",
                 self._model,
                 DEFAULT_CONTEXT_WINDOW,
             )
             return DEFAULT_CONTEXT_WINDOW
         return num_ctx
+
+
+def _extract_usage(response: object) -> TokenUsage | None:
+    """Pull prompt/response token counts from ``generate``.
+
+    Ollama responses expose ``prompt_eval_count`` (tokens
+    the model processed from the prompt) and ``eval_count``
+    (tokens produced in the response). Both fields are
+    optional in older daemon versions — return ``None``
+    when either is missing so callers can distinguish "not
+    reported" from "zero tokens".
+    """
+    if isinstance(response, dict):
+        input_tokens = response.get("prompt_eval_count")
+        output_tokens = response.get("eval_count")
+    else:
+        input_tokens = getattr(response, "prompt_eval_count", None)
+        output_tokens = getattr(response, "eval_count", None)
+    if not isinstance(input_tokens, int) or not isinstance(
+        output_tokens, int
+    ):
+        return None
+    return TokenUsage(
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+    )
 
 
 def _extract_response_text(response: object) -> str:
@@ -258,11 +280,7 @@ def _ctx_from_parameters(
         return None
     for line in parameters.splitlines():
         parts = line.strip().split()
-        if (
-            len(parts) == 2
-            and parts[0] == "num_ctx"
-            and parts[1].isdigit()
-        ):
+        if len(parts) == 2 and parts[0] == "num_ctx" and parts[1].isdigit():
             return int(parts[1])
     return None
 
@@ -282,7 +300,6 @@ def _find_num_ctx(info: object) -> int | None:
         model_info = getattr(info, "model_info", None)
         parameters = getattr(info, "parameters", None)
 
-    return (
-        _ctx_from_model_info(model_info)
-        or _ctx_from_parameters(parameters)
+    return _ctx_from_model_info(model_info) or _ctx_from_parameters(
+        parameters
     )

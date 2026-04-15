@@ -31,6 +31,7 @@ from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
     LLMProviderError,
     LLMTimeoutError,
+    TokenUsage,
 )
 
 _anthropic = try_import("anthropic")
@@ -109,6 +110,7 @@ class ClaudeProvider(LLMProvider):
             api_key=api_key,
             timeout=timeout,
         )
+        self._last_token_usage: TokenUsage | None = None
 
     # -- LLMProvider contract ---------------------------------
 
@@ -119,6 +121,10 @@ class ClaudeProvider(LLMProvider):
     @property
     def context_window(self) -> int:
         return self._context_window
+
+    @property
+    def last_token_usage(self) -> TokenUsage | None:
+        return self._last_token_usage
 
     def generate(
         self,
@@ -155,16 +161,13 @@ class ClaudeProvider(LLMProvider):
         if system is not None:
             kwargs["system"] = system
         try:
-            response = self._client.messages.create(
-                **kwargs
-            )
+            response = self._client.messages.create(**kwargs)
         except _anthropic.APITimeoutError as exc:
             # Catch before APIConnectionError because
             # APITimeoutError is a subclass of it in the
             # anthropic SDK.
             raise LLMTimeoutError(
-                f"Anthropic call timed out after "
-                f"{self._timeout}s: {exc}"
+                f"Anthropic call timed out after {self._timeout}s: {exc}"
             ) from exc
         except _anthropic.APIConnectionError as exc:
             raise LLMConnectionError(
@@ -175,12 +178,35 @@ class ClaudeProvider(LLMProvider):
                 f"Anthropic generate failed: {exc}"
             ) from exc
 
+        self._last_token_usage = _extract_usage(response)
         text = _extract_response_text(response)
         if not text:
             raise LLMEmptyResponseError(
                 "Anthropic returned an empty response"
             )
         return text
+
+
+def _extract_usage(response: object) -> TokenUsage | None:
+    """Pull input/output token counts from a Message.
+
+    The Anthropic Messages API returns a ``usage`` object
+    on every response with ``input_tokens`` and
+    ``output_tokens`` integers. Returns ``None`` when the
+    attributes are missing so the caller can tell "provider
+    didn't report" apart from zero tokens.
+    """
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return None
+    input_tokens = getattr(usage, "input_tokens", None)
+    output_tokens = getattr(usage, "output_tokens", None)
+    if input_tokens is None or output_tokens is None:
+        return None
+    return TokenUsage(
+        input_tokens=int(input_tokens),
+        output_tokens=int(output_tokens),
+    )
 
 
 def _extract_response_text(response: object) -> str:

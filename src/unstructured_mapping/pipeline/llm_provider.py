@@ -34,6 +34,39 @@ LLMProvider`` works in the slimmest install.
 """
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True, slots=True)
+class TokenUsage:
+    """Token counts reported by an LLM provider for a call.
+
+    Used by the pipeline's run scorecard to attribute cost
+    and throughput to individual runs. Providers that do
+    not expose usage return ``None`` from
+    :attr:`LLMProvider.last_token_usage` (e.g. test fakes).
+
+    :param input_tokens: Prompt tokens sent to the model.
+        For Anthropic this is ``response.usage.input_tokens``;
+        for Ollama, ``response.prompt_eval_count``.
+    :param output_tokens: Completion tokens produced by the
+        model. Anthropic: ``response.usage.output_tokens``;
+        Ollama: ``response.eval_count``.
+    """
+
+    input_tokens: int = 0
+    output_tokens: int = 0
+
+    @property
+    def total_tokens(self) -> int:
+        """Sum of :attr:`input_tokens` and :attr:`output_tokens`."""
+        return self.input_tokens + self.output_tokens
+
+    def __add__(self, other: "TokenUsage") -> "TokenUsage":
+        return TokenUsage(
+            input_tokens=(self.input_tokens + other.input_tokens),
+            output_tokens=(self.output_tokens + other.output_tokens),
+        )
 
 
 class LLMProviderError(Exception):
@@ -183,3 +216,19 @@ class LLMProvider(ABC):
         without JSON mode raise ``ValueError`` rather
         than silently returning unconstrained text.
         """
+
+    @property
+    def last_token_usage(self) -> TokenUsage | None:
+        """Token usage reported by the most recent
+        :meth:`generate` call, or ``None``.
+
+        Non-abstract so test fakes and providers that
+        cannot expose usage (e.g. a backend that does not
+        return counts in its response) still satisfy the
+        ABC. Concrete providers that do expose usage
+        (Ollama, Anthropic) override this to return a
+        :class:`TokenUsage`. Callers (pipeline stages)
+        read the value right after each :meth:`generate`
+        call to accumulate into the run scorecard.
+        """
+        return None

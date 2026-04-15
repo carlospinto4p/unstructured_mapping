@@ -48,6 +48,7 @@ from unstructured_mapping.pipeline.llm_parsers import (
 )
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
+    TokenUsage,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
@@ -91,10 +92,19 @@ class ColdStartEntityDiscoverer:
 
     def __init__(self, provider: LLMProvider) -> None:
         self._provider = provider
+        self._last_token_usage: TokenUsage = TokenUsage()
 
-    def discover(
-        self, chunk: Chunk
-    ) -> tuple[EntityProposal, ...]:
+    @property
+    def last_token_usage(self) -> TokenUsage:
+        """Token usage from the last :meth:`discover` call.
+
+        Summed across retry attempts. Zero-valued when no
+        call has been made or the provider does not expose
+        usage counts.
+        """
+        return self._last_token_usage
+
+    def discover(self, chunk: Chunk) -> tuple[EntityProposal, ...]:
         """Ask the LLM to propose entities from ``chunk``.
 
         :param chunk: The article or chunk text.
@@ -104,6 +114,7 @@ class ColdStartEntityDiscoverer:
             validation failures (same retry policy as
             pass 1).
         """
+        self._last_token_usage = TokenUsage()
         budget = compute_budget(
             self._provider.context_window,
             PASS1_SYSTEM_PROMPT,
@@ -126,7 +137,7 @@ class ColdStartEntityDiscoverer:
             chunk_text=chunk_text,
         )
 
-        resolved, proposals = retry_llm_call(
+        (resolved, proposals), usage = retry_llm_call(
             self._provider,
             user_prompt,
             PASS1_SYSTEM_PROMPT,
@@ -137,6 +148,7 @@ class ColdStartEntityDiscoverer:
             ),
             pass_label="Cold-start",
         )
+        self._last_token_usage = usage
 
         if resolved:
             # With no candidates, the LLM should never

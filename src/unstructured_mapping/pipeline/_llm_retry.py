@@ -14,6 +14,7 @@ from collections.abc import Callable
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
     LLMProviderError,
+    TokenUsage,
 )
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ def retry_llm_call(
     *,
     pass_label: str = "LLM",
     max_attempts: int = MAX_ATTEMPTS,
-) -> object:
+) -> tuple[object, TokenUsage]:
     """Call the LLM with retry on validation failure.
 
     Sends ``user_prompt`` with ``system_prompt`` to the
@@ -54,11 +55,15 @@ def retry_llm_call(
     :param pass_label: Label for log messages (e.g.
         ``"Pass 1"``, ``"Pass 2"``).
     :param max_attempts: Maximum LLM calls per chunk.
-    :return: Whatever ``parse_fn`` returns on success.
+    :return: Tuple of ``(parse_fn result, summed
+        TokenUsage across attempts)``. Usage is a zero-
+        valued :class:`TokenUsage` when the provider does
+        not expose counts (e.g. test fakes).
     :raises LLMProviderError: After ``max_attempts``
         consecutive validation failures.
     """
     last_error: ValueError | None = None
+    usage_total = TokenUsage()
     for attempt in range(max_attempts):
         prompt = user_prompt
         if last_error is not None:
@@ -69,14 +74,16 @@ def retry_llm_call(
             system=system_prompt,
             json_mode=provider.supports_json_mode,
         )
+        call_usage = provider.last_token_usage
+        if call_usage is not None:
+            usage_total = usage_total + call_usage
 
         try:
             result = parse_fn(raw)
         except ValueError as exc:
             last_error = exc
             logger.warning(
-                "%s validation failed "
-                "(attempt %d/%d): %s",
+                "%s validation failed (attempt %d/%d): %s",
                 pass_label,
                 attempt + 1,
                 max_attempts,
@@ -84,11 +91,10 @@ def retry_llm_call(
             )
             continue
 
-        return result
+        return result, usage_total
 
     raise LLMProviderError(
-        f"{pass_label} failed after {max_attempts} "
-        f"attempts: {last_error}"
+        f"{pass_label} failed after {max_attempts} attempts: {last_error}"
     )
 
 

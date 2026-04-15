@@ -103,9 +103,7 @@ class Entity:
     description: str
     subtype: str | None = None
     aliases: tuple[str, ...] = ()
-    entity_id: str = field(
-        default_factory=lambda: uuid4().hex
-    )
+    entity_id: str = field(default_factory=lambda: uuid4().hex)
     valid_from: datetime | None = None
     valid_until: datetime | None = None
     status: EntityStatus = EntityStatus.ACTIVE
@@ -332,9 +330,7 @@ class IngestionRun:
     """
 
     status: RunStatus = RunStatus.RUNNING
-    run_id: str = field(
-        default_factory=lambda: uuid4().hex
-    )
+    run_id: str = field(default_factory=lambda: uuid4().hex)
     started_at: datetime = field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
@@ -356,10 +352,12 @@ class RunMetrics:
     KG-driven modes without replaying the articles.
 
     Written at the end of a run alongside
-    :class:`IngestionRun` finalisation. Token counts are
-    deliberately absent — the :class:`LLMProvider`
-    contract does not expose usage today; tracked as a
-    separate backlog item.
+    :class:`IngestionRun` finalisation. Token counters
+    (``input_tokens``, ``output_tokens``) are summed over
+    every LLM call the pipeline made during the run —
+    resolver, extractor, and cold-start discoverer.
+    Providers that do not expose usage (e.g. fakes in
+    tests) leave these at zero.
 
     :param run_id: Foreign key to :class:`IngestionRun`.
     :param chunks_processed: Total chunks seen across all
@@ -389,6 +387,13 @@ class RunMetrics:
         ``None`` when no LLM stage was configured.
     :param wall_clock_seconds: Total wall-clock time for
         the run, end-to-end.
+    :param input_tokens: Prompt tokens summed across every
+        LLM call (resolver, extractor, cold-start
+        discoverer). Zero when the provider does not
+        expose usage.
+    :param output_tokens: Completion tokens summed across
+        every LLM call. Zero when the provider does not
+        expose usage.
     """
 
     run_id: str
@@ -403,3 +408,11 @@ class RunMetrics:
     provider_name: str | None = None
     model_name: str | None = None
     wall_clock_seconds: float = 0.0
+    input_tokens: int = 0
+    output_tokens: int = 0
+
+    @property
+    def total_tokens(self) -> int:
+        """Sum of :attr:`input_tokens` and
+        :attr:`output_tokens`."""
+        return self.input_tokens + self.output_tokens
