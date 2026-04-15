@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.48.0 - 16th April 2026
+
+- Added provenance quality audit CLI:
+  - `cli/audit_provenance.py`: three-way audit over the KG's provenance table. Flags short context snippets (`--min-tokens`, via the existing token-estimate heuristic), thin mention coverage (`--min-mentions`, counting distinct `(document_id, mention_text)` pairs and including zero-mention orphans), and narrow temporal spread (`--min-days`, skipping single-mention rows so the signal is not dominated by zero-second spans). Emits a text report or a combined CSV via `--csv`.
+- Added unit tests:
+  - `tests/unit/test_cli_audit_provenance.py`: 6 tests covering each heuristic, zero-mention inclusion via LEFT JOIN, single-mention exclusion from the spread report, and end-to-end CSV export with all three finding types.
+
+
 ### v0.47.0 - 15th April 2026
 
 - Added alias-collision audit CLI:
