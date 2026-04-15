@@ -115,14 +115,6 @@ class ScoredCollision:
         return ranked[0] if ranked else None
 
 
-def _score_entity(store: KnowledgeStore, entity_id: str) -> int:
-    row = store._conn.execute(  # noqa: SLF001
-        "SELECT COUNT(*) FROM provenance WHERE entity_id = ?",
-        (entity_id,),
-    ).fetchone()
-    return int(row[0]) if row else 0
-
-
 def score_collisions(
     store: KnowledgeStore,
     collisions: list[AliasCollision],
@@ -141,7 +133,7 @@ def score_collisions(
                 entity_id=eid,
                 canonical_name=name,
                 entity_type=etype,
-                mention_count=_score_entity(store, eid),
+                mention_count=(store.count_mentions_for_entity(eid)),
             )
             for eid, name, etype in c.entities
         ]

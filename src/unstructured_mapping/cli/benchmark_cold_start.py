@@ -216,25 +216,20 @@ def _discovered_for_document(
 ) -> frozenset[tuple[str, str]]:
     """Pull discovered entities for one document.
 
-    Joins the provenance table against entities so the
-    benchmark sees every entity the pipeline either
-    created (cold-start) or resolved to (kg-driven) for
-    this specific article.
+    Projects the ``(Entity, Provenance)`` pairs returned
+    by the store into the case-insensitive
+    ``(canonical_name, entity_type)`` tuples the
+    benchmark scores against. De-duplicates because a
+    KG-driven run may resolve the same entity on more
+    than one mention in a single article.
     """
-    # Access the sqlite connection directly — the store
-    # does not expose a join helper, and the benchmark
-    # lives outside the KG read API surface by design
-    # (it is an offline evaluation tool).
-    cursor = store._conn.execute(  # noqa: SLF001
-        "SELECT DISTINCT e.canonical_name, e.entity_type "
-        "FROM provenance p "
-        "JOIN entities e ON e.entity_id = p.entity_id "
-        "WHERE p.document_id = ?",
-        (document_id,),
-    )
+    pairs = store.find_mentions_with_entities(document_id)
     return frozenset(
-        (row["canonical_name"].lower(), row["entity_type"].lower())
-        for row in cursor.fetchall()
+        (
+            entity.canonical_name.lower(),
+            entity.entity_type.value.lower(),
+        )
+        for entity, _prov in pairs
     )
 
 

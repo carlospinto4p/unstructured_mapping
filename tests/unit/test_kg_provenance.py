@@ -35,9 +35,7 @@ def test_store_save_and_get_provenance(tmp_path):
 
     assert len(records) == 1
     assert records[0].document_id == "doc123"
-    assert records[0].context_snippet == (
-        "...about Test Entity today..."
-    )
+    assert records[0].context_snippet == ("...about Test Entity today...")
 
 
 def test_has_document_provenance(tmp_path):
@@ -46,25 +44,18 @@ def test_has_document_provenance(tmp_path):
     e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
-        assert (
-            store.has_document_provenance("doc1")
-            is False
+        assert store.has_document_provenance("doc1") is False
+        store.save_provenance(
+            Provenance(
+                entity_id=e.entity_id,
+                document_id="doc1",
+                source="bbc",
+                mention_text="Test",
+                context_snippet="ctx",
+            )
         )
-        store.save_provenance(Provenance(
-            entity_id=e.entity_id,
-            document_id="doc1",
-            source="bbc",
-            mention_text="Test",
-            context_snippet="ctx",
-        ))
-        assert (
-            store.has_document_provenance("doc1")
-            is True
-        )
-        assert (
-            store.has_document_provenance("other")
-            is False
-        )
+        assert store.has_document_provenance("doc1") is True
+        assert store.has_document_provenance("other") is False
 
 
 def test_store_provenance_deduplication(tmp_path):
@@ -147,23 +138,27 @@ def test_find_recent_mentions(tmp_path):
     cutoff = datetime(2024, 3, 1, tzinfo=timezone.utc)
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
-        store.save_provenance(Provenance(
-            entity_id=e.entity_id,
-            document_id="old_doc", source="bbc",
-            mention_text="Test",
-            context_snippet="old ctx",
-            detected_at=old,
-        ))
-        store.save_provenance(Provenance(
-            entity_id=e.entity_id,
-            document_id="new_doc", source="ap",
-            mention_text="Test",
-            context_snippet="new ctx",
-            detected_at=recent,
-        ))
-        results = store.find_recent_mentions(
-            e.entity_id, since=cutoff
+        store.save_provenance(
+            Provenance(
+                entity_id=e.entity_id,
+                document_id="old_doc",
+                source="bbc",
+                mention_text="Test",
+                context_snippet="old ctx",
+                detected_at=old,
+            )
         )
+        store.save_provenance(
+            Provenance(
+                entity_id=e.entity_id,
+                document_id="new_doc",
+                source="ap",
+                mention_text="Test",
+                context_snippet="new ctx",
+                detected_at=recent,
+            )
+        )
+        results = store.find_recent_mentions(e.entity_id, since=cutoff)
 
     assert len(results) == 1
     assert results[0].document_id == "new_doc"
@@ -179,17 +174,17 @@ def test_find_recent_mentions_ordered_desc(tmp_path):
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
         for i, t in enumerate([t1, t2, t3]):
-            store.save_provenance(Provenance(
-                entity_id=e.entity_id,
-                document_id=f"doc{i}",
-                source="bbc",
-                mention_text="Test",
-                context_snippet="ctx",
-                detected_at=t,
-            ))
-        results = store.find_recent_mentions(
-            e.entity_id, since=since
-        )
+            store.save_provenance(
+                Provenance(
+                    entity_id=e.entity_id,
+                    document_id=f"doc{i}",
+                    source="bbc",
+                    mention_text="Test",
+                    context_snippet="ctx",
+                    detected_at=t,
+                )
+            )
+        results = store.find_recent_mentions(e.entity_id, since=since)
 
     assert len(results) == 3
     assert results[0].document_id == "doc2"
@@ -202,18 +197,17 @@ def test_find_recent_mentions_empty(tmp_path):
     future = datetime(2099, 1, 1, tzinfo=timezone.utc)
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
-        store.save_provenance(Provenance(
-            entity_id=e.entity_id,
-            document_id="doc1", source="bbc",
-            mention_text="Test",
-            context_snippet="ctx",
-            detected_at=datetime(
-                2024, 1, 1, tzinfo=timezone.utc
-            ),
-        ))
-        results = store.find_recent_mentions(
-            e.entity_id, since=future
+        store.save_provenance(
+            Provenance(
+                entity_id=e.entity_id,
+                document_id="doc1",
+                source="bbc",
+                mention_text="Test",
+                context_snippet="ctx",
+                detected_at=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            )
         )
+        results = store.find_recent_mentions(e.entity_id, since=future)
 
     assert len(results) == 0
 
@@ -243,47 +237,63 @@ def test_find_co_mentioned_basic(tmp_path):
         store.save_entity(apple)
         store.save_entity(gold)
         # CPI and Apple in doc1
-        store.save_provenance(Provenance(
-            entity_id=cpi.entity_id,
-            document_id="doc1", source="bbc",
-            mention_text="CPI",
-            context_snippet="CPI rose 3.2%",
-        ))
-        store.save_provenance(Provenance(
-            entity_id=apple.entity_id,
-            document_id="doc1", source="bbc",
-            mention_text="Apple",
-            context_snippet="Apple stock fell",
-        ))
-        # CPI and Gold in doc2
-        store.save_provenance(Provenance(
-            entity_id=cpi.entity_id,
-            document_id="doc2", source="bbc",
-            mention_text="CPI",
-            context_snippet="CPI data released",
-        ))
-        store.save_provenance(Provenance(
-            entity_id=gold.entity_id,
-            document_id="doc2", source="bbc",
-            mention_text="Gold",
-            context_snippet="Gold surged",
-        ))
-        # CPI and Apple again in doc3
-        store.save_provenance(Provenance(
-            entity_id=cpi.entity_id,
-            document_id="doc3", source="ap",
-            mention_text="CPI",
-            context_snippet="CPI beat expectations",
-        ))
-        store.save_provenance(Provenance(
-            entity_id=apple.entity_id,
-            document_id="doc3", source="ap",
-            mention_text="Apple",
-            context_snippet="Apple earnings",
-        ))
-        results = store.find_co_mentioned(
-            cpi.entity_id
+        store.save_provenance(
+            Provenance(
+                entity_id=cpi.entity_id,
+                document_id="doc1",
+                source="bbc",
+                mention_text="CPI",
+                context_snippet="CPI rose 3.2%",
+            )
         )
+        store.save_provenance(
+            Provenance(
+                entity_id=apple.entity_id,
+                document_id="doc1",
+                source="bbc",
+                mention_text="Apple",
+                context_snippet="Apple stock fell",
+            )
+        )
+        # CPI and Gold in doc2
+        store.save_provenance(
+            Provenance(
+                entity_id=cpi.entity_id,
+                document_id="doc2",
+                source="bbc",
+                mention_text="CPI",
+                context_snippet="CPI data released",
+            )
+        )
+        store.save_provenance(
+            Provenance(
+                entity_id=gold.entity_id,
+                document_id="doc2",
+                source="bbc",
+                mention_text="Gold",
+                context_snippet="Gold surged",
+            )
+        )
+        # CPI and Apple again in doc3
+        store.save_provenance(
+            Provenance(
+                entity_id=cpi.entity_id,
+                document_id="doc3",
+                source="ap",
+                mention_text="CPI",
+                context_snippet="CPI beat expectations",
+            )
+        )
+        store.save_provenance(
+            Provenance(
+                entity_id=apple.entity_id,
+                document_id="doc3",
+                source="ap",
+                mention_text="Apple",
+                context_snippet="Apple earnings",
+            )
+        )
+        results = store.find_co_mentioned(cpi.entity_id)
 
     assert len(results) == 2
     # Apple co-mentioned in 2 docs, Gold in 1
@@ -308,41 +318,49 @@ def test_find_co_mentioned_with_since(tmp_path):
         store.save_entity(e1)
         store.save_entity(e2)
         # Old co-mention
-        store.save_provenance(Provenance(
-            entity_id=e1.entity_id,
-            document_id="old_doc", source="bbc",
-            mention_text="E1",
-            context_snippet="ctx",
-            detected_at=old,
-        ))
-        store.save_provenance(Provenance(
-            entity_id=e2.entity_id,
-            document_id="old_doc", source="bbc",
-            mention_text="E2",
-            context_snippet="ctx",
-            detected_at=old,
-        ))
+        store.save_provenance(
+            Provenance(
+                entity_id=e1.entity_id,
+                document_id="old_doc",
+                source="bbc",
+                mention_text="E1",
+                context_snippet="ctx",
+                detected_at=old,
+            )
+        )
+        store.save_provenance(
+            Provenance(
+                entity_id=e2.entity_id,
+                document_id="old_doc",
+                source="bbc",
+                mention_text="E2",
+                context_snippet="ctx",
+                detected_at=old,
+            )
+        )
         # Recent co-mention
-        store.save_provenance(Provenance(
-            entity_id=e1.entity_id,
-            document_id="new_doc", source="ap",
-            mention_text="E1",
-            context_snippet="ctx",
-            detected_at=recent,
-        ))
-        store.save_provenance(Provenance(
-            entity_id=e2.entity_id,
-            document_id="new_doc", source="ap",
-            mention_text="E2",
-            context_snippet="ctx",
-            detected_at=recent,
-        ))
-        all_results = store.find_co_mentioned(
-            e1.entity_id
+        store.save_provenance(
+            Provenance(
+                entity_id=e1.entity_id,
+                document_id="new_doc",
+                source="ap",
+                mention_text="E1",
+                context_snippet="ctx",
+                detected_at=recent,
+            )
         )
-        recent_results = store.find_co_mentioned(
-            e1.entity_id, since=cutoff
+        store.save_provenance(
+            Provenance(
+                entity_id=e2.entity_id,
+                document_id="new_doc",
+                source="ap",
+                mention_text="E2",
+                context_snippet="ctx",
+                detected_at=recent,
+            )
         )
+        all_results = store.find_co_mentioned(e1.entity_id)
+        recent_results = store.find_co_mentioned(e1.entity_id, since=cutoff)
 
     assert len(all_results) == 1
     assert all_results[0][1] == 2  # 2 docs total
@@ -355,12 +373,15 @@ def test_find_co_mentioned_no_self_match(tmp_path):
     e = make_entity()
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e)
-        store.save_provenance(Provenance(
-            entity_id=e.entity_id,
-            document_id="doc1", source="bbc",
-            mention_text="Test",
-            context_snippet="ctx",
-        ))
+        store.save_provenance(
+            Provenance(
+                entity_id=e.entity_id,
+                document_id="doc1",
+                source="bbc",
+                mention_text="Test",
+                context_snippet="ctx",
+            )
+        )
         results = store.find_co_mentioned(e.entity_id)
 
     assert len(results) == 0
@@ -380,34 +401,33 @@ def test_find_co_mentioned_limit(tmp_path):
     """limit= caps the number of co-mentioned entities."""
     db = tmp_path / "kg.db"
     hub = make_entity(canonical_name="Hub")
-    others = [
-        make_entity(canonical_name=f"Other {i}")
-        for i in range(4)
-    ]
+    others = [make_entity(canonical_name=f"Other {i}") for i in range(4)]
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(hub)
         for o in others:
             store.save_entity(o)
         for i, o in enumerate(others):
             doc = f"doc{i}"
-            store.save_provenance(Provenance(
-                entity_id=hub.entity_id,
-                document_id=doc, source="bbc",
-                mention_text="Hub",
-                context_snippet="ctx",
-            ))
-            store.save_provenance(Provenance(
-                entity_id=o.entity_id,
-                document_id=doc, source="bbc",
-                mention_text=f"Other {i}",
-                context_snippet="ctx",
-            ))
-        all_results = store.find_co_mentioned(
-            hub.entity_id
-        )
-        limited = store.find_co_mentioned(
-            hub.entity_id, limit=2
-        )
+            store.save_provenance(
+                Provenance(
+                    entity_id=hub.entity_id,
+                    document_id=doc,
+                    source="bbc",
+                    mention_text="Hub",
+                    context_snippet="ctx",
+                )
+            )
+            store.save_provenance(
+                Provenance(
+                    entity_id=o.entity_id,
+                    document_id=doc,
+                    source="bbc",
+                    mention_text=f"Other {i}",
+                    context_snippet="ctx",
+                )
+            )
+        all_results = store.find_co_mentioned(hub.entity_id)
+        limited = store.find_co_mentioned(hub.entity_id, limit=2)
 
     assert len(all_results) == 4
     assert len(limited) == 2
@@ -635,3 +655,89 @@ def test_migration_adds_run_id(tmp_path):
 
     assert "run_id" in cols_prov
     assert "run_id" in cols_rel
+
+
+# -- count_mentions_for_entity + find_mentions_with_entities --
+
+
+def test_count_mentions_for_entity(tmp_path):
+    db = tmp_path / "kg.db"
+    e = make_entity()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e)
+        assert store.count_mentions_for_entity(e.entity_id) == 0
+        store.save_provenances(
+            [
+                Provenance(
+                    entity_id=e.entity_id,
+                    document_id=f"doc-{i}",
+                    source="test",
+                    mention_text=f"m{i}",
+                    context_snippet="ctx",
+                )
+                for i in range(3)
+            ]
+        )
+        assert store.count_mentions_for_entity(e.entity_id) == 3
+
+
+def test_find_mentions_with_entities_returns_pairs(
+    tmp_path,
+):
+    """Rows come back as ``(Entity, Provenance)`` pairs
+    ordered by detected_at so the first pair is the first
+    mention."""
+    db = tmp_path / "kg.db"
+    apple = make_entity(
+        canonical_name="Apple",
+        entity_type=EntityType.ORGANIZATION,
+    )
+    msft = make_entity(
+        canonical_name="Microsoft",
+        entity_type=EntityType.ORGANIZATION,
+    )
+    t0 = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_entity(msft)
+        store.save_provenances(
+            [
+                Provenance(
+                    entity_id=apple.entity_id,
+                    document_id="doc-1",
+                    source="test",
+                    mention_text="Apple",
+                    context_snippet="ctx1",
+                    detected_at=t0,
+                ),
+                Provenance(
+                    entity_id=msft.entity_id,
+                    document_id="doc-1",
+                    source="test",
+                    mention_text="Microsoft",
+                    context_snippet="ctx2",
+                    detected_at=t0.replace(second=30),
+                ),
+                Provenance(
+                    entity_id=apple.entity_id,
+                    document_id="doc-2",
+                    source="test",
+                    mention_text="Apple",
+                    context_snippet="ctx3",
+                    detected_at=t0,
+                ),
+            ]
+        )
+        pairs = store.find_mentions_with_entities("doc-1")
+    assert [(e.canonical_name, p.mention_text) for e, p in pairs] == [
+        ("Apple", "Apple"),
+        ("Microsoft", "Microsoft"),
+    ]
+
+
+def test_find_mentions_with_entities_empty_doc(
+    tmp_path,
+):
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        assert store.find_mentions_with_entities("missing") == []

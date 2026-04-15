@@ -2,7 +2,7 @@
 
 ### 2026.04.16 (refactor review v0.48.1)
 
-- [ ] **HIGH / Small** — Extract provenance mention-count queries into `ProvenanceMixin`. Four CLIs (`audit_aliases.py`, `audit_provenance.py`, `preview.py`, `benchmark_cold_start.py`) execute `SELECT COUNT(*) FROM provenance WHERE entity_id = ?` or multi-table joins directly on `store._conn` with `# noqa: SLF001`. Add `count_mentions_for_entity(entity_id)` and `find_mentions_with_entities(document_id)` to the mixin so CLIs stop reaching into private state.
+- [x] **HIGH / Small** — Extract provenance mention-count queries into `ProvenanceMixin`. Done in v0.48.2: `count_mentions_for_entity` + `find_mentions_with_entities` added; `audit_aliases`, `benchmark_cold_start`, and `preview` migrated off direct `store._conn` joins (3 `# noqa: SLF001` removed).
 - [ ] **HIGH / Medium** — Move audit finding queries into a `AuditMixin` on `KnowledgeStore`. `cli/audit_provenance.py` owns `find_short_snippets` / `find_thin_mentions` / `find_narrow_spread` with direct SQL; move the three functions and their dataclasses into `knowledge_graph/_audit_mixin.py` so CLIs become thin presentation layers.
 - [ ] **MEDIUM / Small** — Consolidate CLI argparse boilerplate into `cli/_argparse_helpers.py` with `add_db_argument`, `add_csv_output_argument`, etc. Some CLIs use `required=True`, others validate manually in `main()` — pick one idiom and apply it across every CLI.
 - [ ] **MEDIUM / Small** — Move the `preview._collect_preview` joins into a store method (`get_mentions_for_document(document_id)` on `EntityMixin` or a new reporting mixin). Removes 2× `# noqa: SLF001` from `preview.py`.

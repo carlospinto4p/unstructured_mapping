@@ -35,9 +35,7 @@ class ProvenanceMixin:
 
     # -- Provenance CRUD --
 
-    def save_provenance(
-        self, provenance: Provenance
-    ) -> None:
+    def save_provenance(self, provenance: Provenance) -> None:
         """Insert a provenance record, skipping duplicates.
 
         :param provenance: The provenance to save.
@@ -60,9 +58,7 @@ class ProvenanceMixin:
         )
         self._commit()
 
-    def save_provenances(
-        self, provenances: list[Provenance]
-    ) -> int:
+    def save_provenances(self, provenances: list[Provenance]) -> int:
         """Bulk insert provenance records, skipping dupes.
 
         :param provenances: The provenance records to save.
@@ -93,9 +89,7 @@ class ProvenanceMixin:
         self._commit()
         return self._conn.total_changes - before
 
-    def get_provenance(
-        self, entity_id: str
-    ) -> list[Provenance]:
+    def get_provenance(self, entity_id: str) -> list[Provenance]:
         """Fetch all provenance records for an entity.
 
         :param entity_id: The entity's unique identifier.
@@ -110,9 +104,7 @@ class ProvenanceMixin:
         ).fetchall()
         return [row_to_provenance(r) for r in rows]
 
-    def has_document_provenance(
-        self, document_id: str
-    ) -> bool:
+    def has_document_provenance(self, document_id: str) -> bool:
         """Check whether a document has any provenance.
 
         Used by the ingestion pipeline for idempotency:
@@ -126,15 +118,12 @@ class ProvenanceMixin:
             references this document.
         """
         row = self._conn.execute(
-            "SELECT 1 FROM provenance "
-            "WHERE document_id = ? LIMIT 1",
+            "SELECT 1 FROM provenance WHERE document_id = ? LIMIT 1",
             (document_id,),
         ).fetchone()
         return row is not None
 
-    def documents_with_provenance(
-        self, document_ids: list[str]
-    ) -> set[str]:
+    def documents_with_provenance(self, document_ids: list[str]) -> set[str]:
         """Return the subset of ids that already have
         provenance rows.
 
@@ -184,6 +173,67 @@ class ProvenanceMixin:
         ).fetchall()
         return [row_to_provenance(r) for r in rows]
 
+    def count_mentions_for_entity(self, entity_id: str) -> int:
+        """Count provenance rows tied to an entity.
+
+        Cheaper than ``len(get_provenance(entity_id))``
+        because the hydrated ``Provenance`` rows are
+        never materialised. Used by the alias-collision
+        audit to rank collisions by mention prevalence.
+        """
+        row = self._conn.execute(
+            "SELECT COUNT(*) FROM provenance WHERE entity_id = ?",
+            (entity_id,),
+        ).fetchone()
+        return int(row[0]) if row else 0
+
+    def find_mentions_with_entities(
+        self, document_id: str
+    ) -> list[tuple[Entity, Provenance]]:
+        """Return every mention the pipeline produced for
+        a document, paired with its entity.
+
+        One row per provenance record: the entity side
+        hydrates ``canonical_name`` / ``entity_type`` /
+        ``description`` so presentation-layer callers
+        (preview CLI, cold-start benchmark) do not need
+        a second fetch. Ordered by ``detected_at`` so the
+        first row is the first mention, matching how the
+        pipeline writes them.
+
+        :param document_id: The document's string id.
+        :return: ``(Entity, Provenance)`` tuples. Empty
+            when the document has no provenance.
+        """
+        rows = self._conn.execute(
+            "SELECT e.entity_id, e.canonical_name, "
+            "e.entity_type, e.subtype, "
+            "e.description, e.valid_from, "
+            "e.valid_until, e.status, "
+            "e.merged_into, e.created_at, "
+            "e.updated_at, "
+            "p.document_id, p.source, "
+            "p.mention_text, p.context_snippet, "
+            "p.detected_at, p.run_id "
+            "FROM provenance p "
+            "JOIN entities e "
+            "ON e.entity_id = p.entity_id "
+            "WHERE p.document_id = ? "
+            "ORDER BY p.detected_at",
+            (document_id,),
+        ).fetchall()
+        if not rows:
+            return []
+        eids = [r["entity_id"] for r in rows]
+        alias_map = self._load_aliases_batch(eids)
+        results: list[tuple[Entity, Provenance]] = []
+        for row in rows:
+            eid = row["entity_id"]
+            entity = row_to_entity(row, alias_map.get(eid, ()))
+            provenance = row_to_provenance(row)
+            results.append((entity, provenance))
+        return results
+
     # -- Co-mention query --
 
     def find_co_mentioned(
@@ -227,21 +277,17 @@ class ProvenanceMixin:
             "AND p2.entity_id != ? "
         )
         params: list[str | int | None] = [
-            entity_id, entity_id,
+            entity_id,
+            entity_id,
         ]
         if since is not None:
             query += "AND p1.detected_at >= ? "
             params.append(dt_to_iso(since))
-        query += (
-            "GROUP BY p2.entity_id "
-            "ORDER BY cnt DESC"
-        )
+        query += "GROUP BY p2.entity_id ORDER BY cnt DESC"
         if limit is not None:
             query += " LIMIT ?"
             params.append(limit)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
+        rows = self._conn.execute(query, params).fetchall()
         if not rows:
             return []
         eids = [r["entity_id"] for r in rows]

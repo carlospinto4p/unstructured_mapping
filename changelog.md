@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.48.2 - 16th April 2026
+
+- Refactored provenance reads out of CLIs:
+  - `knowledge_graph/_provenance_mixin.py`: new `count_mentions_for_entity(entity_id)` and `find_mentions_with_entities(document_id)` methods. The latter returns `(Entity, Provenance)` pairs hydrated via the existing alias batch loader.
+  - `cli/audit_aliases.py`: dropped the local `_score_entity` SQL helper in favour of `store.count_mentions_for_entity`.
+  - `cli/benchmark_cold_start.py`: `_discovered_for_document` now projects `(Entity, Provenance)` pairs from the store instead of executing its own join.
+  - `cli/preview.py`: `_collect_preview` uses `store.find_mentions_with_entities` for the mentions side of the payload.
+  - Removed three `# noqa: SLF001` annotations; the only remaining `store._conn` access in the CLIs is the relationships query in `preview.py` (tracked separately in the backlog).
+- Added unit tests:
+  - `tests/unit/test_kg_provenance.py`: `count_mentions_for_entity` roundtrip, `find_mentions_with_entities` ordering + document scoping, empty-document short-circuit.
+
+
 ### v0.48.1 - 16th April 2026
 
 - Added `docs/examples/queries.sql`: a ten-query cookbook for analysts — top mentions this week, top mentions by type, entity merge history, relationship types with average confidence, currently-active high-confidence edges, provenance timeline, co-mentioned entities, per-run scorecard summary, alias-collision report, and entities proposed by a specific run.

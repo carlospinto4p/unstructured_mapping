@@ -112,34 +112,25 @@ def _collect_preview(store: KnowledgeStore, document_id: str) -> dict:
     """
     # Provenance → resolved mentions + newly created
     # proposals (both get a provenance row per the
-    # orchestrator). Join to entities so the caller sees
-    # canonical name + type.
-    mention_rows = store._conn.execute(  # noqa: SLF001
-        "SELECT e.entity_id, e.canonical_name, "
-        "e.entity_type, e.subtype, e.description, "
-        "e.created_at, p.mention_text, "
-        "p.context_snippet "
-        "FROM provenance p "
-        "JOIN entities e ON e.entity_id = p.entity_id "
-        "WHERE p.document_id = ? "
-        "ORDER BY p.detected_at",
-        (document_id,),
-    ).fetchall()
+    # orchestrator). The store helper joins to entities
+    # so the caller sees canonical name + type without a
+    # second fetch.
+    pairs = store.find_mentions_with_entities(document_id)
     mentions = [
         {
-            "entity_id": r["entity_id"],
-            "canonical_name": r["canonical_name"],
-            "entity_type": r["entity_type"],
-            "subtype": r["subtype"],
-            "description": r["description"],
-            "mention_text": r["mention_text"],
-            "context_snippet": r["context_snippet"],
+            "entity_id": entity.entity_id,
+            "canonical_name": entity.canonical_name,
+            "entity_type": entity.entity_type.value,
+            "subtype": entity.subtype,
+            "description": entity.description,
+            "mention_text": prov.mention_text,
+            "context_snippet": prov.context_snippet,
             # Entities created during this very run show
             # up with a created_at inside the run window;
             # the benchmarking CLI shows the same shape.
-            "newly_created": bool(r["created_at"]),
+            "newly_created": entity.created_at is not None,
         }
-        for r in mention_rows
+        for entity, prov in pairs
     ]
 
     rel_rows = store._conn.execute(  # noqa: SLF001
