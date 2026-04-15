@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.44.0 - 15th April 2026
+
+- Added cold-start benchmarking CLI:
+  - `cli/benchmark_cold_start.py`: runs a labelled article set through cold-start and/or KG-driven pipelines and reports per-mode precision / recall / F1 plus token spend. Labelled file format is JSON with `document_id`, `body`, and an `entities` list of `{canonical_name, entity_type}`. Matching is strict — case-insensitive `(canonical_name, entity_type)` joins on provenance. `--mode` accepts `cold-start`, `kg-driven`, or `both`; `kg-driven` copies `--seed-db` to a throwaway file to keep the live KG untouched.
+- Added unit tests:
+  - `tests/unit/test_cli_benchmark_cold_start.py`: 9 tests covering label parsing, enum validation, per-article TP/FP/FN, aggregate precision/recall/F1, end-to-end cold-start scoring via a fake discoverer, and argument guards.
+
+
 ### v0.43.0 - 15th April 2026
 
 - Added LLM token usage reporting on the provider contract:
