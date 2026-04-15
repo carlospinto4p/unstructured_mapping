@@ -31,10 +31,7 @@ def fed_entity():
         canonical_name="Federal Reserve",
         entity_type=EntityType.ORGANIZATION,
         subtype="central_bank",
-        description=(
-            "The central banking system of the "
-            "United States."
-        ),
+        description=("The central banking system of the United States."),
         aliases=("the Fed", "Federal Reserve", "Fed"),
     )
 
@@ -46,9 +43,7 @@ def powell_entity():
         canonical_name="Jerome Powell",
         entity_type=EntityType.PERSON,
         subtype="policymaker",
-        description=(
-            "Chair of the Federal Reserve since 2018."
-        ),
+        description=("Chair of the Federal Reserve since 2018."),
         aliases=("Powell", "Fed Chair Powell"),
     )
 
@@ -124,12 +119,8 @@ def test_kg_block_single_candidate(fed_entity):
     assert "description: The central banking" in block
 
 
-def test_kg_block_multiple_candidates(
-    fed_entity, powell_entity
-):
-    block = build_kg_context_block(
-        [fed_entity, powell_entity]
-    )
+def test_kg_block_multiple_candidates(fed_entity, powell_entity):
+    block = build_kg_context_block([fed_entity, powell_entity])
 
     assert "[1] entity_id=a1b2c3d4" in block
     assert "[2] entity_id=e5f6g7h8" in block
@@ -153,9 +144,7 @@ def test_kg_block_no_subtype(no_subtype_entity):
     block = build_kg_context_block([no_subtype_entity])
 
     assert "type: metric" in block
-    assert "/" not in block.split("type: metric")[1].split(
-        "\n"
-    )[0]
+    assert "/" not in block.split("type: metric")[1].split("\n")[0]
 
 
 def test_kg_block_no_aliases():
@@ -186,9 +175,7 @@ def test_header_single(fed_resolved):
 
 
 def test_header_multiple(fed_resolved, powell_resolved):
-    header = _build_running_entity_header(
-        [fed_resolved, powell_resolved]
-    )
+    header = _build_running_entity_header([fed_resolved, powell_resolved])
 
     assert "- the Fed (id=a1b2c3d4)" in header
     assert "- Jerome Powell (id=e5f6g7h8)" in header
@@ -200,15 +187,9 @@ def test_header_deduplicates(fed_resolved):
         surface_form="Federal Reserve",
         context_snippet="...Federal Reserve...",
     )
-    header = _build_running_entity_header(
-        [fed_resolved, dup]
-    )
+    header = _build_running_entity_header([fed_resolved, dup])
 
-    lines = [
-        line
-        for line in header.splitlines()
-        if line.startswith("- ")
-    ]
+    lines = [line for line in header.splitlines() if line.startswith("- ")]
     assert len(lines) == 1
 
 
@@ -246,9 +227,7 @@ def test_user_prompt_with_prev_entities(fed_resolved):
     assert "TEXT:\nSecond chunk." in prompt
 
 
-def test_user_prompt_all_sections(
-    fed_entity, fed_resolved
-):
+def test_user_prompt_all_sections(fed_entity, fed_resolved):
     block = build_kg_context_block([fed_entity])
     prompt = build_pass1_user_prompt(
         kg_block=block,
@@ -306,6 +285,12 @@ def test_pass2_system_prompt_mentions_source_target():
     assert "target" in PASS2_SYSTEM_PROMPT
 
 
+def test_pass2_system_prompt_mentions_confidence():
+    """The confidence field must be in the schema so the
+    LLM knows to score each relationship."""
+    assert "confidence" in PASS2_SYSTEM_PROMPT
+
+
 # -- build_entity_list_block --
 
 
@@ -321,12 +306,8 @@ def test_entity_block_single(fed_resolved):
     assert "id=a1b2c3d4" in block
 
 
-def test_entity_block_multiple(
-    fed_resolved, powell_resolved
-):
-    block = build_entity_list_block(
-        [fed_resolved, powell_resolved]
-    )
+def test_entity_block_multiple(fed_resolved, powell_resolved):
+    block = build_entity_list_block([fed_resolved, powell_resolved])
     assert "the Fed" in block
     assert "Jerome Powell" in block
 
@@ -337,14 +318,8 @@ def test_entity_block_deduplicates(fed_resolved):
         surface_form="Federal Reserve",
         context_snippet="...",
     )
-    block = build_entity_list_block(
-        [fed_resolved, dup]
-    )
-    lines = [
-        line
-        for line in block.splitlines()
-        if line.startswith("- ")
-    ]
+    block = build_entity_list_block([fed_resolved, dup])
+    lines = [line for line in block.splitlines() if line.startswith("- ")]
     assert len(lines) == 1
 
 
@@ -354,9 +329,7 @@ def test_entity_block_with_proposals(fed_resolved):
         entity_type=EntityType.METRIC,
         description="Consumer Price Index",
     )
-    block = build_entity_list_block(
-        [fed_resolved], [proposal]
-    )
+    block = build_entity_list_block([fed_resolved], [proposal])
     assert "CPI" in block
     assert "NEW" in block
     assert "metric" in block
@@ -371,9 +344,7 @@ def test_entity_block_proposal_with_subtype(
         subtype="inflation",
         description="Consumer Price Index",
     )
-    block = build_entity_list_block(
-        [fed_resolved], [proposal]
-    )
+    block = build_entity_list_block([fed_resolved], [proposal])
     assert "metric / inflation" in block
 
 

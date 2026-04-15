@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS relationships (
     valid_until      TEXT,
     document_id      TEXT,
     discovered_at    TEXT,
+    confidence       REAL,
     PRIMARY KEY (
         source_id, target_id,
         relation_type, valid_from
@@ -308,6 +309,13 @@ class KnowledgeStore(
         if "run_id" not in cols:
             self._conn.execute(
                 "ALTER TABLE relationships ADD COLUMN run_id TEXT"
+            )
+        if "confidence" not in cols:
+            # v0.45.0: optional LLM-reported extraction
+            # confidence. REAL + nullable keeps prior rows
+            # valid — NULL means "not scored".
+            self._conn.execute(
+                "ALTER TABLE relationships ADD COLUMN confidence REAL"
             )
         # v0.11.29: coalesce NULL valid_from to "" so
         # the PK dedup works (NULL != NULL in SQLite).

@@ -126,9 +126,7 @@ def test_parse_empty_entities():
 
 def test_parse_resolved_entity():
     raw = wrap_entities([make_resolved_entry()])
-    resolved, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    resolved, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert len(resolved) == 1
     assert isinstance(resolved[0], ResolvedMention)
@@ -139,9 +137,7 @@ def test_parse_resolved_entity():
 
 def test_parse_new_entity():
     raw = wrap_entities([make_new_entry()])
-    resolved, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    resolved, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert resolved == ()
     assert len(proposals) == 1
@@ -149,19 +145,13 @@ def test_parse_new_entity():
     assert proposals[0].canonical_name == "Jerome Powell"
     assert proposals[0].entity_type == EntityType.PERSON
     assert proposals[0].subtype == "policymaker"
-    assert proposals[0].description == (
-        "Chair of the Federal Reserve."
-    )
+    assert proposals[0].description == ("Chair of the Federal Reserve.")
     assert "Powell" in proposals[0].aliases
 
 
 def test_parse_mixed_response():
-    raw = wrap_entities(
-        [make_resolved_entry(), make_new_entry()]
-    )
-    resolved, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    raw = wrap_entities([make_resolved_entry(), make_new_entry()])
+    resolved, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert len(resolved) == 1
     assert len(proposals) == 1
@@ -170,9 +160,7 @@ def test_parse_mixed_response():
 def test_parse_new_entity_type_case_insensitive():
     entry = make_new_entry(entity_type="PERSON")
     raw = wrap_entities([entry])
-    _, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    _, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert proposals[0].entity_type == EntityType.PERSON
 
@@ -181,33 +169,25 @@ def test_parse_new_entity_no_subtype():
     entry = make_new_entry(subtype=None)
     entry["new_entity"]["subtype"] = None
     raw = wrap_entities([entry])
-    _, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    _, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert proposals[0].subtype is None
 
 
 def test_parse_chunk_index_propagated():
     raw = wrap_entities([make_new_entry()])
-    _, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS, chunk_index=3
-    )
+    _, proposals = parse_pass1_response(raw, CANDIDATE_IDS, chunk_index=3)
 
     assert proposals[0].source_chunk == 3
 
 
 def test_parse_context_snippet_on_proposal():
-    raw = wrap_entities([make_new_entry(
-        context_snippet="...surrounding text..."
-    )])
-    _, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
+    raw = wrap_entities(
+        [make_new_entry(context_snippet="...surrounding text...")]
     )
+    _, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
-    assert proposals[0].context_snippet == (
-        "...surrounding text..."
-    )
+    assert proposals[0].context_snippet == ("...surrounding text...")
 
 
 def test_parse_multiple_resolved():
@@ -219,9 +199,7 @@ def test_parse_multiple_resolved():
         ),
     ]
     raw = wrap_entities(entries)
-    resolved, _ = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    resolved, _ = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert len(resolved) == 2
 
@@ -229,9 +207,7 @@ def test_parse_multiple_resolved():
 def test_parse_filters_empty_aliases():
     entry = make_new_entry(aliases=["Good", "", "Fine"])
     raw = wrap_entities([entry])
-    _, proposals = parse_pass1_response(
-        raw, CANDIDATE_IDS
-    )
+    _, proposals = parse_pass1_response(raw, CANDIDATE_IDS)
 
     assert proposals[0].aliases == ("Good", "Fine")
 
@@ -245,9 +221,7 @@ def test_rule1_missing_entities_key():
 
 
 def test_rule1_entities_not_array():
-    with pytest.raises(
-        Pass1ValidationError, match="must be an array"
-    ):
+    with pytest.raises(Pass1ValidationError, match="must be an array"):
         parse_pass1_response(
             '{"entities": "not an array"}',
             CANDIDATE_IDS,
@@ -255,26 +229,18 @@ def test_rule1_entities_not_array():
 
 
 def test_rule1_invalid_json():
-    with pytest.raises(
-        Pass1ValidationError, match="Invalid JSON"
-    ):
-        parse_pass1_response(
-            "not json at all", CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="Invalid JSON"):
+        parse_pass1_response("not json at all", CANDIDATE_IDS)
 
 
 def test_rule1_not_a_json_object():
-    with pytest.raises(
-        Pass1ValidationError, match="Expected a JSON object"
-    ):
+    with pytest.raises(Pass1ValidationError, match="Expected a JSON object"):
         parse_pass1_response("[1, 2, 3]", CANDIDATE_IDS)
 
 
 def test_rule1_entity_not_a_dict():
     raw = json.dumps({"entities": ["not a dict"]})
-    with pytest.raises(
-        Pass1ValidationError, match="expected an object"
-    ):
+    with pytest.raises(Pass1ValidationError, match="expected an object"):
         parse_pass1_response(raw, CANDIDATE_IDS)
 
 
@@ -284,33 +250,21 @@ def test_rule1_entity_not_a_dict():
 def test_rule2_missing_surface_form():
     entry = make_resolved_entry()
     del entry["surface_form"]
-    with pytest.raises(
-        Pass1ValidationError, match="surface_form"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="surface_form"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule2_missing_context_snippet():
     entry = make_resolved_entry()
     del entry["context_snippet"]
-    with pytest.raises(
-        Pass1ValidationError, match="context_snippet"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="context_snippet"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule2_empty_surface_form():
     entry = make_resolved_entry(surface_form="")
-    with pytest.raises(
-        Pass1ValidationError, match="surface_form"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="surface_form"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 # -- Rule 3: exactly one of entity_id / new_entity ------
@@ -324,12 +278,8 @@ def test_rule3_both_present():
         "description": "Y",
         "aliases": [],
     }
-    with pytest.raises(
-        Pass1ValidationError, match="got both"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="got both"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule3_neither_present():
@@ -339,12 +289,8 @@ def test_rule3_neither_present():
         "new_entity": None,
         "context_snippet": "...test...",
     }
-    with pytest.raises(
-        Pass1ValidationError, match="got neither"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="got neither"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule3_empty_entity_id_and_no_new():
@@ -354,12 +300,8 @@ def test_rule3_empty_entity_id_and_no_new():
         "new_entity": None,
         "context_snippet": "...test...",
     }
-    with pytest.raises(
-        Pass1ValidationError, match="got neither"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="got neither"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 # -- Rule 4: valid EntityType ---------------------------
@@ -367,34 +309,22 @@ def test_rule3_empty_entity_id_and_no_new():
 
 def test_rule4_invalid_entity_type():
     entry = make_new_entry(entity_type="dinosaur")
-    with pytest.raises(
-        Pass1ValidationError, match="not a valid entity type"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="not a valid entity type"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule4_missing_canonical_name():
     entry = make_new_entry()
     del entry["new_entity"]["canonical_name"]
-    with pytest.raises(
-        Pass1ValidationError, match="canonical_name"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="canonical_name"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule4_missing_description():
     entry = make_new_entry()
     del entry["new_entity"]["description"]
-    with pytest.raises(
-        Pass1ValidationError, match="description"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    with pytest.raises(Pass1ValidationError, match="description"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule4_aliases_not_array():
@@ -403,43 +333,29 @@ def test_rule4_aliases_not_array():
     with pytest.raises(
         Pass1ValidationError, match="aliases.*must be an array"
     ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 # -- Rule 5: entity_id in candidate set -----------------
 
 
 def test_rule5_hallucinated_id():
-    entry = make_resolved_entry(
-        entity_id="not_a_real_id"
-    )
-    with pytest.raises(
-        Pass1ValidationError, match="not in the candidate"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), CANDIDATE_IDS
-        )
+    entry = make_resolved_entry(entity_id="not_a_real_id")
+    with pytest.raises(Pass1ValidationError, match="not in the candidate"):
+        parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
 
 def test_rule5_valid_id_accepted():
     entry = make_resolved_entry(entity_id="a1b2c3d4")
-    resolved, _ = parse_pass1_response(
-        wrap_entities([entry]), CANDIDATE_IDS
-    )
+    resolved, _ = parse_pass1_response(wrap_entities([entry]), CANDIDATE_IDS)
 
     assert resolved[0].entity_id == "a1b2c3d4"
 
 
 def test_rule5_empty_candidate_set_rejects_any_id():
     entry = make_resolved_entry(entity_id="a1b2c3d4")
-    with pytest.raises(
-        Pass1ValidationError, match="not in the candidate"
-    ):
-        parse_pass1_response(
-            wrap_entities([entry]), set()
-        )
+    with pytest.raises(Pass1ValidationError, match="not in the candidate"):
+        parse_pass1_response(wrap_entities([entry]), set())
 
 
 # ====================================================
@@ -478,9 +394,7 @@ def _rel(
 
 
 def test_p2_parse_empty_relationships():
-    result = parse_pass2_response(
-        _wrap_rels([]), KNOWN_IDS_P2, NAME_TO_ID_P2
-    )
+    result = parse_pass2_response(_wrap_rels([]), KNOWN_IDS_P2, NAME_TO_ID_P2)
     assert result == ()
 
 
@@ -534,9 +448,7 @@ def test_p2_parse_multiple():
 
 def test_p2_full_date():
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(valid_from="2024-03-20")]
-        ),
+        _wrap_rels([_rel(valid_from="2024-03-20")]),
         KNOWN_IDS_P2,
         NAME_TO_ID_P2,
     )
@@ -569,9 +481,7 @@ def test_p2_partial_date_year_only():
 
 def test_p2_bad_date_becomes_none():
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(valid_from="not-a-date")]
-        ),
+        _wrap_rels([_rel(valid_from="not-a-date")]),
         KNOWN_IDS_P2,
         NAME_TO_ID_P2,
     )
@@ -592,9 +502,7 @@ def test_p2_null_date_stays_none():
 
 def test_p2_unresolvable_source_dropped():
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(source="nonexistent")]
-        ),
+        _wrap_rels([_rel(source="nonexistent")]),
         KNOWN_IDS_P2,
         NAME_TO_ID_P2,
     )
@@ -603,9 +511,7 @@ def test_p2_unresolvable_source_dropped():
 
 def test_p2_unresolvable_target_dropped():
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(target="nonexistent")]
-        ),
+        _wrap_rels([_rel(target="nonexistent")]),
         KNOWN_IDS_P2,
         NAME_TO_ID_P2,
     )
@@ -614,9 +520,7 @@ def test_p2_unresolvable_target_dropped():
 
 def test_p2_self_ref_dropped():
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(source="id-fed", target="id-fed")]
-        ),
+        _wrap_rels([_rel(source="id-fed", target="id-fed")]),
         KNOWN_IDS_P2,
         NAME_TO_ID_P2,
     )
@@ -643,9 +547,7 @@ def test_p2_self_ref_by_name_dropped():
 
 
 def test_p2_rule1_missing_relationships_key():
-    with pytest.raises(
-        Pass2ValidationError, match="relationships"
-    ):
+    with pytest.raises(Pass2ValidationError, match="relationships"):
         parse_pass2_response(
             '{"entities": []}',
             KNOWN_IDS_P2,
@@ -654,9 +556,7 @@ def test_p2_rule1_missing_relationships_key():
 
 
 def test_p2_rule1_relationships_not_array():
-    with pytest.raises(
-        Pass2ValidationError, match="array"
-    ):
+    with pytest.raises(Pass2ValidationError, match="array"):
         parse_pass2_response(
             '{"relationships": "nope"}',
             KNOWN_IDS_P2,
@@ -665,29 +565,19 @@ def test_p2_rule1_relationships_not_array():
 
 
 def test_p2_rule1_invalid_json():
-    with pytest.raises(
-        Pass2ValidationError, match="Invalid JSON"
-    ):
-        parse_pass2_response(
-            "not json", KNOWN_IDS_P2, NAME_TO_ID_P2
-        )
+    with pytest.raises(Pass2ValidationError, match="Invalid JSON"):
+        parse_pass2_response("not json", KNOWN_IDS_P2, NAME_TO_ID_P2)
 
 
 def test_p2_rule1_not_object():
-    with pytest.raises(
-        Pass2ValidationError, match="JSON object"
-    ):
-        parse_pass2_response(
-            "[1, 2]", KNOWN_IDS_P2, NAME_TO_ID_P2
-        )
+    with pytest.raises(Pass2ValidationError, match="JSON object"):
+        parse_pass2_response("[1, 2]", KNOWN_IDS_P2, NAME_TO_ID_P2)
 
 
 def test_p2_rule2_missing_source():
     entry = _rel()
     del entry["source"]
-    with pytest.raises(
-        Pass2ValidationError, match="source"
-    ):
+    with pytest.raises(Pass2ValidationError, match="source"):
         parse_pass2_response(
             _wrap_rels([entry]),
             KNOWN_IDS_P2,
@@ -698,9 +588,7 @@ def test_p2_rule2_missing_source():
 def test_p2_rule2_missing_target():
     entry = _rel()
     del entry["target"]
-    with pytest.raises(
-        Pass2ValidationError, match="target"
-    ):
+    with pytest.raises(Pass2ValidationError, match="target"):
         parse_pass2_response(
             _wrap_rels([entry]),
             KNOWN_IDS_P2,
@@ -711,9 +599,7 @@ def test_p2_rule2_missing_target():
 def test_p2_rule2_missing_relation_type():
     entry = _rel()
     del entry["relation_type"]
-    with pytest.raises(
-        Pass2ValidationError, match="relation_type"
-    ):
+    with pytest.raises(Pass2ValidationError, match="relation_type"):
         parse_pass2_response(
             _wrap_rels([entry]),
             KNOWN_IDS_P2,
@@ -724,9 +610,7 @@ def test_p2_rule2_missing_relation_type():
 def test_p2_rule2_missing_context_snippet():
     entry = _rel()
     del entry["context_snippet"]
-    with pytest.raises(
-        Pass2ValidationError, match="context_snippet"
-    ):
+    with pytest.raises(Pass2ValidationError, match="context_snippet"):
         parse_pass2_response(
             _wrap_rels([entry]),
             KNOWN_IDS_P2,
@@ -735,9 +619,7 @@ def test_p2_rule2_missing_context_snippet():
 
 
 def test_p2_rule2_entry_not_object():
-    with pytest.raises(
-        Pass2ValidationError, match="expected an object"
-    ):
+    with pytest.raises(Pass2ValidationError, match="expected an object"):
         parse_pass2_response(
             '{"relationships": ["not_an_object"]}',
             KNOWN_IDS_P2,
@@ -755,9 +637,7 @@ def test_p2_qualifier_resolved():
         "Chair": "id-chair",
     }
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(qualifier="id-chair")]
-        ),
+        _wrap_rels([_rel(qualifier="id-chair")]),
         known,
         names,
     )
@@ -766,9 +646,7 @@ def test_p2_qualifier_resolved():
 
 def test_p2_qualifier_unresolvable_is_none():
     result = parse_pass2_response(
-        _wrap_rels(
-            [_rel(qualifier="nonexistent")]
-        ),
+        _wrap_rels([_rel(qualifier="nonexistent")]),
         KNOWN_IDS_P2,
         NAME_TO_ID_P2,
     )
@@ -782,3 +660,57 @@ def test_p2_qualifier_null_is_none():
         NAME_TO_ID_P2,
     )
     assert result[0].qualifier_id is None
+
+
+# -- Pass 2: confidence parsing --
+
+
+def test_p2_confidence_in_range_kept():
+    result = parse_pass2_response(
+        _wrap_rels([_rel(confidence=0.8)]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].confidence == 0.8
+
+
+def test_p2_confidence_missing_is_none():
+    """Relationship without `confidence` → None."""
+    result = parse_pass2_response(
+        _wrap_rels([_rel()]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].confidence is None
+
+
+def test_p2_confidence_out_of_range_is_clamped():
+    over = parse_pass2_response(
+        _wrap_rels([_rel(confidence=1.5)]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    under = parse_pass2_response(
+        _wrap_rels([_rel(confidence=-0.2)]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert over[0].confidence == 1.0
+    assert under[0].confidence == 0.0
+
+
+def test_p2_confidence_non_numeric_is_none():
+    """Strings or booleans → None so invalid LLM output
+    does not contaminate the metric."""
+    result = parse_pass2_response(
+        _wrap_rels([_rel(confidence="very high")]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert result[0].confidence is None
+    bool_result = parse_pass2_response(
+        _wrap_rels([_rel(confidence=True)]),
+        KNOWN_IDS_P2,
+        NAME_TO_ID_P2,
+    )
+    assert bool_result[0].confidence is None

@@ -6,6 +6,7 @@ into :class:`~unstructured_mapping.knowledge_graph.storage.KnowledgeStore`.
 """
 
 import sqlite3
+from datetime import datetime
 
 from unstructured_mapping.knowledge_graph._helpers import (
     REL_SELECT,
@@ -54,9 +55,9 @@ class RelationshipMixin:
             "description, qualifier_id, "
             "relation_kind_id, valid_from, "
             "valid_until, document_id, "
-            "discovered_at, run_id)"
+            "discovered_at, run_id, confidence)"
             " VALUES "
-            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 relationship.source_id,
                 relationship.target_id,
@@ -64,19 +65,17 @@ class RelationshipMixin:
                 relationship.description,
                 relationship.qualifier_id,
                 relationship.relation_kind_id,
-                dt_to_iso(relationship.valid_from)
-                or "",
+                dt_to_iso(relationship.valid_from) or "",
                 dt_to_iso(relationship.valid_until),
                 relationship.document_id,
                 dt_to_iso(relationship.discovered_at),
                 relationship.run_id,
+                relationship.confidence,
             ),
         )
         inserted = self._conn.total_changes - before
         if inserted > 0:
-            self._log_relationship(
-                relationship, "create", reason
-            )
+            self._log_relationship(relationship, "create", reason)
         self._commit()
 
     def save_relationships(
@@ -152,9 +151,9 @@ class RelationshipMixin:
             "description, qualifier_id, "
             "relation_kind_id, valid_from, "
             "valid_until, document_id, "
-            "discovered_at, run_id) "
+            "discovered_at, run_id, confidence) "
             "VALUES "
-            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 (
                     r.source_id,
@@ -168,14 +167,13 @@ class RelationshipMixin:
                     r.document_id,
                     dt_to_iso(r.discovered_at),
                     r.run_id,
+                    r.confidence,
                 )
                 for r in new_rels
             ],
         )
         for rel in new_rels:
-            self._log_relationship(
-                rel, "create", reason
-            )
+            self._log_relationship(rel, "create", reason)
         self._commit()
         return len(new_rels)
 
@@ -200,17 +198,13 @@ class RelationshipMixin:
                 REL_SELECT + "WHERE source_id = ?",
                 (entity_id,),
             ).fetchall()
-            results.extend(
-                row_to_relationship(r) for r in rows
-            )
+            results.extend(row_to_relationship(r) for r in rows)
         if as_target:
             rows = self._conn.execute(
                 REL_SELECT + "WHERE target_id = ?",
                 (entity_id,),
             ).fetchall()
-            results.extend(
-                row_to_relationship(r) for r in rows
-            )
+            results.extend(row_to_relationship(r) for r in rows)
         return results
 
     def get_relationships_between(
@@ -230,16 +224,12 @@ class RelationshipMixin:
         :return: Matching relationships.
         """
         rows = self._conn.execute(
-            REL_SELECT
-            + "WHERE source_id = ? "
-            "AND target_id = ?",
+            REL_SELECT + "WHERE source_id = ? AND target_id = ?",
             (source_id, target_id),
         ).fetchall()
         return [row_to_relationship(r) for r in rows]
 
-    def find_by_qualifier(
-        self, qualifier_id: str
-    ) -> list[Relationship]:
+    def find_by_qualifier(self, qualifier_id: str) -> list[Relationship]:
         """Find relationships with a given qualifier.
 
         Typically used to find all relationships qualified
@@ -267,8 +257,7 @@ class RelationshipMixin:
         :return: Matching relationships.
         """
         rows = self._conn.execute(
-            REL_SELECT
-            + "WHERE relation_kind_id = ?",
+            REL_SELECT + "WHERE relation_kind_id = ?",
             (relation_kind_id,),
         ).fetchall()
         return [row_to_relationship(r) for r in rows]
@@ -286,11 +275,79 @@ class RelationshipMixin:
         :return: Matching relationships.
         """
         rows = self._conn.execute(
-            REL_SELECT
-            + "WHERE relation_type = ?",
+            REL_SELECT + "WHERE relation_type = ?",
             (relation_type,),
         ).fetchall()
         return [row_to_relationship(r) for r in rows]
+
+    def find_relationships(
+        self,
+        entity_id: str,
+        *,
+        as_source: bool = True,
+        as_target: bool = True,
+        at: datetime | None = None,
+        min_confidence: float | None = None,
+    ) -> list[Relationship]:
+        """Fetch relationships with temporal / confidence
+        filters.
+
+        Generalises :meth:`get_relationships` and
+        :meth:`find_active_relationships`: when neither
+        filter is supplied the result matches
+        :meth:`get_relationships`; when ``at`` is set,
+        only rows that were in force at that instant
+        survive (``valid_from <= at`` and
+        ``valid_until IS NULL`` or ``valid_until >= at``);
+        when ``min_confidence`` is set, rows with a lower
+        or missing confidence score are dropped.
+
+        :param entity_id: Entity to match on source or
+            target.
+        :param as_source: Include rows where this is the
+            source.
+        :param as_target: Include rows where this is the
+            target.
+        :param at: Temporal cut — ``None`` for "no
+            temporal filter". Missing ``valid_from``
+            values (stored as ``""``) are treated as
+            "unbounded on the left" and always pass.
+        :param min_confidence: Drop rows whose
+            ``confidence`` is below this threshold or
+            ``NULL``. ``None`` disables the filter.
+        :return: Matching relationships.
+        """
+        clauses: list[str] = []
+        params: list[object] = []
+        if at is not None:
+            at_iso = dt_to_iso(at)
+            clauses.append(
+                "(valid_from IS NULL OR valid_from = '' OR valid_from <= ?)"
+            )
+            params.append(at_iso)
+            clauses.append(
+                "(valid_until IS NULL "
+                "OR valid_until = '' "
+                "OR valid_until >= ?)"
+            )
+            params.append(at_iso)
+        if min_confidence is not None:
+            clauses.append("confidence IS NOT NULL AND confidence >= ?")
+            params.append(min_confidence)
+        extra = " AND " + " AND ".join(clauses) if clauses else ""
+        results: list[Relationship] = []
+        for col, include in (
+            ("source_id", as_source),
+            ("target_id", as_target),
+        ):
+            if not include:
+                continue
+            rows = self._conn.execute(
+                REL_SELECT + f"WHERE {col} = ?" + extra,
+                (entity_id, *params),
+            ).fetchall()
+            results.extend(row_to_relationship(r) for r in rows)
+        return results
 
     def find_active_relationships(
         self,
@@ -321,16 +378,13 @@ class RelationshipMixin:
             if not include:
                 continue
             rows = self._conn.execute(
-                REL_SELECT
-                + f"WHERE {col} = ? "
+                REL_SELECT + f"WHERE {col} = ? "
                 "AND (valid_until IS NULL "
                 "OR valid_until = '' "
                 "OR valid_until > ?)",
                 (entity_id, now),
             ).fetchall()
-            results.extend(
-                row_to_relationship(r) for r in rows
-            )
+            results.extend(row_to_relationship(r) for r in rows)
         return results
 
     # -- History queries --
@@ -358,9 +412,7 @@ class RelationshipMixin:
             "ORDER BY history_id",
             (entity_id, entity_id),
         ).fetchall()
-        return [
-            row_to_relationship_rev(r) for r in rows
-        ]
+        return [row_to_relationship_rev(r) for r in rows]
 
     # -- Internal helpers --
 

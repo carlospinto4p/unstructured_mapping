@@ -71,15 +71,10 @@ def _parse_json(
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as exc:
-        raise error_cls(
-            f"Invalid JSON: {exc.args[0]}"
-        ) from exc
+        raise error_cls(f"Invalid JSON: {exc.args[0]}") from exc
 
     if not isinstance(data, dict):
-        raise error_cls(
-            "Expected a JSON object, got "
-            f"{type(data).__name__}."
-        )
+        raise error_cls(f"Expected a JSON object, got {type(data).__name__}.")
     return data
 
 
@@ -93,20 +88,15 @@ def _validate_entities_array(data: dict) -> list[dict]:
     """
     entities = data.get("entities")
     if entities is None:
-        raise Pass1ValidationError(
-            'Missing required key "entities".'
-        )
+        raise Pass1ValidationError('Missing required key "entities".')
     if not isinstance(entities, list):
         raise Pass1ValidationError(
-            '"entities" must be an array, got '
-            f"{type(entities).__name__}."
+            f'"entities" must be an array, got {type(entities).__name__}.'
         )
     return entities
 
 
-def _validate_required_fields(
-    entry: dict, index: int
-) -> None:
+def _validate_required_fields(entry: dict, index: int) -> None:
     """Rule 2: each entry needs surface_form + snippet.
 
     :param entry: A single entity entry.
@@ -124,9 +114,7 @@ def _validate_required_fields(
             )
 
 
-def _validate_exactly_one_of(
-    entry: dict, index: int
-) -> None:
+def _validate_exactly_one_of(entry: dict, index: int) -> None:
     """Rule 3: exactly one of entity_id or new_entity.
 
     :param entry: A single entity entry.
@@ -135,12 +123,10 @@ def _validate_exactly_one_of(
         present.
     """
     has_id = (
-        entry.get("entity_id") is not None
-        and entry.get("entity_id") != ""
+        entry.get("entity_id") is not None and entry.get("entity_id") != ""
     )
     has_new = (
-        entry.get("new_entity") is not None
-        and entry.get("new_entity") != {}
+        entry.get("new_entity") is not None and entry.get("new_entity") != {}
     )
 
     if has_id and has_new:
@@ -156,9 +142,7 @@ def _validate_exactly_one_of(
         )
 
 
-def _validate_new_entity(
-    new_entity: dict, index: int
-) -> EntityType:
+def _validate_new_entity(new_entity: dict, index: int) -> EntityType:
     """Rule 4: new_entity fields + valid EntityType.
 
     :param new_entity: The ``new_entity`` object.
@@ -183,8 +167,7 @@ def _validate_new_entity(
     aliases = new_entity.get("aliases")
     if not isinstance(aliases, list):
         raise Pass1ValidationError(
-            f"Entity [{index}].new_entity: "
-            f'"aliases" must be an array.'
+            f'Entity [{index}].new_entity: "aliases" must be an array.'
         )
 
     raw_type = new_entity["entity_type"].strip().lower()
@@ -273,9 +256,7 @@ def parse_pass1_response(
         context_snippet = entry["context_snippet"]
 
         if entity_id is not None and entity_id != "":
-            _validate_entity_id(
-                entity_id, candidate_ids, idx
-            )
+            _validate_entity_id(entity_id, candidate_ids, idx)
             resolved.append(
                 ResolvedMention(
                     entity_id=entity_id,
@@ -284,13 +265,9 @@ def parse_pass1_response(
                 )
             )
         else:
-            entity_type = _validate_new_entity(
-                new_entity, idx
-            )
+            entity_type = _validate_new_entity(new_entity, idx)
             subtype = new_entity.get("subtype")
-            if subtype is not None and not isinstance(
-                subtype, str
-            ):
+            if subtype is not None and not isinstance(subtype, str):
                 subtype = None
             aliases = tuple(
                 a
@@ -299,9 +276,7 @@ def parse_pass1_response(
             )
             proposals.append(
                 EntityProposal(
-                    canonical_name=new_entity[
-                        "canonical_name"
-                    ],
+                    canonical_name=new_entity["canonical_name"],
                     entity_type=entity_type,
                     description=new_entity["description"],
                     subtype=subtype if subtype else None,
@@ -347,6 +322,28 @@ def _parse_date(value: object) -> datetime | None:
             continue
     logger.warning("Unparseable date %r, setting None", text)
     return None
+
+
+def _parse_confidence(value: object) -> float | None:
+    """Clamp an LLM-reported confidence to ``[0, 1]``.
+
+    Returns ``None`` for missing, null, or non-numeric
+    values — the relationship survives, only the score
+    is dropped. Out-of-range numbers are clamped rather
+    than rejected because the field is advisory; a
+    relationship the LLM flagged as "1.2 confident"
+    clearly means "as confident as possible" and dropping
+    it would lose signal.
+    """
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        # bool is a subclass of int; reject explicitly so
+        # `True` / `False` don't silently become 1.0 / 0.0.
+        return None
+    if not isinstance(value, (int, float)):
+        return None
+    return max(0.0, min(1.0, float(value)))
 
 
 def _resolve_ref(
@@ -414,25 +411,19 @@ def parse_pass2_response(
         source_ref = entry["source"]
         target_ref = entry["target"]
 
-        source_id = _resolve_ref(
-            source_ref, known_ids, name_to_id
-        )
+        source_id = _resolve_ref(source_ref, known_ids, name_to_id)
         if source_id is None:
             logger.warning(
-                "Relationship [%d]: unresolvable "
-                "source %r, dropping",
+                "Relationship [%d]: unresolvable source %r, dropping",
                 idx,
                 source_ref,
             )
             continue
 
-        target_id = _resolve_ref(
-            target_ref, known_ids, name_to_id
-        )
+        target_id = _resolve_ref(target_ref, known_ids, name_to_id)
         if target_id is None:
             logger.warning(
-                "Relationship [%d]: unresolvable "
-                "target %r, dropping",
+                "Relationship [%d]: unresolvable target %r, dropping",
                 idx,
                 target_ref,
             )
@@ -449,12 +440,8 @@ def parse_pass2_response(
 
         qualifier = entry.get("qualifier")
         qualifier_id: str | None = None
-        if qualifier is not None and isinstance(
-            qualifier, str
-        ):
-            qualifier_id = _resolve_ref(
-                qualifier, known_ids, name_to_id
-            )
+        if qualifier is not None and isinstance(qualifier, str):
+            qualifier_id = _resolve_ref(qualifier, known_ids, name_to_id)
 
         results.append(
             ExtractedRelationship(
@@ -462,20 +449,14 @@ def parse_pass2_response(
                 target_id=target_id,
                 relation_type=entry["relation_type"],
                 qualifier_id=qualifier_id,
-                valid_from=_parse_date(
-                    entry.get("valid_from")
-                ),
-                valid_until=_parse_date(
-                    entry.get("valid_until")
-                ),
-                context_snippet=entry[
-                    "context_snippet"
-                ],
+                valid_from=_parse_date(entry.get("valid_from")),
+                valid_until=_parse_date(entry.get("valid_until")),
+                context_snippet=entry["context_snippet"],
+                confidence=_parse_confidence(entry.get("confidence")),
             )
         )
 
     return tuple(results)
-
 
 
 def _validate_relationships_array(
@@ -488,20 +469,15 @@ def _validate_relationships_array(
     """
     rels = data.get("relationships")
     if rels is None:
-        raise Pass2ValidationError(
-            'Missing required key "relationships".'
-        )
+        raise Pass2ValidationError('Missing required key "relationships".')
     if not isinstance(rels, list):
         raise Pass2ValidationError(
-            '"relationships" must be an array, got '
-            f"{type(rels).__name__}."
+            f'"relationships" must be an array, got {type(rels).__name__}.'
         )
     return rels
 
 
-def _validate_pass2_required(
-    entry: dict, index: int
-) -> None:
+def _validate_pass2_required(entry: dict, index: int) -> None:
     """Rule 2: required fields on each relationship.
 
     :raises Pass2ValidationError: If required fields

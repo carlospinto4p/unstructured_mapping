@@ -952,6 +952,7 @@ class Pipeline:
                 document_id=doc_id,
                 discovered_at=detected_at,
                 run_id=run_id,
+                confidence=er.confidence,
             )
             for er in extracted
         ]

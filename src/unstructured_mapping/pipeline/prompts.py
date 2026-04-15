@@ -99,15 +99,11 @@ def build_kg_context_block(
         aliases_str = ", ".join(entity.aliases)
 
         lines.append(f"[{idx}] entity_id={entity.entity_id}")
-        lines.append(
-            f"    name: {entity.canonical_name}"
-        )
+        lines.append(f"    name: {entity.canonical_name}")
         lines.append(f"    type: {type_label}")
         if aliases_str:
             lines.append(f"    aliases: {aliases_str}")
-        lines.append(
-            f"    description: {entity.description}"
-        )
+        lines.append(f"    description: {entity.description}")
         lines.append("")
 
     return "\n".join(lines)
@@ -139,9 +135,7 @@ def _build_running_entity_header(
 
     lines: list[str] = ["PREVIOUSLY RESOLVED ENTITIES:"]
     for rm in seen.values():
-        lines.append(
-            f"- {rm.surface_form} (id={rm.entity_id})"
-        )
+        lines.append(f"- {rm.surface_form} (id={rm.entity_id})")
 
     return "\n".join(lines)
 
@@ -195,6 +189,7 @@ Output a single JSON object with this schema:
       "qualifier": null or "<entity ID or name>",
       "valid_from": null or "<ISO 8601 date>",
       "valid_until": null or "<ISO 8601 date>",
+      "confidence": null or <number between 0 and 1>,
       "context_snippet": "<~100 chars of surrounding text>"
     }
   ]
@@ -214,6 +209,10 @@ the relationship (e.g. "raised", "appointed", \
 n-ary qualification (e.g. a role entity).
 - `valid_from` and `valid_until` are optional ISO 8601 \
 dates (full or partial: "2024", "2024-03").
+- `confidence` is an optional score between 0 and 1 \
+reflecting how certain you are the relationship is \
+supported by the text; use `null` when you cannot \
+calibrate it.
 - `context_snippet` must be a short passage (~100 \
 characters) from the text surrounding the relationship.
 - Do not create self-referential relationships where \
@@ -251,18 +250,14 @@ def build_entity_list_block(
 
     lines: list[str] = ["ENTITIES IN THIS TEXT:", ""]
     for rm in seen.values():
-        lines.append(
-            f"- {rm.surface_form} "
-            f"(id={rm.entity_id})"
-        )
+        lines.append(f"- {rm.surface_form} (id={rm.entity_id})")
 
     for proposal in proposals:
         type_label = proposal.entity_type.value
         if proposal.subtype:
             type_label += f" / {proposal.subtype}"
         lines.append(
-            f"- {proposal.canonical_name} "
-            f"({type_label}, NEW — not yet in KG)"
+            f"- {proposal.canonical_name} ({type_label}, NEW — not yet in KG)"
         )
 
     return "\n".join(lines)

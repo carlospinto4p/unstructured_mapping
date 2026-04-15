@@ -176,6 +176,12 @@ class ExtractedRelationship:
         ``None`` if not mentioned or unparseable.
     :param context_snippet: ~100 chars of surrounding
         text from the source chunk.
+    :param confidence: LLM-reported confidence in the
+        extraction, clamped to [0.0, 1.0]. ``None`` when
+        the model did not supply a score — that is a
+        common case for earlier runs or when the prompt's
+        confidence field is not populated, so downstream
+        code must accept ``None``.
     """
 
     source_id: str
@@ -185,6 +191,7 @@ class ExtractedRelationship:
     valid_from: datetime | None = None
     valid_until: datetime | None = None
     context_snippet: str = ""
+    confidence: float | None = None
 
 
 @dataclass(frozen=True, slots=True)

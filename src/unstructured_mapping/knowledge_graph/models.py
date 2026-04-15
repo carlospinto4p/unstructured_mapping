@@ -195,6 +195,14 @@ class Relationship:
     :param run_id: Optional FK to ``ingestion_runs.run_id``.
         Links this record to the pipeline run that created
         it, replacing timestamp-based correlation.
+    :param confidence: LLM-reported confidence in the
+        relationship, clamped to [0.0, 1.0]. ``None`` when
+        the extractor did not report a score (e.g. older
+        runs, rule-based sources, or the LLM omitted the
+        field). Downstream filters (e.g.
+        ``find_relationships(min_confidence=...)``) use
+        this to drop weak extractions without re-reading
+        the source text.
     """
 
     source_id: str
@@ -208,6 +216,7 @@ class Relationship:
     document_id: str | None = None
     discovered_at: datetime | None = None
     run_id: str | None = None
+    confidence: float | None = None
 
 
 @dataclass(frozen=True, slots=True)

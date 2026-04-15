@@ -1,5 +1,25 @@
 ## Changelog
 
+### v0.45.0 - 15th April 2026
+
+- Added `confidence` qualifier on relationships:
+  - `knowledge_graph/models.py`: `Relationship.confidence: float | None`.
+  - `knowledge_graph/storage.py`: `relationships` table gained a nullable `confidence REAL` column; `_migrate_relationships` backfills older DBs.
+  - `knowledge_graph/_helpers.py`: `REL_SELECT` and `row_to_relationship` propagate the new column.
+  - `knowledge_graph/_relationship_mixin.py`: `save_relationship` / `save_relationships` persist `confidence`.
+  - `pipeline/models.py`: `ExtractedRelationship.confidence` surfaces the LLM-reported score.
+  - `pipeline/prompts.py`: `PASS2_SYSTEM_PROMPT` asks for optional `confidence` (0–1) per relationship.
+  - `pipeline/llm_parsers.py`: new `_parse_confidence` helper clamps to `[0, 1]`; non-numeric or missing values become `None`.
+  - `pipeline/orchestrator.py`: `_persist_relationships` threads `confidence` into persisted `Relationship` rows.
+- Added temporal + confidence query API:
+  - `knowledge_graph/_relationship_mixin.py`: new `find_relationships(entity_id, *, as_source, as_target, at=None, min_confidence=None)` combines a point-in-time filter with a confidence floor. `min_confidence` drops rows whose score is `NULL`.
+- Added unit tests:
+  - `tests/unit/test_kg_relationships.py`: `find_relationships` at-date filter, `min_confidence` drops unscored / low rows, `confidence` round-trips through save / get.
+  - `tests/unit/test_llm_parsers.py`: confidence in range, missing, out-of-range clamp, non-numeric → None.
+  - `tests/unit/test_prompts.py`: Pass 2 prompt mentions `confidence`.
+  - `tests/unit/test_extraction.py`: confidence passthrough from LLM response to `ExtractedRelationship`.
+
+
 ### v0.44.0 - 15th April 2026
 
 - Added cold-start benchmarking CLI:

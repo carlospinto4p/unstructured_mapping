@@ -44,7 +44,8 @@ REL_SELECT = (
     "SELECT source_id, target_id, relation_type, "
     "description, qualifier_id, relation_kind_id, "
     "valid_from, valid_until, document_id, "
-    "discovered_at, run_id FROM relationships "
+    "discovered_at, run_id, confidence "
+    "FROM relationships "
 )
 
 # -- Datetime utilities ------------------------------------------
@@ -118,6 +119,7 @@ def row_to_relationship(
         document_id=row["document_id"],
         discovered_at=iso_to_dt(row["discovered_at"]),
         run_id=row["run_id"],
+        confidence=row["confidence"],
     )
 
 
@@ -126,18 +128,12 @@ def row_to_entity_rev(
 ) -> EntityRevision:
     """Convert a ``sqlite3.Row`` to an EntityRevision."""
     aliases_raw = row["aliases"]
-    aliases = (
-        tuple(json.loads(aliases_raw))
-        if aliases_raw
-        else ()
-    )
+    aliases = tuple(json.loads(aliases_raw)) if aliases_raw else ()
     return EntityRevision(
         history_id=row["history_id"],
         entity_id=row["entity_id"],
         operation=row["operation"],
-        changed_at=datetime.fromisoformat(
-            row["changed_at"]
-        ),
+        changed_at=datetime.fromisoformat(row["changed_at"]),
         canonical_name=row["canonical_name"],
         entity_type=EntityType(row["entity_type"]),
         subtype=row["subtype"],
@@ -155,9 +151,7 @@ def row_to_run(row: sqlite3.Row) -> IngestionRun:
     """Convert a ``sqlite3.Row`` to an IngestionRun."""
     return IngestionRun(
         run_id=row["run_id"],
-        started_at=datetime.fromisoformat(
-            row["started_at"]
-        ),
+        started_at=datetime.fromisoformat(row["started_at"]),
         finished_at=iso_to_dt(row["finished_at"]),
         status=RunStatus(row["status"]),
         document_count=row["document_count"],
@@ -174,9 +168,7 @@ def row_to_relationship_rev(
     return RelationshipRevision(
         history_id=row["history_id"],
         operation=row["operation"],
-        changed_at=datetime.fromisoformat(
-            row["changed_at"]
-        ),
+        changed_at=datetime.fromisoformat(row["changed_at"]),
         source_id=row["source_id"],
         target_id=row["target_id"],
         relation_type=row["relation_type"],
