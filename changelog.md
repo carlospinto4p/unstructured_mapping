@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.47.0 - 15th April 2026
+
+- Added alias-collision audit CLI:
+  - `cli/audit_aliases.py`: wraps `validation.find_alias_collisions`, enriches each collision with per-entity mention counts, and ranks collisions by total prevalence. `--apply` merges same-type collisions into the most-mentioned entity with a per-collision `[y/N]` confirm prompt; `--auto-confirm` skips the prompt (requires `--apply`). Cross-type collisions are reported but never auto-proposed. `--min-mentions` filters out low-signal cases.
+- Added unit tests:
+  - `tests/unit/test_cli_audit_aliases.py`: 6 tests covering prevalence ranking, same-type vs cross-type merge-target selection, auto-confirm merges, interactive skip when the operator declines, and the `--auto-confirm requires --apply` guard.
+
+
 ### v0.46.0 - 15th April 2026
 
 - Added pipeline dry-run preview CLI:
