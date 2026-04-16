@@ -5,7 +5,7 @@
 - [x] **MEDIUM / Small** — Consolidate import summary logging. Done in v0.48.9: `log_import_summary` in `_seed_helpers.py`; seed, wikidata_seed, populate migrated.
 - [x] **MEDIUM / Small** — Extract the throwaway-KG copy idiom. Done in v0.48.9: `prepare_throwaway_kg` in `_db_helpers.py`; preview + benchmark migrated.
 - [x] **LOW / Small** — Hoist duplicated `DEFAULT_TIMEOUT`. Done in v0.48.9: shared constant lives in `llm_provider.py`; both providers import it.
-- [ ] **LOW / Small** — Drop the backwards-compat `_TYPE_HANDLERS = TYPE_REGISTRY` alias in `cli/wikidata_seed.py:68`. Migrate `tests/unit/test_wikidata_seed.py:51,133` to import `TYPE_REGISTRY` directly from `unstructured_mapping.wikidata`, then remove the alias and its comment.
+- [x] **LOW / Small** — Drop the `_TYPE_HANDLERS` alias. Done in v0.48.9: tests migrated to `TYPE_REGISTRY`; alias removed.
 
 
 ### 2026.04.16 (refactor review v0.48.1)

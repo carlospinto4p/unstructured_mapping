@@ -29,8 +29,8 @@ instead of bulk-dumping.
 
 New types plug in via three small additions — a SPARQL
 template in `wikidata/queries.py`, a mapper in
-`wikidata/mapper.py`, and an entry in the CLI's
-`_TYPE_HANDLERS` registry.
+`wikidata/mapper.py`, and an entry in
+`wikidata/registry.py::TYPE_REGISTRY`.
 
 **Deliberately excluded:**
 

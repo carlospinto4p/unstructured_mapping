@@ -61,13 +61,6 @@ from unstructured_mapping.wikidata import (
 
 logger = logging.getLogger(__name__)
 
-#: Canonical registry of supported ``--type`` values lives
-#: in ``wikidata.registry`` so non-CLI consumers (tests,
-#: scripts) can enumerate handlers without importing a CLI
-#: internal. Alias kept for backwards compatibility with
-#: existing tests that reach in by private name.
-_TYPE_HANDLERS = TYPE_REGISTRY
-
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
@@ -75,7 +68,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--type",
-        choices=sorted(_TYPE_HANDLERS),
+        choices=sorted(TYPE_REGISTRY),
         default="company",
         help="Entity category to import (default: company).",
     )
@@ -110,12 +103,13 @@ def _build_parser() -> argparse.ArgumentParser:
 def _fetch_mapped(kind: str, limit: int) -> list[MappedEntity]:
     """Fetch rows from Wikidata and map them to entities.
 
-    :param kind: One of the keys of :data:`_TYPE_HANDLERS`.
+    :param kind: One of the keys of
+        :data:`unstructured_mapping.wikidata.TYPE_REGISTRY`.
     :param limit: Row cap passed to the SPARQL query.
     :return: The mapped entities with ``None`` results
         (unlabelled rows etc.) filtered out.
     """
-    handler = _TYPE_HANDLERS[kind]
+    handler = TYPE_REGISTRY[kind]
     query = build_query(handler.query, limit=limit)
     with SparqlClient() as client:
         rows = client.query(query)

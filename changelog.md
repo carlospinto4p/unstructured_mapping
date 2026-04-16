@@ -13,6 +13,10 @@
 - Hoisted shared LLM provider defaults:
   - `pipeline/llm_provider.py`: exports `DEFAULT_TIMEOUT = 120.0`; concrete providers now import it rather than redeclaring.
   - `pipeline/llm_ollama.py` and `pipeline/llm_claude.py`: dropped the local `DEFAULT_TIMEOUT` constants. Provider-specific defaults (context window, max tokens) stay in their respective modules.
+- Dropped the backwards-compat `_TYPE_HANDLERS` alias:
+  - `cli/wikidata_seed.py`: references `TYPE_REGISTRY` directly; the alias and its rationale comment are gone.
+  - `tests/unit/test_wikidata_seed.py`: tests import `TYPE_REGISTRY` from `unstructured_mapping.wikidata`.
+  - `docs/seed/wikidata.md`: updated the "new types" instructions to point at `wikidata/registry.py::TYPE_REGISTRY`.
 
 
 ### v0.48.8 - 16th April 2026

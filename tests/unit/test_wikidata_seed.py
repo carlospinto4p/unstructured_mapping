@@ -11,6 +11,7 @@ from unstructured_mapping.knowledge_graph import (
     EntityType,
     KnowledgeStore,
 )
+from unstructured_mapping.wikidata import TYPE_REGISTRY
 from unstructured_mapping.wikidata.mapper import (
     MappedEntity,
 )
@@ -47,9 +48,7 @@ def test_build_query_rejects_non_positive_limit():
 
 
 def test_all_registered_types_build_valid_queries():
-    for kind, handler in (
-        wikidata_seed._TYPE_HANDLERS.items()
-    ):
+    for kind, handler in TYPE_REGISTRY.items():
         sparql = build_query(handler.query, limit=5)
         assert "LIMIT 5" in sparql, kind
         assert "?item" in sparql, kind
@@ -72,9 +71,7 @@ def test_queries_reference_expected_class_qids():
         queries.CRYPTO_QUERY: "Q13479982",
     }
     for template, qid in expected.items():
-        assert f"wd:{qid}" in template, (
-            f"template missing wd:{qid}"
-        )
+        assert f"wd:{qid}" in template, f"template missing wd:{qid}"
 
 
 def test_queries_use_subquery_limit_pattern():
@@ -129,9 +126,7 @@ def test_registered_types_cover_expected_set():
         "index",
         "crypto",
     }
-    assert (
-        set(wikidata_seed._TYPE_HANDLERS) == expected
-    )
+    assert set(TYPE_REGISTRY) == expected
 
 
 # -- import_entities --------------------------------------------
@@ -141,8 +136,8 @@ def test_import_entities_creates_new_entries(tmp_path: Path):
     mapped = [_mapped("Q1", "Alpha"), _mapped("Q2", "Beta")]
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
-        created, skipped, counts = (
-            wikidata_seed.import_entities(mapped, store)
+        created, skipped, counts = wikidata_seed.import_entities(
+            mapped, store
         )
     assert created == 2
     assert skipped == 0
