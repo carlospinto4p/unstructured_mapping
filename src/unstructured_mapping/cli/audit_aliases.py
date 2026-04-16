@@ -46,6 +46,7 @@ from dataclasses import dataclass
 from unstructured_mapping.cli._argparse_helpers import (
     add_db_argument,
 )
+from unstructured_mapping.cli._db_helpers import open_kg_store
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
@@ -270,7 +271,7 @@ def main(argv: list[str] | None = None) -> None:
     args = _build_parser().parse_args(argv)
     if args.auto_confirm and not args.apply:
         raise SystemExit("--auto-confirm requires --apply.")
-    with KnowledgeStore(db_path=args.db) as store:
+    with open_kg_store(args.db) as store:
         raw = find_alias_collisions(store._conn)  # noqa: SLF001
         scored = score_collisions(store, raw)
         scored = [c for c in scored if c.total_mentions >= args.min_mentions]

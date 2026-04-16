@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.48.7 - 16th April 2026
+
+- Added `cli/_db_helpers.py::open_kg_store(path, *, create_if_missing=False)`: opens `KnowledgeStore` with explicit control over the "missing file" failure mode.
+- Migrated read-only audit CLIs onto the helper so typo'd database paths fail loudly rather than silently creating an empty DB:
+  - `cli/audit_aliases.py`.
+  - `cli/audit_provenance.py`.
+- Added unit tests:
+  - `tests/unit/test_cli_db_helpers.py`: 3 tests covering missing-path exit, create-if-missing, and opening an existing file.
+
+
 ### v0.48.6 - 16th April 2026
 
 - Promoted shared provenance fixtures into `tests/unit/conftest.py`:

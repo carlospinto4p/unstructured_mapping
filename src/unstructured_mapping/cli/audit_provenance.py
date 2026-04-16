@@ -42,6 +42,7 @@ from unstructured_mapping.cli._argparse_helpers import (
     add_csv_output_argument,
     add_db_argument,
 )
+from unstructured_mapping.cli._db_helpers import open_kg_store
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
@@ -236,7 +237,7 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> None:
     setup_logging()
     args = _build_parser().parse_args(argv)
-    with KnowledgeStore(db_path=args.db) as store:
+    with open_kg_store(args.db) as store:
         shorts = find_short_snippets(store, min_tokens=args.min_tokens)
         thins = find_thin_mentions(store, min_mentions=args.min_mentions)
         narrows = find_narrow_spread(store, min_days=args.min_days)
