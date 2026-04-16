@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.48.6 - 16th April 2026
+
+- Promoted shared provenance fixtures into `tests/unit/conftest.py`:
+  - `make_provenance()`: builds a single `Provenance` row with sensible test defaults.
+  - `add_mentions_to_store()`: saves N synthetic mentions for an entity.
+- Migrated `test_cli_audit_provenance.py` and `test_cli_audit_aliases.py` off their local `_mention` / `_add_mentions` helpers.
+
+
 ### v0.48.5 - 16th April 2026
 
 - Added `KnowledgeStore.find_relationships_by_document()` on `RelationshipMixin`: returns every relationship row persisted under the given `document_id`.

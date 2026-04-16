@@ -3,7 +3,7 @@
 import csv
 from datetime import datetime, timedelta, timezone
 
-from tests.unit.conftest import make_org
+from tests.unit.conftest import make_org, make_provenance
 from unstructured_mapping.cli import audit_provenance
 from unstructured_mapping.cli.audit_provenance import (
     find_narrow_spread,
@@ -12,25 +12,7 @@ from unstructured_mapping.cli.audit_provenance import (
 )
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
-    Provenance,
 )
-
-
-def _mention(
-    entity_id: str,
-    doc_id: str,
-    snippet: str = "...plenty of context around...",
-    at: datetime | None = None,
-    text: str = "mention",
-) -> Provenance:
-    return Provenance(
-        entity_id=entity_id,
-        document_id=doc_id,
-        source="test",
-        mention_text=text,
-        context_snippet=snippet,
-        detected_at=at or datetime.now(timezone.utc),
-    )
 
 
 # -- short snippets -------------------------------------
@@ -45,15 +27,15 @@ def test_find_short_snippets_flags_low_token_rows(
         store.save_entity(apple)
         store.save_provenances(
             [
-                _mention(
+                make_provenance(
                     "apple",
-                    "doc-short",
-                    snippet="tiny",
+                    document_id="doc-short",
+                    context_snippet="tiny",
                 ),
-                _mention(
+                make_provenance(
                     "apple",
-                    "doc-long",
-                    snippet=(
+                    document_id="doc-long",
+                    context_snippet=(
                         "this context snippet is long "
                         "enough to pass the token bar"
                     ),
@@ -80,9 +62,9 @@ def test_find_thin_mentions_counts_distinct_pairs(
         store.save_entity(msft)
         store.save_provenances(
             [
-                _mention("apple", "doc-a"),
-                _mention("apple", "doc-b"),
-                _mention("msft", "doc-a"),
+                make_provenance("apple", document_id="doc-a"),
+                make_provenance("apple", document_id="doc-b"),
+                make_provenance("msft", document_id="doc-a"),
             ]
         )
         thin = find_thin_mentions(store, min_mentions=2)
@@ -123,30 +105,30 @@ def test_find_narrow_spread_flags_sub_day_clusters(
             [
                 # One-shot event: same hour, different
                 # articles → spans minutes.
-                _mention(
+                make_provenance(
                     "bounce",
-                    "doc-1",
-                    at=t0,
-                    text="m1",
+                    document_id="doc-1",
+                    detected_at=t0,
+                    mention_text="m1",
                 ),
-                _mention(
+                make_provenance(
                     "bounce",
-                    "doc-2",
-                    at=t0 + timedelta(minutes=20),
-                    text="m2",
+                    document_id="doc-2",
+                    detected_at=t0 + timedelta(minutes=20),
+                    mention_text="m2",
                 ),
                 # Durable: mentioned across 30 days.
-                _mention(
+                make_provenance(
                     "durable",
-                    "doc-a",
-                    at=t0,
-                    text="m1",
+                    document_id="doc-a",
+                    detected_at=t0,
+                    mention_text="m1",
                 ),
-                _mention(
+                make_provenance(
                     "durable",
-                    "doc-b",
-                    at=t0 + timedelta(days=30),
-                    text="m2",
+                    document_id="doc-b",
+                    detected_at=t0 + timedelta(days=30),
+                    mention_text="m2",
                 ),
             ]
         )
@@ -166,7 +148,9 @@ def test_find_narrow_spread_skips_single_mention(
     lonely = make_org("Lonely", entity_id="lonely")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(lonely)
-        store.save_provenances([_mention("lonely", "doc-1")])
+        store.save_provenances(
+            [make_provenance("lonely", document_id="doc-1")]
+        )
         narrow = find_narrow_spread(store, min_days=1)
     assert narrow == []
 
@@ -188,23 +172,23 @@ def test_main_csv_export_contains_all_finding_types(
         store.save_entity(bounce)
         store.save_provenances(
             [
-                _mention(
+                make_provenance(
                     "short",
-                    "doc-1",
-                    snippet="x",
-                    at=t0,
+                    document_id="doc-1",
+                    context_snippet="x",
+                    detected_at=t0,
                 ),
-                _mention(
+                make_provenance(
                     "bounce",
-                    "doc-1",
-                    at=t0,
-                    text="m1",
+                    document_id="doc-1",
+                    detected_at=t0,
+                    mention_text="m1",
                 ),
-                _mention(
+                make_provenance(
                     "bounce",
-                    "doc-2",
-                    at=t0 + timedelta(minutes=5),
-                    text="m2",
+                    document_id="doc-2",
+                    detected_at=t0 + timedelta(minutes=5),
+                    mention_text="m2",
                 ),
             ]
         )

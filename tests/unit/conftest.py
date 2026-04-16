@@ -1,11 +1,14 @@
 """Shared test fixtures for unstructured_mapping unit tests."""
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from unstructured_mapping.knowledge_graph import (
     Entity,
     EntityType,
+    KnowledgeStore,
+    Provenance,
 )
 from unstructured_mapping.pipeline.llm_provider import (
     LLMProvider,
@@ -16,6 +19,58 @@ from unstructured_mapping.pipeline.models import (
     ResolvedMention,
 )
 from unstructured_mapping.web_scraping.models import Article
+
+
+def make_provenance(
+    entity_id: str,
+    *,
+    document_id: str,
+    source: str = "test",
+    mention_text: str = "mention",
+    context_snippet: str = "...plenty of context around...",
+    detected_at: datetime | None = None,
+) -> Provenance:
+    """Build a :class:`Provenance` for KG tests.
+
+    Shared between alias and provenance-audit CLI tests —
+    both used to ship near-identical local helpers.
+    """
+    return Provenance(
+        entity_id=entity_id,
+        document_id=document_id,
+        source=source,
+        mention_text=mention_text,
+        context_snippet=context_snippet,
+        detected_at=detected_at or datetime.now(timezone.utc),
+    )
+
+
+def add_mentions_to_store(
+    store: KnowledgeStore,
+    entity_id: str,
+    count: int,
+    *,
+    source: str = "test",
+) -> None:
+    """Save ``count`` synthetic provenances for an entity.
+
+    Each row gets a unique ``document_id`` so the test's
+    mention count matches regardless of dedup rules.
+    """
+    detected = datetime.now(timezone.utc)
+    store.save_provenances(
+        [
+            make_provenance(
+                entity_id,
+                document_id=f"doc-{entity_id}-{i}",
+                source=source,
+                mention_text="x",
+                context_snippet="x",
+                detected_at=detected,
+            )
+            for i in range(count)
+        ]
+    )
 
 
 def make_entity(**kwargs):
@@ -105,9 +160,7 @@ def make_resolved(
     )
 
 
-def write_seed_file(
-    path: Path, entities: list[dict]
-) -> Path:
+def write_seed_file(path: Path, entities: list[dict]) -> Path:
     """Write a seed-compatible JSON file for loader tests.
 
     Shared between seed-loader tests (``test_cli_seed.py``)
@@ -160,14 +213,10 @@ class FakeProvider(LLMProvider):
         supports_json_mode: bool = True,
     ):
         self._responses = (
-            [response]
-            if isinstance(response, str)
-            else list(response)
+            [response] if isinstance(response, str) else list(response)
         )
         self._supports_json_mode = supports_json_mode
-        self.calls: list[
-            tuple[str, str | None, bool]
-        ] = []
+        self.calls: list[tuple[str, str | None, bool]] = []
 
     @property
     def supports_json_mode(self) -> bool:

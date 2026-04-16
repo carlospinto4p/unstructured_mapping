@@ -5,11 +5,9 @@ and the merge-application path with monkeypatched input
 so the test does not block on stdin.
 """
 
-from datetime import datetime, timezone
-
 import pytest
 
-from tests.unit.conftest import make_org
+from tests.unit.conftest import add_mentions_to_store, make_org
 from unstructured_mapping.cli import audit_aliases
 from unstructured_mapping.cli.audit_aliases import (
     ScoredCollision,
@@ -19,32 +17,10 @@ from unstructured_mapping.cli.audit_aliases import (
 )
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
-    Provenance,
 )
 from unstructured_mapping.knowledge_graph.validation import (
     find_alias_collisions,
 )
-
-
-def _add_mentions(
-    store: KnowledgeStore,
-    entity_id: str,
-    n: int,
-) -> None:
-    detected = datetime.now(timezone.utc)
-    store.save_provenances(
-        [
-            Provenance(
-                entity_id=entity_id,
-                document_id=f"doc-{entity_id}-{i}",
-                source="test",
-                mention_text="x",
-                context_snippet="x",
-                detected_at=detected,
-            )
-            for i in range(n)
-        ]
-    )
 
 
 # -- score_collisions ------------------------------------
@@ -80,9 +56,9 @@ def test_score_collisions_ranks_by_total_mentions(
     with KnowledgeStore(db_path=db) as store:
         for e in (hot_a, hot_b, cold_a, cold_b):
             store.save_entity(e)
-        _add_mentions(store, "hot_a", 5)
-        _add_mentions(store, "hot_b", 3)
-        _add_mentions(store, "cold_a", 1)
+        add_mentions_to_store(store, "hot_a", 5)
+        add_mentions_to_store(store, "hot_b", 3)
+        add_mentions_to_store(store, "cold_a", 1)
         raw = find_alias_collisions(store._conn)
         ranked = score_collisions(store, raw)
     assert [c.alias.lower() for c in ranked] == [
@@ -161,8 +137,8 @@ def test_apply_merges_same_type_with_auto_confirm(
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(keep)
         store.save_entity(drop)
-        _add_mentions(store, "keep", 5)
-        _add_mentions(store, "drop", 2)
+        add_mentions_to_store(store, "keep", 5)
+        add_mentions_to_store(store, "drop", 2)
         raw = find_alias_collisions(store._conn)
         scored = score_collisions(store, raw)
         merged = _apply_merges(store, scored, auto_confirm=True)
@@ -190,8 +166,8 @@ def test_apply_merges_prompts_without_auto_confirm(tmp_path, monkeypatch):
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(keep)
         store.save_entity(drop)
-        _add_mentions(store, "keep", 5)
-        _add_mentions(store, "drop", 2)
+        add_mentions_to_store(store, "keep", 5)
+        add_mentions_to_store(store, "drop", 2)
         raw = find_alias_collisions(store._conn)
         scored = score_collisions(store, raw)
 
