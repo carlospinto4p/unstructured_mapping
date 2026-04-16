@@ -45,6 +45,7 @@ from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli._seed_helpers import (
     exists_by_name_and_type,
     import_with_dedup,
+    log_import_summary,
 )
 from unstructured_mapping.knowledge_graph import (
     Entity,
@@ -224,14 +225,14 @@ def main(argv: list[str] | None = None) -> None:
             mapped, store, dry_run=args.dry_run
         )
 
-    logger.info(
-        "Import complete: %d created, %d skipped%s",
+    log_import_summary(
+        logger,
         created,
         skipped,
-        " (dry run)" if args.dry_run else "",
+        counts,
+        header="Import complete",
+        suffix=" (dry run)" if args.dry_run else "",
     )
-    for subtype, count in sorted(counts.items()):
-        logger.info("  %-14s %d", subtype, count)
 
 
 if __name__ == "__main__":

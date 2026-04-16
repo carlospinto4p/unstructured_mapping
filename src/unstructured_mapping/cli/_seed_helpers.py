@@ -14,6 +14,7 @@ matter of supplying the three small callbacks rather than
 copy-pasting the loop body.
 """
 
+import logging
 from collections.abc import Callable, Iterable
 from collections import Counter
 from typing import TypeVar
@@ -25,6 +26,43 @@ from unstructured_mapping.knowledge_graph import (
 )
 
 T = TypeVar("T")
+
+
+def log_import_summary(
+    logger_: logging.Logger,
+    created: int,
+    skipped: int,
+    counts: Counter,
+    *,
+    header: str = "Import complete",
+    suffix: str = "",
+) -> None:
+    """Emit an import summary line + counter breakdown.
+
+    Shared across seed-loader CLIs (``cli/seed.py``,
+    ``cli/wikidata_seed.py``) and the multi-stage
+    aggregator in ``cli/populate.py``.
+
+    :param logger_: Destination logger (callers pass their
+        module-level logger so the record source stays
+        accurate).
+    :param created: Rows persisted this run.
+    :param skipped: Rows dropped by the duplicate check.
+    :param counts: Breakdown to print, one line per key.
+    :param header: Lead-in for the summary line, e.g.
+        ``"Seed complete"`` or ``"Total across 3 stages"``.
+    :param suffix: Optional trailing tag such as
+        ``" (dry run)"``.
+    """
+    logger_.info(
+        "%s: %d created, %d skipped%s",
+        header,
+        created,
+        skipped,
+        suffix,
+    )
+    for key, count in sorted(counts.items()):
+        logger_.info("  %-14s %d", key, count)
 
 
 def exists_by_name_and_type(

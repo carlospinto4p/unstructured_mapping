@@ -36,6 +36,7 @@ from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli._seed_helpers import (
     exists_by_name_and_type,
     import_with_dedup,
+    log_import_summary,
 )
 from unstructured_mapping.knowledge_graph import (
     Entity,
@@ -151,13 +152,14 @@ def main(argv: list[str] | None = None) -> None:
             args.seed, store, dry_run=args.dry_run
         )
 
-    logger.info(
-        "Seed complete: %d created, %d skipped",
+    log_import_summary(
+        logger,
         created,
         skipped,
+        counts,
+        header="Seed complete",
+        suffix=" (dry run)" if args.dry_run else "",
     )
-    for etype, count in sorted(counts.items()):
-        logger.info("  %-14s %d", etype, count)
 
 
 if __name__ == "__main__":

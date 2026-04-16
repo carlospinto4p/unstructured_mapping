@@ -37,6 +37,7 @@ from unstructured_mapping.cli._argparse_helpers import (
     add_dry_run_argument,
 )
 from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._seed_helpers import log_import_summary
 from unstructured_mapping.cli.seed import load_seed
 from unstructured_mapping.knowledge_graph import KnowledgeStore
 
@@ -172,15 +173,14 @@ def _log_report(reports: list[StageReport], dry_run: bool) -> None:
         total_skipped += r.skipped
         total_counts.update(r.counts)
 
-    logger.info(
-        "Total: %d created, %d skipped across %d stages%s",
+    log_import_summary(
+        logger,
         total_created,
         total_skipped,
-        len(reports),
-        suffix,
+        total_counts,
+        header=f"Total across {len(reports)} stages",
+        suffix=suffix,
     )
-    for etype, count in sorted(total_counts.items()):
-        logger.info("  %-14s %d", etype, count)
 
 
 def main(argv: list[str] | None = None) -> None:

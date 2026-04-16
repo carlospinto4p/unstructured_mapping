@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.48.9 - 16th April 2026
+
+- Consolidated import summary logging:
+  - `cli/_seed_helpers.py`: new `log_import_summary(logger, created, skipped, counts, *, header, suffix)` emits the "N created, M skipped" line plus a sorted counter breakdown.
+  - Migrated callers: `cli/seed.py`, `cli/wikidata_seed.py`, and the multi-stage summary in `cli/populate.py`. The populate total line now reads "Total across N stages: X created, Y skipped" (wording adjusted to reuse the shared helper).
+
+
 ### v0.48.8 - 16th April 2026
 
 - Removed unused `ConstraintWarning` re-export from `knowledge_graph/__init__.py`. No production module imports it; the dataclass lives on as an internal detail of `validation.py` and can be referenced as `validation.ConstraintWarning` when needed.
