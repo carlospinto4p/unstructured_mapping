@@ -11,15 +11,15 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
-
-_DEFAULT_DB = Path("data/articles.db")
+from unstructured_mapping.cli._argparse_helpers import (
+    ARTICLES_DEFAULT_DB,
+    add_db_argument,
+)
 
 
 def _connect(db_path: Path) -> sqlite3.Connection:
     if not db_path.exists():
-        raise FileNotFoundError(
-            f"Database not found: {db_path}"
-        )
+        raise FileNotFoundError(f"Database not found: {db_path}")
     return sqlite3.connect(str(db_path))
 
 
@@ -30,9 +30,7 @@ def _section_overall(
 
     :return: Tuple of (report lines, total count).
     """
-    total = conn.execute(
-        "SELECT COUNT(*) FROM articles"
-    ).fetchone()[0]
+    total = conn.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
     return [f"Total articles: {total}"], total
 
 
@@ -64,9 +62,7 @@ def _section_last_scrape(
         ts = datetime.fromisoformat(last)
         ago = now - ts
         hours = ago.total_seconds() / 3600
-        lines.append(
-            f"  {src:>10s}  {last}  ({hours:.1f}h ago)"
-        )
+        lines.append(f"  {src:>10s}  {last}  ({hours:.1f}h ago)")
     return lines
 
 
@@ -83,9 +79,7 @@ def _section_recent_batches(
     ).fetchall()
     lines = ["", "Recent scrape batches (last 5):"]
     for ts, cnt, sources in rows:
-        lines.append(
-            f"  {ts}  {cnt} articles  [{sources}]"
-        )
+        lines.append(f"  {ts}  {cnt} articles  [{sources}]")
     return lines
 
 
@@ -104,9 +98,7 @@ def _section_daily_coverage(
         for day, cnt in rows:
             lines.append(f"  {day}  {cnt} articles")
     else:
-        lines.append(
-            "  No articles in the last 7 days."
-        )
+        lines.append("  No articles in the last 7 days.")
     return lines
 
 
@@ -140,23 +132,13 @@ def _section_data_quality(
     """
     lines = ["", "Data quality:"]
     sums = ", ".join(
-        f"SUM(CASE WHEN {w} THEN 1 ELSE 0 END)"
-        for _, w in _QUALITY_CHECKS
+        f"SUM(CASE WHEN {w} THEN 1 ELSE 0 END)" for _, w in _QUALITY_CHECKS
     )
-    row = conn.execute(
-        f"SELECT {sums} FROM articles"
-    ).fetchone()
+    row = conn.execute(f"SELECT {sums} FROM articles").fetchone()
     for i, (label, _) in enumerate(_QUALITY_CHECKS):
-        lines.append(
-            f"  {label + ':':<18s} {row[i]}"
-        )
+        lines.append(f"  {label + ':':<18s} {row[i]}")
 
-    col_names = {
-        r[1]
-        for r in conn.execute(
-            "PRAGMA table_info(articles)"
-        )
-    }
+    col_names = {r[1] for r in conn.execute("PRAGMA table_info(articles)")}
     if "document_id" in col_names:
         dupe_ids = conn.execute(
             "SELECT COUNT(*) FROM ("
@@ -166,14 +148,9 @@ def _section_data_quality(
             "  HAVING COUNT(*) > 1"
             ")"
         ).fetchone()[0]
-        lines.append(
-            f"  {'Dupe document_ids:':<18s} {dupe_ids}"
-        )
+        lines.append(f"  {'Dupe document_ids:':<18s} {dupe_ids}")
     else:
-        lines.append(
-            "  document_id:       "
-            "MISSING (run migration)"
-        )
+        lines.append("  document_id:       MISSING (run migration)")
     return lines
 
 
@@ -181,9 +158,7 @@ def _section_db_size(
     conn: sqlite3.Connection,
 ) -> list[str]:
     """Database file size."""
-    db_path = conn.execute(
-        "PRAGMA database_list"
-    ).fetchone()[2]
+    db_path = conn.execute("PRAGMA database_list").fetchone()[2]
     size = Path(db_path).stat().st_size
     if size < 1024 * 1024:
         return [
@@ -192,8 +167,7 @@ def _section_db_size(
         ]
     return [
         "",
-        f"Database size: "
-        f"{size / (1024 * 1024):.1f} MB",
+        f"Database size: {size / (1024 * 1024):.1f} MB",
     ]
 
 
@@ -203,9 +177,7 @@ def _run_report(conn: sqlite3.Connection) -> str:
     lines = overall
 
     if total == 0:
-        lines.append(
-            "Database is empty — nothing to report."
-        )
+        lines.append("Database is empty — nothing to report.")
         return "\n".join(lines)
 
     for section in (
@@ -225,14 +197,10 @@ def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description="Check articles database health.",
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        default=_DEFAULT_DB,
-        help=(
-            "Path to SQLite database "
-            f"(default: {_DEFAULT_DB})."
-        ),
+    add_db_argument(
+        p,
+        default=ARTICLES_DEFAULT_DB,
+        label="articles SQLite database",
     )
     return p
 

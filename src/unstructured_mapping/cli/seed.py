@@ -28,6 +28,10 @@ import logging
 from collections import Counter
 from pathlib import Path
 
+from unstructured_mapping.cli._argparse_helpers import (
+    add_db_argument,
+    add_dry_run_argument,
+)
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli._seed_helpers import (
     exists_by_name_and_type,
@@ -42,37 +46,22 @@ from unstructured_mapping.knowledge_graph import (
 logger = logging.getLogger(__name__)
 
 _DEFAULT_SEED = Path("data/seed/financial_entities.json")
-_DEFAULT_DB = Path("data/knowledge.db")
 
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        description=(
-            "Bootstrap the KG from a curated seed file."
-        ),
+        description=("Bootstrap the KG from a curated seed file."),
     )
     p.add_argument(
         "--seed",
         type=Path,
         default=_DEFAULT_SEED,
-        help=(
-            "Path to the seed JSON file "
-            f"(default: {_DEFAULT_SEED})."
-        ),
+        help=(f"Path to the seed JSON file (default: {_DEFAULT_SEED})."),
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        default=_DEFAULT_DB,
-        help=(
-            "Path to the KG SQLite database "
-            f"(default: {_DEFAULT_DB})."
-        ),
-    )
-    p.add_argument(
-        "--dry-run",
-        action="store_true",
-        help=(
+    add_db_argument(p)
+    add_dry_run_argument(
+        p,
+        help_text=(
             "Parse and validate the seed file without "
             "writing to the database."
         ),
@@ -126,9 +115,7 @@ def load_seed(
         created entities keyed by ``entity_type.value``.
     """
     data = json.loads(seed_path.read_text(encoding="utf-8"))
-    entities = [
-        _parse_entity(r) for r in data.get("entities", [])
-    ]
+    entities = [_parse_entity(r) for r in data.get("entities", [])]
     reason = data.get("reason", "seed")
     return import_with_dedup(
         entities,
@@ -149,9 +136,7 @@ def main(argv: list[str] | None = None) -> None:
     args = _build_parser().parse_args(argv)
 
     if not args.seed.exists():
-        logger.error(
-            "Seed file not found: %s", args.seed
-        )
+        logger.error("Seed file not found: %s", args.seed)
         raise SystemExit(1)
 
     logger.info(

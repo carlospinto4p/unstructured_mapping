@@ -12,8 +12,11 @@ Usage::
 
 import argparse
 import logging
-from pathlib import Path
 
+from unstructured_mapping.cli._argparse_helpers import (
+    ARTICLES_DEFAULT_DB,
+    add_db_argument,
+)
 from unstructured_mapping.cli._logging import setup_logging
 
 from unstructured_mapping.web_scraping import (
@@ -54,18 +57,15 @@ def _build_parser() -> argparse.ArgumentParser:
             "(default: all)."
         ),
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        default=Path("data/articles.db"),
-        help="Path to SQLite database "
-        "(default: data/articles.db).",
+    add_db_argument(
+        p,
+        default=ARTICLES_DEFAULT_DB,
+        label="articles SQLite database",
     )
     p.add_argument(
         "--no-full-text",
         action="store_true",
-        help="Skip full-text extraction (RSS summaries "
-        "only).",
+        help="Skip full-text extraction (RSS summaries only).",
     )
     p.add_argument(
         "--stats",
@@ -76,8 +76,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--timeout",
         type=float,
         default=DEFAULT_TIMEOUT,
-        help="HTTP timeout in seconds "
-        f"(default: {DEFAULT_TIMEOUT}).",
+        help=f"HTTP timeout in seconds (default: {DEFAULT_TIMEOUT}).",
     )
     return p
 
@@ -85,12 +84,8 @@ def _build_parser() -> argparse.ArgumentParser:
 def _show_stats(store: ArticleStore) -> None:
     counts = store.counts_by_source()
     for src in _SOURCES:
-        logger.info(
-            "%8s %d", src.upper(), counts.get(src, 0)
-        )
-    logger.info(
-        "%8s %d", "TOTAL", sum(counts.values())
-    )
+        logger.info("%8s %d", src.upper(), counts.get(src, 0))
+    logger.info("%8s %d", "TOTAL", sum(counts.values()))
 
 
 def _build_scraper(
@@ -110,9 +105,7 @@ def _build_scraper(
     """
     if name == "bbc":
         feed_urls = (
-            list(BBC_FEEDS.values())
-            if feeds == "all"
-            else [BBC_FEEDS["top"]]
+            list(BBC_FEEDS.values()) if feeds == "all" else [BBC_FEEDS["top"]]
         )
         return BBCScraper(
             feed_urls=feed_urls,

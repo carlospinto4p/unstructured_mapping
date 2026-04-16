@@ -32,6 +32,10 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
+from unstructured_mapping.cli._argparse_helpers import (
+    add_db_argument,
+    add_dry_run_argument,
+)
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli.seed import load_seed
 from unstructured_mapping.knowledge_graph import KnowledgeStore
@@ -39,7 +43,6 @@ from unstructured_mapping.knowledge_graph import KnowledgeStore
 logger = logging.getLogger(__name__)
 
 _DEFAULT_SEED_DIR = Path("data/seed")
-_DEFAULT_DB = Path("data/knowledge.db")
 _CURATED_FILENAME = "financial_entities.json"
 _WIKIDATA_SUBDIR = "wikidata"
 
@@ -68,8 +71,7 @@ class StageReport:
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=(
-            "Populate the KG from curated + Wikidata "
-            "snapshot seed files."
+            "Populate the KG from curated + Wikidata snapshot seed files."
         ),
     )
     p.add_argument(
@@ -82,19 +84,10 @@ def _build_parser() -> argparse.ArgumentParser:
             f"subdirectory (default: {_DEFAULT_SEED_DIR})."
         ),
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        default=_DEFAULT_DB,
-        help=(
-            "Path to the KG SQLite database "
-            f"(default: {_DEFAULT_DB})."
-        ),
-    )
-    p.add_argument(
-        "--dry-run",
-        action="store_true",
-        help=(
+    add_db_argument(p)
+    add_dry_run_argument(
+        p,
+        help_text=(
             "Parse and validate every seed file without "
             "writing to the database."
         ),
@@ -144,14 +137,10 @@ def populate(
     """
     stages = _stage_sources(seed_dir)
     if not stages:
-        raise FileNotFoundError(
-            f"No seed files found under {seed_dir}"
-        )
+        raise FileNotFoundError(f"No seed files found under {seed_dir}")
     reports: list[StageReport] = []
     for name, path in stages:
-        created, skipped, counts = load_seed(
-            path, store, dry_run=dry_run
-        )
+        created, skipped, counts = load_seed(path, store, dry_run=dry_run)
         reports.append(
             StageReport(
                 name=name,
@@ -206,9 +195,7 @@ def main(argv: list[str] | None = None) -> None:
         " (dry run)" if args.dry_run else "",
     )
     with KnowledgeStore(db_path=args.db) as store:
-        reports = populate(
-            args.seed_dir, store, dry_run=args.dry_run
-        )
+        reports = populate(args.seed_dir, store, dry_run=args.dry_run)
     _log_report(reports, args.dry_run)
 
 

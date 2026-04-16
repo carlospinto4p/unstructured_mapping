@@ -37,6 +37,10 @@ import logging
 from collections import Counter
 from pathlib import Path
 
+from unstructured_mapping.cli._argparse_helpers import (
+    add_db_argument,
+    add_dry_run_argument,
+)
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli._seed_helpers import (
     exists_by_name_and_type,
@@ -56,8 +60,6 @@ from unstructured_mapping.wikidata import (
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_DB = Path("data/knowledge.db")
-
 #: Canonical registry of supported ``--type`` values lives
 #: in ``wikidata.registry`` so non-CLI consumers (tests,
 #: scripts) can enumerate handlers without importing a CLI
@@ -68,9 +70,7 @@ _TYPE_HANDLERS = TYPE_REGISTRY
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        description=(
-            "Seed the KG with entities from Wikidata."
-        ),
+        description=("Seed the KG with entities from Wikidata."),
     )
     p.add_argument(
         "--type",
@@ -89,22 +89,10 @@ def _build_parser() -> argparse.ArgumentParser:
             "first."
         ),
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        default=_DEFAULT_DB,
-        help=(
-            "Path to the KG SQLite database "
-            f"(default: {_DEFAULT_DB})."
-        ),
-    )
-    p.add_argument(
-        "--dry-run",
-        action="store_true",
-        help=(
-            "Fetch and map entities without writing to the "
-            "database."
-        ),
+    add_db_argument(p)
+    add_dry_run_argument(
+        p,
+        help_text=("Fetch and map entities without writing to the database."),
     )
     p.add_argument(
         "--snapshot",
@@ -118,9 +106,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def _fetch_mapped(
-    kind: str, limit: int
-) -> list[MappedEntity]:
+def _fetch_mapped(kind: str, limit: int) -> list[MappedEntity]:
     """Fetch rows from Wikidata and map them to entities.
 
     :param kind: One of the keys of :data:`_TYPE_HANDLERS`.
@@ -140,9 +126,7 @@ def _fetch_mapped(
     return mapped
 
 
-def _already_imported(
-    store: KnowledgeStore, mapped: MappedEntity
-) -> bool:
+def _already_imported(store: KnowledgeStore, mapped: MappedEntity) -> bool:
     """Return True if this Wikidata entity is already in KG.
 
     Checks the ``wikidata:Qxxx`` alias first, then falls
@@ -194,9 +178,7 @@ def _entity_to_seed_json(entity: Entity) -> dict:
     }
 
 
-def _write_snapshot(
-    mapped: list[MappedEntity], path: Path
-) -> None:
+def _write_snapshot(mapped: list[MappedEntity], path: Path) -> None:
     """Write mapped entities as a seed-compatible JSON file.
 
     The ``"reason"`` field tells :func:`cli.seed.load_seed`
@@ -211,9 +193,7 @@ def _write_snapshot(
             "Wikidata seed snapshot. Re-loadable via "
             "cli.seed for reproducibility."
         ),
-        "entities": [
-            _entity_to_seed_json(m.entity) for m in mapped
-        ],
+        "entities": [_entity_to_seed_json(m.entity) for m in mapped],
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(

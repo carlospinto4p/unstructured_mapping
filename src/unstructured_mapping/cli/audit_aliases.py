@@ -42,8 +42,10 @@ import argparse
 import logging
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 
+from unstructured_mapping.cli._argparse_helpers import (
+    add_db_argument,
+)
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
@@ -232,12 +234,7 @@ def _build_parser() -> argparse.ArgumentParser:
             "duplicates with human confirmation."
         ),
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        required=True,
-        help="Path to the KG SQLite database.",
-    )
+    add_db_argument(p, required=True)
     p.add_argument(
         "--min-mentions",
         type=int,

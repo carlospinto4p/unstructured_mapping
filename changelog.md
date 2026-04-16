@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.48.4 - 16th April 2026
+
+- Added `cli/_argparse_helpers.py`:
+  - `add_db_argument()`: standardizes `--db` flag name, type, and help wording; `required=True` or default-path idiom.
+  - `add_dry_run_argument()`: standardizes `--dry-run`.
+  - `add_csv_output_argument()`: standardizes `--csv`.
+  - `KG_DEFAULT_DB` / `ARTICLES_DEFAULT_DB` constants.
+- Migrated CLIs onto the helpers:
+  - `cli/audit_aliases.py`: `--db` via helper (required).
+  - `cli/audit_provenance.py`: `--db` and `--csv` via helpers.
+  - `cli/populate.py`, `cli/seed.py`, `cli/wikidata_seed.py`: `--db` and `--dry-run` via helpers.
+  - `cli/db_health.py`, `cli/scrape.py`: `--db` via helper with articles default.
+
+
 ### v0.48.3 - 16th April 2026
 
 - Refactored audit queries into a new `AuditMixin`:

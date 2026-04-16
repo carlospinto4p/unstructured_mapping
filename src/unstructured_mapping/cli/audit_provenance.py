@@ -38,6 +38,10 @@ import logging
 import sys
 from pathlib import Path
 
+from unstructured_mapping.cli._argparse_helpers import (
+    add_csv_output_argument,
+    add_db_argument,
+)
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
@@ -196,12 +200,7 @@ def _build_parser() -> argparse.ArgumentParser:
             "entities, and narrow temporal spread."
         ),
     )
-    p.add_argument(
-        "--db",
-        type=Path,
-        required=True,
-        help="Path to the KG SQLite database.",
-    )
+    add_db_argument(p, required=True)
     p.add_argument(
         "--min-tokens",
         type=int,
@@ -230,12 +229,7 @@ def _build_parser() -> argparse.ArgumentParser:
             f"(default: {_DEFAULT_MIN_DAYS})."
         ),
     )
-    p.add_argument(
-        "--csv",
-        type=Path,
-        default=None,
-        help=("Write findings to a CSV file instead of the text report."),
-    )
+    add_csv_output_argument(p)
     return p
 
 
