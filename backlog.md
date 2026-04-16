@@ -1,21 +1,5 @@
 ## Backlog
 
-### 2026.04.16 (refactor review v0.48.8)
-
-- [x] **MEDIUM / Small** — Consolidate import summary logging. Done in v0.48.9: `log_import_summary` in `_seed_helpers.py`; seed, wikidata_seed, populate migrated.
-- [x] **MEDIUM / Small** — Extract the throwaway-KG copy idiom. Done in v0.48.9: `prepare_throwaway_kg` in `_db_helpers.py`; preview + benchmark migrated.
-- [x] **LOW / Small** — Hoist duplicated `DEFAULT_TIMEOUT`. Done in v0.48.9: shared constant lives in `llm_provider.py`; both providers import it.
-- [x] **LOW / Small** — Drop the `_TYPE_HANDLERS` alias. Done in v0.48.9: tests migrated to `TYPE_REGISTRY`; alias removed.
-
-
-### 2026.04.16 (refactor review v0.48.1)
-
-- [x] **MEDIUM / Small** — Consolidate CLI argparse boilerplate into `cli/_argparse_helpers.py` with `add_db_argument`, `add_csv_output_argument`, etc. Done in v0.48.4: helpers + migration across eight CLIs.
-- [x] **MEDIUM / Small** — Move the `preview._collect_preview` joins into a store method. Done in v0.48.5: `find_relationships_by_document` added to `RelationshipMixin`; last `# noqa: SLF001` dropped from `preview.py`.
-- [x] **MEDIUM / Small** — Consolidate test helpers. Done in v0.48.6: `make_provenance` and `add_mentions_to_store` live in `conftest.py`; both CLIs migrated.
-- [x] **LOW / Small** — Extract DB-open helper. Done in v0.48.7: `open_kg_store(path, *, create_if_missing=False)` landed; audit CLIs migrated.
-- [x] **LOW / Small** — Drop the unused `ConstraintWarning` re-export. Done in v0.48.8.
-
 ### 2026.04.14 (Wikidata import follow-ups)
 
 - [ ] **MEDIUM / Small** — `company` SPARQL query leaks central banks. "Bank of Japan" and "Swiss National Bank" show up in `company.json` because they hold P414 listing entries. Fix: add a `MINUS { ?item wdt:P31/wdt:P279* wd:Q66344 }` clause (central bank) analogous to the exchange/bank fix.
