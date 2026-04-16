@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.48.5 - 16th April 2026
+
+- Added `KnowledgeStore.find_relationships_by_document()` on `RelationshipMixin`: returns every relationship row persisted under the given `document_id`.
+- Refactored `cli/preview.py`: `_collect_preview` projects the new store method instead of running its own relationships join, removing the last `# noqa: SLF001` from the file.
+- Added unit test:
+  - `tests/unit/test_kg_relationships.py::test_find_relationships_by_document`: filters by document, empty lookups return `[]`.
+
+
 ### v0.48.4 - 16th April 2026
 
 - Added `cli/_argparse_helpers.py`:

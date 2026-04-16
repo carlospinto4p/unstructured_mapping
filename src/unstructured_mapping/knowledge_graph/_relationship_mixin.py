@@ -349,6 +349,26 @@ class RelationshipMixin:
             results.extend(row_to_relationship(r) for r in rows)
         return results
 
+    def find_relationships_by_document(
+        self, document_id: str
+    ) -> list[Relationship]:
+        """Fetch relationships extracted from one document.
+
+        Used by the preview CLI to surface every
+        relationship the pipeline produced for a single
+        article without needing to know ingestion-table
+        internals.
+
+        :param document_id: The document identifier as
+            stored on ``relationships.document_id``.
+        :return: Matching relationships, in insertion order.
+        """
+        rows = self._conn.execute(
+            REL_SELECT + "WHERE document_id = ?",
+            (document_id,),
+        ).fetchall()
+        return [row_to_relationship(r) for r in rows]
+
     def find_active_relationships(
         self,
         entity_id: str,

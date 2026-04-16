@@ -133,26 +133,21 @@ def _collect_preview(store: KnowledgeStore, document_id: str) -> dict:
         for entity, prov in pairs
     ]
 
-    rel_rows = store._conn.execute(  # noqa: SLF001
-        "SELECT source_id, target_id, relation_type, "
-        "description, qualifier_id, valid_from, "
-        "valid_until, confidence "
-        "FROM relationships "
-        "WHERE document_id = ?",
-        (document_id,),
-    ).fetchall()
+    rels = store.find_relationships_by_document(document_id)
     relationships = [
         {
-            "source_id": r["source_id"],
-            "target_id": r["target_id"],
-            "relation_type": r["relation_type"],
-            "description": r["description"],
-            "qualifier_id": r["qualifier_id"],
-            "valid_from": r["valid_from"] or None,
-            "valid_until": r["valid_until"],
-            "confidence": r["confidence"],
+            "source_id": r.source_id,
+            "target_id": r.target_id,
+            "relation_type": r.relation_type,
+            "description": r.description,
+            "qualifier_id": r.qualifier_id,
+            "valid_from": r.valid_from.isoformat() if r.valid_from else None,
+            "valid_until": (
+                r.valid_until.isoformat() if r.valid_until else None
+            ),
+            "confidence": r.confidence,
         }
-        for r in rel_rows
+        for r in rels
     ]
     return {
         "mentions": mentions,

@@ -246,6 +246,47 @@ def test_find_relationships_by_type(tmp_path):
     assert none == []
 
 
+# -- KnowledgeStore: find_relationships_by_document --
+
+
+def test_find_relationships_by_document(tmp_path):
+    """Filter returns only rows whose document_id matches."""
+    db = tmp_path / "kg.db"
+    e1 = make_entity(canonical_name="Entity A")
+    e2 = make_entity(canonical_name="Entity B")
+    e3 = make_entity(canonical_name="Entity C")
+    rel_a = Relationship(
+        source_id=e1.entity_id,
+        target_id=e2.entity_id,
+        relation_type="acquired",
+        description="A acquired B.",
+        document_id="doc-1",
+    )
+    rel_b = Relationship(
+        source_id=e1.entity_id,
+        target_id=e3.entity_id,
+        relation_type="competes_with",
+        description="A competes with C.",
+        document_id="doc-2",
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        store.save_relationship(rel_a)
+        store.save_relationship(rel_b)
+        doc1 = store.find_relationships_by_document("doc-1")
+        doc2 = store.find_relationships_by_document("doc-2")
+        empty = store.find_relationships_by_document("doc-missing")
+
+    assert len(doc1) == 1
+    assert doc1[0].relation_type == "acquired"
+    assert doc1[0].document_id == "doc-1"
+    assert len(doc2) == 1
+    assert doc2[0].relation_type == "competes_with"
+    assert empty == []
+
+
 # -- KnowledgeStore: find_active_relationships --
 
 
