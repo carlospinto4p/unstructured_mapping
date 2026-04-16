@@ -48,13 +48,13 @@ we expected?". Alias coverage is a separate concern.
 import argparse
 import json
 import logging
-import shutil
 import sqlite3
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from uuid import UUID
 
+from unstructured_mapping.cli._db_helpers import prepare_throwaway_kg
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     EntityType,
@@ -349,20 +349,15 @@ def benchmark(
         raise ValueError(f"mode must be one of {_MODES}: {mode!r}")
     reports: list[ModeReport] = []
     if mode in ("cold-start", "both"):
-        cs_db = workdir / "cold_start.db"
-        if cs_db.exists():
-            cs_db.unlink()
+        cs_db = prepare_throwaway_kg(workdir, "cold_start.db")
         reports.append(_run_cold_start(labelled, provider, cs_db))
     if mode in ("kg-driven", "both"):
         if seed_db is None:
             raise ValueError("kg-driven mode requires --seed-db")
-        if not seed_db.exists():
-            raise FileNotFoundError(seed_db)
-        kg_db = workdir / "kg_driven.db"
         # Copy so the live KG is never written to by a
         # benchmark run — provenance from labelled
         # articles would otherwise leak into real data.
-        shutil.copyfile(seed_db, kg_db)
+        kg_db = prepare_throwaway_kg(workdir, "kg_driven.db", source=seed_db)
         reports.append(_run_kg_driven(labelled, provider, kg_db))
     return BenchmarkReport(modes=tuple(reports))
 

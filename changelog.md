@@ -5,6 +5,11 @@
 - Consolidated import summary logging:
   - `cli/_seed_helpers.py`: new `log_import_summary(logger, created, skipped, counts, *, header, suffix)` emits the "N created, M skipped" line plus a sorted counter breakdown.
   - Migrated callers: `cli/seed.py`, `cli/wikidata_seed.py`, and the multi-stage summary in `cli/populate.py`. The populate total line now reads "Total across N stages: X created, Y skipped" (wording adjusted to reuse the shared helper).
+- Extracted throwaway-KG setup:
+  - `cli/_db_helpers.py`: new `prepare_throwaway_kg(workdir, name, *, source=None)` centralises the "unlink stale copy, optionally copyfile from source" shape. Missing-source paths now raise `FileNotFoundError` uniformly.
+  - Migrated `cli/preview.py` and `cli/benchmark_cold_start.py` onto the helper; dropped local `shutil.copyfile` / `unlink` sites.
+- Added unit tests:
+  - `tests/unit/test_cli_db_helpers.py`: 4 new tests covering empty-scratch setup, seed copy, stale-target overwrite, and missing-source error path.
 
 
 ### v0.48.8 - 16th April 2026

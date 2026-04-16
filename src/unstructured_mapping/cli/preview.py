@@ -38,12 +38,12 @@ Article file schema (JSON)::
 import argparse
 import json
 import logging
-import shutil
 import sys
 import tempfile
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from unstructured_mapping.cli._db_helpers import prepare_throwaway_kg
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
@@ -179,11 +179,8 @@ def preview(
         scratch.
     :return: Dict with the preview payload.
     """
-    tmp_db = workdir / "preview.db"
-    if tmp_db.exists():
-        tmp_db.unlink()
-    if kg_db is not None and not cold_start:
-        shutil.copyfile(kg_db, tmp_db)
+    source = kg_db if not cold_start else None
+    tmp_db = prepare_throwaway_kg(workdir, "preview.db", source=source)
 
     with KnowledgeStore(db_path=tmp_db) as store:
         if cold_start:

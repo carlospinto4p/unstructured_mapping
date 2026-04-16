@@ -15,9 +15,49 @@ on a missing file, or ``create_if_missing=True`` to preserve
 the auto-create behaviour explicitly.
 """
 
+import shutil
 from pathlib import Path
 
 from unstructured_mapping.knowledge_graph import KnowledgeStore
+
+
+def prepare_throwaway_kg(
+    workdir: Path,
+    name: str,
+    *,
+    source: Path | None = None,
+) -> Path:
+    """Materialise a throwaway KG file under ``workdir``.
+
+    Used by the preview and benchmark CLIs, which both
+    need a scratch SQLite file that either starts empty
+    (cold-start flows) or is seeded from an existing KG
+    (kg-driven flows). The helper centralises the
+    "unlink stale copy, optionally copyfile from source"
+    shape so both callers share one failure surface.
+
+    :param workdir: Directory that owns the throwaway
+        file. The caller is responsible for creating and
+        eventually cleaning up this directory.
+    :param name: Basename for the scratch file (e.g.
+        ``"preview.db"``).
+    :param source: Existing KG to seed the scratch file
+        from. When ``None``, the returned path is
+        guaranteed not to exist — callers open a fresh
+        :class:`KnowledgeStore` on it. When set, the
+        source is copied to the scratch path.
+    :return: Full path to the throwaway file.
+    :raises FileNotFoundError: When ``source`` is set
+        but does not exist.
+    """
+    target = workdir / name
+    if target.exists():
+        target.unlink()
+    if source is not None:
+        if not source.exists():
+            raise FileNotFoundError(source)
+        shutil.copyfile(source, target)
+    return target
 
 
 def open_kg_store(
@@ -44,4 +84,4 @@ def open_kg_store(
     return KnowledgeStore(db_path=path)
 
 
-__all__ = ["open_kg_store"]
+__all__ = ["open_kg_store", "prepare_throwaway_kg"]
