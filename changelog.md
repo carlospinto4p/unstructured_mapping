@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.48.8 - 16th April 2026
+
+- Removed unused `ConstraintWarning` re-export from `knowledge_graph/__init__.py`. No production module imports it; the dataclass lives on as an internal detail of `validation.py` and can be referenced as `validation.ConstraintWarning` when needed.
+
+
 ### v0.48.7 - 16th April 2026
 
 - Added `cli/_db_helpers.py::open_kg_store(path, *, create_if_missing=False)`: opens `KnowledgeStore` with explicit control over the "missing file" failure mode.

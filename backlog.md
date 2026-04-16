@@ -6,7 +6,7 @@
 - [x] **MEDIUM / Small** — Move the `preview._collect_preview` joins into a store method. Done in v0.48.5: `find_relationships_by_document` added to `RelationshipMixin`; last `# noqa: SLF001` dropped from `preview.py`.
 - [x] **MEDIUM / Small** — Consolidate test helpers. Done in v0.48.6: `make_provenance` and `add_mentions_to_store` live in `conftest.py`; both CLIs migrated.
 - [x] **LOW / Small** — Extract DB-open helper. Done in v0.48.7: `open_kg_store(path, *, create_if_missing=False)` landed; audit CLIs migrated.
-- [ ] **LOW / Small** — Drop the unused `ConstraintWarning` re-export from `knowledge_graph/__init__.py`. No production module imports it; keep it internal to `validation.py`.
+- [x] **LOW / Small** — Drop the unused `ConstraintWarning` re-export. Done in v0.48.8.
 
 ### 2026.04.14 (Wikidata import follow-ups)
 

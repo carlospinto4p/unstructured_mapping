@@ -28,7 +28,6 @@ from unstructured_mapping.knowledge_graph.storage import (
 )
 from unstructured_mapping.knowledge_graph.validation import (
     AliasCollision,
-    ConstraintWarning,
     audit_relationship_constraints,
     check_relationship_constraints,
     find_alias_collisions,
@@ -52,7 +51,6 @@ __all__ = [
     "RevisionNotFound",
     "RunMetrics",
     "RunStatus",
-    "ConstraintWarning",
     "ValidationError",
     "audit_relationship_constraints",
     "check_relationship_constraints",
