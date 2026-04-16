@@ -30,6 +30,7 @@ from unstructured_mapping.pipeline._optional_import import (
     try_import,
 )
 from unstructured_mapping.pipeline.llm_provider import (
+    DEFAULT_TIMEOUT,
     LLMConnectionError,
     LLMEmptyResponseError,
     LLMProvider,
@@ -48,11 +49,6 @@ logger = logging.getLogger(__name__)
 #: ship with; users can pass ``context_window``
 #: explicitly to override.
 DEFAULT_CONTEXT_WINDOW = 4096
-
-#: Default per-call timeout in seconds. Matches the
-#: policy in ``docs/pipeline/01_design.md`` ("Timeout:
-#: configurable, default 120 seconds per call").
-DEFAULT_TIMEOUT = 120.0
 
 
 class OllamaProvider(LLMProvider):

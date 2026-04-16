@@ -10,6 +10,9 @@
   - Migrated `cli/preview.py` and `cli/benchmark_cold_start.py` onto the helper; dropped local `shutil.copyfile` / `unlink` sites.
 - Added unit tests:
   - `tests/unit/test_cli_db_helpers.py`: 4 new tests covering empty-scratch setup, seed copy, stale-target overwrite, and missing-source error path.
+- Hoisted shared LLM provider defaults:
+  - `pipeline/llm_provider.py`: exports `DEFAULT_TIMEOUT = 120.0`; concrete providers now import it rather than redeclaring.
+  - `pipeline/llm_ollama.py` and `pipeline/llm_claude.py`: dropped the local `DEFAULT_TIMEOUT` constants. Provider-specific defaults (context window, max tokens) stay in their respective modules.
 
 
 ### v0.48.8 - 16th April 2026

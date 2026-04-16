@@ -36,6 +36,13 @@ LLMProvider`` works in the slimmest install.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+#: Default per-call timeout in seconds, shared by every
+#: concrete provider. Matches the policy in
+#: ``docs/pipeline/01_design.md`` ("Timeout: configurable,
+#: default 120 seconds per call"). Concrete providers
+#: import this constant so the default stays in one place.
+DEFAULT_TIMEOUT = 120.0
+
 
 @dataclass(frozen=True, slots=True)
 class TokenUsage:

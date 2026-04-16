@@ -26,6 +26,7 @@ from unstructured_mapping.pipeline._optional_import import (
     try_import,
 )
 from unstructured_mapping.pipeline.llm_provider import (
+    DEFAULT_TIMEOUT,
     LLMConnectionError,
     LLMEmptyResponseError,
     LLMProvider,
@@ -42,11 +43,6 @@ logger = logging.getLogger(__name__)
 #: tokens). Override via ``context_window`` if using an
 #: older or fine-tuned model with a smaller window.
 DEFAULT_CONTEXT_WINDOW = 200_000
-
-#: Default per-call timeout in seconds. Matches the
-#: policy in ``docs/pipeline/01_design.md`` ("Timeout:
-#: configurable, default 120 seconds per call").
-DEFAULT_TIMEOUT = 120.0
 
 #: Default maximum tokens in the response. The
 #: Anthropic Messages API requires ``max_tokens``.

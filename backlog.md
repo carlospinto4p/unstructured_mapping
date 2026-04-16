@@ -4,7 +4,7 @@
 
 - [x] **MEDIUM / Small** — Consolidate import summary logging. Done in v0.48.9: `log_import_summary` in `_seed_helpers.py`; seed, wikidata_seed, populate migrated.
 - [x] **MEDIUM / Small** — Extract the throwaway-KG copy idiom. Done in v0.48.9: `prepare_throwaway_kg` in `_db_helpers.py`; preview + benchmark migrated.
-- [ ] **LOW / Small** — Hoist the duplicated `DEFAULT_TIMEOUT = 120.0` constant from `pipeline/llm_ollama.py:55` and `pipeline/llm_claude.py:49` into `pipeline/llm_provider.py` as a shared constant. Both providers already agree on the 120s policy from `docs/pipeline/01_design.md`; context-window defaults stay provider-specific (4K vs 200K).
+- [x] **LOW / Small** — Hoist duplicated `DEFAULT_TIMEOUT`. Done in v0.48.9: shared constant lives in `llm_provider.py`; both providers import it.
 - [ ] **LOW / Small** — Drop the backwards-compat `_TYPE_HANDLERS = TYPE_REGISTRY` alias in `cli/wikidata_seed.py:68`. Migrate `tests/unit/test_wikidata_seed.py:51,133` to import `TYPE_REGISTRY` directly from `unstructured_mapping.wikidata`, then remove the alias and its comment.
 
 
