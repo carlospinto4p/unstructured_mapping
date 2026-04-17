@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.48.10 - 17th April 2026
+
+- `.gitattributes`: Added LF line ending normalization.
+
 ### v0.48.9 - 16th April 2026
 
 - Consolidated import summary logging:
