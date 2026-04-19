@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.48.12 - 20th April 2026
+
+- Synced canonical `.gitignore` from programme (direnv block).
+
+
 ### v0.48.11 - 20th April 2026
 
 - Synced canonical `.claude/rules/*.md` from programme.

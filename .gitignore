@@ -1,4 +1,4 @@
-# Set up
+# Pycharm
 .idea/
 .project
 
@@ -18,21 +18,32 @@ credentials/
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
+# Sketches
+sketches/
+notebooks/
+*.local.*
+*.tmp.*
+
+# AWS / Cloud
+.aws-sam/
+
 # Logs / Output
 *.log
 
 # Data
 */data/
-*.db
+
+# Large data files (suffix _all)
+*_all.*
+
+# Agent Builder workspace
+workspace/
 
 # Build artifacts
 build/
-.claude/settings.local.json
-.claude/scheduled_tasks.lock
 
-# Exploratory / ad-hoc data artefacts (keep committed
-# snapshots under data/seed/wikidata/)
-data/seed/wikidata_dryrun/
+# Ruff cache
+.ruff_cache/
 
-# Editor / tool tempfiles (e.g. atomic-write temp copies)
-*.tmp.*
+# direnv
+.envrc
