@@ -20,7 +20,7 @@ Proactively suggest refactoring opportunities in the following situations:
 
 - Present refactor suggestions as a concise list with clear rationale
 - Prioritize by impact: consistency and maintainability first
-- Don’t auto-apply — always propose and let the user decide
+- Don't auto-apply — always propose and let the user decide
 - Group related suggestions together
 - After each refactor proposal, add the items to `backlog.md` under a new
   section with the current date as the title (see `backlog.md` rules for format)

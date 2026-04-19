@@ -21,7 +21,7 @@ following situations:
 
 - Present findings as a prioritized list with file, line, and rationale
 - Classify impact as HIGH / MEDIUM / LOW
-- Don’t auto-apply — always propose and let the user decide
+- Don't auto-apply — always propose and let the user decide
 - Group related findings
 - After each optimization proposal, add the items to `backlog.md`
   under a new section with the current date as the title (see

@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.48.11 - 20th April 2026
+
+- Synced canonical `.claude/rules/*.md` from programme.
+
+
 ### v0.48.10 - 17th April 2026
 
 - `.gitattributes`: Added LF line ending normalization.
