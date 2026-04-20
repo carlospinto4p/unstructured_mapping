@@ -45,5 +45,6 @@ build/
 # Ruff cache
 .ruff_cache/
 
-# direnv
+# direnv / PowerShell venv env files
 .envrc
+.env.ps1
