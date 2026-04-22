@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.48.13 - 22nd April 2026
+
+- Updated `src/unstructured_mapping/cli/db_health.py`:
+  - `_section_daily_coverage()`: fills in zero-count days in the 7-day window and flags past days with no articles as `<- GAP`, followed by an `ALERT:` summary line. Today is never flagged since the scraper may not have run yet.
+- Added `tests/unit/test_cli_db_health.py`: coverage for gap detection, all-filled window, and today-not-flagged behaviour.
+
+
 ### v0.48.12 - 20th April 2026
 
 - Synced canonical `.gitignore` from programme (direnv block).

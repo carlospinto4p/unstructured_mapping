@@ -8,7 +8,7 @@ Usage::
 
 import argparse
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from unstructured_mapping.cli._argparse_helpers import (
@@ -86,19 +86,37 @@ def _section_recent_batches(
 def _section_daily_coverage(
     conn: sqlite3.Connection,
 ) -> list[str]:
-    """Article counts per day for the last 7 days."""
+    """Article counts per day in the rolling 7-day window.
+
+    Fills in zero-count days explicitly so gaps are visible, and
+    flags any past day with no articles as ``<- GAP``. Today is
+    never flagged — the scraper may not have run yet.
+    """
     rows = conn.execute(
         "SELECT DATE(scraped_at) AS day, COUNT(*) "
         "FROM articles "
         "WHERE scraped_at >= DATE('now', '-7 days') "
-        "GROUP BY day ORDER BY day"
+        "GROUP BY day"
     ).fetchall()
+    counts = {day: cnt for day, cnt in rows}
+
+    today = datetime.now(timezone.utc).date()
+    window = [today - timedelta(days=i) for i in range(7, -1, -1)]
+
     lines = ["", "Daily coverage (last 7 days):"]
-    if rows:
-        for day, cnt in rows:
-            lines.append(f"  {day}  {cnt} articles")
-    else:
-        lines.append("  No articles in the last 7 days.")
+    gap_count = 0
+    for d in window:
+        key = d.isoformat()
+        cnt = counts.get(key, 0)
+        marker = ""
+        if cnt == 0 and d != today:
+            marker = "  <- GAP"
+            gap_count += 1
+        lines.append(f"  {key}  {cnt:>4d} articles{marker}")
+    if gap_count:
+        lines.append(
+            f"  ALERT: {gap_count} day(s) with no articles in window"
+        )
     return lines
 
 
