@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.49.1 - 22nd April 2026
+
+- Batched mention-count lookups in the alias-collision audit:
+  - Added `KnowledgeStore.count_mentions_for_entities(ids)` on `ProvenanceMixin`: single grouped `GROUP BY entity_id` query, zero-fills ids with no provenance.
+  - Updated `cli/audit_aliases.py::score_collisions()`: prefetches all sides in one call instead of one query per collision side (was O(collisions × sides)).
+- Added unit tests:
+  - `tests/unit/test_kg_provenance.py`: batch counter returns correct counts, zero-fills unseen ids, and short-circuits on empty input.
+
+
 ### v0.49.0 - 22nd April 2026
 
 - Added `src/unstructured_mapping/web_scraping/backfill.py`:

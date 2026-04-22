@@ -128,7 +128,14 @@ def score_collisions(
     collision, with entities sorted by mention count
     (descending) so the merge target is always at index
     zero for same-type collisions.
+
+    All mention counts are fetched in a single grouped
+    query via :meth:`KnowledgeStore.count_mentions_for_entities`
+    — previously this method issued one query per collision
+    side, which was O(collisions × sides).
     """
+    all_ids = [eid for c in collisions for eid, _, _ in c.entities]
+    counts = store.count_mentions_for_entities(all_ids)
     scored: list[ScoredCollision] = []
     for c in collisions:
         scored_entities = [
@@ -136,7 +143,7 @@ def score_collisions(
                 entity_id=eid,
                 canonical_name=name,
                 entity_type=etype,
-                mention_count=(store.count_mentions_for_entity(eid)),
+                mention_count=counts[eid],
             )
             for eid, name, etype in c.entities
         ]

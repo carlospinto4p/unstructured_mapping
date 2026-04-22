@@ -681,6 +681,57 @@ def test_count_mentions_for_entity(tmp_path):
         assert store.count_mentions_for_entity(e.entity_id) == 3
 
 
+def test_count_mentions_for_entities_batches_and_zero_fills(tmp_path):
+    """Grouped query returns one row per id, zeros for unseen ids."""
+    db = tmp_path / "kg.db"
+    a = make_entity(canonical_name="A")
+    b = make_entity(canonical_name="B")
+    c = make_entity(canonical_name="C")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(a)
+        store.save_entity(b)
+        store.save_entity(c)
+        store.save_provenances(
+            [
+                Provenance(
+                    entity_id=a.entity_id,
+                    document_id=f"doc-a-{i}",
+                    source="test",
+                    mention_text=f"m{i}",
+                    context_snippet="ctx",
+                )
+                for i in range(3)
+            ]
+        )
+        store.save_provenances(
+            [
+                Provenance(
+                    entity_id=b.entity_id,
+                    document_id="doc-b-0",
+                    source="test",
+                    mention_text="m",
+                    context_snippet="ctx",
+                )
+            ]
+        )
+        # c has no mentions — must still appear as 0.
+        counts = store.count_mentions_for_entities(
+            [a.entity_id, b.entity_id, c.entity_id]
+        )
+    assert counts == {
+        a.entity_id: 3,
+        b.entity_id: 1,
+        c.entity_id: 0,
+    }
+
+
+def test_count_mentions_for_entities_empty_input(tmp_path):
+    """Empty list short-circuits to an empty dict (no SQL)."""
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        assert store.count_mentions_for_entities([]) == {}
+
+
 def test_find_mentions_with_entities_returns_pairs(
     tmp_path,
 ):

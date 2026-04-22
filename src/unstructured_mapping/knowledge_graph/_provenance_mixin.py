@@ -187,6 +187,36 @@ class ProvenanceMixin:
         ).fetchone()
         return int(row[0]) if row else 0
 
+    def count_mentions_for_entities(
+        self, entity_ids: list[str]
+    ) -> dict[str, int]:
+        """Batch ``count_mentions_for_entity`` over many ids.
+
+        One grouped query instead of one query per id. Entities
+        with zero mentions are included in the returned dict (as
+        ``0``) so callers can use ``result[eid]`` without a
+        ``.get(eid, 0)`` guard.
+
+        :param entity_ids: Entity ids to count. Duplicates are
+            accepted; the result is keyed by unique id.
+        :return: ``{entity_id: mention_count}`` for every id in
+            ``entity_ids``.
+        """
+        if not entity_ids:
+            return {}
+        unique_ids = list(dict.fromkeys(entity_ids))
+        placeholders = ",".join("?" * len(unique_ids))
+        rows = self._conn.execute(
+            f"SELECT entity_id, COUNT(*) FROM provenance "
+            f"WHERE entity_id IN ({placeholders}) "
+            f"GROUP BY entity_id",
+            unique_ids,
+        ).fetchall()
+        counts = {eid: 0 for eid in unique_ids}
+        for eid, cnt in rows:
+            counts[eid] = int(cnt)
+        return counts
+
     def find_mentions_with_entities(
         self, document_id: str
     ) -> list[tuple[Entity, Provenance]]:
