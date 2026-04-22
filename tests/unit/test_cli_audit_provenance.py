@@ -48,6 +48,49 @@ def test_find_short_snippets_flags_low_token_rows(
     assert findings[0].token_estimate < 5
 
 
+def test_find_short_snippets_sql_boundary_agrees_with_python(
+    tmp_path,
+):
+    """SQL pre-filter + Python token estimate must agree.
+
+    A snippet whose length sits right on the boundary — 19 and
+    20 chars for ``min_tokens=5`` (chars-per-token = 4) — used
+    to pass through Python-only filtering. The new SQL predicate
+    prunes long rows before hydration and must still let the
+    19-char row through to Python (token estimate = 5, not
+    flagged) rather than dropping it silently.
+    """
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", entity_id="apple")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        store.save_provenances(
+            [
+                # len = 16 → tokens = 4 → flagged
+                make_provenance(
+                    "apple",
+                    document_id="doc-below",
+                    context_snippet="x" * 16,
+                ),
+                # len = 19 → tokens = 5 → NOT flagged (boundary)
+                make_provenance(
+                    "apple",
+                    document_id="doc-edge",
+                    context_snippet="x" * 19,
+                ),
+                # len = 20 → tokens = 5 → NOT flagged
+                make_provenance(
+                    "apple",
+                    document_id="doc-at-boundary",
+                    context_snippet="x" * 20,
+                ),
+            ]
+        )
+        findings = find_short_snippets(store, min_tokens=5)
+    flagged = {f.document_id for f in findings}
+    assert flagged == {"doc-below"}
+
+
 # -- thin mentions --------------------------------------
 
 

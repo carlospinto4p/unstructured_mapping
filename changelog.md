@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.49.3 - 22nd April 2026
+
+- Pushed the token-length filter into SQL for the short-snippet audit:
+  - Updated `knowledge_graph/_audit_mixin.py::find_short_snippets()`: adds `WHERE LENGTH(context_snippet) < min_tokens * _CHARS_PER_TOKEN` so SQLite prunes long rows before the join hydrates them. Python still applies the exact `ceil(len/4)` estimate as a post-filter — the SQL bound is a conservative superset so the Python check stays the source of truth.
+- Added unit test:
+  - `tests/unit/test_cli_audit_provenance.py::test_find_short_snippets_sql_boundary_agrees_with_python`: boundary case at `len ∈ {16, 19, 20}` for `min_tokens=5`, guarding that the SQL pre-filter never drops a row the Python check would have flagged.
+
+
 ### v0.49.2 - 22nd April 2026
 
 - Batched duplicate checks in the Wikidata seed loader:

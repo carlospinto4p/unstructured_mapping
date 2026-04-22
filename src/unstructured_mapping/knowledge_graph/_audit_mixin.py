@@ -104,14 +104,26 @@ class AuditMixin:
         :return: One finding per low-token provenance
             row, in the order returned by the join (not
             sorted — presentation layers decide).
+
+        A ``LENGTH(context_snippet) < ? * _CHARS_PER_TOKEN``
+        predicate is pushed down to SQLite so obviously-long
+        snippets are skipped before row hydration. Token
+        counting in Python still applies the exact
+        ``ceil(len / 4)`` estimate as a post-filter — the SQL
+        bound is a conservative superset because a snippet
+        with ``len == min_tokens * 4`` ceils to ``min_tokens``
+        (not below) and must still be inspected.
         """
+        char_bound = min_tokens * _CHARS_PER_TOKEN
         rows = self._conn.execute(
             "SELECT p.entity_id, p.document_id, "
             "p.mention_text, p.context_snippet, "
             "e.canonical_name, e.entity_type "
             "FROM provenance p "
             "JOIN entities e "
-            "ON e.entity_id = p.entity_id"
+            "ON e.entity_id = p.entity_id "
+            "WHERE LENGTH(p.context_snippet) < ?",
+            (char_bound,),
         ).fetchall()
         findings: list[ShortSnippetFinding] = []
         for r in rows:
