@@ -52,13 +52,13 @@ anchor probe documented in ``docs/seed/wikidata.md``.
 #: were discovered by probing the ``wdt:P31`` classes of
 #: known anchor entities; see the commit history for the
 #: discovery script.
-_Q_BUSINESS = "Q4830453"           # business
-_Q_CENTRAL_BANK = "Q66344"         # central bank
-_Q_FIN_REGULATOR = "Q105062392"    # financial regulatory agency
-_Q_STOCK_EXCHANGE = "Q11691"       # stock exchange
-_Q_CURRENCY = "Q8142"              # currency
-_Q_STOCK_INDEX = "Q223371"         # stock market index
-_Q_CRYPTOCURRENCY = "Q13479982"    # cryptocurrency
+_Q_BUSINESS = "Q4830453"  # business
+_Q_CENTRAL_BANK = "Q66344"  # central bank
+_Q_FIN_REGULATOR = "Q105062392"  # financial regulatory agency
+_Q_STOCK_EXCHANGE = "Q11691"  # stock exchange
+_Q_CURRENCY = "Q8142"  # currency
+_Q_STOCK_INDEX = "Q223371"  # stock market index
+_Q_CRYPTOCURRENCY = "Q13479982"  # cryptocurrency
 
 #: Exclusion QIDs used by the exchange query. Wikidata
 #: occasionally tags banks and brokerages with P31
@@ -66,8 +66,8 @@ _Q_CRYPTOCURRENCY = "Q13479982"    # cryptocurrency
 #: lets Commerzbank, FXCM, Convergex, etc. through. The
 #: exchange query applies these as MINUS clauses to
 #: scrub them back out without touching genuine bourses.
-_Q_BANK = "Q22687"                 # bank
-_Q_BROKERAGE = "Q806735"           # brokerage firm
+_Q_BANK = "Q22687"  # bank
+_Q_BROKERAGE = "Q806735"  # brokerage firm
 
 
 #: Listed companies — instances of ``business`` (or any
@@ -79,6 +79,13 @@ _Q_BROKERAGE = "Q806735"           # brokerage firm
 #: a curated top-N import, pass specific tickers or QIDs
 #: to a future targeted query instead of relying on a
 #: SPARQL-wide sort.
+#: Central banks hold P414 (stock exchange listing) entries
+#: for currency/reserve-asset listings on some exchanges,
+#: which the naive ``Q4830453`` (business) subclass-of walk
+#: picks up as companies — Bank of Japan and Swiss National
+#: Bank regularly turned up in ``company.json`` with no
+#: ticker. The MINUS mirrors the bank/brokerage scrub in
+#: ``_EXCHANGES_TEMPLATE``.
 _LISTED_COMPANIES_TEMPLATE = f"""
 SELECT ?item ?itemLabel ?description
        ?ticker ?isin ?exchange ?exchangeLabel
@@ -89,6 +96,7 @@ WHERE {{{{
       ?item wdt:P31/wdt:P279* wd:{_Q_BUSINESS} .
       ?item p:P414 ?listing .
       ?listing ps:P414 ?exchange .
+      MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_CENTRAL_BANK} . }}}}
     }}}}
     LIMIT {{limit}}
   }}}}

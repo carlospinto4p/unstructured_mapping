@@ -116,6 +116,19 @@ def test_exchange_query_excludes_banks_and_brokerages():
     assert "wd:Q806735" in template
 
 
+def test_company_query_excludes_central_banks():
+    """The company query must MINUS out central banks
+    (``Q66344``). Without this clause Wikidata lets Bank of
+    Japan and Swiss National Bank through via the
+    business/P414 walk, because they hold listing entries
+    for currency/reserve-asset assertions."""
+    from unstructured_mapping.wikidata import queries
+
+    template = queries.LISTED_COMPANIES_QUERY
+    assert "MINUS" in template
+    assert "wd:Q66344" in template
+
+
 def test_registered_types_cover_expected_set():
     expected = {
         "company",

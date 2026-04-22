@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.49.5 - 22nd April 2026
+
+- Updated `wikidata/queries.py::_LISTED_COMPANIES_TEMPLATE`: added `MINUS { ?item wdt:P31/wdt:P279* wd:Q66344 . }` (central bank) inside the inner subquery. Without this, Bank of Japan and Swiss National Bank leaked into `company.json` because they hold P414 listing entries for currency/reserve-asset assertions.
+- Added unit test:
+  - `tests/unit/test_wikidata_seed.py::test_company_query_excludes_central_banks`: asserts the company query references `Q66344` inside a `MINUS` clause.
+
+
 ### v0.49.4 - 22nd April 2026
 
 - Added `idx_rel_document` in `knowledge_graph/storage.py::_CREATE_INDEXES`: `find_relationships_by_document` previously fell back to a full table scan on every call from the preview CLI. `CREATE INDEX IF NOT EXISTS` makes the migration a no-op; existing DBs pick up the new index on next open.
