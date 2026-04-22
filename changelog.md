@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.49.4 - 22nd April 2026
+
+- Added `idx_rel_document` in `knowledge_graph/storage.py::_CREATE_INDEXES`: `find_relationships_by_document` previously fell back to a full table scan on every call from the preview CLI. `CREATE INDEX IF NOT EXISTS` makes the migration a no-op; existing DBs pick up the new index on next open.
+- Added unit test:
+  - `tests/unit/test_kg_relationships.py::test_relationships_document_index_is_installed`: guards against the index being accidentally dropped from `_CREATE_INDEXES`.
+
+
 ### v0.49.3 - 22nd April 2026
 
 - Pushed the token-length filter into SQL for the short-snippet audit:

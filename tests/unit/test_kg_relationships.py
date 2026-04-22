@@ -287,6 +287,23 @@ def test_find_relationships_by_document(tmp_path):
     assert empty == []
 
 
+def test_relationships_document_index_is_installed(tmp_path):
+    """``idx_rel_document`` must be created for the query above.
+
+    Without it, ``find_relationships_by_document`` falls back to
+    a full scan. Guards against the index being accidentally
+    dropped from ``_CREATE_INDEXES`` in ``storage.py``.
+    """
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        rows = store._conn.execute(  # noqa: SLF001
+            "SELECT name FROM sqlite_master "
+            "WHERE type = 'index' AND tbl_name = 'relationships'"
+        ).fetchall()
+    names = {r[0] for r in rows}
+    assert "idx_rel_document" in names
+
+
 # -- KnowledgeStore: find_active_relationships --
 
 

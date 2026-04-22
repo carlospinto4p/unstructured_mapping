@@ -216,6 +216,11 @@ _CREATE_INDEXES = (
     "ON relationships (relation_kind_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_type "
     "ON relationships (relation_type)",
+    # `find_relationships_by_document` (cli/preview.py) ran a
+    # full table scan without this index. Added v0.49.4 after
+    # the v0.48.9 optimization review flagged it.
+    "CREATE INDEX IF NOT EXISTS idx_rel_document "
+    "ON relationships (document_id)",
     "CREATE INDEX IF NOT EXISTS idx_prov_run ON provenance (run_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_run ON relationships (run_id)",
     "CREATE INDEX IF NOT EXISTS idx_run_status ON ingestion_runs (status)",
