@@ -43,7 +43,6 @@ from unstructured_mapping.cli._argparse_helpers import (
 )
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.cli._seed_helpers import (
-    exists_by_name_and_type,
     import_with_dedup,
     log_import_summary,
 )
@@ -121,21 +120,32 @@ def _fetch_mapped(kind: str, limit: int) -> list[MappedEntity]:
     return mapped
 
 
-def _already_imported(store: KnowledgeStore, mapped: MappedEntity) -> bool:
-    """Return True if this Wikidata entity is already in KG.
+def _build_dedup_check(store: KnowledgeStore):
+    """Build an ``is_duplicate`` closure with prefetched state.
 
-    Checks the ``wikidata:Qxxx`` alias first, then falls
-    back to a canonical-name + type match so hand-curated
-    seed entries are not duplicated by a Wikidata import.
+    Replaces per-candidate ``alias_exists`` + ``exists_by_name_and_type``
+    queries (2 × N DB round-trips) with two bulk lookups up front
+    and O(1) Python ``in`` checks inside the loop.
+
+    :param store: The knowledge store to prefetch from.
+    :return: Callable matching ``is_duplicate(store, mapped)`` — the
+        ``store`` parameter is ignored since the prefetched sets
+        are captured in the closure; kept for signature compatibility
+        with :func:`import_with_dedup`.
     """
-    qid_alias = f"wikidata:{mapped.qid}"
-    if store.alias_exists(qid_alias):
-        return True
-    return exists_by_name_and_type(
-        store,
-        mapped.entity.canonical_name,
-        mapped.entity.entity_type,
-    )
+    qids = store.wikidata_qids()
+    name_types = store.name_type_pairs()
+
+    def check(_store: KnowledgeStore, mapped: MappedEntity) -> bool:
+        if mapped.qid in qids:
+            return True
+        key = (
+            mapped.entity.canonical_name.lower(),
+            mapped.entity.entity_type.value,
+        )
+        return key in name_types
+
+    return check
 
 
 def import_entities(
@@ -155,7 +165,7 @@ def import_entities(
         mapped,
         store,
         get_entity=lambda m: m.entity,
-        is_duplicate=_already_imported,
+        is_duplicate=_build_dedup_check(store),
         counter_key=lambda e: e.subtype or "unknown",
         reason="wikidata-seed",
         dry_run=dry_run,

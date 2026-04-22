@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.49.2 - 22nd April 2026
+
+- Batched duplicate checks in the Wikidata seed loader:
+  - Added `KnowledgeStore.wikidata_qids()` on `EntityCRUDMixin`: returns the set of bare QIDs carried as `wikidata:Q…` aliases.
+  - Added `KnowledgeStore.name_type_pairs()` on `EntityCRUDMixin`: returns `{(name.lower(), entity_type_value), …}` for every entity.
+  - Updated `cli/wikidata_seed.py`: replaced per-candidate `_already_imported()` (2 queries × N candidates) with `_build_dedup_check()` — one prefetch each, then O(1) Python `in` checks inside the loop.
+- Added unit tests:
+  - `tests/unit/test_kg_entities.py`: `wikidata_qids()` strips the prefix and returns an empty set when no Wikidata aliases exist; `name_type_pairs()` lowercases names and uses `entity_type.value`.
+
+
 ### v0.49.1 - 22nd April 2026
 
 - Batched mention-count lookups in the alias-collision audit:

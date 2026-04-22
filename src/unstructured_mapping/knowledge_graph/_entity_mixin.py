@@ -85,8 +85,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         """
         validate_temporal(entity)
         existing_row = self._conn.execute(
-            "SELECT created_at FROM entities "
-            "WHERE entity_id = ?",
+            "SELECT created_at FROM entities WHERE entity_id = ?",
             (entity.entity_id,),
         ).fetchone()
         is_update = existing_row is not None
@@ -97,9 +96,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         now = datetime.now(timezone.utc)
         if is_update:
             created_at = (
-                iso_to_dt(existing_row[0])
-                or entity.created_at
-                or now
+                iso_to_dt(existing_row[0]) or entity.created_at or now
             )
         else:
             created_at = entity.created_at or now
@@ -127,15 +124,11 @@ class EntityCRUDMixin(EntityHelpersMixin):
                 dt_to_iso(updated_at),
             ),
         )
-        self._sync_aliases(
-            entity.entity_id, entity.aliases
-        )
+        self._sync_aliases(entity.entity_id, entity.aliases)
         self._log_entity(entity, operation, reason)
         self._commit()
 
-    def get_entity(
-        self, entity_id: str
-    ) -> Entity | None:
+    def get_entity(self, entity_id: str) -> Entity | None:
         """Fetch an entity by its ID.
 
         :param entity_id: The entity's unique identifier.
@@ -150,9 +143,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         aliases = self._load_aliases(entity_id)
         return row_to_entity(row, aliases)
 
-    def get_entities(
-        self, entity_ids: list[str]
-    ) -> dict[str, Entity]:
+    def get_entities(self, entity_ids: list[str]) -> dict[str, Entity]:
         """Batch-load entities by id.
 
         Single ``WHERE entity_id IN (...)`` query plus one
@@ -174,16 +165,13 @@ class EntityCRUDMixin(EntityHelpersMixin):
             return {}
         placeholders = ",".join("?" * len(unique_ids))
         rows = self._conn.execute(
-            ENTITY_SELECT
-            + f"WHERE entity_id IN ({placeholders})",
+            ENTITY_SELECT + f"WHERE entity_id IN ({placeholders})",
             unique_ids,
         ).fetchall()
         entities = self._rows_to_entities(rows)
         return {e.entity_id: e for e in entities}
 
-    def find_by_name(
-        self, name: str
-    ) -> list[Entity]:
+    def find_by_name(self, name: str) -> list[Entity]:
         """Find entities whose canonical name matches.
 
         Case-insensitive search.
@@ -192,8 +180,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         :return: Matching entities.
         """
         rows = self._conn.execute(
-            ENTITY_SELECT
-            + "WHERE canonical_name COLLATE NOCASE = ?",
+            ENTITY_SELECT + "WHERE canonical_name COLLATE NOCASE = ?",
             (name,),
         ).fetchall()
         return self._rows_to_entities(rows)
@@ -258,17 +245,14 @@ class EntityCRUDMixin(EntityHelpersMixin):
             "    updated_at = COALESCE(updated_at, ?) "
             "WHERE entity_id = ?",
             [
-                (row["changed_at"], row["changed_at"],
-                 row["entity_id"])
+                (row["changed_at"], row["changed_at"], row["entity_id"])
                 for row in rows
             ],
         )
         self._commit()
         return len(rows)
 
-    def find_by_alias(
-        self, alias: str
-    ) -> list[Entity]:
+    def find_by_alias(self, alias: str) -> list[Entity]:
         """Find entities that have a matching alias.
 
         Case-insensitive search.
@@ -277,8 +261,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         :return: Matching entities.
         """
         rows = self._conn.execute(
-            ENTITY_SELECT_ALIASED
-            + "JOIN entity_aliases a "
+            ENTITY_SELECT_ALIASED + "JOIN entity_aliases a "
             "ON e.entity_id = a.entity_id "
             "WHERE a.alias COLLATE NOCASE = ?",
             (alias,),
@@ -300,6 +283,43 @@ class EntityCRUDMixin(EntityHelpersMixin):
             (alias,),
         ).fetchone()
         return row is not None
+
+    def wikidata_qids(self) -> set[str]:
+        """Return every Wikidata QID currently carried as an alias.
+
+        QIDs are stored as ``wikidata:Q…`` aliases; this method
+        returns the bare ``Q…`` part so callers can compare
+        against ``MappedEntity.qid`` directly. Bulk dedup helper
+        for the Wikidata seed loader, which otherwise calls
+        :meth:`alias_exists` once per candidate.
+
+        :return: Set of QIDs (e.g. ``{"Q312", "Q95"}``). Empty
+            when the KG has no Wikidata-sourced entities.
+        """
+        rows = self._conn.execute(
+            "SELECT SUBSTR(alias, 10) FROM entity_aliases "
+            "WHERE alias LIKE 'wikidata:Q%'"
+        ).fetchall()
+        return {r[0] for r in rows}
+
+    def name_type_pairs(self) -> set[tuple[str, str]]:
+        """Return ``(canonical_name.lower(), entity_type)`` for every entity.
+
+        Mirrors the dedup key used by
+        :meth:`exists_by_name_and_type` (case-insensitive name
+        match + exact type match). Letting the seed loader
+        prefetch this set once turns its per-candidate
+        duplicate check into an O(1) ``in`` probe.
+
+        :return: Set of ``(lowered_name, entity_type_value)``
+            tuples. Values match :class:`EntityType.value`, not
+            the enum itself, so callers use
+            ``entity.entity_type.value`` on the lookup side.
+        """
+        rows = self._conn.execute(
+            "SELECT canonical_name, entity_type FROM entities"
+        ).fetchall()
+        return {(name.lower(), etype) for name, etype in rows}
 
 
 # -- Search / filter --------------------------------------------
@@ -408,8 +428,7 @@ class EntitySearchMixin(EntityHelpersMixin):
         :return: Mapping of type string to count.
         """
         rows = self._conn.execute(
-            "SELECT entity_type, COUNT(*) "
-            "FROM entities GROUP BY entity_type"
+            "SELECT entity_type, COUNT(*) FROM entities GROUP BY entity_type"
         ).fetchall()
         return {t: c for t, c in rows}
 
@@ -474,14 +493,9 @@ class EntityMergeMixin(EntityHelpersMixin):
         if surv is None:
             raise EntityNotFound(surviving_id)
 
-        merge_reason = (
-            f"merged {deprecated_id} into "
-            f"{surviving_id}"
-        )
+        merge_reason = f"merged {deprecated_id} into {surviving_id}"
 
-        self._redirect_entity_references(
-            deprecated_id, surviving_id
-        )
+        self._redirect_entity_references(deprecated_id, surviving_id)
         self._conn.execute(
             "UPDATE entities SET status = ?, "
             "merged_into = ? WHERE entity_id = ?",
@@ -492,9 +506,7 @@ class EntityMergeMixin(EntityHelpersMixin):
             status=EntityStatus.MERGED,
             merged_into=surviving_id,
         )
-        self._log_entity(
-            merged_dep, "merge", merge_reason
-        )
+        self._log_entity(merged_dep, "merge", merge_reason)
         self._log_entity(surv, "merge", merge_reason)
         self._commit()
         logger.info(
@@ -510,9 +522,7 @@ class EntityMergeMixin(EntityHelpersMixin):
 class EntityHistoryMixin(EntityHelpersMixin):
     """Revision history, point-in-time queries, revert."""
 
-    def get_entity_history(
-        self, entity_id: str
-    ) -> list[EntityRevision]:
+    def get_entity_history(self, entity_id: str) -> list[EntityRevision]:
         """Fetch all revisions for an entity.
 
         Returns revisions in chronological order
@@ -565,9 +575,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
             return None
         return row_to_entity_rev(row)
 
-    def revert_entity(
-        self, entity_id: str, history_id: int
-    ) -> Entity:
+    def revert_entity(self, entity_id: str, history_id: int) -> Entity:
         """Revert an entity to a previous revision.
 
         Copies the snapshot from ``entity_history`` back
@@ -592,9 +600,7 @@ class EntityHistoryMixin(EntityHelpersMixin):
             (history_id, entity_id),
         ).fetchone()
         if row is None:
-            raise RevisionNotFound(
-                history_id, entity_id
-            )
+            raise RevisionNotFound(history_id, entity_id)
         rev = row_to_entity_rev(row)
         restored = Entity(
             entity_id=rev.entity_id,

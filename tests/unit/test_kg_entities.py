@@ -24,9 +24,7 @@ from .conftest import make_entity
 
 def test_store_save_and_get_entity(tmp_path):
     db = tmp_path / "kg.db"
-    entity = make_entity(
-        aliases=("Alias1", "Alias2")
-    )
+    entity = make_entity(aliases=("Alias1", "Alias2"))
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(entity)
         loaded = store.get_entity(entity.entity_id)
@@ -45,17 +43,13 @@ def test_store_get_entity_not_found(tmp_path):
 
 def test_store_get_entities_batch(tmp_path):
     db = tmp_path / "kg.db"
-    a = make_entity(
-        canonical_name="A", aliases=("a1",)
-    )
+    a = make_entity(canonical_name="A", aliases=("a1",))
     b = make_entity(canonical_name="B")
     c = make_entity(canonical_name="C")
     with KnowledgeStore(db_path=db) as store:
         for e in (a, b, c):
             store.save_entity(e)
-        result = store.get_entities(
-            [a.entity_id, c.entity_id, "missing"]
-        )
+        result = store.get_entities([a.entity_id, c.entity_id, "missing"])
 
     assert set(result) == {a.entity_id, c.entity_id}
     assert result[a.entity_id].aliases == ("a1",)
@@ -105,9 +99,7 @@ def test_store_get_entities_deduplicates_ids(tmp_path):
     a = make_entity(canonical_name="A")
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(a)
-        result = store.get_entities(
-            [a.entity_id, a.entity_id]
-        )
+        result = store.get_entities([a.entity_id, a.entity_id])
     assert len(result) == 1
 
 
@@ -120,6 +112,48 @@ def test_store_find_by_name(tmp_path):
 
     assert len(results) == 1
     assert results[0].canonical_name == "John Doe"
+
+
+def test_wikidata_qids_returns_bare_qids(tmp_path):
+    """Bulk dedup helper strips the ``wikidata:`` prefix."""
+    db = tmp_path / "kg.db"
+    e1 = make_entity(canonical_name="A", aliases=("wikidata:Q312",))
+    e2 = make_entity(canonical_name="B", aliases=("wikidata:Q95",))
+    e3 = make_entity(canonical_name="C", aliases=("other:alias",))
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_entity(e3)
+        assert store.wikidata_qids() == {"Q312", "Q95"}
+
+
+def test_wikidata_qids_empty_when_no_wikidata_aliases(tmp_path):
+    """Empty set when no entity carries a Wikidata alias."""
+    db = tmp_path / "kg.db"
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(make_entity(aliases=("just-a-name",)))
+        assert store.wikidata_qids() == set()
+
+
+def test_name_type_pairs_lowercases_and_uses_type_value(tmp_path):
+    """Keys match what callers compute from ``Entity`` objects."""
+    db = tmp_path / "kg.db"
+    e1 = make_entity(
+        canonical_name="Apple Inc.",
+        entity_type=EntityType.ORGANIZATION,
+    )
+    e2 = make_entity(
+        canonical_name="Tim Cook",
+        entity_type=EntityType.PERSON,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(e1)
+        store.save_entity(e2)
+        pairs = store.name_type_pairs()
+    assert pairs == {
+        ("apple inc.", EntityType.ORGANIZATION.value),
+        ("tim cook", EntityType.PERSON.value),
+    }
 
 
 def test_store_find_by_alias(tmp_path):
@@ -165,15 +199,9 @@ def test_find_entities_by_status(tmp_path):
         store.save_entity(e1)
         store.save_entity(e2)
         store.save_entity(e3)
-        store.merge_entities(
-            e2.entity_id, e3.entity_id
-        )
-        active = store.find_entities_by_status(
-            EntityStatus.ACTIVE
-        )
-        merged = store.find_entities_by_status(
-            EntityStatus.MERGED
-        )
+        store.merge_entities(e2.entity_id, e3.entity_id)
+        active = store.find_entities_by_status(EntityStatus.ACTIVE)
+        merged = store.find_entities_by_status(EntityStatus.MERGED)
 
     active_names = {e.canonical_name for e in active}
     assert "Active Entity" in active_names
@@ -185,9 +213,7 @@ def test_find_entities_by_status(tmp_path):
 def test_find_entities_by_status_empty(tmp_path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
-        result = store.find_entities_by_status(
-            EntityStatus.DEPRECATED
-        )
+        result = store.find_entities_by_status(EntityStatus.DEPRECATED)
     assert result == []
 
 
@@ -268,9 +294,7 @@ def test_find_entities_since(tmp_path):
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e_old)
         store.save_entity(e_new)
-        cutoff = datetime(
-            2025, 3, 1, tzinfo=timezone.utc
-        )
+        cutoff = datetime(2025, 3, 1, tzinfo=timezone.utc)
         found = store.find_entities_since(cutoff)
         all_found = store.find_entities_since(t1)
 
@@ -307,9 +331,7 @@ def test_entity_search_limit(tmp_path):
     with KnowledgeStore(db_path=db) as store:
         for p in persons:
             store.save_entity(p)
-        by_type = store.find_entities_by_type(
-            EntityType.PERSON, limit=2
-        )
+        by_type = store.find_entities_by_type(EntityType.PERSON, limit=2)
         by_subtype = store.find_entities_by_subtype(
             EntityType.PERSON,
             "executive",
@@ -318,16 +340,10 @@ def test_entity_search_limit(tmp_path):
         by_status = store.find_entities_by_status(
             EntityStatus.ACTIVE, limit=1
         )
-        by_prefix = store.find_by_name_prefix(
-            "Person", limit=2
-        )
-        since_limited = store.find_entities_since(
-            t_base, limit=4
-        )
+        by_prefix = store.find_by_name_prefix("Person", limit=2)
+        since_limited = store.find_entities_since(t_base, limit=4)
         # limit=None returns everything.
-        all_persons = store.find_entities_by_type(
-            EntityType.PERSON
-        )
+        all_persons = store.find_entities_by_type(EntityType.PERSON)
 
     assert len(by_type) == 2
     assert len(by_subtype) == 3
@@ -364,14 +380,10 @@ def test_store_merge_entities(tmp_path):
         store.save_entity(e3)
         store.save_provenance(p)
         store.save_relationship(rel)
-        store.merge_entities(
-            e1.entity_id, e2.entity_id
-        )
+        store.merge_entities(e1.entity_id, e2.entity_id)
         deprecated = store.get_entity(e1.entity_id)
         prov = store.get_provenance(e2.entity_id)
-        rels = store.get_relationships(
-            e2.entity_id, as_target=False
-        )
+        rels = store.get_relationships(e2.entity_id, as_target=False)
 
     assert deprecated is not None
     assert deprecated.status == EntityStatus.MERGED
@@ -461,9 +473,7 @@ def test_save_entity_advances_updated_at_on_update(
         store.save_entity(e)
         first = store.get_entity(e.entity_id)
         # Re-save with a changed field.
-        store.save_entity(
-            replace(first, description="v2")
-        )
+        store.save_entity(replace(first, description="v2"))
         second = store.get_entity(e.entity_id)
 
     assert first is not None and second is not None
@@ -511,23 +521,18 @@ def test_store_role_entity(tmp_path):
     role = Entity(
         canonical_name="Chief Technology Officer",
         entity_type=EntityType.ROLE,
-        description="Senior executive responsible for "
-        "technology strategy.",
+        description="Senior executive responsible for technology strategy.",
         aliases=("CTO", "head of technology"),
     )
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(role)
         by_alias = store.find_by_alias("cto")
-        by_type = store.find_entities_by_type(
-            EntityType.ROLE
-        )
+        by_type = store.find_entities_by_type(EntityType.ROLE)
 
     assert len(by_alias) == 1
     assert by_alias[0].entity_id == role.entity_id
     assert len(by_type) == 1
-    assert by_type[0].canonical_name == (
-        "Chief Technology Officer"
-    )
+    assert by_type[0].canonical_name == ("Chief Technology Officer")
 
 
 def test_store_relation_kind_entity(tmp_path):
@@ -630,12 +635,8 @@ def test_asset_entity(tmp_path):
     )
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(asset)
-        by_type = store.find_entities_by_type(
-            EntityType.ASSET
-        )
-        by_sub = store.find_entities_by_subtype(
-            EntityType.ASSET, "crypto"
-        )
+        by_type = store.find_entities_by_type(EntityType.ASSET)
+        by_sub = store.find_entities_by_subtype(EntityType.ASSET, "crypto")
 
     assert len(by_type) == 1
     assert by_type[0].canonical_name == "Bitcoin"
@@ -654,9 +655,7 @@ def test_metric_entity(tmp_path):
     )
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(metric)
-        by_type = store.find_entities_by_type(
-            EntityType.METRIC
-        )
+        by_type = store.find_entities_by_type(EntityType.METRIC)
         by_alias = store.find_by_alias("CPI")
 
     assert len(by_type) == 1
@@ -693,9 +692,7 @@ def test_entity_update_logs_history(tmp_path):
             entity_type=e.entity_type,
             description="Updated.",
         )
-        store.save_entity(
-            updated, reason="corrected description"
-        )
+        store.save_entity(updated, reason="corrected description")
         history = store.get_entity_history(e.entity_id)
 
     assert len(history) == 2
@@ -713,18 +710,12 @@ def test_entity_merge_logs_both_entities(tmp_path):
     with KnowledgeStore(db_path=db) as store:
         store.save_entity(e1)
         store.save_entity(e2)
-        store.merge_entities(
-            e1.entity_id, e2.entity_id
-        )
+        store.merge_entities(e1.entity_id, e2.entity_id)
         h1 = store.get_entity_history(e1.entity_id)
         h2 = store.get_entity_history(e2.entity_id)
 
-    merge_revs_1 = [
-        r for r in h1 if r.operation == "merge"
-    ]
-    merge_revs_2 = [
-        r for r in h2 if r.operation == "merge"
-    ]
+    merge_revs_1 = [r for r in h1 if r.operation == "merge"]
+    merge_revs_2 = [r for r in h2 if r.operation == "merge"]
     assert len(merge_revs_1) == 1
     assert merge_revs_1[0].status == EntityStatus.MERGED
     assert len(merge_revs_2) == 1
@@ -778,13 +769,9 @@ def test_revert_entity(tmp_path):
             description="Wrong update.",
         )
         store.save_entity(updated)
-        restored = store.revert_entity(
-            e.entity_id, rev_id
-        )
+        restored = store.revert_entity(e.entity_id, rev_id)
         current = store.get_entity(e.entity_id)
-        full_history = store.get_entity_history(
-            e.entity_id
-        )
+        full_history = store.get_entity_history(e.entity_id)
 
     assert restored.description == "Original."
     assert restored.aliases == ("OG",)
