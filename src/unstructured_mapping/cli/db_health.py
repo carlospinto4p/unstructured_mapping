@@ -88,14 +88,20 @@ def _section_daily_coverage(
 ) -> list[str]:
     """Article counts per day in the rolling 7-day window.
 
+    Groups by ``published`` (not ``scraped_at``) so the metric
+    reflects *content* coverage rather than ingestion activity.
+    The distinction matters after a backfill — articles for Apr 17
+    scraped on Apr 22 must count toward Apr 17, not Apr 22.
+
     Fills in zero-count days explicitly so gaps are visible, and
     flags any past day with no articles as ``<- GAP``. Today is
     never flagged — the scraper may not have run yet.
     """
     rows = conn.execute(
-        "SELECT DATE(scraped_at) AS day, COUNT(*) "
+        "SELECT DATE(published) AS day, COUNT(*) "
         "FROM articles "
-        "WHERE scraped_at >= DATE('now', '-7 days') "
+        "WHERE published IS NOT NULL "
+        "  AND DATE(published) >= DATE('now', '-7 days') "
         "GROUP BY day"
     ).fetchall()
     counts = {day: cnt for day, cnt in rows}

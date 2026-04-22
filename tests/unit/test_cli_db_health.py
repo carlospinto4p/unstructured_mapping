@@ -27,9 +27,15 @@ def _make_db(path: Path) -> sqlite3.Connection:
 def _insert(
     conn: sqlite3.Connection,
     url: str,
-    scraped_at: datetime,
+    published: datetime,
 ) -> None:
-    """Insert one article with a body long enough to pass checks."""
+    """Insert one article. ``published`` drives daily coverage.
+
+    ``scraped_at`` is set to the same value for simplicity — the
+    daily-coverage section queries ``published`` (content date),
+    and ``_section_last_scrape`` queries ``scraped_at`` (ingestion).
+    Using the same value keeps both sections sensible in tests.
+    """
     conn.execute(
         "INSERT INTO articles VALUES (?, ?, ?, ?, ?, ?, ?)",
         (
@@ -37,8 +43,8 @@ def _insert(
             "title",
             "b" * 100,
             "bbc",
-            None,
-            scraped_at.isoformat(),
+            published.isoformat(),
+            published.isoformat(),
             url,
         ),
     )

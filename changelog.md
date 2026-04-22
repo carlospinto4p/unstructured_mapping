@@ -1,5 +1,20 @@
 ## Changelog
 
+### v0.49.0 - 22nd April 2026
+
+- Added `src/unstructured_mapping/web_scraping/backfill.py`:
+  - `ARCHIVE_SOURCES`: mapping of source label to site domain for Google News `site:` filter.
+  - `build_archive_query_url()`: single-day Google News RSS URL builder using `after:`/`before:` operators.
+  - `ArchiveScraper`: one-day, one-source backfill scraper; decodes Google News redirects with `googlenewsdecoder`, extracts body text with `trafilatura`, and post-filters by `pubDate` to drop day-after leakage from the approximate `before:` bound.
+  - `fetch_range()`: iterates day-by-day across a closed range, stays within Google News' ~100-results-per-query cap, and deduplicates across days by URL.
+- Added `src/unstructured_mapping/cli/backfill.py`: `uv run python -m unstructured_mapping.cli.backfill --from YYYY-MM-DD --until YYYY-MM-DD [--source ap|bbc|reuters|all]` for backfilling missed days into the live articles database.
+- Updated `src/unstructured_mapping/cli/db_health.py`:
+  - `_section_daily_coverage()`: groups by `published` instead of `scraped_at` so the metric reflects content coverage rather than ingestion activity. Without this, backfilled articles bunched into the day they were scraped, hiding the very gaps the backfill was meant to fill.
+- Added unit tests:
+  - `tests/unit/test_backfill.py`: 7 tests covering query URL, post-filter, per-day iteration, URL dedup across days, and source validation.
+  - `tests/unit/test_cli_backfill.py`: 5 tests covering source fan-out, single-source mode, reversed/invalid date rejection, and date pass-through.
+
+
 ### v0.48.13 - 22nd April 2026
 
 - Updated `src/unstructured_mapping/cli/db_health.py`:
