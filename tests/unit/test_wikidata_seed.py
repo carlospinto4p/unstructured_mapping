@@ -129,6 +129,99 @@ def test_company_query_excludes_central_banks():
     assert "wd:Q66344" in template
 
 
+def test_dedupe_mapped_by_qid_merges_aliases_from_duplicates():
+    """Multiple rows for one QID produce one entity with merged aliases.
+
+    OPTIONAL joins on ticker/exchange/etc. fan each Wikidata
+    item out into several bindings. The dedup step must keep
+    the first description/subtype and union the aliases so
+    every external ID surfaced across bindings survives.
+    """
+    from unstructured_mapping.knowledge_graph import (
+        Entity,
+        EntityType,
+    )
+    from unstructured_mapping.wikidata import (
+        MappedEntity,
+        dedupe_mapped_by_qid,
+    )
+
+    apple_a = MappedEntity(
+        qid="Q312",
+        entity=Entity(
+            canonical_name="Apple Inc.",
+            entity_type=EntityType.ORGANIZATION,
+            subtype="company",
+            description="Apple is a publicly listed company.",
+            aliases=("wikidata:Q312", "ticker:AAPL"),
+        ),
+    )
+    apple_b = MappedEntity(
+        qid="Q312",
+        entity=Entity(
+            canonical_name="Apple Inc.",
+            entity_type=EntityType.ORGANIZATION,
+            subtype="company",
+            description="ignored — first wins",
+            aliases=("wikidata:Q312", "isin:US0378331005"),
+        ),
+    )
+    microsoft = MappedEntity(
+        qid="Q2283",
+        entity=Entity(
+            canonical_name="Microsoft",
+            entity_type=EntityType.ORGANIZATION,
+            subtype="company",
+            description="Microsoft is a publicly listed company.",
+            aliases=("wikidata:Q2283", "ticker:MSFT"),
+        ),
+    )
+
+    result = dedupe_mapped_by_qid([apple_a, apple_b, microsoft])
+    assert [m.qid for m in result] == ["Q312", "Q2283"]
+    apple_out = result[0].entity
+    assert apple_out.description == ("Apple is a publicly listed company.")
+    assert apple_out.aliases == (
+        "wikidata:Q312",
+        "ticker:AAPL",
+        "isin:US0378331005",
+    )
+
+
+def test_dedupe_mapped_by_qid_preserves_single_rows():
+    """Rows with unique QIDs pass through unchanged."""
+    from unstructured_mapping.knowledge_graph import (
+        Entity,
+        EntityType,
+    )
+    from unstructured_mapping.wikidata import (
+        MappedEntity,
+        dedupe_mapped_by_qid,
+    )
+
+    one = MappedEntity(
+        qid="Q1",
+        entity=Entity(
+            canonical_name="One",
+            entity_type=EntityType.ORGANIZATION,
+            subtype="company",
+            description="d",
+            aliases=("wikidata:Q1",),
+        ),
+    )
+    result = dedupe_mapped_by_qid([one])
+    assert result == [one]
+
+
+def test_dedupe_mapped_by_qid_empty_input():
+    """Empty input → empty output, no blowups."""
+    from unstructured_mapping.wikidata import (
+        dedupe_mapped_by_qid,
+    )
+
+    assert dedupe_mapped_by_qid([]) == []
+
+
 def test_registered_types_cover_expected_set():
     expected = {
         "company",

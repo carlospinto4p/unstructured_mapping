@@ -51,7 +51,7 @@ copy-pasted function body.
 """
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from unstructured_mapping.knowledge_graph import (
     Entity,
@@ -76,6 +76,56 @@ class MappedEntity:
     entity: Entity
 
 
+def dedupe_mapped_by_qid(
+    mapped: list[MappedEntity],
+) -> list[MappedEntity]:
+    """Collapse multiple :class:`MappedEntity` rows sharing a QID.
+
+    Wikidata OPTIONAL joins fan out each item into several
+    bindings whenever the joined fields (ticker, exchange,
+    country, ISIN, MIC, etc.) carry more than one value. The
+    v0.35.2 ``SELECT DISTINCT ?item`` LIMIT idiom dedupes QIDs
+    inside the subquery, but the OPTIONALs outside re-expand
+    them — we saw "Stoxx Europe 600 Index" × 289 of 601 and
+    "euro" × 27 in the raw mapped output.
+
+    This post-mapping step keeps the first mapper result per
+    QID (description, ``entity_type``, ``subtype`` are
+    first-seen-wins) and unions its aliases with every later
+    duplicate's aliases, preserving first-seen order. Every
+    ticker / ISIN / MIC surfaced by any binding therefore
+    survives on a single entity.
+
+    :param mapped: Possibly-duplicated list from the raw
+        SPARQL → mapper pass.
+    :return: One :class:`MappedEntity` per unique QID, in
+        first-seen order.
+    """
+    first: dict[str, MappedEntity] = {}
+    merged_aliases: dict[str, list[str]] = {}
+    for m in mapped:
+        if m.qid not in first:
+            first[m.qid] = m
+            merged_aliases[m.qid] = list(m.entity.aliases)
+            continue
+        existing = merged_aliases[m.qid]
+        seen = set(existing)
+        for alias in m.entity.aliases:
+            if alias not in seen:
+                existing.append(alias)
+                seen.add(alias)
+    result: list[MappedEntity] = []
+    for qid, m in first.items():
+        aliases = tuple(merged_aliases[qid])
+        entity = (
+            m.entity
+            if aliases == m.entity.aliases
+            else replace(m.entity, aliases=aliases)
+        )
+        result.append(MappedEntity(qid=qid, entity=entity))
+    return result
+
+
 #: Signature of a type-specific builder: receives the
 #: resolved label and the raw SPARQL row, returns the
 #: structured-fields template description plus the list
@@ -83,9 +133,7 @@ class MappedEntity:
 #: The factory appends the Wikidata ``description`` field
 #: and the ``wikidata:Qxxx`` alias so builders don't need
 #: to repeat that boilerplate.
-_RowBuilder = Callable[
-    [str, dict], tuple[str, list[str]]
-]
+_RowBuilder = Callable[[str, dict], tuple[str, list[str]]]
 
 
 # -- Shared helpers --------------------------------------------
@@ -220,9 +268,7 @@ def _company_description(
     if country:
         parts.append(f"headquartered in {country}")
     if exchange and ticker:
-        parts.append(
-            f"listed on {exchange} under ticker {ticker}"
-        )
+        parts.append(f"listed on {exchange} under ticker {ticker}")
     elif exchange:
         parts.append(f"listed on {exchange}")
     elif ticker:
@@ -230,16 +276,12 @@ def _company_description(
     return ", ".join(parts) + "."
 
 
-def _build_company(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_company(label: str, row: dict) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
     exchange = _value(row, "exchangeLabel")
     ticker = _value(row, "ticker")
     isin = _value(row, "isin")
-    description = _company_description(
-        label, country, exchange, ticker
-    )
+    description = _company_description(label, country, exchange, ticker)
     extras: list[str] = []
     if ticker:
         extras.append(f"ticker:{ticker}")
@@ -248,9 +290,7 @@ def _build_company(
     return description, extras
 
 
-def _build_central_bank(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_central_bank(label: str, row: dict) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
     if country:
         description = (
@@ -263,32 +303,22 @@ def _build_central_bank(
     return description, []
 
 
-def _build_regulator(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_regulator(label: str, row: dict) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
     if country:
         description = (
-            f"{label} is a financial regulatory authority "
-            f"in {country}."
+            f"{label} is a financial regulatory authority in {country}."
         )
     else:
-        description = (
-            f"{label} is a financial regulatory authority."
-        )
+        description = f"{label} is a financial regulatory authority."
     return description, []
 
 
-def _build_exchange(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_exchange(label: str, row: dict) -> tuple[str, list[str]]:
     country = _value(row, "countryLabel")
     mic = _value(row, "mic")
     if country:
-        description = (
-            f"{label} is a stock exchange based in "
-            f"{country}."
-        )
+        description = f"{label} is a stock exchange based in {country}."
     else:
         description = f"{label} is a stock exchange."
     extras: list[str] = []
@@ -297,9 +327,7 @@ def _build_exchange(
     return description, extras
 
 
-def _build_currency(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_currency(label: str, row: dict) -> tuple[str, list[str]]:
     iso = _value(row, "iso")
     country = _value(row, "countryLabel")
     parts = [f"{label} is a fiat currency"]
@@ -314,9 +342,7 @@ def _build_currency(
     return description, extras
 
 
-def _build_index(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_index(label: str, row: dict) -> tuple[str, list[str]]:
     exchange = _value(row, "exchangeLabel")
     country = _value(row, "countryLabel")
     parts = [f"{label} is a stock market index"]
@@ -328,14 +354,11 @@ def _build_index(
     return description, []
 
 
-def _build_crypto(
-    label: str, row: dict
-) -> tuple[str, list[str]]:
+def _build_crypto(label: str, row: dict) -> tuple[str, list[str]]:
     symbol = _value(row, "symbol")
     if symbol:
         description = (
-            f"{label} is a cryptocurrency trading under "
-            f"symbol {symbol}."
+            f"{label} is a cryptocurrency trading under symbol {symbol}."
         )
     else:
         description = f"{label} is a cryptocurrency."
@@ -369,9 +392,5 @@ map_exchange_row = _make_row_mapper(
 map_currency_row = _make_row_mapper(
     EntityType.ASSET, "currency", _build_currency
 )
-map_index_row = _make_row_mapper(
-    EntityType.ASSET, "index", _build_index
-)
-map_crypto_row = _make_row_mapper(
-    EntityType.ASSET, "crypto", _build_crypto
-)
+map_index_row = _make_row_mapper(EntityType.ASSET, "index", _build_index)
+map_crypto_row = _make_row_mapper(EntityType.ASSET, "crypto", _build_crypto)

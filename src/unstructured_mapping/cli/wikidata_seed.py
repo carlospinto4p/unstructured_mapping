@@ -56,6 +56,7 @@ from unstructured_mapping.wikidata import (
     MappedEntity,
     SparqlClient,
     build_query,
+    dedupe_mapped_by_qid,
 )
 
 logger = logging.getLogger(__name__)
@@ -117,7 +118,9 @@ def _fetch_mapped(kind: str, limit: int) -> list[MappedEntity]:
         result = handler.mapper(row)
         if result is not None:
             mapped.append(result)
-    return mapped
+    # Wikidata OPTIONAL joins fan each QID out into several
+    # rows; collapse them before snapshot writing or dedup.
+    return dedupe_mapped_by_qid(mapped)
 
 
 def _build_dedup_check(store: KnowledgeStore):

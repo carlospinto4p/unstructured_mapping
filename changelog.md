@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.49.6 - 22nd April 2026
+
+- Deduplicated within-snapshot Wikidata rows:
+  - Added `wikidata/mapper.py::dedupe_mapped_by_qid()`: collapses multiple `MappedEntity` records sharing a QID. First-seen row wins on description/subtype; aliases from every later duplicate are unioned so all ticker/ISIN/MIC values survive on a single entity.
+  - Exported `dedupe_mapped_by_qid` from `wikidata/__init__.py`.
+  - Updated `cli/wikidata_seed.py::_fetch_mapped()`: calls the dedup step before returning — both snapshot writes and KG imports now see one entity per QID. The v0.35.2 subquery-LIMIT idiom only deduped QIDs inside the inner subquery; OPTIONAL joins (ticker, exchange, country, ISIN, MIC) still fanned items out. Expected to roughly halve snapshot file size for list-heavy types (index, currency, company).
+- Added unit tests:
+  - `tests/unit/test_wikidata_seed.py`: dedup merges aliases across duplicates, preserves single rows untouched, and handles empty input.
+
+
 ### v0.49.5 - 22nd April 2026
 
 - Updated `wikidata/queries.py::_LISTED_COMPANIES_TEMPLATE`: added `MINUS { ?item wdt:P31/wdt:P279* wd:Q66344 . }` (central bank) inside the inner subquery. Without this, Bank of Japan and Swiss National Bank leaked into `company.json` because they hold P414 listing entries for currency/reserve-asset assertions.

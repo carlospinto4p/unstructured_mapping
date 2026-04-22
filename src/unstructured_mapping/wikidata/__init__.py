@@ -18,6 +18,7 @@ from unstructured_mapping.wikidata.client import (
 )
 from unstructured_mapping.wikidata.mapper import (
     MappedEntity,
+    dedupe_mapped_by_qid,
     map_central_bank_row,
     map_company_row,
     map_crypto_row,
@@ -55,6 +56,7 @@ __all__ = [
     "TYPE_REGISTRY",
     "TypeHandler",
     "build_query",
+    "dedupe_mapped_by_qid",
     "map_central_bank_row",
     "map_company_row",
     "map_crypto_row",
