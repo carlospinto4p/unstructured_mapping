@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.53.0 - 24th April 2026
+
+- Added `cli/validate_snapshot.py`: golden-snapshot KG quality gate.
+  - `--record PATH`: capture a structured KG summary (counts by type / subtype, top-K alias collisions, provenance density, totals) and persist as JSON.
+  - `--check BASELINE`: capture the current KG, compare against a baseline, print the diff, and exit non-zero when thresholds are breached.
+  - Thresholds: `--max-entity-drop-pct` (default 10) and `--max-collision-increase` (default 0).
+  - Exports `Snapshot`, `CollisionSummary`, `CheckResult`, `capture_snapshot`, `compare_snapshots`, `load_snapshot`, `write_snapshot` for programmatic use.
+- Added `tests/unit/test_cli_validate_snapshot.py`: 17 tests covering snapshot totals, per-type/subtype counts, collision capture, JSON roundtrip, schema-version guard, threshold gates (drop + collisions), and `main` record/check paths.
+
+
 ### v0.52.0 - 24th April 2026
 
 - Added Parquet export to `cli/export.py`:
