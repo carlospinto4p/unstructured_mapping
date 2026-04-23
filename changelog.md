@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.49.20 - 23rd April 2026
+
+- Updated `wikidata/mapper.py::dedupe_mapped_by_qid()`: carries the per-QID dedup set in a parallel `dict[qid, set[str]]` so the set is seeded once on first-seen and amended on subsequent duplicates, instead of being rebuilt from the alias list every time a QID is re-encountered. Matters for QIDs that appear in hundreds of SPARQL bindings (STOXX Europe 600 × 289).
+
+
 ### v0.49.19 - 23rd April 2026
 
 - Updated `knowledge_graph/_entity_helpers.py::_load_aliases_batch()`: chunks the `WHERE entity_id IN (...)` clause into 500-id slices so bulk reads on large KGs stay under SQLite's default `SQLITE_MAX_VARIABLE_NUMBER = 999`. Fixes the latent `OperationalError: too many SQL variables` that would surface on `find_entities_by_status(limit=100_000)` or similar after the Wikidata import.

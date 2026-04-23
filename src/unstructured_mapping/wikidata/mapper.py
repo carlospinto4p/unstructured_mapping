@@ -103,13 +103,20 @@ def dedupe_mapped_by_qid(
     """
     first: dict[str, MappedEntity] = {}
     merged_aliases: dict[str, list[str]] = {}
+    # Carry the dedup ``set`` alongside the alias list so a
+    # QID that appears in hundreds of SPARQL bindings
+    # (STOXX Europe 600 × 289 rows) does not rebuild the
+    # set on every encounter — the first-seen branch seeds
+    # it, subsequent branches just amend.
+    seen_aliases: dict[str, set[str]] = {}
     for m in mapped:
         if m.qid not in first:
             first[m.qid] = m
             merged_aliases[m.qid] = list(m.entity.aliases)
+            seen_aliases[m.qid] = set(m.entity.aliases)
             continue
         existing = merged_aliases[m.qid]
-        seen = set(existing)
+        seen = seen_aliases[m.qid]
         for alias in m.entity.aliases:
             if alias not in seen:
                 existing.append(alias)
