@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.49.13 - 23rd April 2026
+
+- Updated `wikidata/queries.py::EXCHANGES_QUERY`:
+  - Added three class-based `MINUS` clauses: alternative trading system (`Q438711`), market maker (`Q1137319`), and foreign exchange company (`Q5468383`). Catches KCG Americas and similar ATSs that inherit from a class the bank/brokerage `MINUS` did not cover.
+  - Added `_EXCHANGE_BLOCKLIST_QIDS` constant and a `FILTER(?item NOT IN ...)` clause for firms that are mis-tagged on Wikidata with only `Q11691` and no class hierarchy the subclass walk can catch. Bootstrap set covers FXCM (`Q5973741`) and Convergex (`Q93355333`).
+- Added unit tests in `tests/unit/test_wikidata_seed.py`:
+  - `test_exchange_query_excludes_ats_and_market_makers`: pins the three new class-based `MINUS` QIDs.
+  - `test_exchange_query_applies_curated_blocklist`: pins the `FILTER` blocklist and its bootstrap QIDs.
+
+
 ### v0.49.12 - 23rd April 2026
 
 - Updated `knowledge_graph/`:

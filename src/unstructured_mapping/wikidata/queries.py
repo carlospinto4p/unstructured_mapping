@@ -61,13 +61,47 @@ _Q_STOCK_INDEX = "Q223371"  # stock market index
 _Q_CRYPTOCURRENCY = "Q13479982"  # cryptocurrency
 
 #: Exclusion QIDs used by the exchange query. Wikidata
-#: occasionally tags banks and brokerages with P31
-#: stock-exchange, so the direct-instance filter alone
-#: lets Commerzbank, FXCM, Convergex, etc. through. The
-#: exchange query applies these as MINUS clauses to
-#: scrub them back out without touching genuine bourses.
+#: occasionally tags banks, brokerages, ATSs, market
+#: makers, and FX firms with P31 stock-exchange, so the
+#: direct-instance filter alone lets Commerzbank, FXCM,
+#: KCG Americas, etc. through. The exchange query applies
+#: these as MINUS clauses to scrub them back out without
+#: touching genuine bourses.
 _Q_BANK = "Q22687"  # bank
 _Q_BROKERAGE = "Q806735"  # brokerage firm
+_Q_ATS = "Q438711"  # alternative trading system
+_Q_MARKET_MAKER = "Q1137319"  # market maker
+_Q_FX_COMPANY = "Q5468383"  # foreign exchange company
+
+#: Curated blocklist of QIDs that are *mis-tagged* on
+#: Wikidata — they carry a direct ``P31 stock exchange``
+#: assertion *without* a bank / brokerage / ATS / market
+#: maker / FX-company class that a subclass-walking MINUS
+#: could catch. Verified individually when first reported
+#: (see v0.49.13 for the bootstrap set). Extend this list
+#: when a new offender surfaces in a snapshot review rather
+#: than widening the class-based MINUS to risk excluding
+#: genuine bourses.
+_EXCHANGE_BLOCKLIST_QIDS: tuple[str, ...] = (
+    "Q5973741",  # FXCM — retail FX broker, tagged only as Q11691.
+    "Q93355333",  # Convergex — US broker-dealer, tagged only as Q11691.
+)
+
+
+def _blocklist_filter(qids: tuple[str, ...]) -> str:
+    """Render a ``FILTER(?item NOT IN (wd:Q…, wd:Q…))`` clause.
+
+    Produces an empty string when ``qids`` is empty so the
+    rendered query stays identical to the class-only form.
+
+    :param qids: Iterable of bare Wikidata QIDs.
+    :return: SPARQL fragment, with the same indentation as
+        the surrounding ``MINUS`` blocks.
+    """
+    if not qids:
+        return ""
+    refs = ", ".join(f"wd:{q}" for q in qids)
+    return f"      FILTER(?item NOT IN ({refs})) ."
 
 
 #: Listed companies — instances of ``business`` (or any
@@ -159,11 +193,14 @@ WHERE {{{{
 #: subclass expansion) to exclude clearing houses,
 #: brokerages, and other adjacent entities that inherit
 #: from the exchange class. The inner ``MINUS`` blocks
-#: additionally scrub banks and brokerage firms that
-#: Wikidata directly tags as P31 stock exchange
-#: (Commerzbank, FXCM, Convergex, OTP banka, KCG Americas
-#: etc.) — the direct-instance filter alone didn't catch
-#: those, see v0.37.1.
+#: additionally scrub banks, brokerage firms, alternative
+#: trading systems, market makers, and foreign-exchange
+#: companies that Wikidata directly tags as P31 stock
+#: exchange (Commerzbank, KCG Americas, OTP banka, …).
+#: The trailing ``FILTER(?item NOT IN ...)`` is a last-
+#: mile blocklist for firms that are mis-tagged on
+#: Wikidata and carry no class hierarchy a subclass walk
+#: can catch (FXCM, Convergex). See v0.37.1 / v0.49.13.
 _EXCHANGES_TEMPLATE = f"""
 SELECT ?item ?itemLabel ?description
        ?country ?countryLabel ?mic
@@ -173,6 +210,10 @@ WHERE {{{{
       ?item wdt:P31 wd:{_Q_STOCK_EXCHANGE} .
       MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_BANK} . }}}}
       MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_BROKERAGE} . }}}}
+      MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_ATS} . }}}}
+      MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_MARKET_MAKER} . }}}}
+      MINUS {{{{ ?item wdt:P31/wdt:P279* wd:{_Q_FX_COMPANY} . }}}}
+{_blocklist_filter(_EXCHANGE_BLOCKLIST_QIDS)}
     }}}}
     LIMIT {{limit}}
   }}}}

@@ -116,6 +116,37 @@ def test_exchange_query_excludes_banks_and_brokerages():
     assert "wd:Q806735" in template
 
 
+def test_exchange_query_excludes_ats_and_market_makers():
+    """v0.49.13: the exchange query must additionally
+    MINUS out alternative trading systems (``Q438711``),
+    market makers (``Q1137319``), and foreign-exchange
+    companies (``Q5468383``). KCG Americas and similar
+    correctly-classified ATSs leak through the bank /
+    brokerage filter because they inherit from the ATS
+    class, not the bank or brokerage class."""
+    from unstructured_mapping.wikidata import queries
+
+    template = queries.EXCHANGES_QUERY
+    assert "wd:Q438711" in template
+    assert "wd:Q1137319" in template
+    assert "wd:Q5468383" in template
+
+
+def test_exchange_query_applies_curated_blocklist():
+    """v0.49.13: the exchange query must also block
+    specific mis-tagged offenders that carry only a direct
+    ``P31 stock exchange`` assertion and no class hierarchy
+    the subclass-walking MINUS can catch. The bootstrap
+    blocklist covers FXCM (``Q5973741``) and Convergex
+    (``Q93355333``)."""
+    from unstructured_mapping.wikidata import queries
+
+    template = queries.EXCHANGES_QUERY
+    assert "FILTER(?item NOT IN" in template
+    assert "wd:Q5973741" in template
+    assert "wd:Q93355333" in template
+
+
 def test_company_query_excludes_central_banks():
     """The company query must MINUS out central banks
     (``Q66344``). Without this clause Wikidata lets Bank of
