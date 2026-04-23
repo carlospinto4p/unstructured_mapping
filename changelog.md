@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.51.0 - 23rd April 2026
+
+- Added `cli/export.py`: portable KG export with `--format {jsonl,json-ld}`, optional `--type` / `--subtype` / `--since` filters, and `--with-relationships` / `--with-provenance` opt-ins. Emits one file per stream into `--output-dir`. JSON-LD wraps each stream in a minimal `@context` so downstream tools treat it as a well-formed JSON-LD document. Parquet was deliberately deferred so the default install stays free of `pyarrow`; tracked on the backlog.
+- Added unit test `tests/unit/test_cli_export.py`: 11 tests covering both formats, all three filter branches, the opt-in streams, the `--subtype` requires `--type` guard, and the `main` stdout contract.
+
+
 ### v0.50.0 - 23rd April 2026
 
 - Added `cli/run_diff.py`: diff two ingestion runs. Produces per-run headline blocks (status, tokens, LLM calls, wall time) plus entity / relationship set deltas — which entity IDs and which `(source, target, relation_type)` keys appear only in the base run, only in the head run, or in both. Supports `--deltas-only` to skip the headline blocks. Read-only; never mutates the KG.
