@@ -1,9 +1,9 @@
 """Tests for the ``cli.export`` CLI.
 
 Covers the three filter branches (type / subtype / since),
-the two output formats (``jsonl`` / ``json-ld``), the
-relationship and provenance opt-ins, and the ``main``
-stdout contract.
+the three output formats (``jsonl`` / ``json-ld`` /
+``parquet``), the relationship and provenance opt-ins,
+and the ``main`` stdout contract.
 """
 
 import json
@@ -27,6 +27,8 @@ from unstructured_mapping.knowledge_graph.models import (
 )
 
 from .conftest import make_entity
+
+pyarrow = pytest.importorskip("pyarrow")
 
 
 @pytest.fixture
@@ -247,3 +249,106 @@ def test_main_writes_jsonld_with_relationships(
     doc = json.loads(rel_path.read_text(encoding="utf-8"))
     assert "@context" in doc
     assert len(doc["relationships"]) == 1
+
+
+def test_supported_formats_declares_parquet():
+    assert "parquet" in SUPPORTED_FORMATS
+
+
+def test_export_parquet_writes_all_streams(populated_kg, tmp_path):
+    import pyarrow.parquet as pq
+
+    db, _ = populated_kg
+    out = tmp_path / "out"
+    with KnowledgeStore(db_path=db) as store:
+        counts = export_kg(
+            store,
+            out,
+            fmt="parquet",
+            with_relationships=True,
+            with_provenance=True,
+        )
+
+    assert counts == {
+        "entities": 3,
+        "relationships": 1,
+        "provenance": 3,
+    }
+    entities_path = out / "entities.parquet"
+    rels_path = out / "relationships.parquet"
+    provs_path = out / "provenance.parquet"
+    assert entities_path.exists()
+    assert rels_path.exists()
+    assert provs_path.exists()
+
+    # Columnar roundtrip: aliases survive as a LIST column
+    # and enum-backed fields land as their .value strings.
+    table = pq.read_table(entities_path)
+    records = table.to_pylist()
+    assert len(records) == 3
+    apple_row = next(r for r in records if r["canonical_name"] == "Apple")
+    assert apple_row["entity_type"] == "organization"
+    assert apple_row["aliases"] == ["AAPL"]
+
+
+def test_export_parquet_respects_type_filter(populated_kg, tmp_path):
+    import pyarrow.parquet as pq
+
+    db, _ = populated_kg
+    out = tmp_path / "out"
+    with KnowledgeStore(db_path=db) as store:
+        counts = export_kg(
+            store,
+            out,
+            fmt="parquet",
+            entity_type=EntityType.ORGANIZATION,
+        )
+    assert counts == {"entities": 2}
+    table = pq.read_table(out / "entities.parquet")
+    names = {r["canonical_name"] for r in table.to_pylist()}
+    assert names == {"Apple", "Microsoft"}
+
+
+def test_main_writes_parquet(populated_kg, tmp_path, capsys):
+    db, _ = populated_kg
+    out = tmp_path / "out"
+    main(
+        [
+            "--db",
+            str(db),
+            "--output-dir",
+            str(out),
+            "--format",
+            "parquet",
+            "--type",
+            "organization",
+        ]
+    )
+    captured = capsys.readouterr()
+    assert "entities=2" in captured.out
+    assert (out / "entities.parquet").exists()
+
+
+def test_export_parquet_raises_clear_error_without_pyarrow(
+    populated_kg, tmp_path, monkeypatch
+):
+    """The parquet branch must surface a helpful
+    ImportError when the ``export`` extra is missing —
+    the message should name the extra so the fix is
+    obvious without hunting through the traceback."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "pyarrow" or name.startswith("pyarrow."):
+            raise ImportError(f"No module named {name!r}")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    db, _ = populated_kg
+    out = tmp_path / "out"
+    with KnowledgeStore(db_path=db) as store:
+        with pytest.raises(ImportError, match="export"):
+            export_kg(store, out, fmt="parquet")

@@ -1,13 +1,13 @@
 """Export KG entities / relationships / provenance to
 portable files.
 
-Two output shapes are supported today, both plain-text so
-no extra dependency is required:
+Three output shapes are supported:
 
 - ``jsonl`` — one JSON object per line. Lowest-friction
   shape for downstream scripts and streaming consumers
   (``cat | jq``, ``pandas.read_json(lines=True)``,
-  ``duckdb read_json_auto``).
+  ``duckdb read_json_auto``). Requires no extra
+  dependency.
 - ``json-ld`` — a JSON-LD document per stream with a
   minimal ``@context`` that renames the entity /
   relationship fields into IRIs scoped under a per-project
@@ -15,12 +15,13 @@ no extra dependency is required:
   aim is "a well-formed JSON-LD document other tools can
   parse", not full RDF / schema.org compliance. A future
   iteration can swap in a richer context without changing
-  the export shape.
-
-Parquet is intentionally deferred to keep the default
-install light; tracked separately in the backlog so the
-``pyarrow`` dependency only lands when the ``export``
-extra exists.
+  the export shape. Requires no extra dependency.
+- ``parquet`` — columnar binary format, one file per
+  stream. Unlocks DuckDB / pandas / Spark without parsing
+  JSON. Requires the ``export`` optional extra
+  (``pip install 'unstructured-mapping[export]'``) which
+  pulls in ``pyarrow``; the branch raises a clear
+  :class:`ImportError` when the extra is missing.
 
 Usage::
 
@@ -68,7 +69,7 @@ logger = logging.getLogger(__name__)
 #: Supported output format slugs. Kept as a sorted tuple so
 #: ``--format`` choices render deterministically in
 #: ``--help``.
-SUPPORTED_FORMATS: tuple[str, ...] = ("json-ld", "jsonl")
+SUPPORTED_FORMATS: tuple[str, ...] = ("json-ld", "jsonl", "parquet")
 
 #: Default file-name stems per stream. Extension is
 #: appended at write time based on the chosen format.
@@ -242,6 +243,36 @@ def _write_jsonld(
     return len(rows)
 
 
+def _write_parquet(path: Path, rows: list[dict[str, object]]) -> int:
+    """Serialise ``rows`` to a columnar Parquet file.
+
+    Uses ``pyarrow.Table.from_pylist`` + ``write_table`` so
+    nested list columns (e.g. ``aliases``) land as native
+    Parquet ``LIST`` types without hand-rolled schemas.
+    Empty inputs still emit a valid (zero-row) file so
+    downstream tooling sees a consistent directory layout.
+
+    :raises ImportError: When the ``export`` optional
+        extra is not installed. The message points at the
+        exact install incantation so the fix is obvious
+        from the traceback alone.
+    :return: Count of rows written.
+    """
+    try:
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+    except ImportError as exc:
+        raise ImportError(
+            "Parquet export requires the 'export' optional "
+            "extra. Install with: "
+            "pip install 'unstructured-mapping[export]' "
+            "(or: uv sync --extra export)."
+        ) from exc
+    table = pa.Table.from_pylist(rows)
+    pq.write_table(table, path)
+    return len(rows)
+
+
 def export_kg(
     store: KnowledgeStore,
     output_dir: Path,
@@ -282,7 +313,11 @@ def export_kg(
     rel_rows = [_relationship_payload(r) for r in rels]
     prov_rows = [_provenance_payload(p) for p in provs]
 
-    ext = {"jsonl": "jsonl", "json-ld": "jsonld"}[fmt]
+    ext = {
+        "jsonl": "jsonl",
+        "json-ld": "jsonld",
+        "parquet": "parquet",
+    }[fmt]
     counts: dict[str, int] = {}
     if fmt == "jsonl":
         counts["entities"] = _write_jsonl(
@@ -299,7 +334,7 @@ def export_kg(
                 output_dir / f"{_FILENAMES['provenance']}.{ext}",
                 prov_rows,
             )
-    else:  # json-ld
+    elif fmt == "json-ld":
         counts["entities"] = _write_jsonld(
             output_dir / f"{_FILENAMES['entities']}.{ext}",
             "entities",
@@ -315,6 +350,21 @@ def export_kg(
             counts["provenance"] = _write_jsonld(
                 output_dir / f"{_FILENAMES['provenance']}.{ext}",
                 "provenance",
+                prov_rows,
+            )
+    else:  # parquet
+        counts["entities"] = _write_parquet(
+            output_dir / f"{_FILENAMES['entities']}.{ext}",
+            entity_rows,
+        )
+        if with_relationships:
+            counts["relationships"] = _write_parquet(
+                output_dir / f"{_FILENAMES['relationships']}.{ext}",
+                rel_rows,
+            )
+        if with_provenance:
+            counts["provenance"] = _write_parquet(
+                output_dir / f"{_FILENAMES['provenance']}.{ext}",
                 prov_rows,
             )
     return counts
@@ -337,8 +387,9 @@ def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=(
             "Export KG entities and optionally "
-            "relationships / provenance to JSON-L or "
-            "JSON-LD."
+            "relationships / provenance to JSON-L, "
+            "JSON-LD, or Parquet (requires the "
+            "'export' extra for parquet)."
         ),
     )
     add_db_argument(p, required=True)

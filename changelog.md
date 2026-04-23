@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.52.0 - 24th April 2026
+
+- Added Parquet export to `cli/export.py`:
+  - `SUPPORTED_FORMATS` now includes `parquet` alongside `jsonl` and `json-ld`.
+  - `_write_parquet()`: uses `pyarrow.Table.from_pylist` + `pyarrow.parquet.write_table` so list columns (e.g. `aliases`) land as native Parquet `LIST` types.
+  - Raises a clear `ImportError` pointing at `pip install 'unstructured-mapping[export]'` when `pyarrow` is missing.
+- Added `export` optional extra in `pyproject.toml` (`pyarrow>=15`); mirrored into `dev` so developer envs keep full test coverage.
+- Added tests in `tests/unit/test_cli_export.py`: parquet roundtrip, type filter, `main` parquet path, and missing-pyarrow error surface.
+
+
 ### v0.51.1 - 23rd April 2026
 
 - Added `cli/run_report.py`: per-run ingestion scorecard. Renders lifecycle (status, timestamps, wall time, error), aggregate counts (documents / provenance rows / relationships / distinct entities / distinct relationships), and the `RunMetrics` LLM scorecard (provider / model / calls / tokens). Distinct counts reuse `get_entities_touched_by_run` / `get_relationship_keys_for_run` added in v0.50.0. Flags failed runs with a top-of-report banner; falls back gracefully when no `RunMetrics` row exists.
