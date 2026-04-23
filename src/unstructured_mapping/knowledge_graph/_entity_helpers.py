@@ -42,9 +42,7 @@ class EntityHelpersMixin:
         # composed into ``KnowledgeStore``; declared here
         # so merge/history mixins can call them without
         # ``# type: ignore[attr-defined]``.
-        def get_entity(
-            self, entity_id: str
-        ) -> Entity | None: ...
+        def get_entity(self, entity_id: str) -> Entity | None: ...
 
         def save_entity(
             self,
@@ -64,10 +62,7 @@ class EntityHelpersMixin:
         eids = [r["entity_id"] for r in rows]
         alias_map = self._load_aliases_batch(eids)
         return [
-            row_to_entity(
-                r, alias_map.get(r["entity_id"], ())
-            )
-            for r in rows
+            row_to_entity(r, alias_map.get(r["entity_id"], ())) for r in rows
         ]
 
     def _find_entities_where(
@@ -101,6 +96,7 @@ class EntityHelpersMixin:
         from unstructured_mapping.knowledge_graph._helpers import (
             ENTITY_SELECT,
         )
+
         query = ENTITY_SELECT + "WHERE " + where_clause
         effective_params = list(params)
         if suffix:
@@ -108,9 +104,7 @@ class EntityHelpersMixin:
         if limit is not None:
             query += " LIMIT ?"
             effective_params.append(limit)
-        rows = self._conn.execute(
-            query, effective_params
-        ).fetchall()
+        rows = self._conn.execute(query, effective_params).fetchall()
         return self._rows_to_entities(rows)
 
     def _sync_aliases(
@@ -120,17 +114,13 @@ class EntityHelpersMixin:
     ) -> None:
         """Delete old aliases and insert new ones."""
         self._conn.execute(
-            "DELETE FROM entity_aliases "
-            "WHERE entity_id = ?",
+            "DELETE FROM entity_aliases WHERE entity_id = ?",
             (entity_id,),
         )
         if aliases:
             self._conn.executemany(
-                "INSERT INTO entity_aliases "
-                "(entity_id, alias) VALUES (?, ?)",
-                [
-                    (entity_id, a) for a in aliases
-                ],
+                "INSERT INTO entity_aliases (entity_id, alias) VALUES (?, ?)",
+                [(entity_id, a) for a in aliases],
             )
 
     def _log_entity(
@@ -166,12 +156,9 @@ class EntityHelpersMixin:
             ),
         )
 
-    def _load_aliases(
-        self, entity_id: str
-    ) -> tuple[str, ...]:
+    def _load_aliases(self, entity_id: str) -> tuple[str, ...]:
         rows = self._conn.execute(
-            "SELECT alias FROM entity_aliases "
-            "WHERE entity_id = ?",
+            "SELECT alias FROM entity_aliases WHERE entity_id = ?",
             (entity_id,),
         ).fetchall()
         return tuple(r["alias"] for r in rows)
@@ -181,26 +168,36 @@ class EntityHelpersMixin:
     ) -> dict[str, tuple[str, ...]]:
         """Fetch aliases for multiple entities.
 
+        The id list is chunked so each ``WHERE IN (...)``
+        query stays well under SQLite's default
+        ``SQLITE_MAX_VARIABLE_NUMBER = 999`` parameter
+        limit. Without chunking, bulk reads on a large KG
+        (e.g. ``find_entities_by_status(limit=100_000)``
+        after a Wikidata import) raise
+        ``OperationalError: too many SQL variables``.
+
         :return: Mapping of entity_id to aliases tuple.
         """
         if not entity_ids:
             return {}
-        placeholders = ", ".join(
-            "?" for _ in entity_ids
-        )
-        rows = self._conn.execute(
-            "SELECT entity_id, alias "
-            "FROM entity_aliases "
-            f"WHERE entity_id IN ({placeholders})",
-            entity_ids,
-        ).fetchall()
+        # 500 keeps a comfortable margin below the 999 cap
+        # and matches the chunk size SQLite itself
+        # documents as the safe upper bound for portable
+        # builds.
+        chunk_size = 500
         result: dict[str, list[str]] = {}
-        for eid, alias in rows:
-            result.setdefault(eid, []).append(alias)
-        return {
-            eid: tuple(aliases)
-            for eid, aliases in result.items()
-        }
+        for start in range(0, len(entity_ids), chunk_size):
+            chunk = entity_ids[start : start + chunk_size]
+            placeholders = ", ".join("?" for _ in chunk)
+            rows = self._conn.execute(
+                "SELECT entity_id, alias "
+                "FROM entity_aliases "
+                f"WHERE entity_id IN ({placeholders})",
+                chunk,
+            ).fetchall()
+            for eid, alias in rows:
+                result.setdefault(eid, []).append(alias)
+        return {eid: tuple(aliases) for eid, aliases in result.items()}
 
     def _redirect_entity_references(
         self,
@@ -209,12 +206,9 @@ class EntityHelpersMixin:
     ) -> None:
         """Redirect all FK references from old to new."""
         for sql in (
-            "UPDATE provenance SET entity_id = ? "
-            "WHERE entity_id = ?",
-            "UPDATE relationships SET source_id = ? "
-            "WHERE source_id = ?",
-            "UPDATE relationships SET target_id = ? "
-            "WHERE target_id = ?",
+            "UPDATE provenance SET entity_id = ? WHERE entity_id = ?",
+            "UPDATE relationships SET source_id = ? WHERE source_id = ?",
+            "UPDATE relationships SET target_id = ? WHERE target_id = ?",
             "UPDATE relationships "
             "SET qualifier_id = ? "
             "WHERE qualifier_id = ?",

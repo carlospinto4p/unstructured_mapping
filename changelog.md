@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.49.19 - 23rd April 2026
+
+- Updated `knowledge_graph/_entity_helpers.py::_load_aliases_batch()`: chunks the `WHERE entity_id IN (...)` clause into 500-id slices so bulk reads on large KGs stay under SQLite's default `SQLITE_MAX_VARIABLE_NUMBER = 999`. Fixes the latent `OperationalError: too many SQL variables` that would surface on `find_entities_by_status(limit=100_000)` or similar after the Wikidata import.
+- Added unit test `tests/unit/test_kg_entities.py::test_store_get_entities_chunks_large_id_list`: inserts 1200 entities with aliases, pulls them all in a single `get_entities()` call, and verifies aliases from every chunk boundary round-trip correctly.
+
+
 ### v0.49.18 - 23rd April 2026
 
 - Added `pipeline/_batch_lookup.py::resolve_batch()`: centralises the "batch lookup when wired, per-id fallback otherwise" pattern. Logs a debug line on every fallback so a missing `entity_batch_lookup` is visible instead of silent.

@@ -64,6 +64,33 @@ def test_store_get_entities_empty_returns_empty_dict(
         assert store.get_entities([]) == {}
 
 
+def test_store_get_entities_chunks_large_id_list(tmp_path):
+    """v0.49.19: ``_load_aliases_batch`` must chunk the
+    ``WHERE id IN (...)`` clause to stay under SQLite's
+    default 999-parameter cap. Without chunking a batch
+    of 1200 ids raises ``OperationalError: too many SQL
+    variables``.
+    """
+    db = tmp_path / "kg.db"
+    count = 1200
+    entities = [
+        make_entity(canonical_name=f"E{i}", aliases=(f"a{i}",))
+        for i in range(count)
+    ]
+    with KnowledgeStore(db_path=db) as store:
+        with store.transaction():
+            for e in entities:
+                store.save_entity(e)
+        result = store.get_entities([e.entity_id for e in entities])
+
+    assert len(result) == count
+    # Pick a few sample ids from different chunks to prove
+    # aliases survived the split + merge.
+    for i in (0, 499, 500, 999, 1000, 1199):
+        eid = entities[i].entity_id
+        assert result[eid].aliases == (f"a{i}",)
+
+
 def test_transaction_defers_commit_and_rolls_back_on_error(
     tmp_path,
 ):
