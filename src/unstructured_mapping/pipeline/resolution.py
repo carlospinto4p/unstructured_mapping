@@ -36,6 +36,9 @@ from collections.abc import Callable, Sequence
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
 )
+from unstructured_mapping.pipeline._batch_lookup import (
+    resolve_batch,
+)
 from unstructured_mapping.pipeline._llm_retry import (
     retry_llm_call,
 )
@@ -421,14 +424,11 @@ class LLMEntityResolver(EntityResolver):
                 seen.add(eid)
                 unique_ids.append(eid)
 
-        if self._entity_batch_lookup is not None:
-            found = self._entity_batch_lookup(unique_ids)
-        else:
-            found = {
-                eid: ent
-                for eid in unique_ids
-                if (ent := self._entity_lookup(eid)) is not None
-            }
+        found = resolve_batch(
+            unique_ids,
+            single=self._entity_lookup,
+            batch=self._entity_batch_lookup,
+        )
 
         candidates: list[Entity] = []
         for eid in unique_ids:

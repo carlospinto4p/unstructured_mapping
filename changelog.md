@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.49.18 - 23rd April 2026
+
+- Added `pipeline/_batch_lookup.py::resolve_batch()`: centralises the "batch lookup when wired, per-id fallback otherwise" pattern. Logs a debug line on every fallback so a missing `entity_batch_lookup` is visible instead of silent.
+- Updated `pipeline/`:
+  - `resolution.py::LLMEntityResolver._collect_candidates()`: swapped the inline conditional for `resolve_batch`.
+  - `extraction.py::LLMRelationshipExtractor._build_lookup_maps()`: same swap, so the two LLM stages now share one source of truth for the fallback shape.
+
+
 ### v0.49.17 - 23rd April 2026
 
 - Updated `pipeline/orchestrator.py::_persist_proposals()`: accumulates provenance rows in a list and calls `save_provenances()` once after the proposal loop instead of once per proposal, trading N single-row executemany calls for one bulk insert.

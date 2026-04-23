@@ -31,6 +31,9 @@ from collections.abc import Callable, Sequence
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
 )
+from unstructured_mapping.pipeline._batch_lookup import (
+    resolve_batch,
+)
 from unstructured_mapping.pipeline._llm_retry import (
     retry_llm_call,
 )
@@ -231,14 +234,11 @@ class LLMRelationshipExtractor(RelationshipExtractor):
 
         ids = [rm.entity_id for rm in entities]
         known_ids.update(ids)
-        if self._entity_batch_lookup is not None:
-            found = self._entity_batch_lookup(ids)
-        else:
-            found = {
-                eid: ent
-                for eid in ids
-                if (ent := self._entity_lookup(eid)) is not None
-            }
+        found = resolve_batch(
+            ids,
+            single=self._entity_lookup,
+            batch=self._entity_batch_lookup,
+        )
         for eid in ids:
             entity = found.get(eid)
             if entity is not None:
