@@ -185,6 +185,28 @@ CREATE TABLE IF NOT EXISTS run_metrics (
 )
 """
 
+#: Per-article failure ledger. One row per
+#: ``(run_id, document_id)`` pair; multiple runs can each
+#: record their own failure for the same document. The
+#: composite primary key dedupes re-tries within a single
+#: run (if a resumed article fails again it overwrites the
+#: prior row via :meth:`save_article_failure`'s
+#: ``INSERT OR REPLACE``). Populated from the orchestrator's
+#: per-article ``except`` block so a crashed batch leaves
+#: behind the exact list of documents that need re-queueing.
+_CREATE_ARTICLE_FAILURES = """
+CREATE TABLE IF NOT EXISTS article_failures (
+    run_id        TEXT NOT NULL,
+    document_id   TEXT NOT NULL,
+    error_message TEXT NOT NULL,
+    failed_at     TEXT NOT NULL,
+    PRIMARY KEY (run_id, document_id),
+    FOREIGN KEY (run_id)
+        REFERENCES ingestion_runs (run_id)
+)
+"""
+
+
 _CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_entity_type ON entities (entity_type)",
     "CREATE INDEX IF NOT EXISTS idx_entity_type_subtype "
@@ -224,6 +246,8 @@ _CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_prov_run ON provenance (run_id)",
     "CREATE INDEX IF NOT EXISTS idx_rel_run ON relationships (run_id)",
     "CREATE INDEX IF NOT EXISTS idx_run_status ON ingestion_runs (status)",
+    "CREATE INDEX IF NOT EXISTS idx_article_failures_run "
+    "ON article_failures (run_id)",
     "CREATE INDEX IF NOT EXISTS idx_entity_hist "
     "ON entity_history (entity_id, changed_at)",
     "CREATE INDEX IF NOT EXISTS idx_rel_hist_source "
@@ -263,6 +287,7 @@ class KnowledgeStore(
         _CREATE_RELATIONSHIP_HISTORY,
         _CREATE_INGESTION_RUNS,
         _CREATE_RUN_METRICS,
+        _CREATE_ARTICLE_FAILURES,
     )
     _index_statements = _CREATE_INDEXES
 

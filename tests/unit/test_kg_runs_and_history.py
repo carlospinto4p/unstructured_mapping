@@ -95,6 +95,68 @@ def test_store_get_run_not_found(tmp_path):
     assert loaded is None
 
 
+# -- Article failures / resume-run --
+
+
+def test_save_and_get_failed_document_ids(tmp_path):
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        store.save_article_failure(run.run_id, "doc-b", "boom")
+        store.save_article_failure(run.run_id, "doc-a", "kaboom")
+        failed = store.get_failed_document_ids(run.run_id)
+
+    # Alphabetical order for determinism.
+    assert failed == ["doc-a", "doc-b"]
+
+
+def test_save_article_failure_upserts_same_document(tmp_path):
+    """Re-failing the same doc in the same run overwrites
+    rather than duplicating — the composite PK is
+    ``(run_id, document_id)``."""
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        store.save_article_failure(run.run_id, "doc-1", "first")
+        store.save_article_failure(run.run_id, "doc-1", "second")
+        failed = store.get_failed_document_ids(run.run_id)
+        rows = store._conn.execute(  # noqa: SLF001
+            "SELECT error_message FROM article_failures "
+            "WHERE run_id = ? AND document_id = ?",
+            (run.run_id, "doc-1"),
+        ).fetchall()
+
+    assert failed == ["doc-1"]
+    assert len(rows) == 1
+    assert rows[0]["error_message"] == "second"
+
+
+def test_get_failed_document_ids_is_run_scoped(tmp_path):
+    """Failures from a different run must not leak into
+    the resume set — otherwise resuming run A would
+    re-queue run B's failures."""
+    db = tmp_path / "kg.db"
+    run_a = IngestionRun()
+    run_b = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run_a)
+        store.save_run(run_b)
+        store.save_article_failure(run_a.run_id, "doc-a", "a")
+        store.save_article_failure(run_b.run_id, "doc-b", "b")
+        assert store.get_failed_document_ids(run_a.run_id) == ["doc-a"]
+        assert store.get_failed_document_ids(run_b.run_id) == ["doc-b"]
+
+
+def test_get_failed_document_ids_empty_for_clean_run(tmp_path):
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        assert store.get_failed_document_ids(run.run_id) == []
+
+
 def test_get_entities_touched_by_run_collects_distinct_ids(tmp_path):
     """Every entity with at least one provenance row tagged
     with the run is returned; duplicates collapse.

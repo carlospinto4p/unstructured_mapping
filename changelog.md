@@ -1,5 +1,21 @@
 ## Changelog
 
+### v0.54.0 - 24th April 2026
+
+- Added per-article failure tracking + `Pipeline.run()` resume support:
+  - `article_failures` table in `knowledge_graph/storage.py`: `(run_id, document_id, error_message, failed_at)` with composite PK on `(run_id, document_id)` and FK to `ingestion_runs`.
+  - Index `idx_article_failures_run` for fast per-run lookup.
+  - `KnowledgeStore.save_article_failure()`: `INSERT OR REPLACE` upsert so a resumed article that fails again refreshes the prior row.
+  - `KnowledgeStore.get_failed_document_ids()`: returns the failed set, sorted, for a given run_id.
+- Updated `pipeline/orchestrator.py`:
+  - `Pipeline._process_article()`: the per-article `except` now calls `save_article_failure` so a crashed batch leaves behind the exact re-queue list.
+  - `Pipeline.run(articles, *, resume_run_id=None)`: when set, filters `articles` down to the failed ids from the prior run before allocating the new run_id.
+- Added tests:
+  - `tests/unit/test_kg_runs_and_history.py`: `save_article_failure` / `get_failed_document_ids` roundtrip, upsert semantics, per-run scoping, empty-run behaviour.
+  - `tests/unit/test_pipeline.py`: orchestrator records a failure row, `resume_run_id` filters to failed docs, resuming a clean run is a no-op.
+- Deferred: a user-facing `--resume-run` CLI flag. The backlog item specified it live on `cli/populate.py`, which is currently a seed loader (curated JSON + Wikidata snapshots) and does not drive the LLM pipeline; wiring the flag there would be inert. Left as a follow-up to land alongside a canonical batch-ingest CLI.
+
+
 ### v0.53.0 - 24th April 2026
 
 - Added `cli/validate_snapshot.py`: golden-snapshot KG quality gate.

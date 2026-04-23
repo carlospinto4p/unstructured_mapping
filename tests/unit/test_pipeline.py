@@ -774,6 +774,80 @@ def test_pipeline_isolates_article_failure(tmp_path):
     assert run.status == RunStatus.COMPLETED
 
 
+def test_pipeline_records_article_failure_row(tmp_path):
+    """A per-article exception must land in
+    ``article_failures`` so a later run can resume
+    just those document_ids without paying LLM costs
+    for the successful ones."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    articles = [make_article(body="Apple a.", title="bad")]
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        pipeline = Pipeline(
+            detector=RuleBasedDetector([apple]),
+            resolver=_ExplodingResolver(),
+            store=store,
+        )
+        result = pipeline.run(articles)
+        failed = store.get_failed_document_ids(result.run_id)
+
+    assert failed == [articles[0].document_id.hex]
+
+
+def test_pipeline_resume_run_filters_to_failed_ids(tmp_path):
+    """``resume_run_id`` drops successful articles and
+    re-queues only the failed ones."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    good = make_article(body="Apple rose.", title="good")
+    bad = make_article(body="Apple fell.", title="bad")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        # First run — fake a failure on the "bad" doc
+        # directly; saves an end-to-end LLM exception.
+        first = pipeline = Pipeline(
+            detector=RuleBasedDetector([apple]),
+            resolver=AliasResolver(),
+            store=store,
+        )
+        first_run = first.run([good])
+        store.save_article_failure(
+            first_run.run_id, bad.document_id.hex, "timeout"
+        )
+
+        # Second run — both articles offered, resume
+        # should narrow to just the bad one.
+        result = pipeline.run([good, bad], resume_run_id=first_run.run_id)
+
+    assert len(result.results) == 1
+    assert result.results[0].document_id == bad.document_id.hex
+    assert result.results[0].error is None
+
+
+def test_pipeline_resume_run_with_no_failures_processes_nothing(
+    tmp_path,
+):
+    """Resuming a clean run leaves the filtered list
+    empty so the orchestrator runs a no-op batch."""
+    db = tmp_path / "kg.db"
+    apple = make_org("Apple", aliases=("Apple",))
+    art = make_article(body="Apple rose.")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_entity(apple)
+        pipeline = Pipeline(
+            detector=RuleBasedDetector([apple]),
+            resolver=AliasResolver(),
+            store=store,
+        )
+        first = pipeline.run([art])
+        # No failures recorded against `first.run_id`.
+        second = pipeline.run([art], resume_run_id=first.run_id)
+
+    assert second.documents_processed == 0
+    assert second.results == ()
+
+
 # -- Pipeline.process_article: direct call --
 
 

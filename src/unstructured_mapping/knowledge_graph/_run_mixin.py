@@ -195,6 +195,64 @@ class RunMixin:
         ).fetchall()
         return {r["entity_id"] for r in rows}
 
+    def save_article_failure(
+        self,
+        run_id: str,
+        document_id: str,
+        error_message: str,
+    ) -> None:
+        """Record a per-article failure for ``run_id``.
+
+        Upsert semantics (``INSERT OR REPLACE``) so a
+        resumed article that fails again overwrites the
+        prior error rather than piling up rows. The
+        ``failed_at`` timestamp is refreshed on every
+        call so the most recent error is always the one
+        inspectable via :meth:`get_failed_document_ids`.
+
+        :param run_id: The run in which the article
+            failed. Must exist in ``ingestion_runs`` —
+            the FK on ``article_failures`` rejects
+            orphans.
+        :param document_id: The article that failed;
+            typically the hex form of
+            :attr:`Article.document_id`.
+        :param error_message: Stringified exception
+            from the orchestrator's per-article
+            ``except`` block. Useful for post-run
+            triage.
+        """
+        self._conn.execute(
+            "INSERT OR REPLACE INTO article_failures "
+            "(run_id, document_id, error_message, failed_at) "
+            "VALUES (?, ?, ?, ?)",
+            (run_id, document_id, error_message, now_iso()),
+        )
+        self._commit()
+
+    def get_failed_document_ids(self, run_id: str) -> list[str]:
+        """Return document ids that failed in ``run_id``.
+
+        Used to drive ``--resume-run``-style re-queueing:
+        the caller feeds the returned list back into the
+        orchestrator to re-process only the articles that
+        crashed without re-paying LLM costs for the
+        successful ones.
+
+        :param run_id: Ingestion run identifier.
+        :return: Ordered list of ``document_id`` strings
+            (sorted for determinism; order does not
+            otherwise matter). Empty when no failures
+            were recorded for the run — the caller
+            should treat that as "nothing to resume".
+        """
+        rows = self._conn.execute(
+            "SELECT document_id FROM article_failures "
+            "WHERE run_id = ? ORDER BY document_id",
+            (run_id,),
+        ).fetchall()
+        return [r["document_id"] for r in rows]
+
     def get_relationship_keys_for_run(
         self, run_id: str
     ) -> set[tuple[str, str, str]]:

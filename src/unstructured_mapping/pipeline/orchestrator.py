@@ -366,7 +366,12 @@ class Pipeline:
 
     # -- Public API -----------------------------------------
 
-    def run(self, articles: list[Article]) -> PipelineResult:
+    def run(
+        self,
+        articles: list[Article],
+        *,
+        resume_run_id: str | None = None,
+    ) -> PipelineResult:
         """Process a batch of articles inside one run.
 
         A new :class:`IngestionRun` is created and saved
@@ -380,8 +385,33 @@ class Pipeline:
         re-raise.
 
         :param articles: Articles to process.
+        :param resume_run_id: When set, filter
+            ``articles`` down to just the ones recorded
+            as failures in that prior run (see
+            :meth:`KnowledgeStore.get_failed_document_ids`).
+            Articles whose ``document_id.hex`` does not
+            appear in the failed set are dropped before
+            the loop starts — re-processing a successful
+            article would burn LLM tokens for no new
+            output. A fresh run_id is still allocated
+            for the resumed batch so the two attempts
+            remain separately auditable.
         :return: Aggregate result for the run.
         """
+        if resume_run_id is not None:
+            failed_ids = set(
+                self._store.get_failed_document_ids(resume_run_id)
+            )
+            before = len(articles)
+            articles = [
+                a for a in articles if a.document_id.hex in failed_ids
+            ]
+            logger.info(
+                "Resuming run %s: %d/%d articles match the failed set.",
+                resume_run_id,
+                len(articles),
+                before,
+            )
         run = IngestionRun()
         self._store.save_run(run)
         logger.info(
@@ -619,6 +649,24 @@ class Pipeline:
             # the store directly and propagate out of
             # :meth:`run`.
             logger.exception("Failed to process article %s", doc_id)
+            # Persist the failure so a resumed run can
+            # re-queue just the crashed articles via
+            # :meth:`KnowledgeStore.get_failed_document_ids`
+            # instead of burning LLM tokens on the whole
+            # batch again. ``run_id`` is ``None`` in
+            # single-article test drivers (e.g. preview);
+            # skip the write in that case — there is no
+            # run to attribute the failure to.
+            if run_id is not None:
+                try:
+                    self._store.save_article_failure(run_id, doc_id, str(exc))
+                except Exception:  # noqa: BLE001
+                    logger.exception(
+                        "Failed to record article_failures row "
+                        "for %s in run %s",
+                        doc_id,
+                        run_id,
+                    )
             return ArticleResult(
                 document_id=doc_id,
                 error=str(exc),
