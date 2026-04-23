@@ -788,28 +788,34 @@ class Pipeline:
     ) -> tuple[int, int, int]:
         """Persist the aggregated outputs of one article.
 
+        All writes run inside a single ``store.transaction()`` so
+        one article commits once — previously fired up to 2N+2
+        COMMITs (one per `save_entity`/`save_provenances` call
+        inside the proposal loop, plus the relationship batch).
+
         :return: ``(provenances_saved, proposals_saved,
             relationships_saved)``.
         """
         detected_at = _utcnow()
-        prov_saved = (
-            self._store.save_provenances(list(aggregated.provenances))
-            if aggregated.provenances
-            else 0
-        )
-        proposals_saved = self._persist_proposals(
-            aggregated.proposals,
-            article.document_id.hex,
-            article.source,
-            detected_at,
-            run_id,
-        )
-        rels_saved = self._persist_relationships(
-            aggregated.relationships,
-            article.document_id.hex,
-            detected_at,
-            run_id,
-        )
+        with self._store.transaction():
+            prov_saved = (
+                self._store.save_provenances(list(aggregated.provenances))
+                if aggregated.provenances
+                else 0
+            )
+            proposals_saved = self._persist_proposals(
+                aggregated.proposals,
+                article.document_id.hex,
+                article.source,
+                detected_at,
+                run_id,
+            )
+            rels_saved = self._persist_relationships(
+                aggregated.relationships,
+                article.document_id.hex,
+                detected_at,
+                run_id,
+            )
         return prov_saved, proposals_saved, rels_saved
 
     def _process_cold_start(
@@ -848,13 +854,14 @@ class Pipeline:
             self._metrics.input_tokens += cs_usage.input_tokens
             self._metrics.output_tokens += cs_usage.output_tokens
         detected_at = _utcnow()
-        saved = self._persist_proposals(
-            proposals,
-            chunk.document_id,
-            article.source,
-            detected_at,
-            run_id,
-        )
+        with self._store.transaction():
+            saved = self._persist_proposals(
+                proposals,
+                chunk.document_id,
+                article.source,
+                detected_at,
+                run_id,
+            )
         # Cold-start bypasses the chunk loop; record a
         # single chunk and the saved count so the
         # scorecard still reflects the work done.

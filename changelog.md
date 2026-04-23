@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.49.16 - 23rd April 2026
+
+- Updated `pipeline/orchestrator.py`:
+  - `_persist_aggregated()`: wrapped the provenance + proposal + relationship writes in `store.transaction()` so one article commits once. Previously fired up to 2N+2 COMMITs (save_entity + save_provenances per proposal, plus the relationship batch).
+  - `_process_cold_start()`: wrapped the per-proposal persistence loop in `store.transaction()` for the same reason.
+
+
 ### v0.49.15 - 23rd April 2026
 
 - Updated `pipeline/extraction.py::LLMRelationshipExtractor`:
