@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.49.17 - 23rd April 2026
+
+- Updated `pipeline/orchestrator.py::_persist_proposals()`: accumulates provenance rows in a list and calls `save_provenances()` once after the proposal loop instead of once per proposal, trading N single-row executemany calls for one bulk insert.
+
+
 ### v0.49.16 - 23rd April 2026
 
 - Updated `pipeline/orchestrator.py`:

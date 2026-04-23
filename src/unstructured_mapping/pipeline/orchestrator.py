@@ -893,11 +893,14 @@ class Pipeline:
         The aggregator already deduped by name+type; each
         proposal here becomes a single :class:`Entity`
         plus a :class:`Provenance` tying it to the source
-        article.
+        article. All provenance rows are accumulated and
+        written in a single ``save_provenances`` call so
+        large proposal batches avoid N separate
+        executemany round-trips.
         """
         if not proposals:
             return 0
-        count = 0
+        provenances: list[Provenance] = []
         for proposal in proposals:
             entity = Entity(
                 canonical_name=proposal.canonical_name,
@@ -911,26 +914,24 @@ class Pipeline:
                 entity,
                 reason="proposed by LLM",
             )
-            self._store.save_provenances(
-                [
-                    Provenance(
-                        entity_id=entity.entity_id,
-                        document_id=doc_id,
-                        source=source,
-                        mention_text=(proposal.canonical_name),
-                        context_snippet=(proposal.context_snippet),
-                        detected_at=detected_at,
-                        run_id=run_id,
-                    )
-                ]
+            provenances.append(
+                Provenance(
+                    entity_id=entity.entity_id,
+                    document_id=doc_id,
+                    source=source,
+                    mention_text=proposal.canonical_name,
+                    context_snippet=proposal.context_snippet,
+                    detected_at=detected_at,
+                    run_id=run_id,
+                )
             )
-            count += 1
             logger.info(
                 "Created entity %s (%s) from LLM proposal",
                 entity.canonical_name,
                 entity.entity_id,
             )
-        return count
+        self._store.save_provenances(provenances)
+        return len(provenances)
 
     def _persist_relationships(
         self,
