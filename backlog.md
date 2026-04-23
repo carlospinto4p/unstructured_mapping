@@ -2,7 +2,7 @@
 
 ### 2026.04.23 (refactor review v0.49.6)
 
-- [ ] **LOW / Large** — Split `knowledge_graph/_entity_mixin.py` (639 lines) along its four internal mixin classes (`EntityCRUDMixin`, `EntitySearchMixin`, `EntityMergeMixin`, `EntityHistoryMixin`) into one file per mixin. The module docstring already documents them as four distinct concerns; the file size has crossed the point where navigating them in one file is friction.
+- [x] **LOW / Large** — Split `knowledge_graph/_entity_mixin.py` (639 lines) along its four internal mixin classes (`EntityCRUDMixin`, `EntitySearchMixin`, `EntityMergeMixin`, `EntityHistoryMixin`) into one file per mixin. The module docstring already documents them as four distinct concerns; the file size has crossed the point where navigating them in one file is friction.
 
 
 ### 2026.04.14 (Wikidata import follow-ups)

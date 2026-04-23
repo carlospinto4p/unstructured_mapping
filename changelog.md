@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.49.12 - 23rd April 2026
+
+- Updated `knowledge_graph/`:
+  - Split `_entity_mixin.py` (639 lines) along its four internal mixin classes:
+    - `_entity_crud_mixin.py`: `EntityCRUDMixin` (save / get / name + alias lookup).
+    - `_entity_search_mixin.py`: `EntitySearchMixin` (type/subtype/status/prefix filters, counts, recency).
+    - `_entity_merge_mixin.py`: `EntityMergeMixin` (FK redirection + audit trail).
+    - `_entity_history_mixin.py`: `EntityHistoryMixin` (revisions, point-in-time, revert).
+  - `_entity_mixin.py`: now a thin composite that re-exports the four sub-mixins and defines `EntityMixin`; `storage.py`'s import site is unchanged.
+
+
 ### v0.49.11 - 23rd April 2026
 
 - Updated `tests/unit/`:
