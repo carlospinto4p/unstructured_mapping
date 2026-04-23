@@ -7,6 +7,11 @@ Full-text extraction requires the ``scraping`` extra::
 
 import logging
 
+from unstructured_mapping.web_scraping._gnews import (
+    _extract_text,
+    _has_scraping_deps,
+    _resolve_gnews_url,
+)
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_MAX_WORKERS,
@@ -20,16 +25,6 @@ from unstructured_mapping.web_scraping.models import (
 logger = logging.getLogger(__name__)
 
 _DEFAULT_FEED_URL = google_news_rss("apnews.com")
-
-
-def _has_scraping_deps() -> bool:
-    """Check if optional scraping deps are installed."""
-    try:
-        import googlenewsdecoder  # noqa: F401
-        import trafilatura  # noqa: F401
-    except ImportError:
-        return False
-    return True
 
 
 class APScraper(Scraper):
@@ -71,76 +66,22 @@ class APScraper(Scraper):
         super().__init__(
             feed_urls=feed_urls,
             timeout=timeout,
-            fetch_full_text=(
-                requested_full_text and has_deps
-            ),
+            fetch_full_text=(requested_full_text and has_deps),
             max_workers=max_workers,
         )
         if requested_full_text and not has_deps:
             logger.warning(
-                "scraping extra not installed; "
-                "falling back to RSS summaries"
+                "scraping extra not installed; falling back to RSS summaries"
             )
 
-    def _extract_body(
-        self, gnews_url: str
-    ) -> ExtractionResult:
+    def _extract_body(self, gnews_url: str) -> ExtractionResult:
         """Decode a Google News URL and extract text.
 
         :param gnews_url: Google News redirect URL.
         :return: Extraction result with text and real URL.
         """
-        real_url = self._resolve_url(gnews_url)
+        real_url = _resolve_gnews_url(gnews_url)
         if not real_url:
             return ExtractionResult()
-        text = self._fetch_page(real_url)
+        text = _extract_text(real_url)
         return ExtractionResult(body=text, url=real_url)
-
-    @staticmethod
-    def _resolve_url(gnews_url: str) -> str:
-        """Resolve a Google News redirect URL.
-
-        :param gnews_url: Google News redirect URL.
-        :return: Resolved URL, or empty string on failure.
-        """
-        from googlenewsdecoder import new_decoderv1
-
-        try:
-            result = new_decoderv1(gnews_url)
-        except (ValueError, KeyError, OSError):
-            logger.warning(
-                "Failed to decode %s",
-                gnews_url,
-                exc_info=True,
-            )
-            return ""
-
-        if not result.get("status"):
-            logger.warning(
-                "Decoder failed for %s", gnews_url
-            )
-            return ""
-        return result["decoded_url"]
-
-    @staticmethod
-    def _fetch_page(url: str) -> str:
-        """Fetch article page and extract text.
-
-        :param url: Direct article URL.
-        :return: Extracted text, or empty string on failure.
-        """
-        import trafilatura
-
-        try:
-            html = trafilatura.fetch_url(url)
-            text = (
-                trafilatura.extract(html) if html else ""
-            )
-        except (OSError, ValueError):
-            logger.warning(
-                "Failed to extract %s",
-                url,
-                exc_info=True,
-            )
-            return ""
-        return text or ""

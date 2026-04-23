@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.49.7 - 23rd April 2026
+
+- Added `web_scraping/_gnews.py`:
+  - `_has_scraping_deps()`: dep check for googlenewsdecoder + trafilatura.
+  - `_resolve_gnews_url()`: decode a Google News redirect URL.
+  - `_extract_text()`: fetch and extract article text with trafilatura.
+  - `_DECODE_ERRORS` / `_EXTRACT_ERRORS`: shared exception tuples.
+- Updated `web_scraping/`:
+  - `ap.py`: dropped the duplicated `_has_scraping_deps()` and the `APScraper._resolve_url` / `_fetch_page` static methods; `_extract_body` now calls the shared `_gnews` helpers.
+  - `backfill.py`: dropped the duplicated `_has_scraping_deps()`, `_resolve_gnews_url()`, `_extract_text()`, and error-tuple constants; imports them from `_gnews`. Module docstring updated to describe the new split instead of the old duplication trade-off.
+
+
 ### v0.49.6 - 22nd April 2026
 
 - Deduplicated within-snapshot Wikidata rows:

@@ -12,19 +12,22 @@ regardless of the source domain, which is why backfill uses it for
 BBC too — BBC's live ``<article>``-tag parser cannot consume Google
 News redirects.
 
-Why duplicate the gnews decode + trafilatura helpers here instead
-of sharing with :mod:`.ap`:
-    The live :class:`~.ap.APScraper` has source-specific init logic
-    (graceful fallback when the ``scraping`` extra is missing) that
-    would complicate a generic share. Backfill *requires* the extra
-    and fails fast without it, so the two paths have different
-    error-handling contracts. ~15 LOC of duplication is the simpler
-    trade-off.
+Google News decoding + text extraction helpers live in
+:mod:`._gnews` and are shared with :class:`~.ap.APScraper`.
+The two scrapers have different error-handling contracts around the
+optional ``scraping`` extra — AP degrades gracefully when deps are
+missing, backfill fails fast — so the dep check is called from each
+init path rather than the shared module.
 """
 
 import logging
 from datetime import date, timedelta
 
+from unstructured_mapping.web_scraping._gnews import (
+    _extract_text,
+    _has_scraping_deps,
+    _resolve_gnews_url,
+)
 from unstructured_mapping.web_scraping.base import Scraper
 from unstructured_mapping.web_scraping.config import (
     DEFAULT_MAX_WORKERS,
@@ -47,23 +50,6 @@ ARCHIVE_SOURCES: dict[str, str] = {
     "reuters": "reuters.com",
 }
 
-# Exceptions swallowed when decoding gnews URLs or extracting article
-# HTML. Declared as module-level constants so the except clauses stay
-# simple references — local formatters occasionally mangle inline
-# tuples (stripping the parens into Python-2-style syntax).
-_DECODE_ERRORS = (ValueError, KeyError, OSError)
-_EXTRACT_ERRORS = (OSError, ValueError)
-
-
-def _has_scraping_deps() -> bool:
-    """Return ``True`` when googlenewsdecoder and trafilatura are importable."""
-    try:
-        import googlenewsdecoder  # noqa: F401
-        import trafilatura  # noqa: F401
-    except ImportError:
-        return False
-    return True
-
 
 def build_archive_query_url(domain: str, day: date) -> str:
     """Build a Google News RSS URL for a single-day site-filtered query.
@@ -82,45 +68,6 @@ def build_archive_query_url(domain: str, day: date) -> str:
     return (
         f"https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en"
     )
-
-
-def _resolve_gnews_url(gnews_url: str) -> str:
-    """Decode a Google News redirect URL to its source URL.
-
-    Mirrors :meth:`APScraper._resolve_url` — kept standalone so the
-    archive path never depends on an AP-specific class.
-
-    :param gnews_url: Google News redirect URL.
-    :return: Resolved source URL, or empty string on failure.
-    """
-    from googlenewsdecoder import new_decoderv1
-
-    try:
-        result = new_decoderv1(gnews_url)
-    except _DECODE_ERRORS:
-        logger.warning("Failed to decode %s", gnews_url, exc_info=True)
-        return ""
-    if not result.get("status"):
-        logger.warning("Decoder failed for %s", gnews_url)
-        return ""
-    return result["decoded_url"]
-
-
-def _extract_text(url: str) -> str:
-    """Fetch an article page and extract main text with trafilatura.
-
-    :param url: Direct article URL (after gnews decoding).
-    :return: Extracted text, or empty string on failure.
-    """
-    import trafilatura
-
-    try:
-        html = trafilatura.fetch_url(url)
-        text = trafilatura.extract(html) if html else ""
-    except _EXTRACT_ERRORS:
-        logger.warning("Failed to extract %s", url, exc_info=True)
-        return ""
-    return text or ""
 
 
 class ArchiveScraper(Scraper):
