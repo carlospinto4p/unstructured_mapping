@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.49.9 - 23rd April 2026
+
+- Updated `web_scraping/`:
+  - `base.py::Scraper._fetch_page()`: new base-class method that fetches raw HTML bytes via the shared `httpx.Client`, returning `b""` on failure instead of raising. Gives future scrapers a predictable fetch contract.
+  - `bbc.py::BBCScraper`: dropped the subclass `_fetch_page()` override (moved to base) and switched its `_extract_body()` check from `is None` to `if not html` to match the new empty-bytes sentinel.
+
+
 ### v0.49.8 - 23rd April 2026
 
 - Added `tokens.py`: centralises the `_CHARS_PER_TOKEN = 4` constant shared by the budget estimator and the KG audit mixin.

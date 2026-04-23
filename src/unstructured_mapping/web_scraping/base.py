@@ -1,5 +1,6 @@
 """Base scraper interface."""
 
+import logging
 from abc import ABC
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -21,6 +22,8 @@ from unstructured_mapping.web_scraping.models import (
 from unstructured_mapping.web_scraping.parsing import (
     parse_feed_date,
 )
+
+logger = logging.getLogger(__name__)
 
 _T = TypeVar("_T")
 
@@ -90,9 +93,7 @@ class Scraper(ABC):
         max_workers: int = DEFAULT_MAX_WORKERS,
     ) -> None:
         resolved_feeds = (
-            feed_urls
-            if feed_urls is not None
-            else self.default_feed_urls
+            feed_urls if feed_urls is not None else self.default_feed_urls
         )
         if resolved_feeds is None:
             raise TypeError(
@@ -128,8 +129,7 @@ class Scraper(ABC):
         super().__init_subclass__(**kwargs)
         if not getattr(cls, "source", None):
             raise TypeError(
-                f"{cls.__name__} must define a "
-                f"'source' class variable"
+                f"{cls.__name__} must define a 'source' class variable"
             )
 
     def _parse_feed(self, xml: str) -> list[Article]:
@@ -159,9 +159,7 @@ class Scraper(ABC):
             )
         return articles
 
-    def _enrich(
-        self, articles: list[Article]
-    ) -> list[Article]:
+    def _enrich(self, articles: list[Article]) -> list[Article]:
         """Enrich articles with full-text extraction.
 
         When ``fetch_full_text`` is enabled, runs
@@ -183,16 +181,16 @@ class Scraper(ABC):
         enriched: list[Article] = []
         for a in articles:
             ex = results.get(a.url, _empty)
-            enriched.append(replace(
-                a,
-                body=ex.body or a.body,
-                url=ex.url or a.url,
-            ))
+            enriched.append(
+                replace(
+                    a,
+                    body=ex.body or a.body,
+                    url=ex.url or a.url,
+                )
+            )
         return enriched
 
-    def _extract_body(
-        self, url: str
-    ) -> ExtractionResult:
+    def _extract_body(self, url: str) -> ExtractionResult:
         """Extract full text from an article URL.
 
         Override in subclasses to provide source-specific
@@ -213,6 +211,31 @@ class Scraper(ABC):
         response = self._client.get(feed_url)
         response.raise_for_status()
         return response.text
+
+    def _fetch_page(self, url: str) -> bytes:
+        """Fetch raw HTML bytes from an article URL.
+
+        Uses the shared ``httpx.Client`` so article
+        fetches share the same connection pool, timeout,
+        and User-Agent as feed fetches.
+
+        Returns raw bytes (not text) so HTML parsers can
+        do their own encoding detection — BeautifulSoup
+        and lxml both prefer bytes.
+
+        :param url: Article URL.
+        :return: HTML bytes, or empty ``b""`` on failure.
+            Empty-on-failure (rather than raising) lets
+            the enrichment loop skip broken URLs without
+            aborting the whole feed.
+        """
+        try:
+            resp = self._client.get(url)
+            resp.raise_for_status()
+        except httpx.HTTPError:
+            logger.warning("Failed to fetch %s", url)
+            return b""
+        return resp.content
 
     def fetch(self) -> list[Article]:
         """Fetch articles from all configured RSS feeds.
@@ -259,17 +282,10 @@ class Scraper(ABC):
         """
         results: dict[str, _T] = {}
         to_fetch = [k for k in keys if k]
-        with ThreadPoolExecutor(
-            max_workers=max_workers
-        ) as pool:
-            futures = {
-                pool.submit(fn, k): k
-                for k in to_fetch
-            }
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = {pool.submit(fn, k): k for k in to_fetch}
             for future in futures:
-                results[futures[future]] = (
-                    future.result()
-                )
+                results[futures[future]] = future.result()
         return results
 
     def close(self) -> None:
