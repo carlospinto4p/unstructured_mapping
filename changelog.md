@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.49.8 - 23rd April 2026
+
+- Added `tokens.py`: centralises the `_CHARS_PER_TOKEN = 4` constant shared by the budget estimator and the KG audit mixin.
+- Updated `src/`:
+  - `pipeline/budget.py`: imports `_CHARS_PER_TOKEN` from `tokens.py` instead of defining its own copy.
+  - `knowledge_graph/_audit_mixin.py`: imports `_CHARS_PER_TOKEN` from `tokens.py`; module docstring updated to reference the shared module.
+
+
 ### v0.49.7 - 23rd April 2026
 
 - Added `web_scraping/_gnews.py`:

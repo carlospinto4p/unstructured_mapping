@@ -15,9 +15,9 @@ under-covering:
    durable KG entity.
 
 The token estimate uses the same ``ceil(chars / 4)``
-approximation as :mod:`pipeline.budget` but is inlined
-here to keep ``knowledge_graph`` free of a reverse
-dependency on ``pipeline``.
+approximation as :mod:`pipeline.budget`; both sites
+import :data:`unstructured_mapping.tokens._CHARS_PER_TOKEN`
+so the KG layer stays independent of the pipeline.
 """
 
 import math
@@ -25,10 +25,7 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-#: Characters per token for the budget approximation —
-#: duplicates the constant in ``pipeline.budget`` so the
-#: KG layer does not import the pipeline.
-_CHARS_PER_TOKEN: int = 4
+from unstructured_mapping.tokens import _CHARS_PER_TOKEN
 
 
 @dataclass(frozen=True, slots=True)

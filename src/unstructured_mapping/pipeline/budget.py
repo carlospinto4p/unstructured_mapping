@@ -37,11 +37,9 @@ from unstructured_mapping.knowledge_graph.models import (
 from unstructured_mapping.pipeline.prompts import (
     build_kg_context_block,
 )
+from unstructured_mapping.tokens import _CHARS_PER_TOKEN
 
 log = logging.getLogger(__name__)
-
-#: Characters per token for the default estimator.
-_CHARS_PER_TOKEN: int = 4
 
 #: Default response headroom in tokens.
 DEFAULT_RESPONSE_HEADROOM: int = 800
@@ -113,9 +111,7 @@ def compute_budget(
     """
     count = tokenizer or estimate_tokens
     sys_tokens = count(system_prompt)
-    flexible = max(
-        0, context_window - sys_tokens - response_headroom
-    )
+    flexible = max(0, context_window - sys_tokens - response_headroom)
     return PromptBudget(
         context_window=context_window,
         system_tokens=sys_tokens,
@@ -162,12 +158,8 @@ def _count_alias_matches(
     lower_text = chunk_text.lower()
     count = 0
     for alias in entity.aliases:
-        count += _count_occurrences(
-            lower_text, alias.lower()
-        )
-    count += _count_occurrences(
-        lower_text, entity.canonical_name.lower()
-    )
+        count += _count_occurrences(lower_text, alias.lower())
+    count += _count_occurrences(lower_text, entity.canonical_name.lower())
     return count
 
 
@@ -228,17 +220,13 @@ def fit_candidates(
     # -- Rank by alias matches, keep what fits -----------
     ranked = sorted(
         candidates,
-        key=lambda e: _count_alias_matches(
-            e, chunk_text
-        ),
+        key=lambda e: _count_alias_matches(e, chunk_text),
         reverse=True,
     )
 
     fitted: list[Entity] = []
     for entity in ranked:
-        trial = build_kg_context_block(
-            [*fitted, entity]
-        )
+        trial = build_kg_context_block([*fitted, entity])
         if count(trial) <= kg_budget:
             fitted.append(entity)
         else:
