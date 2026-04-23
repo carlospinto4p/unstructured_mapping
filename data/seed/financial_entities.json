@@ -94,6 +94,34 @@
       "aliases": ["ESMA"]
     },
     {
+      "canonical_name": "Single Supervisory Mechanism",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "ECB-led banking supervision arm for the euro area. Directly supervises large and cross-border euro-area banks; the regulator face of the ECB distinct from its monetary policy role.",
+      "aliases": ["SSM", "ECB Banking Supervision", "ECB Supervisory Board"]
+    },
+    {
+      "canonical_name": "China Securities Regulatory Commission",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Ministerial-level regulator of China's securities and futures markets; approves IPOs and sets market rules for A-shares.",
+      "aliases": ["CSRC"]
+    },
+    {
+      "canonical_name": "Federal Financial Supervisory Authority",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "German federal regulator for banking, insurance, and securities markets; Germany's primary financial markets supervisor.",
+      "aliases": ["BaFin", "Bundesanstalt für Finanzdienstleistungsaufsicht"]
+    },
+    {
+      "canonical_name": "Monetary Authority of Singapore",
+      "entity_type": "organization",
+      "subtype": "regulator",
+      "description": "Singapore's integrated financial regulator and de facto central bank. Supervises banks, capital markets, insurers, and payments; manages the SGD exchange-rate policy band.",
+      "aliases": ["MAS"]
+    },
+    {
       "canonical_name": "International Monetary Fund",
       "entity_type": "organization",
       "subtype": "multilateral",
@@ -437,6 +465,48 @@
       "aliases": ["VIX", "Fear Gauge"]
     },
     {
+      "canonical_name": "Nifty 50",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark Indian equity index of 50 large-cap NSE-listed companies; the headline gauge for Indian equities alongside the BSE Sensex.",
+      "aliases": ["NIFTY", "NIFTY 50", "Nifty Fifty", "NSEI"]
+    },
+    {
+      "canonical_name": "KOSPI",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Korea Composite Stock Price Index; market-cap weighted index of all common stocks on the Korea Exchange, dominated by Samsung, SK, and Hyundai groups.",
+      "aliases": ["KOSPI Composite", "Korea Composite Stock Price Index", "KS11"]
+    },
+    {
+      "canonical_name": "S&P/TSX Composite Index",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark Canadian equity index of the largest Toronto Stock Exchange listings; heavy concentration in financials and energy.",
+      "aliases": ["TSX Composite", "S&P/TSX", "GSPTSE"]
+    },
+    {
+      "canonical_name": "S&P/ASX 200",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark Australian equity index of the 200 largest ASX-listed companies; dominated by mining and banking names.",
+      "aliases": ["ASX 200", "AXJO"]
+    },
+    {
+      "canonical_name": "FTSE MIB",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark Italian equity index of the 40 largest Borsa Italiana listings; the primary gauge for Italian equities.",
+      "aliases": ["MIB", "FTSEMIB", "Milano Italia Borsa"]
+    },
+    {
+      "canonical_name": "Ibovespa",
+      "entity_type": "asset",
+      "subtype": "index",
+      "description": "Benchmark Brazilian equity index; the headline gauge for B3 (São Paulo) listings and the largest emerging-market Latin American index.",
+      "aliases": ["Bovespa", "IBOV", "BVSP"]
+    },
+    {
       "canonical_name": "US Dollar",
       "entity_type": "asset",
       "subtype": "currency",
@@ -477,6 +547,69 @@
       "subtype": "currency",
       "description": "Official currency of Switzerland, widely held as a safe-haven asset.",
       "aliases": ["CHF"]
+    },
+    {
+      "canonical_name": "Australian Dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Australia; a risk-on / commodity-linked major often moved by iron ore and China demand.",
+      "aliases": ["AUD", "Aussie", "Aussie Dollar"]
+    },
+    {
+      "canonical_name": "Canadian Dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Canada; a commodity currency closely tracking crude oil prices.",
+      "aliases": ["CAD", "Loonie"]
+    },
+    {
+      "canonical_name": "Hong Kong Dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Hong Kong, pegged to the US dollar via the Linked Exchange Rate System since 1983.",
+      "aliases": ["HKD"]
+    },
+    {
+      "canonical_name": "Singapore Dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Singapore, managed by the Monetary Authority of Singapore against an undisclosed basket.",
+      "aliases": ["SGD", "Sing Dollar"]
+    },
+    {
+      "canonical_name": "Swedish Krona",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Sweden; a high-beta European major frequently paired against the euro.",
+      "aliases": ["SEK"]
+    },
+    {
+      "canonical_name": "South Korean Won",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of South Korea; emerging-market major heavily tied to export and semiconductor flows.",
+      "aliases": ["KRW", "Korean Won", "Won"]
+    },
+    {
+      "canonical_name": "Norwegian Krone",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of Norway; a commodity currency sensitive to crude oil and Norges Bank policy.",
+      "aliases": ["NOK"]
+    },
+    {
+      "canonical_name": "New Zealand Dollar",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of New Zealand; commodity-linked major, often moved alongside AUD.",
+      "aliases": ["NZD", "Kiwi", "Kiwi Dollar"]
+    },
+    {
+      "canonical_name": "Indian Rupee",
+      "entity_type": "asset",
+      "subtype": "currency",
+      "description": "Official currency of India; managed-float emerging-market currency under Reserve Bank of India oversight.",
+      "aliases": ["INR", "Rupee"]
     },
     {
       "canonical_name": "Bitcoin",

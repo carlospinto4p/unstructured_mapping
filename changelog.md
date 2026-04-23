@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.49.14 - 23rd April 2026
+
+- Updated `data/seed/financial_entities.json`: expanded curated coverage for thin categories flagged by the Wikidata overlap review (91 → 110 entries):
+  - Regulators (+4): Single Supervisory Mechanism, China Securities Regulatory Commission, Federal Financial Supervisory Authority (BaFin), Monetary Authority of Singapore.
+  - Currencies (+9): AUD, CAD, HKD, SGD, SEK, KRW, NOK, NZD, INR (brings total to the top 15 by FX turnover).
+  - Indices (+6): Nifty 50, KOSPI, S&P/TSX Composite, S&P/ASX 200, FTSE MIB, Ibovespa.
+
+
 ### v0.49.13 - 23rd April 2026
 
 - Updated `wikidata/queries.py::EXCHANGES_QUERY`:
