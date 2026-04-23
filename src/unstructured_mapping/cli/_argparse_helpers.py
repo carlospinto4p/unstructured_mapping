@@ -8,9 +8,10 @@ so the ``--help`` output stays uniform across commands.
 The helpers standardize on argparse-native ``required=True``
 for flags that must be supplied — CLIs that previously
 validated ``default=None`` manually in ``main()`` should use
-this idiom instead. :mod:`cli.preview` keeps its manual
-validation because ``--kg-db`` is *conditionally* required
-(off under ``--cold-start``), which argparse cannot express.
+this idiom instead. Conditionally-required flags (e.g.
+``--kg-db`` in :mod:`cli.preview`, which is off under
+``--cold-start``) use :func:`require_db_unless`, since
+argparse cannot express this natively.
 """
 
 import argparse
@@ -80,6 +81,41 @@ def add_dry_run_argument(
     )
 
 
+def require_db_unless(
+    args: argparse.Namespace,
+    *,
+    db_attr: str = "kg_db",
+    unless_flag: str = "cold_start",
+    db_flag_label: str = "--kg-db",
+    unless_flag_label: str = "--cold-start",
+) -> None:
+    """Enforce "DB flag is set unless ``unless_flag`` is on".
+
+    Argparse cannot express "required unless another flag is
+    set" directly, so this is a post-``parse_args`` validator.
+    Raises :class:`SystemExit` with the standardised message —
+    matches argparse's own failure path so the CLI exits with
+    the expected shape.
+
+    :param args: Parsed namespace from ``parser.parse_args``.
+    :param db_attr: Attribute name on ``args`` holding the DB
+        path (e.g. ``"kg_db"`` for ``--kg-db``).
+    :param unless_flag: Attribute name on ``args`` for the
+        bypass flag (e.g. ``"cold_start"``).
+    :param db_flag_label: User-facing label of the DB flag for
+        the error message.
+    :param unless_flag_label: User-facing label of the bypass
+        flag for the error message.
+    :raises SystemExit: When the DB is missing and the bypass
+        flag is off.
+    """
+    if not getattr(args, unless_flag) and getattr(args, db_attr) is None:
+        raise SystemExit(
+            f"error: {db_flag_label} is required unless "
+            f"{unless_flag_label} is set."
+        )
+
+
 def add_csv_output_argument(
     parser: argparse.ArgumentParser,
     *,
@@ -107,4 +143,5 @@ __all__ = [
     "add_csv_output_argument",
     "add_db_argument",
     "add_dry_run_argument",
+    "require_db_unless",
 ]

@@ -43,6 +43,9 @@ import tempfile
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from unstructured_mapping.cli._argparse_helpers import (
+    require_db_unless,
+)
 from unstructured_mapping.cli._db_helpers import prepare_throwaway_kg
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
@@ -314,10 +317,7 @@ def main(argv: list[str] | None = None) -> None:
     """Entry point for the preview CLI."""
     setup_logging()
     args = _build_parser().parse_args(argv)
-    if not args.cold_start and args.kg_db is None:
-        raise SystemExit(
-            "error: --kg-db is required unless --cold-start is set."
-        )
+    require_db_unless(args)
     article = load_article(article_file=args.article_file, text=args.text)
     provider: OllamaProvider | None = None
     if args.cold_start or not args.no_llm:

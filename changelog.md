@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.49.10 - 23rd April 2026
+
+- Added `cli/_argparse_helpers.py::require_db_unless()`: shared post-`parse_args` validator for "DB flag required unless bypass flag is set". Argparse cannot express the conditional natively, so the helper standardises the error message and call pattern.
+- Updated `cli/`:
+  - `preview.py::main()`: replaced the inline `--kg-db` / `--cold-start` check with a call to `require_db_unless(args)`; the last CLI-specific validation noted in the `_argparse_helpers` docstring is now gone.
+  - `_argparse_helpers.py`: module docstring updated to point at the new helper instead of flagging `preview` as the lone exception.
+
+
 ### v0.49.9 - 23rd April 2026
 
 - Updated `web_scraping/`:
