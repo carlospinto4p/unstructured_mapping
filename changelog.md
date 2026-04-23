@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.49.11 - 23rd April 2026
+
+- Updated `tests/unit/`:
+  - `test_kg_provenance.py`: trimmed to provenance CRUD, `find_recent_mentions`, and the co-mention query (14 tests).
+  - `test_kg_runs_and_history.py`: new file covering ingestion run CRUD, `run_id` provenance/relationship linkage, the legacy-DB `run_id` migration, and the `count_mentions_*` / `find_mentions_with_entities` helpers (13 tests).
+
+
 ### v0.49.10 - 23rd April 2026
 
 - Added `cli/_argparse_helpers.py::require_db_unless()`: shared post-`parse_args` validator for "DB flag required unless bypass flag is set". Argparse cannot express the conditional natively, so the helper standardises the error message and call pattern.
