@@ -95,6 +95,113 @@ def test_store_get_run_not_found(tmp_path):
     assert loaded is None
 
 
+def test_get_entities_touched_by_run_collects_distinct_ids(tmp_path):
+    """Every entity with at least one provenance row tagged
+    with the run is returned; duplicates collapse.
+    """
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    a = make_entity(canonical_name="A")
+    b = make_entity(canonical_name="B")
+    c = make_entity(canonical_name="C")
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        for e in (a, b, c):
+            store.save_entity(e)
+        # a + b in this run; c in a different run.
+        store.save_provenances(
+            [
+                Provenance(
+                    entity_id=a.entity_id,
+                    document_id="doc1",
+                    source="t",
+                    mention_text="A",
+                    context_snippet="ctx",
+                    run_id=run.run_id,
+                ),
+                Provenance(
+                    entity_id=a.entity_id,
+                    document_id="doc2",
+                    source="t",
+                    mention_text="A",
+                    context_snippet="ctx",
+                    run_id=run.run_id,
+                ),
+                Provenance(
+                    entity_id=b.entity_id,
+                    document_id="doc3",
+                    source="t",
+                    mention_text="B",
+                    context_snippet="ctx",
+                    run_id=run.run_id,
+                ),
+                Provenance(
+                    entity_id=c.entity_id,
+                    document_id="doc4",
+                    source="t",
+                    mention_text="C",
+                    context_snippet="ctx",
+                    run_id="other-run",
+                ),
+            ]
+        )
+        touched = store.get_entities_touched_by_run(run.run_id)
+
+    assert touched == {a.entity_id, b.entity_id}
+
+
+def test_get_relationship_keys_for_run_drops_valid_from(tmp_path):
+    """Keys are the ``(src, tgt, type)`` identity without
+    ``valid_from`` so the same edge under a new bound
+    still matches across runs.
+    """
+    db = tmp_path / "kg.db"
+    run = IngestionRun()
+    e1 = make_entity(canonical_name="E1")
+    e2 = make_entity(
+        canonical_name="E2",
+        entity_type=EntityType.ORGANIZATION,
+    )
+    with KnowledgeStore(db_path=db) as store:
+        store.save_run(run)
+        store.save_entity(e1)
+        store.save_entity(e2)
+        store.save_relationship(
+            Relationship(
+                source_id=e1.entity_id,
+                target_id=e2.entity_id,
+                relation_type="acquires",
+                description="e1 acquires e2",
+                valid_from=datetime(2026, 1, 1, tzinfo=timezone.utc),
+                run_id=run.run_id,
+            )
+        )
+        store.save_relationship(
+            Relationship(
+                source_id=e1.entity_id,
+                target_id=e2.entity_id,
+                relation_type="acquires",
+                description="e1 acquires e2 (revised)",
+                valid_from=datetime(2026, 2, 1, tzinfo=timezone.utc),
+                run_id=run.run_id,
+            )
+        )
+        # Unrelated run — must not appear.
+        store.save_relationship(
+            Relationship(
+                source_id=e2.entity_id,
+                target_id=e1.entity_id,
+                relation_type="owned_by",
+                description="other",
+                valid_from=datetime(2026, 3, 1, tzinfo=timezone.utc),
+                run_id="other-run",
+            )
+        )
+        keys = store.get_relationship_keys_for_run(run.run_id)
+
+    assert keys == {(e1.entity_id, e2.entity_id, "acquires")}
+
+
 # -- run_id on provenance and relationships --
 
 

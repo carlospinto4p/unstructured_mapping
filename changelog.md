@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.50.0 - 23rd April 2026
+
+- Added `cli/run_diff.py`: diff two ingestion runs. Produces per-run headline blocks (status, tokens, LLM calls, wall time) plus entity / relationship set deltas — which entity IDs and which `(source, target, relation_type)` keys appear only in the base run, only in the head run, or in both. Supports `--deltas-only` to skip the headline blocks. Read-only; never mutates the KG.
+- Added `knowledge_graph/_run_mixin.py`:
+  - `KnowledgeStore.get_entities_touched_by_run()`: distinct entity IDs with provenance for a run.
+  - `KnowledgeStore.get_relationship_keys_for_run()`: `(source_id, target_id, relation_type)` identity set for a run; drops `valid_from` so "same edge, new temporal bound" still matches across runs.
+- Added unit tests:
+  - `tests/unit/test_kg_runs_and_history.py`: 2 tests for the new store helpers.
+  - `tests/unit/test_cli_run_diff.py`: 4 tests covering the delta report, `--deltas-only`, missing-run error, and the `main` stdout contract.
+
+
 ### v0.49.20 - 23rd April 2026
 
 - Updated `wikidata/mapper.py::dedupe_mapped_by_qid()`: carries the per-QID dedup set in a parallel `dict[qid, set[str]]` so the set is seeded once on first-seen and amended on subsequent duplicates, instead of being rebuilt from the alias list every time a QID is re-encountered. Matters for QIDs that appear in hundreds of SPARQL bindings (STOXX Europe 600 × 289).

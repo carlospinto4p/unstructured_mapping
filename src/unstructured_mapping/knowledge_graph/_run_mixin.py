@@ -173,3 +173,49 @@ class RunMixin:
         if row is None:
             return None
         return row_to_run(row)
+
+    def get_entities_touched_by_run(self, run_id: str) -> set[str]:
+        """Return the distinct entities this run wrote
+        provenance for.
+
+        Used by the ``run_diff`` CLI to compare which
+        entities each of two runs surfaced. An entity is
+        "touched" when at least one provenance row tagged
+        with ``run_id`` mentions it — either because the
+        run created the entity (LLM proposal) or because
+        the run added a new provenance row for an already-
+        existing entity.
+
+        :param run_id: Ingestion run identifier.
+        :return: Set of entity IDs.
+        """
+        rows = self._conn.execute(
+            "SELECT DISTINCT entity_id FROM provenance WHERE run_id = ?",
+            (run_id,),
+        ).fetchall()
+        return {r["entity_id"] for r in rows}
+
+    def get_relationship_keys_for_run(
+        self, run_id: str
+    ) -> set[tuple[str, str, str]]:
+        """Return the relationship identity keys created by
+        a run.
+
+        The ``relationships`` primary key also includes
+        ``valid_from`` so the same pair/type can coexist in
+        different temporal bounds; for a cross-run diff the
+        temporal component is intentionally dropped so
+        "same edge, new bound" still counts as a match.
+
+        :param run_id: Ingestion run identifier.
+        :return: Set of ``(source_id, target_id,
+            relation_type)`` tuples.
+        """
+        rows = self._conn.execute(
+            "SELECT source_id, target_id, relation_type "
+            "FROM relationships WHERE run_id = ?",
+            (run_id,),
+        ).fetchall()
+        return {
+            (r["source_id"], r["target_id"], r["relation_type"]) for r in rows
+        }
