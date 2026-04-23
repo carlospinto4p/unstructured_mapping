@@ -95,7 +95,8 @@ class LLMRelationshipExtractor(RelationshipExtractor):
     :param entity_lookup: Callable that returns an
         ``Entity`` for a given entity ID, or ``None``
         if not found. Typically
-        ``KnowledgeStore.get_entity``.
+        ``KnowledgeStore.get_entity``. Used for the
+        single-id lookup path in response parsing.
     :param name_lookup: Callable that returns an
         ``Entity`` for a given canonical name, or
         ``None`` if not found. Typically
@@ -106,6 +107,14 @@ class LLMRelationshipExtractor(RelationshipExtractor):
         (entities not yet in the KG). The extractor
         tracks these so the LLM can reference them by
         canonical name.
+    :param entity_batch_lookup: Optional bulk variant
+        of ``entity_lookup`` that accepts a list of ids
+        and returns a ``{id: Entity}`` mapping.
+        Typically ``KnowledgeStore.get_entities``. When
+        supplied, the extractor builds its pre-LLM
+        lookup map with one query instead of one per
+        resolved mention — the hot-path win for chunks
+        with many resolved entities.
 
     Why ``name_lookup`` in addition to ``entity_lookup``?
         The LLM may return canonical names instead of
@@ -120,6 +129,7 @@ class LLMRelationshipExtractor(RelationshipExtractor):
             entity_lookup=store.get_entity,
             name_lookup=store.find_by_name,
             proposals=resolver.proposals,
+            entity_batch_lookup=store.get_entities,
         )
         result = extractor.extract(chunk, resolved)
 
@@ -133,11 +143,15 @@ class LLMRelationshipExtractor(RelationshipExtractor):
         entity_lookup: Callable[[str], Entity | None],
         name_lookup: Callable[[str], Entity | None],
         proposals: Sequence[EntityProposal] = (),
+        entity_batch_lookup: (
+            Callable[[list[str]], dict[str, Entity]] | None
+        ) = None,
     ) -> None:
         self._provider = provider
         self._entity_lookup = entity_lookup
         self._name_lookup = name_lookup
         self._proposals = proposals
+        self._entity_batch_lookup = entity_batch_lookup
         self._last_token_usage: TokenUsage = TokenUsage()
 
     @property
@@ -215,11 +229,20 @@ class LLMRelationshipExtractor(RelationshipExtractor):
         known_ids: set[str] = set()
         name_to_id: dict[str, str] = {}
 
-        for rm in entities:
-            known_ids.add(rm.entity_id)
-            entity = self._entity_lookup(rm.entity_id)
+        ids = [rm.entity_id for rm in entities]
+        known_ids.update(ids)
+        if self._entity_batch_lookup is not None:
+            found = self._entity_batch_lookup(ids)
+        else:
+            found = {
+                eid: ent
+                for eid in ids
+                if (ent := self._entity_lookup(eid)) is not None
+            }
+        for eid in ids:
+            entity = found.get(eid)
             if entity is not None:
-                name_to_id[entity.canonical_name] = rm.entity_id
+                name_to_id[entity.canonical_name] = eid
 
         for proposal in self._proposals:
             name = self._name_lookup(proposal.canonical_name)

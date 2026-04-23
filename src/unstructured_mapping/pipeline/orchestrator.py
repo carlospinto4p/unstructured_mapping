@@ -293,6 +293,7 @@ class Pipeline:
                 provider=provider,
                 entity_lookup=store.get_entity,
                 name_lookup=store.find_by_name,
+                entity_batch_lookup=store.get_entities,
             ),
         )
         result = pipeline.run(articles)

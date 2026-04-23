@@ -211,6 +211,7 @@ def preview(
                     provider=provider,
                     entity_lookup=store.get_entity,
                     name_lookup=store.find_by_name,
+                    entity_batch_lookup=store.get_entities,
                 )
             pipeline = Pipeline(
                 detector=RuleBasedDetector(active),

@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.49.15 - 23rd April 2026
+
+- Updated `pipeline/extraction.py::LLMRelationshipExtractor`:
+  - Added optional `entity_batch_lookup` parameter. When provided, `_build_lookup_maps` runs one batch query instead of one SQL round-trip per resolved mention. 20-entity chunks now fire one query before the LLM call instead of 20.
+  - Falls back to the per-id `entity_lookup` when `entity_batch_lookup` is omitted so existing tests/callers keep working.
+- Updated call sites:
+  - `pipeline/orchestrator.py`: wires `entity_batch_lookup=store.get_entities` alongside the resolver's existing batch lookup.
+  - `cli/preview.py`: same wiring for the dry-run preview CLI.
+
+
 ### v0.49.14 - 23rd April 2026
 
 - Updated `data/seed/financial_entities.json`: expanded curated coverage for thin categories flagged by the Wikidata overlap review (91 → 110 entries):
