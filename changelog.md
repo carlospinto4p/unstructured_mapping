@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.51.1 - 23rd April 2026
+
+- Added `cli/run_report.py`: per-run ingestion scorecard. Renders lifecycle (status, timestamps, wall time, error), aggregate counts (documents / provenance rows / relationships / distinct entities / distinct relationships), and the `RunMetrics` LLM scorecard (provider / model / calls / tokens). Distinct counts reuse `get_entities_touched_by_run` / `get_relationship_keys_for_run` added in v0.50.0. Flags failed runs with a top-of-report banner; falls back gracefully when no `RunMetrics` row exists.
+- Added unit test `tests/unit/test_cli_run_report.py`: 5 tests covering the populated-run happy path, the no-metrics fallback, the failed-run banner, the missing-run error, and the `main` stdout contract.
+
+
 ### v0.51.0 - 23rd April 2026
 
 - Added `cli/export.py`: portable KG export with `--format {jsonl,json-ld}`, optional `--type` / `--subtype` / `--since` filters, and `--with-relationships` / `--with-provenance` opt-ins. Emits one file per stream into `--output-dir`. JSON-LD wraps each stream in a minimal `@context` so downstream tools treat it as a well-formed JSON-LD document. Parquet was deliberately deferred so the default install stays free of `pyarrow`; tracked on the backlog.
