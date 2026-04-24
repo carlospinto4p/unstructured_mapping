@@ -1,6 +1,8 @@
 """SQLite storage for scraped articles."""
 
+import hashlib
 import logging
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -14,13 +16,14 @@ _DEFAULT_DB_PATH = Path("data/articles.db")
 
 _CREATE_TABLE = """
 CREATE TABLE IF NOT EXISTS articles (
-    url         TEXT PRIMARY KEY,
-    title       TEXT NOT NULL,
-    body        TEXT NOT NULL,
-    source      TEXT NOT NULL,
-    published   TEXT,
-    scraped_at  TEXT NOT NULL,
-    document_id TEXT NOT NULL UNIQUE
+    url          TEXT PRIMARY KEY,
+    title        TEXT NOT NULL,
+    body         TEXT NOT NULL,
+    source       TEXT NOT NULL,
+    published    TEXT,
+    scraped_at   TEXT NOT NULL,
+    document_id  TEXT NOT NULL UNIQUE,
+    content_hash TEXT
 )
 """
 
@@ -29,7 +32,37 @@ _CREATE_INDEXES = (
     "ON articles (source, scraped_at DESC)",
     "CREATE INDEX IF NOT EXISTS idx_scraped_at ON articles (scraped_at)",
     "CREATE INDEX IF NOT EXISTS idx_document_id ON articles (document_id)",
+    # Plain (non-unique) index on ``content_hash``: the
+    # scrape path should be able to look up "does a row
+    # with this body hash already exist?" with one B-tree
+    # seek. Non-unique because legacy rows without a hash
+    # store NULL, and SQLite already allows duplicate
+    # NULLs in a non-unique index.
+    "CREATE INDEX IF NOT EXISTS idx_content_hash ON articles (content_hash)",
 )
+
+#: Whitespace collapser used by :func:`compute_content_hash`.
+#: Matches any run of Unicode whitespace (spaces, tabs,
+#: newlines, NBSP) so minor whitespace edits don't change
+#: the hash.
+_WS_RE = re.compile(r"\s+")
+
+
+def compute_content_hash(body: str) -> str:
+    """Stable content hash over normalised body text.
+
+    Lower-cases and collapses whitespace so minor
+    formatting drift (an added newline, a double space,
+    title-case vs sentence-case copy-paste) does not
+    defeat dedup. Newswire-style near-duplicates that
+    only differ in boilerplate wrapping still collide;
+    substantively different rewrites do not.
+
+    :param body: Article body text.
+    :return: Hex SHA-256 digest of the normalised body.
+    """
+    normalised = _WS_RE.sub(" ", body.lower()).strip()
+    return hashlib.sha256(normalised.encode("utf-8")).hexdigest()
 
 
 class ArticleStore(SQLiteStore):
@@ -48,12 +81,15 @@ class ArticleStore(SQLiteStore):
     def _migrate(self) -> None:
         """Migrate legacy databases to current schema.
 
-        Runs four steps in order:
+        Runs five steps in order:
 
         1. Add ``document_id`` column and backfill UUIDs.
         2. Rebuild table to enforce NOT NULL + UNIQUE.
         3. Normalize hex IDs to canonical UUID format.
         4. Drop stale ``idx_source`` from pre-v0.5.8.
+        5. Add ``content_hash`` column and backfill
+           hashes for existing rows so the new dedup
+           check has a baseline on legacy DBs.
         """
         cols = {
             row[1]
@@ -65,6 +101,7 @@ class ArticleStore(SQLiteStore):
         self._migrate_enforce_constraints()
         self._migrate_normalize_uuids()
         self._migrate_drop_stale_indexes()
+        self._migrate_add_content_hash()
 
     def _migrate_add_document_id(self, cols: set[str]) -> None:
         """Add document_id column and backfill UUIDs."""
@@ -134,17 +171,84 @@ class ArticleStore(SQLiteStore):
         self._conn.execute("DROP INDEX IF EXISTS idx_source")
         self._commit()
 
-    def save(self, articles: list[Article]) -> int:
-        """Save articles, skipping duplicates by URL.
+    def _migrate_add_content_hash(self) -> None:
+        """Add ``content_hash`` and backfill existing rows.
 
-        Uses bulk insert for performance.
+        Legacy databases predate content-hash dedup. The
+        column is added nullable so the migration never
+        fails, then every row missing a hash is backfilled
+        from its stored ``body``. Once backfilled, the
+        insert path writes a hash for every new row and
+        the collision check works uniformly across old
+        and new data.
+        """
+        cols = {
+            row[1]
+            for row in self._conn.execute("PRAGMA table_info(articles)")
+        }
+        if "content_hash" not in cols:
+            self._conn.execute(
+                "ALTER TABLE articles ADD COLUMN content_hash TEXT"
+            )
+        # Backfill missing hashes in one pass. ``LENGTH``
+        # check catches both NULL and empty-string legacy
+        # rows without relying on ``IS NULL`` only.
+        rows = self._conn.execute(
+            "SELECT url, body FROM articles "
+            "WHERE content_hash IS NULL OR content_hash = ''"
+        ).fetchall()
+        if not rows:
+            return
+        for url, body in rows:
+            self._conn.execute(
+                "UPDATE articles SET content_hash = ? WHERE url = ?",
+                (compute_content_hash(body), url),
+            )
+        self._commit()
+        logger.info(
+            "Backfilled content_hash for %d legacy articles",
+            len(rows),
+        )
+
+    def save(
+        self,
+        articles: list[Article],
+        *,
+        skip_content_dupes: bool = True,
+    ) -> int:
+        """Save articles, skipping duplicates.
+
+        Two layers of dedup:
+
+        * **URL** — enforced by the primary key; duplicate
+          URLs have always been silently dropped by
+          ``INSERT OR IGNORE``. Unchanged.
+        * **Content hash** (new) — body text is normalised
+          and hashed. When a matching hash already exists
+          in the DB or appears earlier in the same batch,
+          the article is dropped and the collision is
+          logged. Set ``skip_content_dupes=False`` to keep
+          near-duplicates (archival / snapshot runs where
+          you want every copy).
 
         :param articles: Articles to store.
+        :param skip_content_dupes: When True (default),
+            drop articles whose body hash is already in the
+            DB or was already saved earlier in this batch.
+            When False, only URL dedup applies.
         :return: Number of newly inserted articles.
         """
         if not articles:
             return 0
         now = datetime.now(timezone.utc).isoformat()
+        with_hash = [(a, compute_content_hash(a.body)) for a in articles]
+        kept: list[tuple[Article, str]] = []
+        if skip_content_dupes:
+            kept = self._filter_content_dupes(with_hash)
+        else:
+            kept = with_hash
+        if not kept:
+            return 0
         before = self._conn.total_changes
         rows = [
             (
@@ -155,18 +259,63 @@ class ArticleStore(SQLiteStore):
                 a.published.isoformat() if a.published else None,
                 now,
                 str(a.document_id),
+                content_hash,
             )
-            for a in articles
+            for a, content_hash in kept
         ]
         self._conn.executemany(
             "INSERT OR IGNORE INTO articles "
             "(url, title, body, source, published, "
-            "scraped_at, document_id) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "scraped_at, document_id, content_hash) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             rows,
         )
         self._commit()
         return self._conn.total_changes - before
+
+    def _filter_content_dupes(
+        self, candidates: list[tuple[Article, str]]
+    ) -> list[tuple[Article, str]]:
+        """Drop articles whose body hash already exists.
+
+        Runs one batched ``SELECT DISTINCT content_hash
+        FROM articles WHERE content_hash IN (...)`` so
+        large batches pay one round-trip, not N. In-batch
+        duplicates are also dropped so the insert does
+        not paper over them.
+
+        Collisions are logged at INFO (one line per
+        dropped article, with source + URL) so operators
+        running `/scrape` can see exactly which articles
+        were squashed.
+        """
+        hashes = [h for _, h in candidates]
+        existing: set[str] = set()
+        if hashes:
+            placeholders = ",".join("?" * len(hashes))
+            existing = {
+                row[0]
+                for row in self._conn.execute(
+                    "SELECT DISTINCT content_hash FROM articles "
+                    f"WHERE content_hash IN ({placeholders})",
+                    hashes,
+                ).fetchall()
+            }
+        seen_in_batch: set[str] = set()
+        kept: list[tuple[Article, str]] = []
+        for article, content_hash in candidates:
+            if content_hash in existing or content_hash in seen_in_batch:
+                logger.info(
+                    "Skipping content-duplicate article "
+                    "source=%s url=%s hash=%s",
+                    article.source,
+                    article.url,
+                    content_hash[:12],
+                )
+                continue
+            seen_in_batch.add(content_hash)
+            kept.append((article, content_hash))
+        return kept
 
     def load(
         self,

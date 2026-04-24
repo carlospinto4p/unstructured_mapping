@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.57.0 - 24th April 2026
+
+- Added content-hash deduplication in `web_scraping/storage.py`:
+  - `compute_content_hash()`: SHA-256 over a normalised body (lower-cased, whitespace-collapsed) so minor formatting drift across newswire copies still collides.
+  - `content_hash` column on `articles` plus `idx_content_hash` for O(log n) collision lookups.
+  - Migration step `_migrate_add_content_hash()` adds the column and backfills hashes for every pre-existing row so the collision check has a populated baseline on legacy DBs.
+  - `ArticleStore.save(skip_content_dupes=True)`: batched collision check that drops duplicates already in the DB and duplicates within the same batch, logging each at INFO. `skip_content_dupes=False` preserves every non-URL duplicate for archival runs.
+- Updated `cli/scrape.py`: added `--no-dedup` flag that forwards `skip_content_dupes=False` to the store.
+- Added tests in `tests/unit/test_web_scraping.py`:
+  - `compute_content_hash` case/whitespace invariance and collision behaviour.
+  - Cross-URL dedup, in-batch dedup, and the `--no-dedup` opt-out.
+  - `content_hash` column persistence and migration backfill.
+
+
 ### v0.56.0 - 24th April 2026
 
 - Added `cli/subgraph.py`: entity-centric k-hop subgraph extraction.

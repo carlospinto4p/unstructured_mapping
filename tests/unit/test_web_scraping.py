@@ -54,12 +54,8 @@ def test_article_fields():
 
 
 def test_article_document_id_auto_generated():
-    a1 = Article(
-        title="T", body="B", url="u1", source="s"
-    )
-    a2 = Article(
-        title="T", body="B", url="u2", source="s"
-    )
+    a1 = Article(title="T", body="B", url="u1", source="s")
+    a2 = Article(title="T", body="B", url="u2", source="s")
     assert isinstance(a1.document_id, UUID)
     assert a1.document_id != a2.document_id
 
@@ -77,9 +73,7 @@ def test_article_document_id_explicit():
 
 
 def test_article_is_frozen():
-    article = Article(
-        title="T", body="B", url="u", source="s"
-    )
+    article = Article(title="T", body="B", url="u", source="s")
     with pytest.raises(AttributeError):
         article.title = "new"  # type: ignore[misc]
 
@@ -118,26 +112,20 @@ def test_reuters_source():
 @patch("httpx.Client.get")
 def test_reuters_fetch_parses_rss(mock_get):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
-    with ReutersScraper(
-        feed_urls="https://fake.feed/rss"
-    ) as scraper:
+    with ReutersScraper(feed_urls="https://fake.feed/rss") as scraper:
         articles = scraper.fetch()
 
     assert len(articles) == 2
     assert articles[0].title == "Test headline"
     assert articles[0].body == "Article body text."
-    assert articles[0].url == (
-        "https://example.com/article"
-    )
+    assert articles[0].url == ("https://example.com/article")
     assert articles[0].source == "reuters"
 
 
 @patch("httpx.Client.get")
 def test_reuters_fetch_parses_date(mock_get):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
-    with ReutersScraper(
-        feed_urls="https://fake.feed/rss"
-    ) as scraper:
+    with ReutersScraper(feed_urls="https://fake.feed/rss") as scraper:
         articles = scraper.fetch()
 
     assert articles[0].published is not None
@@ -149,9 +137,7 @@ def test_reuters_fetch_parses_date(mock_get):
 @patch("httpx.Client.get")
 def test_reuters_fetch_missing_date(mock_get):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
-    with ReutersScraper(
-        feed_urls="https://fake.feed/rss"
-    ) as scraper:
+    with ReutersScraper(feed_urls="https://fake.feed/rss") as scraper:
         articles = scraper.fetch()
 
     assert articles[1].published is None
@@ -180,10 +166,7 @@ def test_ap_fetch_parses_rss(mock_get):
     assert articles[0].source == "ap"
 
 
-@patch(
-    "unstructured_mapping.web_scraping.ap"
-    ".APScraper._extract_body"
-)
+@patch("unstructured_mapping.web_scraping.ap.APScraper._extract_body")
 @patch("httpx.Client.get")
 def test_ap_fetch_full_text(mock_get, mock_extract):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
@@ -197,22 +180,13 @@ def test_ap_fetch_full_text(mock_get, mock_extract):
     ) as scraper:
         articles = scraper.fetch()
 
-    assert articles[0].body == (
-        "Full article text from AP."
-    )
-    assert articles[0].url == (
-        "https://apnews.com/article/test"
-    )
+    assert articles[0].body == ("Full article text from AP.")
+    assert articles[0].url == ("https://apnews.com/article/test")
 
 
-@patch(
-    "unstructured_mapping.web_scraping.ap"
-    ".APScraper._extract_body"
-)
+@patch("unstructured_mapping.web_scraping.ap.APScraper._extract_body")
 @patch("httpx.Client.get")
-def test_ap_fallback_on_extraction_failure(
-    mock_get, mock_extract
-):
+def test_ap_fallback_on_extraction_failure(mock_get, mock_extract):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
     mock_extract.return_value = ExtractionResult()
     with APScraper(
@@ -267,9 +241,7 @@ def test_bbc_fetch_full_text(mock_get):
         return make_mock_response(BBC_HTML)
 
     mock_get.side_effect = side_effect
-    with BBCScraper(
-        feed_urls="https://fake.feed/rss"
-    ) as scraper:
+    with BBCScraper(feed_urls="https://fake.feed/rss") as scraper:
         articles = scraper.fetch()
 
     assert len(articles) == 1
@@ -297,14 +269,10 @@ def test_bbc_fallback_on_extraction_failure(mock_get):
     def side_effect(url, **kwargs):
         if "fake.feed" in url:
             return make_mock_response(BBC_RSS)
-        return make_mock_response(
-            "<html><body>No article</body></html>"
-        )
+        return make_mock_response("<html><body>No article</body></html>")
 
     mock_get.side_effect = side_effect
-    with BBCScraper(
-        feed_urls="https://fake.feed/rss"
-    ) as scraper:
+    with BBCScraper(feed_urls="https://fake.feed/rss") as scraper:
         articles = scraper.fetch()
 
     assert articles[0].body == "BBC summary."
@@ -335,9 +303,7 @@ BBC_RSS_WITH_PODCAST = """\
 @patch("httpx.Client.get")
 def test_bbc_skips_podcast_urls(mock_get):
     """Non-article URLs (BBC Sounds) are filtered out."""
-    mock_get.return_value = make_mock_response(
-        BBC_RSS_WITH_PODCAST
-    )
+    mock_get.return_value = make_mock_response(BBC_RSS_WITH_PODCAST)
     with BBCScraper(
         feed_urls="https://fake.feed/rss",
         fetch_full_text=False,
@@ -367,14 +333,9 @@ BBC_RSS_DUP_FEED = """\
 """
 
 
-@patch(
-    "unstructured_mapping.web_scraping.bbc"
-    ".BBCScraper._extract_body"
-)
+@patch("unstructured_mapping.web_scraping.bbc.BBCScraper._extract_body")
 @patch("httpx.Client.get")
-def test_fetch_enriches_duplicate_url_once(
-    mock_get, mock_extract
-):
+def test_fetch_enriches_duplicate_url_once(mock_get, mock_extract):
     """Duplicate URLs across feeds trigger one extraction."""
 
     def side_effect(url, **kwargs):
@@ -406,10 +367,13 @@ def test_fetch_enriches_duplicate_url_once(
 # -- ArticleStore --
 
 
-def make_article(url="https://example.com/1", title="T"):
+def make_article(url="https://example.com/1", title="T", body=None):
+    # Default body varies with URL so that tests saving
+    # N articles under distinct URLs don't trip the new
+    # content-hash dedup (which squashes same-body rows).
     return Article(
         title=title,
-        body="Body text",
+        body=body if body is not None else f"Body text for {url}",
         url=url,
         source="test",
     )
@@ -418,7 +382,7 @@ def make_article(url="https://example.com/1", title="T"):
 def test_store_save_and_load(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
-        articles = [make_article()]
+        articles = [make_article(body="Body text")]
         inserted = store.save(articles)
 
         assert inserted == 1
@@ -442,9 +406,7 @@ def test_store_deduplication(tmp_path):
 def test_store_filter_by_source(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
-        a1 = Article(
-            title="A", body="B", url="u1", source="bbc"
-        )
+        a1 = Article(title="A", body="B", url="u1", source="bbc")
         a2 = Article(
             title="C",
             body="D",
@@ -464,10 +426,9 @@ def test_store_filter_by_source(tmp_path):
 def test_store_load_limit(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
-        store.save([
-            make_article(url=f"https://example.com/{i}")
-            for i in range(5)
-        ])
+        store.save(
+            [make_article(url=f"https://example.com/{i}") for i in range(5)]
+        )
         assert len(store.load(limit=3)) == 3
         assert len(store.load(limit=10)) == 5
 
@@ -475,10 +436,9 @@ def test_store_load_limit(tmp_path):
 def test_store_load_offset(tmp_path):
     db = tmp_path / "test.db"
     with ArticleStore(db_path=db) as store:
-        store.save([
-            make_article(url=f"https://example.com/{i}")
-            for i in range(5)
-        ])
+        store.save(
+            [make_article(url=f"https://example.com/{i}") for i in range(5)]
+        )
         assert len(store.load(limit=2, offset=3)) == 2
         assert len(store.load(limit=10, offset=4)) == 1
 
@@ -527,8 +487,7 @@ def test_store_migration_adds_document_id(tmp_path):
         "scraped_at TEXT NOT NULL)"
     )
     conn.execute(
-        "INSERT INTO articles VALUES "
-        "(?, ?, ?, ?, ?, ?)",
+        "INSERT INTO articles VALUES (?, ?, ?, ?, ?, ?)",
         ("u1", "T", "B", "s", None, "2026-01-01"),
     )
     conn.commit()
@@ -539,3 +498,135 @@ def test_store_migration_adds_document_id(tmp_path):
 
     assert len(loaded) == 1
     assert isinstance(loaded[0].document_id, UUID)
+
+
+# -- content-hash dedup ---------------------------------
+
+
+def test_compute_content_hash_is_whitespace_and_case_insensitive():
+    from unstructured_mapping.web_scraping.storage import (
+        compute_content_hash,
+    )
+
+    a = compute_content_hash("Apple reported record earnings today.")
+    b = compute_content_hash("  apple  reported   record\nearnings today.  ")
+    assert a == b
+
+
+def test_compute_content_hash_differs_for_different_bodies():
+    from unstructured_mapping.web_scraping.storage import (
+        compute_content_hash,
+    )
+
+    a = compute_content_hash("Apple reported record earnings today.")
+    b = compute_content_hash("Microsoft reported record earnings today.")
+    assert a != b
+
+
+def test_store_dedups_identical_bodies_across_urls(tmp_path, caplog):
+    """Two URLs carrying the same wire story: only the first wins."""
+    db = tmp_path / "test.db"
+    a1 = Article(
+        title="AP copy",
+        body="Apple reported record earnings.",
+        url="https://nyt.example/1",
+        source="nyt",
+    )
+    a2 = Article(
+        title="Reuters copy",
+        body="Apple reported record earnings.",
+        url="https://reuters.example/2",
+        source="reuters",
+    )
+    with ArticleStore(db_path=db) as store:
+        with caplog.at_level("INFO"):
+            inserted = store.save([a1, a2])
+        assert inserted == 1
+        assert store.count() == 1
+    assert any("content-duplicate" in r.message for r in caplog.records)
+
+
+def test_store_dedups_within_single_batch(tmp_path):
+    """In-batch dup: same body, different URL, same save() call."""
+    db = tmp_path / "test.db"
+    a1 = Article(title="t", body="Same body", url="u1", source="s")
+    a2 = Article(title="t", body="Same body", url="u2", source="s")
+    with ArticleStore(db_path=db) as store:
+        inserted = store.save([a1, a2])
+    assert inserted == 1
+
+
+def test_store_no_dedup_keeps_near_duplicates(tmp_path):
+    """``skip_content_dupes=False`` preserves every non-URL-dup."""
+    db = tmp_path / "test.db"
+    a1 = Article(title="t", body="Same body", url="u1", source="s")
+    a2 = Article(title="t", body="Same body", url="u2", source="s")
+    with ArticleStore(db_path=db) as store:
+        inserted = store.save([a1, a2], skip_content_dupes=False)
+    assert inserted == 2
+
+
+def test_store_persists_content_hash(tmp_path):
+    db = tmp_path / "test.db"
+    article = Article(
+        title="t",
+        body="Apple reported record earnings.",
+        url="u1",
+        source="s",
+    )
+    with ArticleStore(db_path=db) as store:
+        store.save([article])
+        row = store._conn.execute(  # noqa: SLF001
+            "SELECT content_hash FROM articles WHERE url = ?",
+            ("u1",),
+        ).fetchone()
+    from unstructured_mapping.web_scraping.storage import (
+        compute_content_hash,
+    )
+
+    assert row[0] == compute_content_hash(article.body)
+
+
+def test_store_migration_backfills_content_hash(tmp_path):
+    """Legacy DB without ``content_hash`` is backfilled on
+    open so the new dedup check sees a populated baseline
+    and can catch a later same-body insert.
+    """
+    db = tmp_path / "test.db"
+    import sqlite3
+
+    conn = sqlite3.connect(str(db))
+    conn.execute(
+        "CREATE TABLE articles ("
+        "url TEXT PRIMARY KEY, "
+        "title TEXT NOT NULL, "
+        "body TEXT NOT NULL, "
+        "source TEXT NOT NULL, "
+        "published TEXT, "
+        "scraped_at TEXT NOT NULL)"
+    )
+    conn.execute(
+        "INSERT INTO articles VALUES (?, ?, ?, ?, ?, ?)",
+        ("u0", "Legacy", "Legacy body text", "s", None, "2026-01-01"),
+    )
+    conn.commit()
+    conn.close()
+
+    with ArticleStore(db_path=db) as store:
+        # Backfill populated the column.
+        hashes = store._conn.execute(  # noqa: SLF001
+            "SELECT content_hash FROM articles"
+        ).fetchall()
+        assert all(h[0] for h in hashes)
+        # New article with same body is now dropped.
+        inserted = store.save(
+            [
+                Article(
+                    title="Dup",
+                    body="Legacy body text",
+                    url="u1",
+                    source="s",
+                )
+            ]
+        )
+        assert inserted == 0

@@ -68,6 +68,16 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Skip full-text extraction (RSS summaries only).",
     )
     p.add_argument(
+        "--no-dedup",
+        action="store_true",
+        help=(
+            "Keep content-duplicate articles (same body "
+            "as a stored row). URL dedup still applies. "
+            "Use for archival or snapshot runs where every "
+            "copy matters."
+        ),
+    )
+    p.add_argument(
         "--stats",
         action="store_true",
         help="Show database stats and exit.",
@@ -140,7 +150,10 @@ def main(argv: list[str] | None = None) -> None:
         ) as scraper:
             logger.info("Scraping %s...", name)
             articles = scraper.fetch()
-            new = store.save(articles)
+            new = store.save(
+                articles,
+                skip_content_dupes=not args.no_dedup,
+            )
             total_new += new
             logger.info(
                 "  Fetched %d, saved %d new articles",
