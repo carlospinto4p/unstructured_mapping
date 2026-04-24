@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.58.0 - 24th April 2026
+### v0.58.0 - 25th April 2026
 
 - Added `pipeline/llm_fallback.py`: two-provider fallback chain.
   - `FallbackLLMProvider(primary, secondary, ambiguity_threshold, ambiguity_fn)`: conforms to `LLMProvider`, escalates to the secondary on any `LLMProviderError` or when the scorer exceeds the threshold. Exposes `last_served_by` and `escalations` for per-run monitoring.
