@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.55.0 - 24th April 2026
+
+- Added `cli/ingest.py`: user-facing batch-ingest CLI that runs the orchestrator over scraped articles. Supports `--source` / `--limit` filters, cold-start / no-LLM / full-pipeline modes, and both Ollama and Claude providers.
+- Added `--resume-run <run_id>` to `cli/ingest.py`: loads the failed document ids from `article_failures`, fetches just those articles from the articles DB, and forwards the run id to `Pipeline.run` so the retry is filtered on both sides. Bridges the v0.54.0 plumbing to a real user entry point.
+- Updated `ArticleStore.load()` in `web_scraping/storage.py`: added a `document_ids=` keyword filter that accepts both canonical UUID and 32-char hex forms. Needed because `Pipeline` stores failure ids as `UUID.hex` but the articles table uses `str(UUID)`.
+- Added `tests/unit/test_cli_ingest.py`: 13 tests covering article loading (filter + resume), pipeline-assembly modes, alias-only ingestion, the resume workflow end-to-end, stdout contract, cold-start guardrails, and the new `document_ids=` filter on `ArticleStore.load`.
+
+
 ### v0.54.0 - 24th April 2026
 
 - Added per-article failure tracking + `Pipeline.run()` resume support:

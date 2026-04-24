@@ -27,10 +27,8 @@ CREATE TABLE IF NOT EXISTS articles (
 _CREATE_INDEXES = (
     "CREATE INDEX IF NOT EXISTS idx_source_scraped "
     "ON articles (source, scraped_at DESC)",
-    "CREATE INDEX IF NOT EXISTS idx_scraped_at "
-    "ON articles (scraped_at)",
-    "CREATE INDEX IF NOT EXISTS idx_document_id "
-    "ON articles (document_id)",
+    "CREATE INDEX IF NOT EXISTS idx_scraped_at ON articles (scraped_at)",
+    "CREATE INDEX IF NOT EXISTS idx_document_id ON articles (document_id)",
 )
 
 
@@ -44,9 +42,7 @@ class ArticleStore(SQLiteStore):
     _ddl_statements = (_CREATE_TABLE,)
     _index_statements = _CREATE_INDEXES
 
-    def __init__(
-        self, db_path: Path = _DEFAULT_DB_PATH
-    ) -> None:
+    def __init__(self, db_path: Path = _DEFAULT_DB_PATH) -> None:
         super().__init__(db_path)
 
     def _migrate(self) -> None:
@@ -61,9 +57,7 @@ class ArticleStore(SQLiteStore):
         """
         cols = {
             row[1]
-            for row in self._conn.execute(
-                "PRAGMA table_info(articles)"
-            )
+            for row in self._conn.execute("PRAGMA table_info(articles)")
         }
         if not cols:
             return
@@ -72,25 +66,17 @@ class ArticleStore(SQLiteStore):
         self._migrate_normalize_uuids()
         self._migrate_drop_stale_indexes()
 
-    def _migrate_add_document_id(
-        self, cols: set[str]
-    ) -> None:
+    def _migrate_add_document_id(self, cols: set[str]) -> None:
         """Add document_id column and backfill UUIDs."""
         if "document_id" in cols:
             return
-        self._conn.execute(
-            "ALTER TABLE articles "
-            "ADD COLUMN document_id TEXT"
-        )
+        self._conn.execute("ALTER TABLE articles ADD COLUMN document_id TEXT")
         rows = self._conn.execute(
-            "SELECT url FROM articles "
-            "WHERE document_id IS NULL"
+            "SELECT url FROM articles WHERE document_id IS NULL"
         ).fetchall()
         for (url,) in rows:
             self._conn.execute(
-                "UPDATE articles "
-                "SET document_id = ? "
-                "WHERE url = ?",
+                "UPDATE articles SET document_id = ? WHERE url = ?",
                 (str(uuid4()), url),
             )
         self._commit()
@@ -103,9 +89,7 @@ class ArticleStore(SQLiteStore):
         """Rebuild table if NOT NULL constraint missing."""
         info = {
             row[1]: row[3]  # name -> notnull
-            for row in self._conn.execute(
-                "PRAGMA table_info(articles)"
-            )
+            for row in self._conn.execute("PRAGMA table_info(articles)")
         }
         if info.get("document_id"):
             return
@@ -122,14 +106,9 @@ class ArticleStore(SQLiteStore):
                    published, scraped_at, document_id
             FROM _articles_old
         """)
-        self._conn.execute(
-            "DROP TABLE _articles_old"
-        )
+        self._conn.execute("DROP TABLE _articles_old")
         self._commit()
-        logger.info(
-            "Rebuilt articles table with "
-            "document_id constraints"
-        )
+        logger.info("Rebuilt articles table with document_id constraints")
 
     def _migrate_normalize_uuids(self) -> None:
         """Normalize 32-char hex IDs to UUID format."""
@@ -141,9 +120,7 @@ class ArticleStore(SQLiteStore):
             return
         for url, hex_id in hex_rows:
             self._conn.execute(
-                "UPDATE articles "
-                "SET document_id = ? "
-                "WHERE url = ?",
+                "UPDATE articles SET document_id = ? WHERE url = ?",
                 (str(UUID(hex_id)), url),
             )
         self._commit()
@@ -154,9 +131,7 @@ class ArticleStore(SQLiteStore):
 
     def _migrate_drop_stale_indexes(self) -> None:
         """Drop idx_source replaced by idx_source_scraped."""
-        self._conn.execute(
-            "DROP INDEX IF EXISTS idx_source"
-        )
+        self._conn.execute("DROP INDEX IF EXISTS idx_source")
         self._commit()
 
     def save(self, articles: list[Article]) -> int:
@@ -177,9 +152,7 @@ class ArticleStore(SQLiteStore):
                 a.title,
                 a.body,
                 a.source,
-                a.published.isoformat()
-                if a.published
-                else None,
+                a.published.isoformat() if a.published else None,
                 now,
                 str(a.document_id),
             )
@@ -200,6 +173,8 @@ class ArticleStore(SQLiteStore):
         source: str | None = None,
         limit: int | None = None,
         offset: int = 0,
+        *,
+        document_ids: list[str] | None = None,
     ) -> list[Article]:
         """Load articles from the store.
 
@@ -208,16 +183,44 @@ class ArticleStore(SQLiteStore):
         :param limit: Maximum number of articles to return,
             or ``None`` for all.
         :param offset: Number of articles to skip.
+        :param document_ids: Restrict to these document ids.
+            Accepts both canonical UUID (``str(uuid)``) and
+            hex (``uuid.hex``) forms — the hex form matches
+            :attr:`Article.document_id.hex` used by the KG
+            pipeline as the provenance key. Empty list
+            short-circuits to ``[]`` without a query. Used by
+            :mod:`cli.ingest` to resume a prior run by
+            loading only the articles the pipeline needs.
         :return: List of articles.
         """
+        if document_ids is not None and not document_ids:
+            return []
         query = (
             "SELECT url, title, body, source, published,"
             " document_id FROM articles"
         )
+        clauses: list[str] = []
         params: list[str | int] = []
         if source is not None:
-            query += " WHERE source = ?"
+            clauses.append("source = ?")
             params.append(source)
+        if document_ids is not None:
+            # Accept both hex ('...' len 32) and canonical
+            # UUID ('...-...-...') forms so callers holding
+            # either shape get a match without round-tripping
+            # through ``UUID(x)``.
+            expanded: list[str] = []
+            for doc_id in document_ids:
+                expanded.append(doc_id)
+                if len(doc_id) == 32:
+                    expanded.append(str(UUID(doc_id)))
+                elif "-" in doc_id:
+                    expanded.append(UUID(doc_id).hex)
+            placeholders = ",".join("?" * len(expanded))
+            clauses.append(f"document_id IN ({placeholders})")
+            params.extend(expanded)
+        if clauses:
+            query += " WHERE " + " AND ".join(clauses)
         query += " ORDER BY scraped_at DESC"
         if limit is not None:
             query += " LIMIT ?"
@@ -225,9 +228,7 @@ class ArticleStore(SQLiteStore):
         if offset:
             query += " OFFSET ?"
             params.append(offset)
-        rows = self._conn.execute(
-            query, params
-        ).fetchall()
+        rows = self._conn.execute(query, params).fetchall()
         return [self._row_to_article(r) for r in rows]
 
     def count(self, source: str | None = None) -> int:
@@ -242,9 +243,7 @@ class ArticleStore(SQLiteStore):
         if source is not None:
             query += " WHERE source = ?"
             params = (source,)
-        return self._conn.execute(
-            query, params
-        ).fetchone()[0]
+        return self._conn.execute(query, params).fetchone()[0]
 
     def counts_by_source(self) -> dict[str, int]:
         """Count articles grouped by source.
@@ -252,23 +251,16 @@ class ArticleStore(SQLiteStore):
         :return: Mapping of source name to article count.
         """
         rows = self._conn.execute(
-            "SELECT source, COUNT(*) FROM articles "
-            "GROUP BY source"
+            "SELECT source, COUNT(*) FROM articles GROUP BY source"
         ).fetchall()
         return {src: cnt for src, cnt in rows}
 
     @staticmethod
     def _row_to_article(
-        row: tuple[
-            str, str, str, str, str | None, str
-        ],
+        row: tuple[str, str, str, str, str | None, str],
     ) -> Article:
         url, title, body, source, pub_str, doc_id = row
-        published = (
-            datetime.fromisoformat(pub_str)
-            if pub_str
-            else None
-        )
+        published = datetime.fromisoformat(pub_str) if pub_str else None
         return Article(
             url=url,
             title=title,
