@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.58.2 - 25th April 2026
+
+- Refactored `cli/validate_snapshot.py` (501 lines) by lifting KG-quality primitives into a new `knowledge_graph/snapshot.py`:
+  - Moved: `Snapshot`, `CollisionSummary`, `CheckResult`, `capture_snapshot`, `compare_snapshots`, `load_snapshot`, `write_snapshot`, `DEFAULT_TOP_K_COLLISIONS`, `SCHEMA_VERSION`, plus the small private helpers `_count_by_type_subtype`, `_scalar_count`, `_format_counts_diff`.
+  - Why: snapshot capture and comparison are KG-domain concerns. Hosting them in a CLI module forced future tooling (drift checks between two live KGs, dashboards, LLM context blocks) to depend on a CLI surface; they now live next to `validation.py` and `storage.py`.
+  - CLI shrank from 501 → 184 lines and only owns argparse plumbing + dispatch.
+- Preserved back-compat: `cli/validate_snapshot.py` re-exports every public name so callers and tests importing from it keep working unchanged.
+
+
 ### v0.58.1 - 25th April 2026
 
 - Refactored `KnowledgeStore` lookup naming to a single rule — `get_*` returns at most one record (or a dict keyed by exact id), `find_*` returns a filtered list/set. Added the convention to `KnowledgeStore`'s docstring.
