@@ -388,7 +388,7 @@ class Pipeline:
         :param resume_run_id: When set, filter
             ``articles`` down to just the ones recorded
             as failures in that prior run (see
-            :meth:`KnowledgeStore.get_failed_document_ids`).
+            :meth:`KnowledgeStore.find_failed_document_ids`).
             Articles whose ``document_id.hex`` does not
             appear in the failed set are dropped before
             the loop starts — re-processing a successful
@@ -400,7 +400,7 @@ class Pipeline:
         """
         if resume_run_id is not None:
             failed_ids = set(
-                self._store.get_failed_document_ids(resume_run_id)
+                self._store.find_failed_document_ids(resume_run_id)
             )
             before = len(articles)
             articles = [
@@ -651,7 +651,7 @@ class Pipeline:
             logger.exception("Failed to process article %s", doc_id)
             # Persist the failure so a resumed run can
             # re-queue just the crashed articles via
-            # :meth:`KnowledgeStore.get_failed_document_ids`
+            # :meth:`KnowledgeStore.find_failed_document_ids`
             # instead of burning LLM tokens on the whole
             # batch again. ``run_id`` is ``None`` in
             # single-article test drivers (e.g. preview);

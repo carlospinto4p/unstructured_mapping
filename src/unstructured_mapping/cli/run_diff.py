@@ -14,8 +14,8 @@ Two kinds of comparison are produced:
    ``run_metrics``.
 2. **Set deltas** — entities and relationships present in
    only one run vs. both. Uses
-   :meth:`KnowledgeStore.get_entities_touched_by_run` and
-   :meth:`KnowledgeStore.get_relationship_keys_for_run`.
+   :meth:`KnowledgeStore.find_entities_touched_by_run` and
+   :meth:`KnowledgeStore.find_relationship_keys_for_run`.
 
 The CLI is read-only — it never mutates the KG. Useful for
 iterating on seed data, LLM prompts, or provider swaps
@@ -202,14 +202,14 @@ def diff_runs(
     base_run, base_metrics = _load_run(store, base_run_id)
     head_run, head_metrics = _load_run(store, head_run_id)
 
-    base_entities = store.get_entities_touched_by_run(base_run_id)
-    head_entities = store.get_entities_touched_by_run(head_run_id)
+    base_entities = store.find_entities_touched_by_run(base_run_id)
+    head_entities = store.find_entities_touched_by_run(head_run_id)
     only_base_e = base_entities - head_entities
     only_head_e = head_entities - base_entities
     both_e = base_entities & head_entities
 
-    base_rels = store.get_relationship_keys_for_run(base_run_id)
-    head_rels = store.get_relationship_keys_for_run(head_run_id)
+    base_rels = store.find_relationship_keys_for_run(base_run_id)
+    head_rels = store.find_relationship_keys_for_run(head_run_id)
     only_base_r = base_rels - head_rels
     only_head_r = head_rels - base_rels
     both_r = base_rels & head_rels

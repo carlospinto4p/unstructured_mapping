@@ -15,7 +15,7 @@ Why this CLI
 
 The KG already exposes :meth:`find_co_mentioned`,
 :meth:`find_relationships_by_document`, and
-:meth:`get_provenance`, but none of them answers "given
+:meth:`find_provenance_for_entity`, but none of them answers "given
 entity X, show its neighbourhood in the news graph with
 supporting documents" in a single call. This CLI stitches
 the building blocks together and keeps the output shape

@@ -44,7 +44,7 @@ Resume semantics
 When ``--resume-run`` is set, ``--source`` / ``--limit``
 are ignored: the CLI pulls the exact set of failed
 ``document_id`` values from the KG
-(:meth:`KnowledgeStore.get_failed_document_ids`), loads
+(:meth:`KnowledgeStore.find_failed_document_ids`), loads
 the matching articles from the articles DB, and hands
 the batch to :meth:`Pipeline.run` which filters again to
 the same set. A fresh ``run_id`` is allocated for the
@@ -132,7 +132,7 @@ def _load_articles(
     applies ``--source`` / ``--limit`` as normal.
     """
     if resume_run_id is not None:
-        failed_ids = kg_store.get_failed_document_ids(resume_run_id)
+        failed_ids = kg_store.find_failed_document_ids(resume_run_id)
         if not failed_ids:
             logger.warning(
                 "Run %s has no recorded article failures — nothing to resume.",

@@ -177,7 +177,7 @@ class RelationshipMixin:
         self._commit()
         return len(new_rels)
 
-    def get_relationships(
+    def find_relationships_for_entity(
         self,
         entity_id: str,
         as_source: bool = True,
@@ -207,7 +207,14 @@ class RelationshipMixin:
             results.extend(row_to_relationship(r) for r in rows)
         return results
 
-    def get_relationships_between(
+    #: Back-compat alias. Pre-naming-convention callers used
+    #: ``get_relationships``; the canonical name is now
+    #: :meth:`find_relationships_for_entity` so the verb
+    #: matches the "filtered list" semantics. Both names will
+    #: coexist for at least one minor release.
+    get_relationships = find_relationships_for_entity
+
+    def find_relationships_between(
         self,
         source_id: str,
         target_id: str,
@@ -228,6 +235,10 @@ class RelationshipMixin:
             (source_id, target_id),
         ).fetchall()
         return [row_to_relationship(r) for r in rows]
+
+    #: Back-compat alias for the canonical
+    #: :meth:`find_relationships_between`.
+    get_relationships_between = find_relationships_between
 
     def find_by_qualifier(self, qualifier_id: str) -> list[Relationship]:
         """Find relationships with a given qualifier.
@@ -292,10 +303,11 @@ class RelationshipMixin:
         """Fetch relationships with temporal / confidence
         filters.
 
-        Generalises :meth:`get_relationships` and
-        :meth:`find_active_relationships`: when neither
+        Generalises :meth:`find_relationships_for_entity`
+        and :meth:`find_active_relationships`: when neither
         filter is supplied the result matches
-        :meth:`get_relationships`; when ``at`` is set,
+        :meth:`find_relationships_for_entity`; when ``at``
+        is set,
         only rows that were in force at that instant
         survive (``valid_from <= at`` and
         ``valid_until IS NULL`` or ``valid_until >= at``);
@@ -409,7 +421,7 @@ class RelationshipMixin:
 
     # -- History queries --
 
-    def get_relationship_history(
+    def find_relationship_history(
         self,
         entity_id: str,
     ) -> list[RelationshipRevision]:
@@ -433,6 +445,10 @@ class RelationshipMixin:
             (entity_id, entity_id),
         ).fetchall()
         return [row_to_relationship_rev(r) for r in rows]
+
+    #: Back-compat alias for the canonical
+    #: :meth:`find_relationship_history`.
+    get_relationship_history = find_relationship_history
 
     # -- Internal helpers --
 

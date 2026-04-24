@@ -560,3 +560,33 @@ def test_find_mentions_with_entities_empty_doc(
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
         assert store.find_mentions_with_entities("missing") == []
+
+
+# -- get_*/find_* naming convention -----------------------
+
+
+def test_back_compat_aliases_resolve_to_find_methods():
+    """Old ``get_*`` names that returned filtered lists are
+    now aliases for the canonical ``find_*`` methods.
+    Compared at the class level because instance attribute
+    access creates fresh bound-method objects, so two
+    bound methods of the same underlying function still
+    fail an ``is`` check.
+    """
+    pairs = (
+        ("get_relationships", "find_relationships_for_entity"),
+        ("get_relationships_between", "find_relationships_between"),
+        ("get_relationship_history", "find_relationship_history"),
+        ("get_provenance", "find_provenance_for_entity"),
+        ("get_entity_history", "find_entity_history"),
+        ("get_entities_touched_by_run", "find_entities_touched_by_run"),
+        ("get_failed_document_ids", "find_failed_document_ids"),
+        (
+            "get_relationship_keys_for_run",
+            "find_relationship_keys_for_run",
+        ),
+    )
+    for legacy, canonical in pairs:
+        assert getattr(KnowledgeStore, legacy) is getattr(
+            KnowledgeStore, canonical
+        ), f"{legacy} should alias {canonical}"

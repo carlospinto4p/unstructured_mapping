@@ -29,7 +29,7 @@ from unstructured_mapping.knowledge_graph.models import (
 class EntityHistoryMixin(EntityHelpersMixin):
     """Revision history, point-in-time queries, revert."""
 
-    def get_entity_history(self, entity_id: str) -> list[EntityRevision]:
+    def find_entity_history(self, entity_id: str) -> list[EntityRevision]:
         """Fetch all revisions for an entity.
 
         Returns revisions in chronological order
@@ -50,6 +50,10 @@ class EntityHistoryMixin(EntityHelpersMixin):
             (entity_id,),
         ).fetchall()
         return [row_to_entity_rev(r) for r in rows]
+
+    #: Back-compat alias for the canonical
+    #: :meth:`find_entity_history`.
+    get_entity_history = find_entity_history
 
     def get_entity_at(
         self,

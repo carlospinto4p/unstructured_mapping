@@ -168,19 +168,19 @@ def _collect_relationships(
 ) -> list[Relationship]:
     """Fetch relationships touching any exported entity.
 
-    Uses the per-entity ``get_relationships`` lookup in a
-    loop — the relationship count per entity is small and
-    the store returns both source-side and target-side
-    matches in one call. Deduplicates across entities on
-    ``(source_id, target_id, relation_type, valid_from)``
-    so a shared edge is emitted once.
+    Uses the per-entity ``find_relationships_for_entity``
+    lookup in a loop — the relationship count per entity is
+    small and the store returns both source-side and
+    target-side matches in one call. Deduplicates across
+    entities on ``(source_id, target_id, relation_type,
+    valid_from)`` so a shared edge is emitted once.
     """
     if not entities:
         return []
     seen: set[tuple[str, str, str, str]] = set()
     out: list[Relationship] = []
     for entity in entities:
-        for rel in store.get_relationships(entity.entity_id):
+        for rel in store.find_relationships_for_entity(entity.entity_id):
             key = (
                 rel.source_id,
                 rel.target_id,
@@ -202,7 +202,7 @@ def _collect_provenance(
     """Fetch provenance rows for the exported entities."""
     out: list[Provenance] = []
     for entity in entities:
-        out.extend(store.get_provenance(entity.entity_id))
+        out.extend(store.find_provenance_for_entity(entity.entity_id))
     return out
 
 

@@ -122,8 +122,8 @@ def report_run(store: KnowledgeStore, run_id: str) -> str:
     if run is None:
         raise SystemExit(f"error: run {run_id!r} not found")
     metrics = store.get_run_metrics(run_id)
-    distinct_entities = len(store.get_entities_touched_by_run(run_id))
-    distinct_rels = len(store.get_relationship_keys_for_run(run_id))
+    distinct_entities = len(store.find_entities_touched_by_run(run_id))
+    distinct_rels = len(store.find_relationship_keys_for_run(run_id))
     sections = [
         _fmt_lifecycle(run, metrics),
         _fmt_aggregates(run, distinct_entities, distinct_rels),

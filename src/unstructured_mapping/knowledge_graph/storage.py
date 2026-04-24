@@ -276,6 +276,36 @@ class KnowledgeStore(
 
     :param db_path: Path to the SQLite database file.
         Parent directories are created automatically.
+
+    Naming convention
+    -----------------
+
+    Read-side methods follow a deliberate split:
+
+    * ``get_*`` returns at most one record (or a dict
+      keyed by exact id for batch lookups). Examples:
+      :meth:`get_entity`, :meth:`get_entities`,
+      :meth:`get_run`, :meth:`get_run_metrics`,
+      :meth:`get_entity_at`.
+    * ``find_*`` returns a filtered list/set, possibly
+      empty, where the caller passes search criteria
+      rather than an exact key. Examples:
+      :meth:`find_relationships_for_entity`,
+      :meth:`find_provenance_for_entity`,
+      :meth:`find_relationship_history`,
+      :meth:`find_failed_document_ids`,
+      :meth:`find_entities_touched_by_run`.
+
+    Older ``get_*`` names that returned lists
+    (``get_relationships``, ``get_provenance``,
+    ``get_entity_history``, ``get_relationship_history``,
+    ``get_entities_touched_by_run``,
+    ``get_failed_document_ids``,
+    ``get_relationship_keys_for_run``,
+    ``get_relationships_between``) survive as
+    back-compat aliases that point at the canonical
+    ``find_*`` names. New code should use the ``find_*``
+    spellings; aliases will be removed in a future major.
     """
 
     _ddl_statements = (

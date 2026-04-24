@@ -89,7 +89,7 @@ class ProvenanceMixin:
         self._commit()
         return self._conn.total_changes - before
 
-    def get_provenance(self, entity_id: str) -> list[Provenance]:
+    def find_provenance_for_entity(self, entity_id: str) -> list[Provenance]:
         """Fetch all provenance records for an entity.
 
         :param entity_id: The entity's unique identifier.
@@ -103,6 +103,10 @@ class ProvenanceMixin:
             (entity_id,),
         ).fetchall()
         return [row_to_provenance(r) for r in rows]
+
+    #: Back-compat alias for the canonical
+    #: :meth:`find_provenance_for_entity`.
+    get_provenance = find_provenance_for_entity
 
     def has_document_provenance(self, document_id: str) -> bool:
         """Check whether a document has any provenance.
@@ -176,7 +180,7 @@ class ProvenanceMixin:
     def count_mentions_for_entity(self, entity_id: str) -> int:
         """Count provenance rows tied to an entity.
 
-        Cheaper than ``len(get_provenance(entity_id))``
+        Cheaper than ``len(find_provenance_for_entity(entity_id))``
         because the hydrated ``Provenance`` rows are
         never materialised. Used by the alias-collision
         audit to rank collisions by mention prevalence.

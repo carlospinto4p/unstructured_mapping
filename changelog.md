@@ -1,5 +1,22 @@
 ## Changelog
 
+### v0.58.1 - 25th April 2026
+
+- Refactored `KnowledgeStore` lookup naming to a single rule — `get_*` returns at most one record (or a dict keyed by exact id), `find_*` returns a filtered list/set. Added the convention to `KnowledgeStore`'s docstring.
+  - Renamed methods (canonical names → old names kept as class-level aliases):
+    - `find_relationships_for_entity` ← `get_relationships`.
+    - `find_relationships_between` ← `get_relationships_between`.
+    - `find_relationship_history` ← `get_relationship_history`.
+    - `find_provenance_for_entity` ← `get_provenance`.
+    - `find_entity_history` ← `get_entity_history`.
+    - `find_entities_touched_by_run` ← `get_entities_touched_by_run`.
+    - `find_failed_document_ids` ← `get_failed_document_ids`.
+    - `find_relationship_keys_for_run` ← `get_relationship_keys_for_run`.
+- Migrated internal callers to the canonical names:
+  - `cli/export.py`, `cli/ingest.py`, `cli/run_diff.py`, `cli/run_report.py`, `cli/subgraph.py`, `pipeline/orchestrator.py`, plus `:meth:` references in `_provenance_mixin`, `_relationship_mixin`, and `_run_mixin` docstrings.
+- Added `tests/unit/test_kg_runs_and_history.py::test_back_compat_aliases_resolve_to_find_methods`: pins each legacy `get_*` to its canonical `find_*` so future refactors can't accidentally diverge their behaviour.
+
+
 ### v0.58.0 - 25th April 2026
 
 - Added `pipeline/llm_fallback.py`: two-provider fallback chain.

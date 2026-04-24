@@ -174,7 +174,7 @@ class RunMixin:
             return None
         return row_to_run(row)
 
-    def get_entities_touched_by_run(self, run_id: str) -> set[str]:
+    def find_entities_touched_by_run(self, run_id: str) -> set[str]:
         """Return the distinct entities this run wrote
         provenance for.
 
@@ -195,6 +195,10 @@ class RunMixin:
         ).fetchall()
         return {r["entity_id"] for r in rows}
 
+    #: Back-compat alias for the canonical
+    #: :meth:`find_entities_touched_by_run`.
+    get_entities_touched_by_run = find_entities_touched_by_run
+
     def save_article_failure(
         self,
         run_id: str,
@@ -208,7 +212,7 @@ class RunMixin:
         prior error rather than piling up rows. The
         ``failed_at`` timestamp is refreshed on every
         call so the most recent error is always the one
-        inspectable via :meth:`get_failed_document_ids`.
+        inspectable via :meth:`find_failed_document_ids`.
 
         :param run_id: The run in which the article
             failed. Must exist in ``ingestion_runs`` —
@@ -230,7 +234,7 @@ class RunMixin:
         )
         self._commit()
 
-    def get_failed_document_ids(self, run_id: str) -> list[str]:
+    def find_failed_document_ids(self, run_id: str) -> list[str]:
         """Return document ids that failed in ``run_id``.
 
         Used to drive ``--resume-run``-style re-queueing:
@@ -253,7 +257,11 @@ class RunMixin:
         ).fetchall()
         return [r["document_id"] for r in rows]
 
-    def get_relationship_keys_for_run(
+    #: Back-compat alias for the canonical
+    #: :meth:`find_failed_document_ids`.
+    get_failed_document_ids = find_failed_document_ids
+
+    def find_relationship_keys_for_run(
         self, run_id: str
     ) -> set[tuple[str, str, str]]:
         """Return the relationship identity keys created by
@@ -277,3 +285,7 @@ class RunMixin:
         return {
             (r["source_id"], r["target_id"], r["relation_type"]) for r in rows
         }
+
+    #: Back-compat alias for the canonical
+    #: :meth:`find_relationship_keys_for_run`.
+    get_relationship_keys_for_run = find_relationship_keys_for_run
