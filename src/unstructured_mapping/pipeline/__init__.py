@@ -27,6 +27,11 @@ from unstructured_mapping.pipeline.extraction import (
 from unstructured_mapping.pipeline.llm_claude import (
     ClaudeProvider,
 )
+from unstructured_mapping.pipeline.llm_fallback import (
+    DEFAULT_AMBIGUITY_THRESHOLD,
+    FallbackLLMProvider,
+    default_ambiguity_score,
+)
 from unstructured_mapping.pipeline.llm_ollama import (
     OllamaProvider,
 )
@@ -78,12 +83,14 @@ __all__ = [
     "Chunk",
     "ClaudeProvider",
     "ColdStartEntityDiscoverer",
+    "DEFAULT_AMBIGUITY_THRESHOLD",
     "DEFAULT_RESPONSE_HEADROOM",
     "EntityDetector",
     "EntityProposal",
     "EntityResolver",
     "ExtractedRelationship",
     "ExtractionResult",
+    "FallbackLLMProvider",
     "LLMConnectionError",
     "LLMEmptyResponseError",
     "LLMEntityResolver",
@@ -111,6 +118,7 @@ __all__ = [
     "build_pass1_user_prompt",
     "build_pass2_user_prompt",
     "compute_budget",
+    "default_ambiguity_score",
     "estimate_tokens",
     "fit_candidates",
     "parse_pass1_response",

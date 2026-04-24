@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.58.0 - 24th April 2026
+
+- Added `pipeline/llm_fallback.py`: two-provider fallback chain.
+  - `FallbackLLMProvider(primary, secondary, ambiguity_threshold, ambiguity_fn)`: conforms to `LLMProvider`, escalates to the secondary on any `LLMProviderError` or when the scorer exceeds the threshold. Exposes `last_served_by` and `escalations` for per-run monitoring.
+  - `default_ambiguity_score()`: scores a raw response on `[0, 1]` — malformed JSON / missing or empty `entities` → 1.0, otherwise the proposal-to-resolution ratio for pass-1 shapes; pass-2 responses score 0.0.
+  - Metadata composition: `provider_name` and `model_name` are composite strings (so run scorecards distinguish fallback chains from bare providers), `context_window` is the min of the two sides, and `supports_json_mode` is the AND (safe because the secondary is called on escalation).
+  - `last_token_usage` sums primary + secondary usage when escalation fires, so pipeline run totals capture the true cost.
+- Exported `FallbackLLMProvider`, `default_ambiguity_score`, and `DEFAULT_AMBIGUITY_THRESHOLD` from `pipeline/__init__.py`.
+- Added `tests/unit/test_llm_fallback.py`: 20 tests covering the scorer across every response shape, routing matrix (primary-succeeds / ambiguous / hard-failure), token summing, threshold-validation, composite metadata derivation, and the custom-scorer escape hatch.
+
+
 ### v0.57.0 - 24th April 2026
 
 - Added content-hash deduplication in `web_scraping/storage.py`:
