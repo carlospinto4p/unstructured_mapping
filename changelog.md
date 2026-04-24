@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.56.0 - 24th April 2026
+
+- Added `cli/subgraph.py`: entity-centric k-hop subgraph extraction.
+  - `build_subgraph()`: BFS from a root entity through `find_relationships` in both directions; emits root, entities, relationships, and the distinct document ids that justify each edge.
+  - Root resolution via `--entity-id` or `--name` (ambiguous names fail fast with a candidate list).
+  - `--min-confidence` threshold drops weak edges before the BFS expands through them, so unreliable relationships don't pull in distant neighbours.
+  - `--hops 0` returns just the root; stable ordering (root first, entities by canonical name, edges by source/target/type/valid_from) so the payload diffs cleanly between runs.
+- Added `tests/unit/test_cli_subgraph.py`: 13 tests covering hop depths (0/1/2), the min-confidence filter, name/id resolution, ambiguity + not-found errors, `main` stdout / file-output contracts, negative-hops guard, and payload determinism.
+
+
 ### v0.55.0 - 24th April 2026
 
 - Added `cli/ingest.py`: user-facing batch-ingest CLI that runs the orchestrator over scraped articles. Supports `--source` / `--limit` filters, cold-start / no-LLM / full-pipeline modes, and both Ollama and Claude providers.
