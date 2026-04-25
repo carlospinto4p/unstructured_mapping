@@ -17,9 +17,14 @@
    - `uv run python scripts/seed_config.py` — register new `HookDef` / `SkillDef` / `RuleDef` / `CommandDef` entries (idempotent; existing rows are skipped).
    - `uv run python scripts/sync_registry.py` — ingest the actual file contents (script bodies, `SKILL.md`, rule markdown, etc.) into the registry so the canonical content matches disk.
    This is mandatory for new defs — without it, the registry is the cross-machine source of truth but won't carry the change. An unsynced def is effectively lost when switching machines. Pure edits to existing defs only need step 2 (`sync_registry.py`); seeding is only needed when the def's *identity* (name / hook_type / matcher / command) is new.
-8. **Commit changes**: Create a commit with a descriptive message following the format below
+8. **Promote and propagate edited defs**: If this change *edited the content* of an existing rule, skill, hook, or command (i.e. the def already existed and you reworked its body), the edit must reach every linked project — not just programme. After step 7:
+   - Identify the canonical source project for the def via `RULE_CANONICAL_OVERRIDES` (and the matching `_OVERRIDES` for other types) in `scripts/sync_registry.py`. If the edit landed in a different project (e.g. you edited `programme/.claude/rules/foo.md` but `cpinto` is the canonical source), mirror the edit to the canonical source first, then re-run `sync_registry.py`.
+   - Run `uv run python .claude/skills/promote-rule/promote_rule.py <source-project> <def-name> [<kind>]` (dry-run) to see the new vs old hash and the linked-project list.
+   - Run `uv run python .claude/skills/sync-config/push_to_projects.py` (dry-run) and inspect the per-project diff. **Inspect canonicals before push**: read each affected file, not just the line counts, to catch project-specific drift that a whole-file push would clobber. Drifted projects belong in `RULE_SKIP_PROJECTS` (or the type's equivalent) until section-aware push lands.
+   - At minimum, surface this as the obvious next step to the user before ending the turn — even if you don't apply. Skipping it leaves canonical content stale in 16+ repos.
+9. **Commit changes**: Create a commit with a descriptive message following the format below
    - **Always include uv.lock** in commits when it has changed
-9. **Push to remote**: Push the changes with `git push`
+10. **Push to remote**: Push the changes with `git push`
 
 This workflow is MANDATORY after every prompt that results in code changes.
 
