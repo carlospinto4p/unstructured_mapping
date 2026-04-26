@@ -40,6 +40,15 @@ entry.
 **Pure tracking changes** (`backlog.md` checkboxes only): commit and push,
 but skip tests and version bump.
 
+**Pre-commit hook failures due to missing tools** (e.g.
+`Executable \`ruff\` not found`): this is a Windows environment
+issue — the tool exists in the Linux venv but not in the Windows
+PATH. Use `SKIP=<hook-id1>,<hook-id2> git -C <path> commit ...`
+for those specific hooks and proceed. Never use `--no-verify`.
+Example: `SKIP=ruff-format,ruff-fix git commit -m "..."`.
+The root fix is to migrate all pre-commit configs to
+`uv run ruff` (tracked in the backlog).
+
 ## Commit Message Format
 
 Use conventional commit style:

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.58.3 - 26th April 2026
+
+- Updated `.claude/rules/committing.md`: add Windows `SKIP=ruff-format,ruff-fix` pattern for pre-commit hook failures when ruff is not in PATH.
+
+
+
 ### v0.58.2 - 25th April 2026
 
 - Refactored `cli/validate_snapshot.py` (501 lines) by lifting KG-quality primitives into a new `knowledge_graph/snapshot.py`:
