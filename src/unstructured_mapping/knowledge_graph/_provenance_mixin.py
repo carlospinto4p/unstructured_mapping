@@ -8,6 +8,9 @@ import sqlite3
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from unstructured_mapping.knowledge_graph._entity_helpers import (
+    load_aliases_batch,
+)
 from unstructured_mapping.knowledge_graph._helpers import (
     dt_to_iso,
     row_to_entity,
@@ -259,7 +262,7 @@ class ProvenanceMixin:
         if not rows:
             return []
         eids = [r["entity_id"] for r in rows]
-        alias_map = self._load_aliases_batch(eids)
+        alias_map = load_aliases_batch(self._conn, eids)
         results: list[tuple[Entity, Provenance]] = []
         for row in rows:
             eid = row["entity_id"]
@@ -325,7 +328,7 @@ class ProvenanceMixin:
         if not rows:
             return []
         eids = [r["entity_id"] for r in rows]
-        alias_map = self._load_aliases_batch(eids)
+        alias_map = load_aliases_batch(self._conn, eids)
         results: list[tuple[Entity, int]] = []
         for row in rows:
             eid = row["entity_id"]

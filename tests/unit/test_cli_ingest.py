@@ -144,8 +144,8 @@ def test_build_pipeline_no_llm_omits_llm_stages(kg_db):
     # noqa: SLF001 — verifying internal wiring so regression
     # tests catch accidental provider wiring without a mock.
     assert isinstance(pipeline, Pipeline)
-    assert pipeline._llm_resolver is None  # noqa: SLF001
-    assert pipeline._extractor is None  # noqa: SLF001
+    assert pipeline._processor._llm_resolver is None  # noqa: SLF001
+    assert pipeline._processor._extractor is None  # noqa: SLF001
 
 
 # -- ingest (alias-only, no LLM) ------------------------

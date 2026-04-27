@@ -10,23 +10,34 @@ sub-mixins; see that module for the composite that
 """
 
 import logging
+import sqlite3
 from dataclasses import replace
+from typing import TYPE_CHECKING
 
 from unstructured_mapping.knowledge_graph._entity_helpers import (
-    EntityHelpersMixin,
+    log_entity,
+    redirect_entity_references,
 )
 from unstructured_mapping.knowledge_graph.exceptions import (
     EntityNotFound,
 )
 from unstructured_mapping.knowledge_graph.models import (
+    Entity,
     EntityStatus,
 )
 
 logger = logging.getLogger(__name__)
 
 
-class EntityMergeMixin(EntityHelpersMixin):
+class EntityMergeMixin:
     """Merge two entities with FK redirection."""
+
+    _conn: sqlite3.Connection
+
+    if TYPE_CHECKING:
+        # Provided by EntityCRUDMixin when composed into
+        # KnowledgeStore; declared here for type checkers.
+        def get_entity(self, entity_id: str) -> Entity | None: ...
 
     def merge_entities(
         self,
@@ -59,7 +70,7 @@ class EntityMergeMixin(EntityHelpersMixin):
 
         merge_reason = f"merged {deprecated_id} into {surviving_id}"
 
-        self._redirect_entity_references(deprecated_id, surviving_id)
+        redirect_entity_references(self._conn, deprecated_id, surviving_id)
         self._conn.execute(
             "UPDATE entities SET status = ?, "
             "merged_into = ? WHERE entity_id = ?",
@@ -70,8 +81,8 @@ class EntityMergeMixin(EntityHelpersMixin):
             status=EntityStatus.MERGED,
             merged_into=surviving_id,
         )
-        self._log_entity(merged_dep, "merge", merge_reason)
-        self._log_entity(surv, "merge", merge_reason)
+        log_entity(self._conn, merged_dep, "merge", merge_reason)
+        log_entity(self._conn, surv, "merge", merge_reason)
         self._commit()
         logger.info(
             "Merged entity %s into %s",

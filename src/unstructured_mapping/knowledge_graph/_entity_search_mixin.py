@@ -7,10 +7,11 @@ sub-mixins; see that module for the composite that
 :class:`KnowledgeStore` actually inherits.
 """
 
+import sqlite3
 from datetime import datetime
 
 from unstructured_mapping.knowledge_graph._entity_helpers import (
-    EntityHelpersMixin,
+    find_entities_where,
 )
 from unstructured_mapping.knowledge_graph._helpers import (
     dt_to_iso,
@@ -22,8 +23,10 @@ from unstructured_mapping.knowledge_graph.models import (
 )
 
 
-class EntitySearchMixin(EntityHelpersMixin):
+class EntitySearchMixin:
     """Filtered entity queries and aggregate counts."""
+
+    _conn: sqlite3.Connection
 
     def find_entities_by_type(
         self,
@@ -40,7 +43,8 @@ class EntitySearchMixin(EntityHelpersMixin):
             unnecessary alias lookups.
         :return: Matching entities.
         """
-        return self._find_entities_where(
+        return find_entities_where(
+            self._conn,
             "entity_type = ?",
             [entity_type.value],
             limit=limit,
@@ -61,7 +65,8 @@ class EntitySearchMixin(EntityHelpersMixin):
             returned.
         :return: Matching entities.
         """
-        return self._find_entities_where(
+        return find_entities_where(
+            self._conn,
             "entity_type = ? AND subtype = ?",
             [entity_type.value, subtype],
             limit=limit,
@@ -83,7 +88,8 @@ class EntitySearchMixin(EntityHelpersMixin):
             returned.
         :return: Matching entities.
         """
-        return self._find_entities_where(
+        return find_entities_where(
+            self._conn,
             "status = ?",
             [status.value],
             limit=limit,
@@ -107,7 +113,8 @@ class EntitySearchMixin(EntityHelpersMixin):
             small bound (e.g. 10).
         :return: Matching entities.
         """
-        return self._find_entities_where(
+        return find_entities_where(
+            self._conn,
             "canonical_name COLLATE NOCASE LIKE ? || '%'",
             [prefix],
             limit=limit,
@@ -147,7 +154,8 @@ class EntitySearchMixin(EntityHelpersMixin):
             returned.
         :return: Matching entities, newest first.
         """
-        return self._find_entities_where(
+        return find_entities_where(
+            self._conn,
             "created_at >= ?",
             [dt_to_iso(since)],
             suffix="ORDER BY created_at DESC",

@@ -10,10 +10,14 @@ their own files and are composed together in
 """
 
 import logging
+import sqlite3
 from datetime import datetime, timezone
 
 from unstructured_mapping.knowledge_graph._entity_helpers import (
-    EntityHelpersMixin,
+    load_aliases,
+    log_entity,
+    rows_to_entities,
+    sync_aliases,
 )
 from unstructured_mapping.knowledge_graph._helpers import (
     ENTITY_SELECT,
@@ -33,8 +37,10 @@ from unstructured_mapping.knowledge_graph.validation import (
 logger = logging.getLogger(__name__)
 
 
-class EntityCRUDMixin(EntityHelpersMixin):
+class EntityCRUDMixin:
     """Create, read, update, and basic name/alias lookup."""
+
+    _conn: sqlite3.Connection
 
     def save_entity(
         self,
@@ -103,8 +109,8 @@ class EntityCRUDMixin(EntityHelpersMixin):
                 dt_to_iso(updated_at),
             ),
         )
-        self._sync_aliases(entity.entity_id, entity.aliases)
-        self._log_entity(entity, operation, reason)
+        sync_aliases(self._conn, entity.entity_id, entity.aliases)
+        log_entity(self._conn, entity, operation, reason)
         self._commit()
 
     def get_entity(self, entity_id: str) -> Entity | None:
@@ -119,7 +125,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
         ).fetchone()
         if row is None:
             return None
-        aliases = self._load_aliases(entity_id)
+        aliases = load_aliases(self._conn, entity_id)
         return row_to_entity(row, aliases)
 
     def get_entities(self, entity_ids: list[str]) -> dict[str, Entity]:
@@ -147,7 +153,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
             ENTITY_SELECT + f"WHERE entity_id IN ({placeholders})",
             unique_ids,
         ).fetchall()
-        entities = self._rows_to_entities(rows)
+        entities = rows_to_entities(self._conn, rows)
         return {e.entity_id: e for e in entities}
 
     def find_by_name(self, name: str) -> list[Entity]:
@@ -162,7 +168,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
             ENTITY_SELECT + "WHERE canonical_name COLLATE NOCASE = ?",
             (name,),
         ).fetchall()
-        return self._rows_to_entities(rows)
+        return rows_to_entities(self._conn, rows)
 
     def exists_by_name_and_type(
         self,
@@ -245,7 +251,7 @@ class EntityCRUDMixin(EntityHelpersMixin):
             "WHERE a.alias COLLATE NOCASE = ?",
             (alias,),
         ).fetchall()
-        return self._rows_to_entities(rows)
+        return rows_to_entities(self._conn, rows)
 
     def alias_exists(self, alias: str) -> bool:
         """Return True if any entity carries this alias.

@@ -8,11 +8,10 @@ the composite that :class:`KnowledgeStore` actually
 inherits.
 """
 
+import sqlite3
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from unstructured_mapping.knowledge_graph._entity_helpers import (
-    EntityHelpersMixin,
-)
 from unstructured_mapping.knowledge_graph._helpers import (
     dt_to_iso,
     row_to_entity_rev,
@@ -26,7 +25,20 @@ from unstructured_mapping.knowledge_graph.models import (
 )
 
 
-class EntityHistoryMixin(EntityHelpersMixin):
+class EntityHistoryMixin:
+    _conn: sqlite3.Connection
+
+    if TYPE_CHECKING:
+        # Provided by EntityCRUDMixin when composed into
+        # KnowledgeStore; declared here for type checkers.
+        def save_entity(
+            self,
+            entity: Entity,
+            *,
+            reason: str | None = None,
+            _operation: str | None = None,
+        ) -> None: ...
+
     """Revision history, point-in-time queries, revert."""
 
     def find_entity_history(self, entity_id: str) -> list[EntityRevision]:

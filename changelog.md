@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.58.6 - 27th April 2026
+
+- Refactored `pipeline/orchestrator.py`:
+  - Added `pipeline/_article_processor.py`: `ArticleProcessor` class — carries all per-article stages (detection, resolution, extraction, persistence) and `_MetricsAccumulator`/`ArticleResult` dataclasses. Metrics are passed as a parameter so one accumulator spans a full batch.
+  - Slimmed `Pipeline` to batch/run-bookkeeping only; delegates per-article work to `ArticleProcessor`. `ArticleResult` is re-exported from `orchestrator.py` for backward compatibility.
+  - Updated `tests/unit/test_cli_ingest.py`: internal-wiring assertions now reach through `pipeline._processor`.
+- Refactored `knowledge_graph/_entity_helpers.py`:
+  - Converted `EntityHelpersMixin` to module-level functions taking a `conn` parameter: `rows_to_entities`, `find_entities_where`, `sync_aliases`, `log_entity`, `load_aliases`, `load_aliases_batch`, `redirect_entity_references`.
+  - Removed the mixin inheritance pyramid; each sub-mixin (`_entity_crud_mixin`, `_entity_search_mixin`, `_entity_merge_mixin`, `_entity_history_mixin`, `_provenance_mixin`) now calls the helpers directly with `self._conn`.
+  - `TYPE_CHECKING` stubs for cross-mixin calls (`get_entity`, `save_entity`) moved to the mixins that actually need them.
+
+
 ### v0.58.5 - 27th April 2026
 
 - Added `cli/_runner.py`: `run_cli_with_kg()` — shared startup helper that

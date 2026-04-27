@@ -16,7 +16,8 @@ inherits:
   revision history, point-in-time queries, and revert.
 
 Internal helpers (alias sync, row conversion, audit
-logging) live in :mod:`._entity_helpers.EntityHelpersMixin`.
+logging) live as module-level functions in
+:mod:`._entity_helpers`.
 
 Why four files: the four concerns are independently
 readable, independently tested, and changing one no longer
