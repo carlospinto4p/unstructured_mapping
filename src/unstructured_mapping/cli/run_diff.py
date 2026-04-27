@@ -42,8 +42,7 @@ import sys
 from unstructured_mapping.cli._argparse_helpers import (
     add_db_argument,
 )
-from unstructured_mapping.cli._db_helpers import open_kg_store
-from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._runner import run_cli_with_kg
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
 )
@@ -270,16 +269,16 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> None:
-    setup_logging()
-    args = _build_parser().parse_args(argv)
-    with open_kg_store(args.db) as store:
+    def _body(store: KnowledgeStore, args: argparse.Namespace) -> None:
         report = diff_runs(
             store,
             base_run_id=args.base,
             head_run_id=args.head,
             deltas_only=args.deltas_only,
         )
-    sys.stdout.write(report + "\n")
+        sys.stdout.write(report + "\n")
+
+    run_cli_with_kg(_build_parser, _body, argv)
 
 
 if __name__ == "__main__":
