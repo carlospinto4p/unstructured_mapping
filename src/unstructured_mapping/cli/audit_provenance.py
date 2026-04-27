@@ -42,8 +42,7 @@ from unstructured_mapping.cli._argparse_helpers import (
     add_csv_output_argument,
     add_db_argument,
 )
-from unstructured_mapping.cli._db_helpers import open_kg_store
-from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._runner import run_cli_with_kg
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
 )
@@ -235,17 +234,17 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> None:
-    setup_logging()
-    args = _build_parser().parse_args(argv)
-    with open_kg_store(args.db) as store:
+    def _body(store: KnowledgeStore, args: argparse.Namespace) -> None:
         shorts = find_short_snippets(store, min_tokens=args.min_tokens)
         thins = find_thin_mentions(store, min_mentions=args.min_mentions)
         narrows = find_narrow_spread(store, min_days=args.min_days)
-    if args.csv is not None:
-        _write_csv(args.csv, shorts, thins, narrows)
-        logger.info("Wrote %s", args.csv)
-        return
-    sys.stdout.write(_report_text(shorts, thins, narrows) + "\n")
+        if args.csv is not None:
+            _write_csv(args.csv, shorts, thins, narrows)
+            logger.info("Wrote %s", args.csv)
+            return
+        sys.stdout.write(_report_text(shorts, thins, narrows) + "\n")
+
+    run_cli_with_kg(_build_parser, _body, argv)
 
 
 if __name__ == "__main__":
