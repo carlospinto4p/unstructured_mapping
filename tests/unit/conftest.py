@@ -4,6 +4,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+import pytest
+
 from unstructured_mapping.knowledge_graph import (
     Entity,
     EntityType,
@@ -233,3 +235,97 @@ class FakeProvider(LLMProvider):
         if len(self._responses) > 1:
             return self._responses.pop(0)
         return self._responses[0]
+
+
+# -- shared CLI test fixtures -----------------------------------
+
+
+@pytest.fixture
+def seed_file(tmp_path: Path) -> Path:
+    """Single seed file with two entities for seed-loader tests."""
+    return write_seed_file(
+        tmp_path / "seed.json",
+        [
+            {
+                "canonical_name": "Federal Reserve",
+                "entity_type": "organization",
+                "subtype": "central_bank",
+                "description": "US central bank.",
+                "aliases": ["Fed", "FOMC"],
+            },
+            {
+                "canonical_name": "Gold",
+                "entity_type": "asset",
+                "subtype": "commodity",
+                "description": "Precious metal.",
+            },
+        ],
+    )
+
+
+@pytest.fixture
+def seed_dir(tmp_path: Path) -> Path:
+    """Seed directory with curated + Wikidata sub-dirs."""
+    base = tmp_path / "seed"
+    write_seed_file(
+        base / "financial_entities.json",
+        [
+            {
+                "canonical_name": "Federal Reserve",
+                "entity_type": "organization",
+                "subtype": "central_bank",
+                "description": "US central bank.",
+                "aliases": ["Fed"],
+            }
+        ],
+    )
+    write_seed_file(
+        base / "wikidata" / "currency.json",
+        [
+            {
+                "canonical_name": "US dollar",
+                "entity_type": "asset",
+                "subtype": "currency",
+                "description": "USD.",
+            }
+        ],
+    )
+    write_seed_file(
+        base / "wikidata" / "company.json",
+        [
+            {
+                "canonical_name": "Apple Inc.",
+                "entity_type": "organization",
+                "subtype": "company",
+                "description": "Tech.",
+            }
+        ],
+    )
+    return base
+
+
+@pytest.fixture
+def articles_db(tmp_path: Path):
+    """Two articles from different sources for filter tests."""
+    from unstructured_mapping.web_scraping.storage import (
+        ArticleStore,
+    )
+
+    db = tmp_path / "articles.db"
+    ap_article = make_article(body="AP body", title="AP story", source="ap")
+    bbc_article = make_article(
+        body="BBC body", title="BBC story", source="bbc"
+    )
+    with ArticleStore(db) as store:
+        store.save([ap_article, bbc_article])
+    return db, ap_article, bbc_article
+
+
+@pytest.fixture
+def kg_db(tmp_path: Path) -> Path:
+    """Pre-initialised KG database file."""
+    db = tmp_path / "kg.db"
+    # Pre-create the file so open_kg_store does not reject it.
+    with KnowledgeStore(db_path=db):
+        pass
+    return db

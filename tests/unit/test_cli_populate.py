@@ -12,55 +12,10 @@ from unstructured_mapping.cli.populate import (
 from unstructured_mapping.knowledge_graph import KnowledgeStore
 
 
-# -- fixtures ---------------------------------------------------
-
-
-@pytest.fixture
-def seed_dir(tmp_path: Path) -> Path:
-    base = tmp_path / "seed"
-    write_seed_file(
-        base / "financial_entities.json",
-        [
-            {
-                "canonical_name": "Federal Reserve",
-                "entity_type": "organization",
-                "subtype": "central_bank",
-                "description": "US central bank.",
-                "aliases": ["Fed"],
-            }
-        ],
-    )
-    write_seed_file(
-        base / "wikidata" / "currency.json",
-        [
-            {
-                "canonical_name": "US dollar",
-                "entity_type": "asset",
-                "subtype": "currency",
-                "description": "USD.",
-            }
-        ],
-    )
-    write_seed_file(
-        base / "wikidata" / "company.json",
-        [
-            {
-                "canonical_name": "Apple Inc.",
-                "entity_type": "organization",
-                "subtype": "company",
-                "description": "Tech.",
-            }
-        ],
-    )
-    return base
-
-
 # -- populate --------------------------------------------------
 
 
-def test_populate_runs_curated_then_snapshots(
-    tmp_path: Path, seed_dir: Path
-):
+def test_populate_runs_curated_then_snapshots(tmp_path: Path, seed_dir: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
         reports = populate(seed_dir, store)
@@ -71,9 +26,7 @@ def test_populate_runs_curated_then_snapshots(
     assert names.index("curated") == 0
 
 
-def test_populate_creates_all_entities(
-    tmp_path: Path, seed_dir: Path
-):
+def test_populate_creates_all_entities(tmp_path: Path, seed_dir: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
         reports = populate(seed_dir, store)
@@ -84,9 +37,7 @@ def test_populate_creates_all_entities(
     assert total_created == 3
 
 
-def test_populate_is_idempotent(
-    tmp_path: Path, seed_dir: Path
-):
+def test_populate_is_idempotent(tmp_path: Path, seed_dir: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
         populate(seed_dir, store)
@@ -95,9 +46,7 @@ def test_populate_is_idempotent(
     assert sum(r.skipped for r in reports) == 3
 
 
-def test_populate_dry_run_writes_nothing(
-    tmp_path: Path, seed_dir: Path
-):
+def test_populate_dry_run_writes_nothing(tmp_path: Path, seed_dir: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
         reports = populate(seed_dir, store, dry_run=True)
@@ -135,9 +84,7 @@ def test_populate_curated_wins_on_name_conflict(
         matches = store.find_by_name("Apple Inc.")
     assert len(matches) == 1
     assert matches[0].description == "Curated description."
-    wikidata_stage = next(
-        r for r in reports if r.name == "company"
-    )
+    wikidata_stage = next(r for r in reports if r.name == "company")
     assert wikidata_stage.skipped == 1
     assert wikidata_stage.created == 0
 
@@ -175,9 +122,7 @@ def test_populate_runs_without_curated_file(
 # -- main -------------------------------------------------------
 
 
-def test_main_populates_from_seed_dir(
-    tmp_path: Path, seed_dir: Path
-):
+def test_main_populates_from_seed_dir(tmp_path: Path, seed_dir: Path):
     db = tmp_path / "kg.db"
     main(
         [
@@ -192,9 +137,7 @@ def test_main_populates_from_seed_dir(
         assert store.find_by_name("US dollar")
 
 
-def test_main_dry_run_is_noop(
-    tmp_path: Path, seed_dir: Path
-):
+def test_main_dry_run_is_noop(tmp_path: Path, seed_dir: Path):
     db = tmp_path / "kg.db"
     main(
         [

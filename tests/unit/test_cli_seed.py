@@ -17,31 +17,6 @@ from unstructured_mapping.knowledge_graph import (
 )
 
 
-# -- fixtures ---------------------------------------------------
-
-
-@pytest.fixture
-def seed_file(tmp_path: Path) -> Path:
-    return write_seed_file(
-        tmp_path / "seed.json",
-        [
-            {
-                "canonical_name": "Federal Reserve",
-                "entity_type": "organization",
-                "subtype": "central_bank",
-                "description": "US central bank.",
-                "aliases": ["Fed", "FOMC"],
-            },
-            {
-                "canonical_name": "Gold",
-                "entity_type": "asset",
-                "subtype": "commodity",
-                "description": "Precious metal.",
-            },
-        ],
-    )
-
-
 # -- _parse_entity ----------------------------------------------
 
 
@@ -92,14 +67,10 @@ def test_parse_entity_requires_canonical_name():
 # -- load_seed --------------------------------------------------
 
 
-def test_load_seed_creates_entities(
-    tmp_path: Path, seed_file: Path
-):
+def test_load_seed_creates_entities(tmp_path: Path, seed_file: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
-        created, skipped, counts = load_seed(
-            seed_file, store
-        )
+        created, skipped, counts = load_seed(seed_file, store)
         assert created == 2
         assert skipped == 0
         assert counts["organization"] == 1
@@ -109,23 +80,17 @@ def test_load_seed_creates_entities(
         assert set(fed[0].aliases) == {"Fed", "FOMC"}
 
 
-def test_load_seed_is_idempotent(
-    tmp_path: Path, seed_file: Path
-):
+def test_load_seed_is_idempotent(tmp_path: Path, seed_file: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
         load_seed(seed_file, store)
-        created, skipped, counts = load_seed(
-            seed_file, store
-        )
+        created, skipped, counts = load_seed(seed_file, store)
         assert created == 0
         assert skipped == 2
         assert counts == {}
 
 
-def test_load_seed_skip_is_case_insensitive(
-    tmp_path: Path
-):
+def test_load_seed_skip_is_case_insensitive(tmp_path: Path):
     seed = write_seed_file(
         tmp_path / "seed.json",
         [
@@ -181,14 +146,10 @@ def test_load_seed_same_name_different_type_not_skipped(
         assert skipped == 0
 
 
-def test_load_seed_dry_run_does_not_write(
-    tmp_path: Path, seed_file: Path
-):
+def test_load_seed_dry_run_does_not_write(tmp_path: Path, seed_file: Path):
     db = tmp_path / "kg.db"
     with KnowledgeStore(db_path=db) as store:
-        created, skipped, counts = load_seed(
-            seed_file, store, dry_run=True
-        )
+        created, skipped, counts = load_seed(seed_file, store, dry_run=True)
         assert created == 2
         assert skipped == 0
         assert counts["organization"] == 1
@@ -251,9 +212,7 @@ def test_main_missing_seed_file_exits(tmp_path: Path):
     assert exc.value.code == 1
 
 
-def test_main_loads_real_seed(
-    tmp_path: Path, seed_file: Path
-):
+def test_main_loads_real_seed(tmp_path: Path, seed_file: Path):
     db = tmp_path / "kg.db"
     main(["--seed", str(seed_file), "--db", str(db)])
     with KnowledgeStore(db_path=db) as store:
@@ -283,7 +242,5 @@ def test_curated_seed_file_has_unique_names_per_type():
             raw["canonical_name"].lower(),
             raw["entity_type"],
         )
-        assert key not in seen, (
-            f"duplicate seed entry: {key}"
-        )
+        assert key not in seen, f"duplicate seed entry: {key}"
         seen.add(key)

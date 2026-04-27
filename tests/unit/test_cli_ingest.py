@@ -35,32 +35,10 @@ from unstructured_mapping.pipeline.orchestrator import ArticleResult
 from unstructured_mapping.web_scraping.models import Article
 from unstructured_mapping.web_scraping.storage import ArticleStore
 
-from .conftest import make_article, make_org
+from .conftest import make_org
 
 
 # -- _load_articles -------------------------------------
-
-
-@pytest.fixture
-def articles_db(tmp_path):
-    """Two articles from different sources for filter tests."""
-    db = tmp_path / "articles.db"
-    ap_article = make_article(body="AP body", title="AP story", source="ap")
-    bbc_article = make_article(
-        body="BBC body", title="BBC story", source="bbc"
-    )
-    with ArticleStore(db) as store:
-        store.save([ap_article, bbc_article])
-    return db, ap_article, bbc_article
-
-
-@pytest.fixture
-def kg_db(tmp_path):
-    db = tmp_path / "kg.db"
-    # Pre-create the file so open_kg_store does not reject it.
-    with KnowledgeStore(db_path=db):
-        pass
-    return db
 
 
 def test_load_articles_honours_source_filter(articles_db, kg_db):

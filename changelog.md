@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.58.7 - 27th April 2026
+
+- Refactored `tests/unit/`:
+  - Moved `seed_file`, `seed_dir`, `articles_db`, and `kg_db` fixtures from inline test files into `tests/unit/conftest.py` so a new field on `Entity` only needs one update.
+  - `log_import_summary` already shared across all seed loaders — no changes needed.
+  - Fixed 81-char line in `cli/ingest.py`: wrapped log string literal to fit 78-char limit.
+
+
 ### v0.58.6 - 27th April 2026
 
 - Refactored `pipeline/orchestrator.py`:

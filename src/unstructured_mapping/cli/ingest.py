@@ -135,7 +135,8 @@ def _load_articles(
         failed_ids = kg_store.find_failed_document_ids(resume_run_id)
         if not failed_ids:
             logger.warning(
-                "Run %s has no recorded article failures — nothing to resume.",
+                "Run %s has no recorded article "
+                "failures — nothing to resume.",
                 resume_run_id,
             )
             return []
