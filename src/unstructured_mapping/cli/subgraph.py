@@ -57,16 +57,14 @@ in ``entities`` and empty ``relationships`` /
 """
 
 import argparse
-import json
 import logging
-import sys
 from pathlib import Path
 
 from unstructured_mapping.cli._argparse_helpers import (
     add_db_argument,
 )
-from unstructured_mapping.cli._db_helpers import open_kg_store
-from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._json_output import emit_json
+from unstructured_mapping.cli._runner import run_cli_with_kg
 from unstructured_mapping.knowledge_graph import (
     Entity,
     KnowledgeStore,
@@ -317,13 +315,15 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: list[str] | None = None) -> None:
-    """Entry point for the subgraph CLI."""
-    setup_logging()
-    args = _build_parser().parse_args(argv)
+def _validate(args: argparse.Namespace) -> None:
     if args.hops < 0:
         raise SystemExit("error: --hops must be >= 0")
-    with open_kg_store(args.db) as store:
+
+
+def main(argv: list[str] | None = None) -> None:
+    """Entry point for the subgraph CLI."""
+
+    def _body(store: KnowledgeStore, args: argparse.Namespace) -> None:
         payload = build_subgraph(
             store,
             entity_id=args.entity_id,
@@ -331,18 +331,17 @@ def main(argv: list[str] | None = None) -> None:
             hops=args.hops,
             min_confidence=args.min_confidence,
         )
-    output = json.dumps(payload, indent=2, default=str)
-    if args.output is None:
-        sys.stdout.write(output + "\n")
-    else:
-        args.output.write_text(output, encoding="utf-8")
-        logger.info(
-            "Wrote %d entities, %d relationships, %d documents to %s",
-            len(payload["entities"]),
-            len(payload["relationships"]),
-            len(payload["documents"]),
-            args.output,
-        )
+        emit_json(payload, args.output)
+        if args.output is not None:
+            logger.info(
+                "Wrote %d entities, %d relationships, %d documents to %s",
+                len(payload["entities"]),
+                len(payload["relationships"]),
+                len(payload["documents"]),
+                args.output,
+            )
+
+    run_cli_with_kg(_build_parser, _body, argv, validate=_validate)
 
 
 if __name__ == "__main__":
