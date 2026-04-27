@@ -57,8 +57,8 @@ from pathlib import Path
 from unstructured_mapping.cli._argparse_helpers import (
     add_db_argument,
 )
-from unstructured_mapping.cli._db_helpers import open_kg_store
-from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._runner import run_cli_with_kg
+from unstructured_mapping.knowledge_graph import KnowledgeStore
 from unstructured_mapping.knowledge_graph.snapshot import (
     DEFAULT_TOP_K_COLLISIONS,
     SCHEMA_VERSION,
@@ -134,9 +134,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> None:
-    setup_logging()
-    args = _build_parser().parse_args(argv)
-    with open_kg_store(args.db) as store:
+    def _body(store: KnowledgeStore, args: argparse.Namespace) -> None:
         snapshot = capture_snapshot(
             store, top_k_collisions=args.top_k_collisions
         )
@@ -149,7 +147,6 @@ def main(argv: list[str] | None = None) -> None:
                 f"collisions={snapshot.alias_collision_count}\n"
             )
             return
-        # --check mode
         baseline = load_snapshot(args.check)
         result = compare_snapshots(
             baseline,
@@ -160,6 +157,8 @@ def main(argv: list[str] | None = None) -> None:
         sys.stdout.write(result.report + "\n")
         if not result.passed:
             raise SystemExit(1)
+
+    run_cli_with_kg(_build_parser, _body, argv)
 
 
 if __name__ == "__main__":
