@@ -44,7 +44,7 @@ import argparse
 import json
 import logging
 import sys
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -52,8 +52,8 @@ from pathlib import Path
 from unstructured_mapping.cli._argparse_helpers import (
     add_db_argument,
 )
-from unstructured_mapping.cli._db_helpers import open_kg_store
-from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._json_output import emit_jsonl
+from unstructured_mapping.cli._runner import run_cli_with_kg
 from unstructured_mapping.knowledge_graph import (
     Entity,
     KnowledgeStore,
@@ -206,20 +206,6 @@ def _collect_provenance(
     return out
 
 
-def _write_jsonl(path: Path, rows: Iterable[dict[str, object]]) -> int:
-    """Serialise ``rows`` to newline-delimited JSON.
-
-    :return: Count of rows written.
-    """
-    count = 0
-    with path.open("w", encoding="utf-8") as fh:
-        for row in rows:
-            fh.write(json.dumps(row, ensure_ascii=False))
-            fh.write("\n")
-            count += 1
-    return count
-
-
 def _write_jsonld(
     path: Path,
     stream_key: str,
@@ -320,19 +306,19 @@ def export_kg(
     }[fmt]
     counts: dict[str, int] = {}
     if fmt == "jsonl":
-        counts["entities"] = _write_jsonl(
-            output_dir / f"{_FILENAMES['entities']}.{ext}",
+        counts["entities"] = emit_jsonl(
             entity_rows,
+            output_dir / f"{_FILENAMES['entities']}.{ext}",
         )
         if with_relationships:
-            counts["relationships"] = _write_jsonl(
-                output_dir / f"{_FILENAMES['relationships']}.{ext}",
+            counts["relationships"] = emit_jsonl(
                 rel_rows,
+                output_dir / f"{_FILENAMES['relationships']}.{ext}",
             )
         if with_provenance:
-            counts["provenance"] = _write_jsonl(
-                output_dir / f"{_FILENAMES['provenance']}.{ext}",
+            counts["provenance"] = emit_jsonl(
                 prov_rows,
+                output_dir / f"{_FILENAMES['provenance']}.{ext}",
             )
     elif fmt == "json-ld":
         counts["entities"] = _write_jsonld(
@@ -438,13 +424,14 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: list[str] | None = None) -> None:
-    setup_logging()
-    args = _build_parser().parse_args(argv)
+def _validate(args: argparse.Namespace) -> None:
     if args.subtype is not None and args.type is None:
         raise SystemExit("error: --subtype requires --type")
-    entity_type = EntityType(args.type) if args.type is not None else None
-    with open_kg_store(args.db) as store:
+
+
+def main(argv: list[str] | None = None) -> None:
+    def _body(store: KnowledgeStore, args: argparse.Namespace) -> None:
+        entity_type = EntityType(args.type) if args.type is not None else None
         counts = export_kg(
             store,
             args.output_dir,
@@ -455,10 +442,12 @@ def main(argv: list[str] | None = None) -> None:
             with_relationships=args.with_relationships,
             with_provenance=args.with_provenance,
         )
-    summary = ", ".join(f"{k}={v}" for k, v in counts.items())
-    sys.stdout.write(
-        f"Wrote {args.format} export to {args.output_dir}: {summary}\n"
-    )
+        summary = ", ".join(f"{k}={v}" for k, v in counts.items())
+        sys.stdout.write(
+            f"Wrote {args.format} export to {args.output_dir}: {summary}\n"
+        )
+
+    run_cli_with_kg(_build_parser, _body, argv, validate=_validate)
 
 
 if __name__ == "__main__":
