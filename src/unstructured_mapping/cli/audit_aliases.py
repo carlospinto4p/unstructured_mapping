@@ -46,8 +46,7 @@ from dataclasses import dataclass
 from unstructured_mapping.cli._argparse_helpers import (
     add_db_argument,
 )
-from unstructured_mapping.cli._db_helpers import open_kg_store
-from unstructured_mapping.cli._logging import setup_logging
+from unstructured_mapping.cli._runner import run_cli_with_kg
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
 )
@@ -273,12 +272,13 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: list[str] | None = None) -> None:
-    setup_logging()
-    args = _build_parser().parse_args(argv)
+def _validate(args: argparse.Namespace) -> None:
     if args.auto_confirm and not args.apply:
         raise SystemExit("--auto-confirm requires --apply.")
-    with open_kg_store(args.db) as store:
+
+
+def main(argv: list[str] | None = None) -> None:
+    def _body(store: KnowledgeStore, args: argparse.Namespace) -> None:
         raw = find_alias_collisions(store._conn)  # noqa: SLF001
         scored = score_collisions(store, raw)
         scored = [c for c in scored if c.total_mentions >= args.min_mentions]
@@ -294,6 +294,8 @@ def main(argv: list[str] | None = None) -> None:
                 auto_confirm=args.auto_confirm,
             )
             logger.info("Merged %d entity/entities.", merged)
+
+    run_cli_with_kg(_build_parser, _body, argv, validate=_validate)
 
 
 if __name__ == "__main__":
