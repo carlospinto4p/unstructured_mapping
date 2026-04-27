@@ -1,5 +1,30 @@
 ## Changelog
 
+### v0.58.5 - 27th April 2026
+
+- Added `cli/_runner.py`: `run_cli_with_kg()` — shared startup helper that
+  centralises `setup_logging`, arg parsing, optional arg validation, and the
+  `open_kg_store` context manager so CLI `main()` functions stop repeating
+  the same three lines.
+- Added `cli/_json_output.py`:
+  - `emit_json()`: serialises a payload as indented JSON to stdout or a file
+    (`datetime`/`UUID`/`Path` coerced via `default=str`).
+  - `emit_jsonl()`: serialises rows as newline-delimited JSON to stdout or a
+    file; returns row count.
+- Migrated to `run_cli_with_kg()`:
+  - `cli/run_report.py`
+  - `cli/run_diff.py`
+  - `cli/audit_provenance.py`
+  - `cli/audit_aliases.py`
+  - `cli/subgraph.py`
+  - `cli/validate_snapshot.py`
+  - `cli/export.py`
+- Migrated to `emit_json()` / `emit_jsonl()`:
+  - `cli/subgraph.py`: replaced inline `json.dumps` + stdout/file write.
+  - `cli/preview.py`: replaced inline `json.dumps` + stdout/file write.
+  - `cli/export.py`: replaced private `_write_jsonl()` with `emit_jsonl()`.
+
+
 ### v0.58.4 - 26th April 2026
 
 - Updated `.claude/rules/committing.md`: remove SKIP workaround, ruff now runs via `uv run ruff` in all projects.
