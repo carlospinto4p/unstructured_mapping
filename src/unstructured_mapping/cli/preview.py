@@ -38,7 +38,6 @@ Article file schema (JSON)::
 import argparse
 import json
 import logging
-import sys
 import tempfile
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -47,6 +46,7 @@ from unstructured_mapping.cli._argparse_helpers import (
     require_db_unless,
 )
 from unstructured_mapping.cli._db_helpers import prepare_throwaway_kg
+from unstructured_mapping.cli._json_output import emit_json
 from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
@@ -335,11 +335,8 @@ def main(argv: list[str] | None = None) -> None:
         workdir=workdir,
         cold_start=args.cold_start,
     )
-    output = json.dumps(payload, indent=2, default=str)
-    if args.output is None:
-        sys.stdout.write(output + "\n")
-    else:
-        args.output.write_text(output, encoding="utf-8")
+    emit_json(payload, args.output)
+    if args.output is not None:
         logger.info("Wrote %s", args.output)
 
 
