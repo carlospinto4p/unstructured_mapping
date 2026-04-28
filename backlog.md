@@ -1,9 +1,9 @@
 ## Backlog
 
-### 2026 April 28th (v0.58.8 refactor review)
+### 2026 April 28th (v0.58.9 refactor review)
 
-- [x] **LOW** — Standardise leading-underscore convention in `web_scraping/`: rename `ap.py`, `bbc.py`, `reuters.py` → `_ap.py`, `_bbc.py`, `_reuters.py` to match `_gnews.py`; update `__init__.py` imports
-- [x] **LOW** — Standardise leading-underscore convention in `pipeline/segmentation/`: rename `filing.py`, `news.py`, `research.py`, `transcript.py` to use `_` prefix to match `_sub_chunk.py`; update imports in `segmentation/__init__.py`
+- [ ] **LOW** — `cli/backfill.py`: replace `logging.basicConfig()` call with shared `setup_logging()` from `cli/_logging.py` to match all other CLI modules
+- [ ] **LOW** — `cli/db_health.py:243`: replace `print()` with `logger.info()` to keep logging consistent across the CLI
 
 ### 2026 March 30th
 
