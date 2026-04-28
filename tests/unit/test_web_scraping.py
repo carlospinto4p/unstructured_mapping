@@ -166,7 +166,7 @@ def test_ap_fetch_parses_rss(mock_get):
     assert articles[0].source == "ap"
 
 
-@patch("unstructured_mapping.web_scraping.ap.APScraper._extract_body")
+@patch("unstructured_mapping.web_scraping._ap.APScraper._extract_body")
 @patch("httpx.Client.get")
 def test_ap_fetch_full_text(mock_get, mock_extract):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
@@ -184,7 +184,7 @@ def test_ap_fetch_full_text(mock_get, mock_extract):
     assert articles[0].url == ("https://apnews.com/article/test")
 
 
-@patch("unstructured_mapping.web_scraping.ap.APScraper._extract_body")
+@patch("unstructured_mapping.web_scraping._ap.APScraper._extract_body")
 @patch("httpx.Client.get")
 def test_ap_fallback_on_extraction_failure(mock_get, mock_extract):
     mock_get.return_value = make_mock_response(SAMPLE_RSS)
@@ -333,7 +333,7 @@ BBC_RSS_DUP_FEED = """\
 """
 
 
-@patch("unstructured_mapping.web_scraping.bbc.BBCScraper._extract_body")
+@patch("unstructured_mapping.web_scraping._bbc.BBCScraper._extract_body")
 @patch("httpx.Client.get")
 def test_fetch_enriches_duplicate_url_once(mock_get, mock_extract):
     """Duplicate URLs across feeds trigger one extraction."""

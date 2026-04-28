@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.58.9 - 28th April 2026
+
+- Refactored module naming conventions (leading-underscore for internal concrete implementations):
+  - `web_scraping/`: renamed `ap.py`, `bbc.py`, `reuters.py` → `_ap.py`, `_bbc.py`, `_reuters.py`; updated `web_scraping/__init__.py` and test patch paths.
+  - `pipeline/segmentation/`: renamed `filing.py`, `news.py`, `research.py`, `transcript.py` → `_filing.py`, `_news.py`, `_research.py`, `_transcript.py`; updated `segmentation/__init__.py`.
+
+
 ### v0.58.8 - 28th April 2026
 
 - Refactored `src/unstructured_mapping/pipeline/`:

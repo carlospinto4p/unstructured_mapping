@@ -22,16 +22,16 @@ from unstructured_mapping.pipeline.segmentation.base import (
     DocumentSegmenter,
     DocumentType,
 )
-from unstructured_mapping.pipeline.segmentation.filing import (
+from unstructured_mapping.pipeline.segmentation._filing import (
     FilingSegmenter,
 )
-from unstructured_mapping.pipeline.segmentation.news import (
+from unstructured_mapping.pipeline.segmentation._news import (
     NewsSegmenter,
 )
-from unstructured_mapping.pipeline.segmentation.research import (
+from unstructured_mapping.pipeline.segmentation._research import (
     ResearchSegmenter,
 )
-from unstructured_mapping.pipeline.segmentation.transcript import (
+from unstructured_mapping.pipeline.segmentation._transcript import (
     TranscriptSegmenter,
 )
 
