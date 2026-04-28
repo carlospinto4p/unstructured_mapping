@@ -1,5 +1,9 @@
 ## Backlog
 
+### 2026 April 29th
+
+- [ ] **HIGH** — Build a front-end app (framework TBD: Svelte/React/Streamlit) that demonstrates the pipeline end-to-end: live scraping feed → entity detection → KG graph visualization → provenance and relationship browser
+
 ### 2026 March 30th
 
 #### Post-population (after KG is populated)
