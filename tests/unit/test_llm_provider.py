@@ -22,7 +22,7 @@ from unstructured_mapping.pipeline import (
     LLMTimeoutError,
     OllamaProvider,
 )
-from unstructured_mapping.pipeline import llm_ollama
+from unstructured_mapping.pipeline.llm import ollama as llm_ollama
 
 
 def make_ollama_provider(

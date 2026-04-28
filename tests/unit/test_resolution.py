@@ -13,7 +13,7 @@ from unstructured_mapping.knowledge_graph.models import (
     Entity,
     EntityType,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProviderError,
 )
 from unstructured_mapping.pipeline.models import (

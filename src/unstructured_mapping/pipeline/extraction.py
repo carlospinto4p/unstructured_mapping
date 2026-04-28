@@ -34,16 +34,21 @@ from unstructured_mapping.knowledge_graph.models import (
 from unstructured_mapping.pipeline._batch_lookup import (
     resolve_batch,
 )
-from unstructured_mapping.pipeline._llm_retry import (
+from unstructured_mapping.pipeline.llm._retry import (
     retry_llm_call,
 )
-from unstructured_mapping.pipeline.budget import (
+from unstructured_mapping.pipeline.llm.budget import (
     compute_budget,
 )
-from unstructured_mapping.pipeline.llm_parsers import (
+from unstructured_mapping.pipeline.llm.parsers import (
     parse_pass2_response,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.prompts import (
+    PASS2_SYSTEM_PROMPT,
+    build_entity_list_block,
+    build_pass2_user_prompt,
+)
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
     TokenUsage,
 )
@@ -52,11 +57,6 @@ from unstructured_mapping.pipeline.models import (
     EntityProposal,
     ExtractionResult,
     ResolvedMention,
-)
-from unstructured_mapping.pipeline.prompts import (
-    PASS2_SYSTEM_PROMPT,
-    build_entity_list_block,
-    build_pass2_user_prompt,
 )
 
 

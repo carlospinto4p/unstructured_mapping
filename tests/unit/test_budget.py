@@ -6,7 +6,7 @@ from unstructured_mapping.knowledge_graph import (
     Entity,
     EntityType,
 )
-from unstructured_mapping.pipeline.budget import (
+from unstructured_mapping.pipeline.llm.budget import (
     DEFAULT_RESPONSE_HEADROOM,
     PromptBudget,
     _count_alias_matches,
@@ -219,9 +219,7 @@ def test_fit_empty_candidates():
     assert text == "Some text."
 
 
-def test_fit_truncates_candidates(
-    fed_entity, powell_entity, cpi_entity
-):
+def test_fit_truncates_candidates(fed_entity, powell_entity, cpi_entity):
     chunk = "The Fed raised rates according to Powell."
     # Give a very tight budget
     fitted, text = fit_candidates(
@@ -235,9 +233,7 @@ def test_fit_truncates_candidates(
     assert text == chunk
 
 
-def test_fit_ranks_by_alias_match(
-    fed_entity, powell_entity, cpi_entity
-):
+def test_fit_ranks_by_alias_match(fed_entity, powell_entity, cpi_entity):
     chunk = "The Fed raised rates. CPI data came in."
     # Budget allows chunk + some candidates but not all
     chunk_tokens = estimate_tokens(chunk)

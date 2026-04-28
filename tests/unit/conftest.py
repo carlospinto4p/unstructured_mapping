@@ -12,7 +12,7 @@ from unstructured_mapping.knowledge_graph import (
     KnowledgeStore,
     Provenance,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
 )
 from unstructured_mapping.pipeline.models import (

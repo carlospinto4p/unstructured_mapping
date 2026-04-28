@@ -55,7 +55,7 @@ import json
 import logging
 from collections.abc import Callable
 
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
     LLMProviderError,
     TokenUsage,
@@ -148,10 +148,8 @@ class FallbackLLMProvider(LLMProvider):
 
         from unstructured_mapping.pipeline import (
             ClaudeProvider,
-            OllamaProvider,
-        )
-        from unstructured_mapping.pipeline.llm_fallback import (
             FallbackLLMProvider,
+            OllamaProvider,
         )
 
         primary = OllamaProvider(model="llama3.1:8b")

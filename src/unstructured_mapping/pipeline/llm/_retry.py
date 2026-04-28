@@ -11,7 +11,7 @@ function and system prompt.
 import logging
 from collections.abc import Callable
 
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
     LLMProviderError,
     TokenUsage,

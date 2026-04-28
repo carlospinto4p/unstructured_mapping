@@ -10,7 +10,7 @@ from unstructured_mapping.pipeline.models import (
     EntityProposal,
     ResolvedMention,
 )
-from unstructured_mapping.pipeline.prompts import (
+from unstructured_mapping.pipeline.llm.prompts import (
     PASS1_SYSTEM_PROMPT,
     PASS2_SYSTEM_PROMPT,
     build_entity_list_block,

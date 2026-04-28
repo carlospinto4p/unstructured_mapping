@@ -1,5 +1,23 @@
 ## Changelog
 
+### v0.58.8 - 28th April 2026
+
+- Refactored `src/unstructured_mapping/pipeline/`:
+  - Extracted `pipeline/llm/` subpackage — moved all LLM-related modules out of the flat `pipeline/` namespace:
+    - `llm_provider.py` → `llm/provider.py`
+    - `llm_claude.py` → `llm/claude.py`
+    - `llm_ollama.py` → `llm/ollama.py`
+    - `llm_fallback.py` → `llm/fallback.py`
+    - `llm_parsers.py` → `llm/parsers.py`
+    - `_llm_retry.py` → `llm/_retry.py`
+    - `prompts.py` → `llm/prompts.py`
+    - `budget.py` → `llm/budget.py`
+    - `_optional_import.py` → `llm/_optional_import.py`
+  - Updated all internal imports in `resolution.py`, `extraction.py`, `cold_start.py`, and `pipeline/__init__.py`.
+  - Updated test imports in `tests/unit/` to reflect new module paths.
+  - Fixed Python 2-style `except A, B:` syntax → `except (A, B):` in `llm/fallback.py`.
+
+
 ### v0.58.7 - 27th April 2026
 
 - Refactored `tests/unit/`:

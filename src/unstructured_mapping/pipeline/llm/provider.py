@@ -23,9 +23,9 @@ budget rationale.
 Concrete providers live in sibling modules so importing
 the ABC never drags in optional third-party SDKs:
 
-- :mod:`llm_ollama` -- ``OllamaProvider`` (requires the
+- :mod:`ollama` -- ``OllamaProvider`` (requires the
   optional ``llm`` extras group).
-- :mod:`llm_claude` -- ``ClaudeProvider`` (requires the
+- :mod:`claude` -- ``ClaudeProvider`` (requires the
   optional ``llm`` extras group).
 
 This module intentionally has no third-party imports so

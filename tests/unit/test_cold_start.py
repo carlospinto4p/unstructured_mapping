@@ -19,7 +19,7 @@ from unstructured_mapping.pipeline import (
     NoopDetector,
     Pipeline,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProviderError,
 )
 
@@ -69,9 +69,7 @@ def test_noop_detector_returns_empty():
 
 
 def test_discover_returns_proposals_from_llm():
-    provider = FakeProvider(
-        _proposal_response([_fed_entity()])
-    )
+    provider = FakeProvider(_proposal_response([_fed_entity()]))
     discoverer = ColdStartEntityDiscoverer(provider)
     proposals = discoverer.discover(_chunk())
     assert len(proposals) == 1
@@ -84,9 +82,7 @@ def test_discover_returns_proposals_from_llm():
 
 def test_discover_empty_text_returns_empty():
     provider = FakeProvider(_proposal_response([]))
-    proposals = ColdStartEntityDiscoverer(
-        provider
-    ).discover(_chunk())
+    proposals = ColdStartEntityDiscoverer(provider).discover(_chunk())
     assert proposals == ()
 
 
@@ -96,21 +92,15 @@ def test_discover_rejects_resolved_ids_with_empty_candidates():
     # raises LLMProviderError. This guards against the
     # LLM ignoring the "no candidates" instruction.
     provider = FakeProvider(
-        _proposal_response(
-            [_fed_entity(entity_id="some-existing-id")]
-        )
+        _proposal_response([_fed_entity(entity_id="some-existing-id")])
     )
     with pytest.raises(LLMProviderError):
-        ColdStartEntityDiscoverer(provider).discover(
-            _chunk()
-        )
+        ColdStartEntityDiscoverer(provider).discover(_chunk())
 
 
 def test_discover_prompt_has_no_candidates_block():
     provider = FakeProvider(_proposal_response([]))
-    ColdStartEntityDiscoverer(provider).discover(
-        _chunk("hello world")
-    )
+    ColdStartEntityDiscoverer(provider).discover(_chunk("hello world"))
     prompt = provider.calls[0][0]
     assert "CANDIDATE ENTITIES" not in prompt
     assert "hello world" in prompt
@@ -122,19 +112,13 @@ def test_discover_prompt_has_no_candidates_block():
 def test_pipeline_cold_start_persists_entities(
     tmp_path,
 ):
-    provider = FakeProvider(
-        _proposal_response([_fed_entity()])
-    )
-    with KnowledgeStore(
-        db_path=tmp_path / "kg.db"
-    ) as store:
+    provider = FakeProvider(_proposal_response([_fed_entity()]))
+    with KnowledgeStore(db_path=tmp_path / "kg.db") as store:
         pipeline = Pipeline(
             detector=NoopDetector(),
             resolver=AliasResolver(),
             store=store,
-            cold_start_discoverer=(
-                ColdStartEntityDiscoverer(provider)
-            ),
+            cold_start_discoverer=(ColdStartEntityDiscoverer(provider)),
         )
         result = pipeline.run([_article()])
 
@@ -145,9 +129,7 @@ def test_pipeline_cold_start_persists_entities(
 
         fed = store.find_by_name("Federal Reserve")
         assert len(fed) == 1
-        history = store.get_entity_history(
-            fed[0].entity_id
-        )
+        history = store.get_entity_history(fed[0].entity_id)
         assert history[0].reason == "proposed by LLM"
 
 
@@ -159,21 +141,15 @@ def test_pipeline_cold_start_bypasses_detector(
 
     class _ExplodingDetector(NoopDetector):
         def detect(self, chunk):
-            raise AssertionError(
-                "detector must not run in cold-start"
-            )
+            raise AssertionError("detector must not run in cold-start")
 
     provider = FakeProvider(_proposal_response([]))
-    with KnowledgeStore(
-        db_path=tmp_path / "kg.db"
-    ) as store:
+    with KnowledgeStore(db_path=tmp_path / "kg.db") as store:
         pipeline = Pipeline(
             detector=_ExplodingDetector(),
             resolver=AliasResolver(),
             store=store,
-            cold_start_discoverer=(
-                ColdStartEntityDiscoverer(provider)
-            ),
+            cold_start_discoverer=(ColdStartEntityDiscoverer(provider)),
         )
         result = pipeline.run([_article()])
 
@@ -184,19 +160,13 @@ def test_pipeline_cold_start_bypasses_detector(
 def test_pipeline_cold_start_respects_idempotency(
     tmp_path,
 ):
-    provider = FakeProvider(
-        _proposal_response([_fed_entity()])
-    )
-    with KnowledgeStore(
-        db_path=tmp_path / "kg.db"
-    ) as store:
+    provider = FakeProvider(_proposal_response([_fed_entity()]))
+    with KnowledgeStore(db_path=tmp_path / "kg.db") as store:
         pipeline = Pipeline(
             detector=NoopDetector(),
             resolver=AliasResolver(),
             store=store,
-            cold_start_discoverer=(
-                ColdStartEntityDiscoverer(provider)
-            ),
+            cold_start_discoverer=(ColdStartEntityDiscoverer(provider)),
         )
         article = _article()
         pipeline.run([article])

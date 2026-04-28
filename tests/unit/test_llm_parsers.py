@@ -5,7 +5,7 @@ import json
 import pytest
 
 from unstructured_mapping.knowledge_graph import EntityType
-from unstructured_mapping.pipeline.llm_parsers import (
+from unstructured_mapping.pipeline.llm.parsers import (
     Pass1ValidationError,
     Pass2ValidationError,
     parse_pass1_response,

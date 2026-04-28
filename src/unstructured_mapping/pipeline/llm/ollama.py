@@ -25,11 +25,11 @@ import logging
 
 import httpx
 
-from unstructured_mapping.pipeline._optional_import import (
+from unstructured_mapping.pipeline.llm._optional_import import (
     require_llm_extra,
     try_import,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     DEFAULT_TIMEOUT,
     LLMConnectionError,
     LLMEmptyResponseError,

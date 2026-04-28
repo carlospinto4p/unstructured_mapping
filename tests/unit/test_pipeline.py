@@ -19,7 +19,7 @@ from unstructured_mapping.pipeline import (
     PipelineResult,
     RuleBasedDetector,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
 )
 from unstructured_mapping.pipeline.models import (

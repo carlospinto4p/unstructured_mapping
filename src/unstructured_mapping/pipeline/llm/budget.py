@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from unstructured_mapping.knowledge_graph.models import (
     Entity,
 )
-from unstructured_mapping.pipeline.prompts import (
+from unstructured_mapping.pipeline.llm.prompts import (
     build_kg_context_block,
 )
 from unstructured_mapping.tokens import _CHARS_PER_TOKEN

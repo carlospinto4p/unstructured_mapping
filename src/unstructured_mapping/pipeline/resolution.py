@@ -39,17 +39,22 @@ from unstructured_mapping.knowledge_graph.models import (
 from unstructured_mapping.pipeline._batch_lookup import (
     resolve_batch,
 )
-from unstructured_mapping.pipeline._llm_retry import (
+from unstructured_mapping.pipeline.llm._retry import (
     retry_llm_call,
 )
-from unstructured_mapping.pipeline.budget import (
+from unstructured_mapping.pipeline.llm.budget import (
     compute_budget,
     fit_candidates,
 )
-from unstructured_mapping.pipeline.llm_parsers import (
+from unstructured_mapping.pipeline.llm.parsers import (
     parse_pass1_response,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.prompts import (
+    PASS1_SYSTEM_PROMPT,
+    build_kg_context_block,
+    build_pass1_user_prompt,
+)
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
     TokenUsage,
 )
@@ -59,11 +64,6 @@ from unstructured_mapping.pipeline.models import (
     Mention,
     ResolvedMention,
     ResolutionResult,
-)
-from unstructured_mapping.pipeline.prompts import (
-    PASS1_SYSTEM_PROMPT,
-    build_kg_context_block,
-    build_pass1_user_prompt,
 )
 
 logger = logging.getLogger(__name__)

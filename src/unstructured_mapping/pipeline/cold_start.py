@@ -37,26 +37,26 @@ rationale and usage recipes.
 
 import logging
 
-from unstructured_mapping.pipeline._llm_retry import (
+from unstructured_mapping.pipeline.llm._retry import (
     retry_llm_call,
 )
-from unstructured_mapping.pipeline.budget import (
+from unstructured_mapping.pipeline.llm.budget import (
     compute_budget,
 )
-from unstructured_mapping.pipeline.llm_parsers import (
+from unstructured_mapping.pipeline.llm.parsers import (
     parse_pass1_response,
 )
-from unstructured_mapping.pipeline.llm_provider import (
+from unstructured_mapping.pipeline.llm.prompts import (
+    PASS1_SYSTEM_PROMPT,
+    build_pass1_user_prompt,
+)
+from unstructured_mapping.pipeline.llm.provider import (
     LLMProvider,
     TokenUsage,
 )
 from unstructured_mapping.pipeline.models import (
     Chunk,
     EntityProposal,
-)
-from unstructured_mapping.pipeline.prompts import (
-    PASS1_SYSTEM_PROMPT,
-    build_pass1_user_prompt,
 )
 
 logger = logging.getLogger(__name__)

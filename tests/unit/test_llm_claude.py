@@ -18,7 +18,7 @@ from unstructured_mapping.pipeline import (
     LLMProviderError,
     LLMTimeoutError,
 )
-from unstructured_mapping.pipeline import llm_claude
+from unstructured_mapping.pipeline.llm import claude as llm_claude
 
 
 # -- Helpers --
