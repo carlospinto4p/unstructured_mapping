@@ -1,5 +1,10 @@
 ## Backlog
 
+### 2026 April 28th (v0.58.8 refactor review)
+
+- [ ] **LOW** — Standardise leading-underscore convention in `web_scraping/`: rename `ap.py`, `bbc.py`, `reuters.py` → `_ap.py`, `_bbc.py`, `_reuters.py` to match `_gnews.py`; update `__init__.py` imports
+- [ ] **LOW** — Standardise leading-underscore convention in `pipeline/segmentation/`: rename `filing.py`, `news.py`, `research.py`, `transcript.py` to use `_` prefix to match `_sub_chunk.py`; update imports in `segmentation/__init__.py`
+
 ### 2026 March 30th
 
 #### Post-population (after KG is populated)
