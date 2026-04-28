@@ -32,6 +32,10 @@ notebooks/
 
 # Data
 */data/
+data/*.db
+
+# Claude Code runtime
+.claude/scheduled_tasks.lock
 
 # Large data files (suffix _all)
 *_all.*
@@ -48,3 +52,4 @@ build/
 # direnv / PowerShell venv env files
 .envrc
 .env.ps1
+.claude/settings.local.json
