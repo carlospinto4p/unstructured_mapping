@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.58.11 - 29th April 2026
+
+- Fixed `cli/ingest._summarise()`: `skipped (idempotent)` count could go negative when articles failed. Now computed directly from `ArticleResult.skipped` flags so `submitted = processed + skipped + failed` always balances.
+- Added `tests/unit/test_ingest.py`: 5 tests covering all combinations of processed, skipped, and failed articles.
+
+
 ### v0.58.10 - 28th April 2026
 
 - Updated `cli/backfill.py`: replaced inline `logging.basicConfig()` with shared `setup_logging()` from `cli/_logging.py` to match all other CLI modules.

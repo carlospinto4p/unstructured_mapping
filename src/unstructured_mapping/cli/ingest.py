@@ -241,13 +241,14 @@ def ingest(
 
 def _summarise(result: PipelineResult) -> str:
     """Render a short one-paragraph summary for stdout."""
-    skipped = len(result.results) - result.documents_processed
     failed = sum(1 for r in result.results if r.error is not None)
+    skipped = sum(1 for r in result.results if r.skipped)
+    processed = len(result.results) - failed - skipped
     lines = [
         f"Run {result.run_id}",
         f"  articles submitted:   {len(result.results)}",
-        f"  processed:            {result.documents_processed}",
-        f"  skipped (idempotent): {skipped - failed}",
+        f"  processed:            {processed}",
+        f"  skipped (idempotent): {skipped}",
         f"  failed:               {failed}",
         f"  provenance rows:      {result.provenances_saved}",
         f"  new entities:         {result.proposals_saved}",
