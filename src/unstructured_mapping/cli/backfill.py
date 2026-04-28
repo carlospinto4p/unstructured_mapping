@@ -24,6 +24,7 @@ from unstructured_mapping.cli._argparse_helpers import (
     ARTICLES_DEFAULT_DB,
     add_db_argument,
 )
+from unstructured_mapping.cli._logging import setup_logging
 from unstructured_mapping.web_scraping.backfill import (
     ARCHIVE_SOURCES,
     fetch_range,
@@ -92,10 +93,7 @@ def main(argv: list[str] | None = None) -> None:
         else [args.source]
     )
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-    )
+    setup_logging()
 
     store = ArticleStore(args.db)
     total_inserted = 0

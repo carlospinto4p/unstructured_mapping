@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.58.10 - 28th April 2026
+
+- Updated `cli/backfill.py`: replaced inline `logging.basicConfig()` with shared `setup_logging()` from `cli/_logging.py` to match all other CLI modules.
+
+
 ### v0.58.9 - 28th April 2026
 
 - Refactored module naming conventions (leading-underscore for internal concrete implementations):
