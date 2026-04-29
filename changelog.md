@@ -1,5 +1,18 @@
 ## Changelog
 
+### v0.60.0 - 29th April 2026
+
+- Added `frontend/` SvelteKit application:
+  - `src/lib/api.ts`: typed fetch client for all API endpoints (entities, relationships, runs, scrape, health).
+  - `src/routes/+layout.svelte`: dark nav sidebar with links to Dashboard, KG Graph, and Feed.
+  - `src/routes/+page.svelte`: Dashboard — entity/relationship/article counts, entities by type, articles by source, latest run.
+  - `src/routes/graph/+page.svelte`: KG graph view — entity search sidebar, Svelte Flow canvas (nodes colour-coded by entity type, relationship edges), entity detail panel with relationship list.
+  - `src/routes/feed/+page.svelte`: Feed — recent articles table with source filter, scrape trigger, ingest trigger with provider/limit controls, live run polling, recent runs table.
+  - `src/routes/entities/[id]/+page.svelte`: Entity detail — header with type badge, aliases, meta counts; Relationships tab (direction, entity link, confidence, valid_from); Mentions tab (source, mention text, context snippet).
+- `vite.config.ts`: proxy `/api` to `http://localhost:8000` in dev mode.
+- `@xyflow/svelte` added as a frontend dependency.
+
+
 ### v0.59.0 - 29th April 2026
 
 - Added `src/unstructured_mapping/api/`:
