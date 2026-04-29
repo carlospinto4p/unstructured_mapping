@@ -102,6 +102,18 @@ export interface HealthResponse {
 	latest_run: Run | null;
 }
 
+export interface PopulateStage {
+	name: string;
+	created: number;
+	skipped: number;
+}
+
+export interface PopulateResponse {
+	stages: PopulateStage[];
+	total_created: number;
+	total_skipped: number;
+}
+
 async function get<T>(path: string, params?: Record<string, string | number | undefined>): Promise<T> {
 	const url = new URL(path, window.location.origin);
 	if (params) {
@@ -166,5 +178,9 @@ export const api = {
 			}),
 		articles: (params?: { source?: string; limit?: number; offset?: number }) =>
 			get<Article[]>('/api/scrape/articles', params)
+	},
+
+	kg: {
+		populate: () => post<PopulateResponse>('/api/kg/populate', {})
 	}
 };

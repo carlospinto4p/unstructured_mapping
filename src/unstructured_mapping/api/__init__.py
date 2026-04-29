@@ -19,6 +19,11 @@ Environment variables:
     Path to the articles SQLite file. Defaults to
     ``data/articles.db``.
 
+``SEED_DIR``
+    Directory containing the curated seed file and the
+    ``wikidata/`` snapshot subdirectory used by
+    ``POST /api/kg/populate``. Defaults to ``data/seed``.
+
 ``ALLOWED_ORIGINS``
     Comma-separated list of origins allowed by CORS.
     Defaults to ``http://localhost:5173``.
@@ -33,6 +38,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .entities import router as _entities_router
 from .health import router as _health_router
+from .kg import router as _kg_router
 from .relationships import router as _relationships_router
 from .runs import router as _runs_router
 from .scrape import router as _scrape_router
@@ -46,6 +52,7 @@ async def _lifespan(app: FastAPI):
     app.state.articles_path = Path(
         os.environ.get("ARTICLES_DB", "data/articles.db")
     )
+    app.state.seed_dir = Path(os.environ.get("SEED_DIR", "data/seed"))
     yield
 
 
@@ -76,4 +83,5 @@ app.include_router(
 )
 app.include_router(_runs_router, prefix="/api/runs", tags=["runs"])
 app.include_router(_scrape_router, prefix="/api/scrape", tags=["scrape"])
+app.include_router(_kg_router, prefix="/api/kg", tags=["kg"])
 app.include_router(_health_router, prefix="/api", tags=["health"])

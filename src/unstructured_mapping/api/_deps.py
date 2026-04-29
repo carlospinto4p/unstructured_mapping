@@ -29,6 +29,11 @@ def get_articles_path(request: Request) -> Path:
     return request.app.state.articles_path
 
 
+def get_seed_dir(request: Request) -> Path:
+    """Return the seed directory path stored on app state."""
+    return request.app.state.seed_dir
+
+
 def get_kg(request: Request) -> Generator[KnowledgeStore, None, None]:
     """Yield an open :class:`KnowledgeStore` for the request lifetime."""
     with KnowledgeStore(db_path=request.app.state.kg_path) as kg:

@@ -1,5 +1,18 @@
 ## Changelog
 
+### v0.60.2 - 29th April 2026
+
+- Added `api/kg.py`: `POST /api/kg/populate` endpoint — runs curated seed + Wikidata snapshots in a thread, returns per-stage summary (created/skipped counts).
+- Updated `api/__init__.py`:
+  - Registered `/api/kg` router.
+  - Added `SEED_DIR` env var to lifespan (`app.state.seed_dir`, defaults to `data/seed`).
+- Updated `api/_deps.py`: added `get_seed_dir()` dependency.
+- Updated `frontend/src/lib/api.ts`: added `PopulateStage`, `PopulateResponse` types and `api.kg.populate()` client method.
+- Updated `frontend/src/routes/feed/+page.svelte`:
+  - Added Step 0 "Seed entities" card with live entity count, warning banner when KG is empty, and populate button.
+  - Updated subtitle to reflect three-step pipeline.
+
+
 ### v0.60.1 - 29th April 2026
 
 - Added Docker support:
