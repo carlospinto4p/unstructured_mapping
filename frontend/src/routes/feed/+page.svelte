@@ -12,6 +12,9 @@
 	let populateStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
 	let ingestStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
 	let scrapeStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
+	let wikidataStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
+	let aliasAuditStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
+	let aliasCollisions = $state<import('$lib/api').AliasCollision[]>([]);
 	let ingestProvider = $state('claude');
 	let ingestLimit = $state(50);
 	let ingestColdStart = $state(false);
@@ -59,6 +62,42 @@
 			entityCount = (entityCount ?? 0) + res.total_created;
 		} catch (e) {
 			populateStatus = { text: `Error: ${e}`, kind: 'error' };
+		}
+	}
+
+	async function triggerWikidataRefresh() {
+		wikidataStatus = { text: 'Querying Wikidata SPARQL for all entity types… (this may take 1–2 minutes)', kind: 'running' };
+		try {
+			const res = await api.kg.wikidataRefresh();
+			const errors = res.types.filter((t) => t.error !== null);
+			if (errors.length) {
+				wikidataStatus = {
+					text: `Completed with ${errors.length} error(s): ${errors.map((e) => e.type).join(', ')}. ${res.total_created} created, ${res.total_skipped} skipped.`,
+					kind: 'error'
+				};
+			} else {
+				wikidataStatus = {
+					text: `Done — ${res.total_created} entities added, ${res.total_skipped} already present across ${res.types.length} types.`,
+					kind: 'done'
+				};
+			}
+		} catch (e) {
+			wikidataStatus = { text: `Error: ${e}`, kind: 'error' };
+		}
+	}
+
+	async function runAliasAudit() {
+		aliasAuditStatus = { text: 'Scanning for alias collisions…', kind: 'running' };
+		aliasCollisions = [];
+		try {
+			const res = await api.kg.aliasAudit();
+			aliasCollisions = res.collisions;
+			aliasAuditStatus =
+				res.total === 0
+					? { text: 'No alias collisions found.', kind: 'done' }
+					: { text: `${res.total} collision(s) found — see table below.`, kind: res.collisions.some((c) => c.same_type) ? 'error' : 'done' };
+		} catch (e) {
+			aliasAuditStatus = { text: `Error: ${e}`, kind: 'error' };
 		}
 	}
 
@@ -193,6 +232,67 @@
 	</div>
 </div>
 
+<details class="maintenance">
+	<summary>KG Maintenance</summary>
+	<div class="maintenance-body">
+		<div class="maint-row">
+			<div>
+				<strong>Refresh Wikidata snapshots</strong>
+				<p class="maint-desc">Re-fetch all entity types from the Wikidata SPARQL endpoint, overwrite local snapshots, and import new rows. Takes 1–2 minutes.</p>
+			</div>
+			<div class="maint-actions">
+				<button class="btn" onclick={triggerWikidataRefresh} disabled={wikidataStatus?.kind === 'running'}>
+					{wikidataStatus?.kind === 'running' ? 'Refreshing…' : 'Refresh Wikidata'}
+				</button>
+				{#if wikidataStatus}
+					<div class="status-bar {wikidataStatus.kind}">{wikidataStatus.text}</div>
+				{/if}
+			</div>
+		</div>
+
+		<div class="maint-row">
+			<div>
+				<strong>Alias collision audit</strong>
+				<p class="maint-desc">Find aliases shared by multiple entities, ranked by mention prevalence. Same-type collisions are probable duplicates.</p>
+			</div>
+			<div class="maint-actions">
+				<button class="btn" onclick={runAliasAudit} disabled={aliasAuditStatus?.kind === 'running'}>
+					{aliasAuditStatus?.kind === 'running' ? 'Scanning…' : 'Run audit'}
+				</button>
+				{#if aliasAuditStatus}
+					<div class="status-bar {aliasAuditStatus.kind}">{aliasAuditStatus.text}</div>
+				{/if}
+			</div>
+		</div>
+
+		{#if aliasCollisions.length > 0}
+			<table class="audit-table">
+				<thead>
+					<tr><th>Alias</th><th>Mentions</th><th>Same type?</th><th>Entities</th></tr>
+				</thead>
+				<tbody>
+					{#each aliasCollisions as c}
+						<tr class:collision-same-type={c.same_type}>
+							<td class="mono">{c.alias}</td>
+							<td>{c.total_mentions}</td>
+							<td>{c.same_type ? '⚠ yes' : 'no'}</td>
+							<td>
+								{#each c.entities as e}
+									<div class:merge-target={e.is_merge_target}>
+										<a href="/entities/{e.entity_id}">{e.canonical_name}</a>
+										<span class="source-badge">{e.entity_type}</span>
+										{#if e.is_merge_target}<span class="keep-badge">keep</span>{/if}
+									</div>
+								{/each}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
+	</div>
+</details>
+
 <div class="two-col">
 	<!-- Articles -->
 	<section>
@@ -317,6 +417,30 @@
 	.status-bar.done    { background: #1a2e22; color: #9ae6b4; border: 1px solid #276749; }
 	.status-bar.error   { background: #2d1515; color: #fc8181; border: 1px solid #742a2a; }
 	.status-bar.idle    { background: #1a1f2e; color: #a0aec0; }
+
+	.maintenance {
+		background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px;
+		margin-bottom: 28px;
+	}
+	.maintenance summary {
+		padding: 12px 20px; font-size: 0.8rem; font-weight: 700;
+		color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em;
+		cursor: pointer; user-select: none;
+	}
+	.maintenance summary:hover { color: #e2e8f0; }
+	.maintenance-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 20px; }
+	.maint-row { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+	.maint-row > div:first-child { flex: 1; min-width: 200px; }
+	.maint-row strong { font-size: 0.875rem; }
+	.maint-desc { font-size: 0.75rem; color: #718096; margin-top: 4px; line-height: 1.5; }
+	.maint-actions { display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
+
+	.audit-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 8px; }
+	.audit-table th, .audit-table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #2d3748; vertical-align: top; }
+	.audit-table th { color: #718096; font-weight: 600; }
+	.collision-same-type { background: #2d1a00; }
+	.merge-target { font-weight: 600; }
+	.keep-badge { background: #276749; color: #9ae6b4; padding: 1px 5px; border-radius: 4px; font-size: 0.65rem; margin-left: 4px; }
 
 	.muted { color: #718096; font-size: 0.875rem; }
 	.count { font-size: 0.75rem; color: #718096; margin-bottom: 6px; }

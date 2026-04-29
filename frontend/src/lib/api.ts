@@ -114,6 +114,40 @@ export interface PopulateResponse {
 	total_skipped: number;
 }
 
+export interface WikidataRefreshType {
+	type: string;
+	fetched: number;
+	created: number;
+	skipped: number;
+	error: string | null;
+}
+
+export interface WikidataRefreshResponse {
+	types: WikidataRefreshType[];
+	total_created: number;
+	total_skipped: number;
+}
+
+export interface AliasEntity {
+	entity_id: string;
+	canonical_name: string;
+	entity_type: string;
+	mention_count: number;
+	is_merge_target: boolean;
+}
+
+export interface AliasCollision {
+	alias: string;
+	total_mentions: number;
+	same_type: boolean;
+	entities: AliasEntity[];
+}
+
+export interface AliasAuditResponse {
+	total: number;
+	collisions: AliasCollision[];
+}
+
 async function get<T>(path: string, params?: Record<string, string | number | undefined>): Promise<T> {
 	const url = new URL(path, window.location.origin);
 	if (params) {
@@ -181,6 +215,15 @@ export const api = {
 	},
 
 	kg: {
-		populate: () => post<PopulateResponse>('/api/kg/populate', {})
+		populate: () => post<PopulateResponse>('/api/kg/populate', {}),
+		wikidataRefresh: (types?: string[], limit?: number) =>
+			post<WikidataRefreshResponse>('/api/kg/wikidata-refresh', {
+				types: types ?? null,
+				limit: limit ?? 100
+			}),
+		aliasAudit: (minMentions?: number) =>
+			get<AliasAuditResponse>('/api/kg/alias-audit', {
+				min_mentions: minMentions ?? 0
+			})
 	}
 };

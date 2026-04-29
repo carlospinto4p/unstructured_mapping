@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.60.4 - 30th April 2026
+
+- Updated `api/kg.py`:
+  - Added `POST /api/kg/wikidata-refresh` — re-fetches all (or selected) entity types from Wikidata SPARQL, overwrites local snapshots, and imports new rows into the KG. Accepts `types` (list, defaults to all) and `limit` (per type, default 100).
+  - Added `GET /api/kg/alias-audit` — runs `find_alias_collisions` + `score_collisions`, returns collisions ranked by mention prevalence with merge-target suggestions for same-type duplicates.
+- Updated `frontend/src/lib/api.ts`: added `WikidataRefreshType`, `WikidataRefreshResponse`, `AliasEntity`, `AliasCollision`, `AliasAuditResponse` types and `api.kg.wikidataRefresh()` / `api.kg.aliasAudit()` client methods.
+- Updated `frontend/src/routes/feed/+page.svelte`: added collapsible "KG Maintenance" section with Wikidata refresh button + alias audit button and inline collision table.
+
+
 ### v0.60.3 - 29th April 2026
 
 - Updated `api/runs.py`: added `_check_provider()` — verifies `ANTHROPIC_API_KEY` is set (Claude) or the Ollama daemon is reachable (Ollama) before spawning the ingest thread; returns HTTP 400 with a clear message instead of silently failing.
