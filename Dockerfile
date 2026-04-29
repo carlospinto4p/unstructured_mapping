@@ -9,7 +9,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install runtime + scraping dependencies (no dev extras)
-RUN uv sync --frozen --no-dev --extra scraping
+RUN uv sync --frozen --no-dev --extra scraping --extra api
 
 # Copy source code and install the project
 COPY src/ src/

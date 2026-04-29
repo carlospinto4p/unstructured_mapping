@@ -10,3 +10,34 @@ services:
       - SCRAPE_SOURCES=bbc reuters ap
       - SCRAPE_FEEDS=all
       - SCRAPE_FULL_TEXT=1
+
+  api:
+    build: .
+    container_name: um-api
+    restart: unless-stopped
+    command: uv run python -m unstructured_mapping.cli.serve --host 0.0.0.0 --port 8000
+    volumes:
+      - ./data:/app/data
+    environment:
+      - KNOWLEDGE_DB=/app/data/knowledge.db
+      - ARTICLES_DB=/app/data/articles.db
+      - ALLOWED_ORIGINS=http://localhost
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: um-frontend
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: um-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+      - frontend

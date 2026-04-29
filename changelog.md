@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.60.1 - 29th April 2026
+
+- Added Docker support:
+  - `frontend/Dockerfile`: multi-stage Node 22 build using `@sveltejs/adapter-node`; runs `node build` on port 3000.
+  - `nginx.conf`: reverse proxy — routes `/api/` to FastAPI (`api:8000`) and `/` to SvelteKit (`frontend:3000`); SSE buffering disabled.
+  - Updated `docker-compose.yml`: added `api` (FastAPI), `frontend` (SvelteKit), and `nginx` (port 80) services alongside the existing `scraper`.
+  - Updated `Dockerfile`: added `--extra api` so the Python image installs FastAPI + uvicorn.
+  - `frontend/svelte.config.js`: switched from `adapter-auto` to `adapter-node`.
+
+
 ### v0.60.0 - 29th April 2026
 
 - Added `frontend/` SvelteKit application:
