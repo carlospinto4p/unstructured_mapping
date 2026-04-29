@@ -18,9 +18,7 @@ credentials/
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
-# Sketches
-sketches/
-notebooks/
+# Temp / local overrides
 *.local.*
 *.tmp.*
 
@@ -31,17 +29,10 @@ notebooks/
 *.log
 
 # Data
-*/data/
 data/*.db
 
 # Claude Code runtime
 .claude/scheduled_tasks.lock
-
-# Large data files (suffix _all)
-*_all.*
-
-# Agent Builder workspace
-workspace/
 
 # Build artifacts
 build/
