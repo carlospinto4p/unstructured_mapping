@@ -361,6 +361,15 @@ class RelationshipMixin:
             results.extend(row_to_relationship(r) for r in rows)
         return results
 
+    def count_relationships(self) -> int:
+        """Return the total number of relationship rows.
+
+        :return: Row count from the ``relationships`` table.
+        """
+        return self._conn.execute(
+            "SELECT COUNT(*) FROM relationships"
+        ).fetchone()[0]
+
     def find_relationships_by_document(
         self, document_id: str
     ) -> list[Relationship]:

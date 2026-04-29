@@ -157,6 +157,23 @@ class RunMixin:
             output_tokens=row["output_tokens"],
         )
 
+    def find_recent_runs(self, limit: int = 20) -> list[IngestionRun]:
+        """Return the most recent ingestion runs.
+
+        :param limit: Maximum number of runs to return,
+            newest first.
+        :return: List of runs ordered by ``started_at``
+            descending.
+        """
+        rows = self._conn.execute(
+            "SELECT run_id, started_at, finished_at, "
+            "status, document_count, entity_count, "
+            "relationship_count, error_message "
+            "FROM ingestion_runs ORDER BY started_at DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+        return [row_to_run(r) for r in rows]
+
     def get_run(self, run_id: str) -> IngestionRun | None:
         """Fetch an ingestion run by ID.
 

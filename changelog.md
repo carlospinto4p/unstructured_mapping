@@ -1,5 +1,22 @@
 ## Changelog
 
+### v0.59.0 - 29th April 2026
+
+- Added `src/unstructured_mapping/api/`:
+  - `__init__.py`: FastAPI app factory with CORS and lifespan; reads `KNOWLEDGE_DB`, `ARTICLES_DB`, `ALLOWED_ORIGINS` from env.
+  - `_deps.py`: per-request `KnowledgeStore` and `ArticleStore` dependency providers.
+  - `_serializers.py`: `asdict()`-based JSON serialisers for `Entity`, `Relationship`, `Provenance`, `IngestionRun`, and `Article`.
+  - `entities.py`: `GET /api/entities`, `GET /api/entities/{id}`, `GET /api/entities/{id}/relationships`, `GET /api/entities/{id}/provenance`.
+  - `relationships.py`: `GET /api/relationships` with `entity_id`, `source_id`, `target_id`, `type`, and `min_confidence` filters.
+  - `runs.py`: `GET /api/runs`, `GET /api/runs/{id}`, `POST /api/runs/ingest` (fire-and-forget background thread), `GET /api/runs/{id}/stream` (SSE status stream).
+  - `scrape.py`: `POST /api/scrape` (background scrape), `GET /api/scrape/articles`.
+  - `health.py`: `GET /api/health` with entity counts by type, relationship count, article counts by source, and latest run.
+- Added `cli/serve.py`: uvicorn entry point (`uv run python -m unstructured_mapping.cli.serve`).
+- Added `pyproject.toml` `api` optional extra: `fastapi>=0.115.0`, `uvicorn[standard]>=0.30.0`.
+- Added `knowledge_graph/_run_mixin.py`: `find_recent_runs(limit)`.
+- Added `knowledge_graph/_relationship_mixin.py`: `count_relationships()`.
+
+
 ### v0.58.11 - 29th April 2026
 
 - Fixed `cli/ingest._summarise()`: `skipped (idempotent)` count could go negative when articles failed. Now computed directly from `ArticleResult.skipped` flags so `submitted = processed + skipped + failed` always balances.

@@ -1,6 +1,6 @@
 [project]
 name = "unstructured-mapping"
-version = "0.58.11"
+version = "0.59.0"
 description = "Map well-defined knowledge-graph entities to unstructured text."
 authors = [{ name = "Carlos Pinto", email = "carlospinto4p@gmail.com" }]
 readme = "README.md"
@@ -23,6 +23,10 @@ llm = [
 ]
 export = [
     "pyarrow>=15",
+]
+api = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
 ]
 dev = [
     "pre-commit>=4.2.0",
