@@ -2,8 +2,8 @@
 
 ### 2026 April 29th (KG population)
 
-- [ ] **MEDIUM** — Add LLM provider health check before ingest: before spawning the background thread, verify `ANTHROPIC_API_KEY` is set (for Claude) or the Ollama daemon is reachable (for Ollama); return HTTP 400 with a clear message instead of silently failing in a background thread
-- [ ] **MEDIUM** — Surface cold-start toggle in Feed UI: add a checkbox to the ingest form for `cold_start` (skip relationship extraction on first pass) with a tooltip explaining it — currently hardcoded to `False` in the UI
+- [x] **MEDIUM** — Add LLM provider health check before ingest: before spawning the background thread, verify `ANTHROPIC_API_KEY` is set (for Claude) or the Ollama daemon is reachable (for Ollama); return HTTP 400 with a clear message instead of silently failing in a background thread
+- [x] **MEDIUM** — Surface cold-start toggle in Feed UI: add a checkbox to the ingest form for `cold_start` (skip relationship extraction on first pass) with a tooltip explaining it — currently hardcoded to `False` in the UI
 - [ ] **MEDIUM** — Wikidata snapshot refresh endpoint: `POST /api/kg/wikidata-refresh` re-runs `cli/wikidata_seed.py` for all entity types (central_bank, company, crypto, currency, exchange, index, regulator) — current snapshots are from April 2024
 - [ ] **LOW** — Alias deduplication via API: expose `audit_aliases` logic via `GET /api/kg/alias-audit` and surface results in UI or as a scheduled post-ingest step — prevents canonical name drift as the KG grows
 
