@@ -3,9 +3,11 @@
 import asyncio
 import json
 import logging
+import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
@@ -25,6 +27,38 @@ router = APIRouter()
 #: Tracks fire-and-forget asyncio tasks to prevent GC
 #: before completion.
 _background_tasks: set[asyncio.Task] = set()
+
+
+async def _check_provider(provider: str, ollama_host: str | None) -> None:
+    """Raise HTTP 400 if the requested LLM provider is not ready.
+
+    For Claude, checks that ``ANTHROPIC_API_KEY`` is set in the
+    environment. For Ollama, attempts a lightweight HTTP GET to the
+    daemon root with a 3-second timeout. Raises immediately so the
+    caller gets a clear error instead of a silent background failure.
+    """
+    if provider == "claude":
+        if not os.environ.get("ANTHROPIC_API_KEY"):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "ANTHROPIC_API_KEY is not set — "
+                    "Claude provider unavailable."
+                ),
+            )
+    elif provider == "ollama":
+        host = ollama_host or "http://localhost:11434"
+        try:
+            async with httpx.AsyncClient() as client:
+                await client.get(host, timeout=3.0)
+        except Exception:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Ollama daemon not reachable at {host} — "
+                    "is Ollama running?"
+                ),
+            )
 
 
 class IngestRequest(BaseModel):
@@ -128,10 +162,12 @@ async def trigger_ingest(
 ) -> JSONResponse:
     """Start an ingest run in the background and return immediately.
 
-    The run is tracked in the KG store; poll
-    ``GET /api/runs/{run_id}`` or open
+    Returns HTTP 400 immediately if the requested LLM provider is not
+    ready (missing API key or unreachable daemon). On success, the run
+    is tracked in the KG store; poll ``GET /api/runs`` or open
     ``GET /api/runs/{run_id}/stream`` for live status.
     """
+    await _check_provider(body.provider, body.ollama_host)
     task = asyncio.create_task(
         asyncio.to_thread(_run_ingest_thread, kg_path, articles_path, body)
     )

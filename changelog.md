@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.60.3 - 29th April 2026
+
+- Updated `api/runs.py`: added `_check_provider()` — verifies `ANTHROPIC_API_KEY` is set (Claude) or the Ollama daemon is reachable (Ollama) before spawning the ingest thread; returns HTTP 400 with a clear message instead of silently failing.
+- Updated `frontend/src/routes/feed/+page.svelte`:
+  - Added "Cold start" checkbox to the Step 2 ingest form with a tooltip explaining the mode.
+  - Passes `cold_start` to `api.runs.ingest()`.
+
+
 ### v0.60.2 - 29th April 2026
 
 - Added `api/kg.py`: `POST /api/kg/populate` endpoint — runs curated seed + Wikidata snapshots in a thread, returns per-stage summary (created/skipped counts).

@@ -14,6 +14,7 @@
 	let scrapeStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
 	let ingestProvider = $state('claude');
 	let ingestLimit = $state(50);
+	let ingestColdStart = $state(false);
 	let activeRun = $state<Run | null>(null);
 
 	onMount(async () => {
@@ -75,7 +76,7 @@
 	async function triggerIngest() {
 		ingestStatus = { text: 'Starting pipeline…', kind: 'running' };
 		try {
-			await api.runs.ingest({ provider: ingestProvider, limit: ingestLimit });
+			await api.runs.ingest({ provider: ingestProvider, limit: ingestLimit, cold_start: ingestColdStart });
 			ingestStatus = { text: `Pipeline started (${ingestProvider}, up to ${ingestLimit} articles). Checking for run…`, kind: 'running' };
 
 			const pollInterval = setInterval(async () => {
@@ -176,6 +177,10 @@
 				<label class="field">
 					<span>Max articles</span>
 					<input class="input-sm" type="number" bind:value={ingestLimit} min="1" max="500" style="width:80px" />
+				</label>
+				<label class="field field-checkbox" title="Skip relationship extraction — let the LLM propose new entities from raw text instead. Use on a freshly seeded KG before relationships can be meaningfully extracted.">
+					<span>Cold start</span>
+					<input type="checkbox" bind:checked={ingestColdStart} />
 				</label>
 			</div>
 			<button class="btn btn-green" onclick={triggerIngest} disabled={ingestStatus?.kind === 'running'}>
@@ -295,8 +300,10 @@
 	.step-desc { font-size: 0.8rem; color: #a0aec0; line-height: 1.5; }
 	.arrow { font-size: 1.5rem; color: #4a5568; align-self: center; padding: 0 4px; }
 
-	.field-row { display: flex; gap: 12px; flex-wrap: wrap; }
+	.field-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
 	.field { display: flex; flex-direction: column; gap: 4px; font-size: 0.75rem; color: #718096; }
+	.field-checkbox { cursor: help; }
+	.field-checkbox input { width: 16px; height: 16px; accent-color: #276749; cursor: pointer; }
 
 	.btn { padding: 8px 16px; background: #2b6cb0; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem; align-self: flex-start; }
 	.btn:disabled { opacity: 0.5; cursor: default; }
