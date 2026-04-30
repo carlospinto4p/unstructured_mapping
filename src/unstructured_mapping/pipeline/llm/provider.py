@@ -214,15 +214,19 @@ class LLMProvider(ABC):
         """
 
     @property
-    @abstractmethod
     def supports_json_mode(self) -> bool:
         """Whether the provider honors ``json_mode=True``.
+
+        Defaults to ``False``. Subclasses may override via a
+        class attribute (``supports_json_mode = True``) or a
+        property; both satisfy the ABC.
 
         Callers MUST check this before passing
         ``json_mode=True`` to :meth:`generate`; providers
         without JSON mode raise ``ValueError`` rather
         than silently returning unconstrained text.
         """
+        return False
 
     @property
     def last_token_usage(self) -> TokenUsage | None:

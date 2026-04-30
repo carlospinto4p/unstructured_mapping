@@ -532,7 +532,7 @@ def test_pipeline_metrics_count_llm_calls_and_provider(
 
     class StubLLMResolver:
         def __init__(self):
-            self._provider = StubProvider()
+            self.provider = StubProvider()
             self.proposals: tuple = ()
 
         def resolve(

@@ -95,6 +95,11 @@ class ColdStartEntityDiscoverer:
         self._last_token_usage: TokenUsage = TokenUsage()
 
     @property
+    def provider(self) -> LLMProvider:
+        """The LLM provider backing this discoverer."""
+        return self._provider
+
+    @property
     def last_token_usage(self) -> TokenUsage:
         """Token usage from the last :meth:`discover` call.
 

@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.60.6 - 30th April 2026
+
+- Refactored `pipeline/_article_processor.py`:
+  - Added `_accumulate_usage(stage, metrics)` helper; replaced three inline `getattr / if usage is not None` blocks with calls to it.
+  - Updated `provider_name` / `model_name` properties to read `stage.provider` (public) instead of `stage._provider` (private attribute reflection).
+  - Removed redundant outer `with self._store.transaction()` wrapping `_persist_aggregated` — the method already owns its transaction.
+- Added `provider` property to `LLMEntityResolver`, `LLMRelationshipExtractor`, and `ColdStartEntityDiscoverer` — exposes the backing `LLMProvider` without requiring callers to reach into `_provider`.
+- Refactored `pipeline/llm/provider.py`: changed `supports_json_mode` from `@abstractmethod` to a concrete property returning `False`; subclasses may override via class attribute or property.
+- Updated `tests/unit/test_pipeline.py`: updated `StubLLMResolver` to expose `provider` as a public attribute.
+
+
 ### v0.60.5 - 30th April 2026
 
 - Refactored `wikidata/`:

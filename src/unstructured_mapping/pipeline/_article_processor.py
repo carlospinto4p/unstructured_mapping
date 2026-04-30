@@ -60,6 +60,14 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _accumulate_usage(stage: object, metrics: "_MetricsAccumulator") -> None:
+    """Add the stage's last_token_usage into metrics, if reported."""
+    usage = getattr(stage, "last_token_usage", None)
+    if usage is not None:
+        metrics.input_tokens += usage.input_tokens
+        metrics.output_tokens += usage.output_tokens
+
+
 @dataclass
 class _MetricsAccumulator:
     """Mutable counter accumulated over one pipeline run.
@@ -215,8 +223,8 @@ class ArticleProcessor:
             self._extractor,
             self._cold_start_discoverer,
         ):
-            provider = getattr(stage, "_provider", None)
-            name = getattr(provider, "provider_name", None)
+            p = getattr(stage, "provider", None)
+            name = getattr(p, "provider_name", None)
             if name is not None:
                 return name
         return None
@@ -228,8 +236,8 @@ class ArticleProcessor:
             self._extractor,
             self._cold_start_discoverer,
         ):
-            provider = getattr(stage, "_provider", None)
-            name = getattr(provider, "model_name", None)
+            p = getattr(stage, "provider", None)
+            name = getattr(p, "model_name", None)
             if name is not None:
                 return name
         return None
@@ -307,13 +315,7 @@ class ArticleProcessor:
                 outcomes.append(outcome)
                 running_entities.extend(outcome.resolution.resolved)
             aggregated = self._aggregator.aggregate(outcomes)
-            # One transaction per article: all provenance,
-            # proposal-entity, and relationship writes
-            # share one COMMIT. Aggregation already
-            # dedupes within the article; the DB layer
-            # handles cross-article dedup.
-            with self._store.transaction():
-                saved = self._persist_aggregated(aggregated, article, run_id)
+            saved = self._persist_aggregated(aggregated, article, run_id)
             metrics.proposals_saved += saved[1]
             metrics.relationships_saved += saved[2]
             return ArticleResult(
@@ -479,14 +481,7 @@ class ArticleProcessor:
             proposals = self._llm_resolver.proposals
             metrics.llm_resolver_calls += 1
             metrics.mentions_resolved_llm += len(llm_result.resolved)
-            res_usage = getattr(
-                self._llm_resolver,
-                "last_token_usage",
-                None,
-            )
-            if res_usage is not None:
-                metrics.input_tokens += res_usage.input_tokens
-                metrics.output_tokens += res_usage.output_tokens
+            _accumulate_usage(self._llm_resolver, metrics)
             resolution = ResolutionResult(
                 resolved=(resolution.resolved + llm_result.resolved),
             )
@@ -510,14 +505,7 @@ class ArticleProcessor:
             result = self._extractor.extract(chunk, resolution.resolved)
             extracted = result.relationships
             metrics.llm_extractor_calls += 1
-            ext_usage = getattr(
-                self._extractor,
-                "last_token_usage",
-                None,
-            )
-            if ext_usage is not None:
-                metrics.input_tokens += ext_usage.input_tokens
-                metrics.output_tokens += ext_usage.output_tokens
+            _accumulate_usage(self._extractor, metrics)
 
         return ChunkOutcome(
             resolution=resolution,
@@ -594,14 +582,7 @@ class ArticleProcessor:
             self._cold_start_discoverer is not None
         )  # caller guarantees this
         proposals = self._cold_start_discoverer.discover(chunk)
-        cs_usage = getattr(
-            self._cold_start_discoverer,
-            "last_token_usage",
-            None,
-        )
-        if cs_usage is not None:
-            metrics.input_tokens += cs_usage.input_tokens
-            metrics.output_tokens += cs_usage.output_tokens
+        _accumulate_usage(self._cold_start_discoverer, metrics)
         detected_at = _utcnow()
         with self._store.transaction():
             saved = self._persist_proposals(

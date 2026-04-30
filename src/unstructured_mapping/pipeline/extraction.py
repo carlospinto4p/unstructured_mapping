@@ -158,6 +158,11 @@ class LLMRelationshipExtractor(RelationshipExtractor):
         self._last_token_usage: TokenUsage = TokenUsage()
 
     @property
+    def provider(self) -> LLMProvider:
+        """The LLM provider backing this extractor."""
+        return self._provider
+
+    @property
     def last_token_usage(self) -> TokenUsage:
         """Token usage from the last :meth:`extract` call.
 
