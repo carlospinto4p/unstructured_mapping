@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.60.8 - 30th April 2026
+
+- Improved frontend clarity across all four pages (`frontend/src/routes/`):
+  - `+page.svelte` (Dashboard): added intro paragraph explaining entities/relationships/articles; added per-card hint text; added section hints for the entity-type and article-source tables; expanded "Latest run" row labels with context.
+  - `feed/+page.svelte` (Feed): expanded all three step descriptions; replaced cold-start `title` tooltip with a visible inline note that toggles with the checkbox; added KG Maintenance section intro; expanded alias-collision audit description; added column legend above the collision table; added panel hints to the scraped-articles and pipeline-runs tables.
+  - `graph/+page.svelte` (KG Graph): added usage instructions in the search sidebar; added empty-canvas state with guidance; added a type colour legend at the bottom of the sidebar; labelled relationship direction arrows; added "click to add to graph" hint in the detail panel; added overflow hint when >10 relationships.
+  - `entities/[id]/+page.svelte` (Entity detail): added tab-level hint paragraphs explaining relationships and mentions; added direction legend (→ out / ← in) and confidence explanation in the relationships tab; highlighted low-confidence rows; added `title` tooltips on direction cells and entity-ID links; expanded empty-state messages.
+
+
 ### v0.60.7 - 30th April 2026
 
 - Optimised `knowledge_graph/_relationship_mixin.py` `save_relationships`:

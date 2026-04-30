@@ -149,7 +149,12 @@
 <svelte:head><title>Feed — Unstructured Mapping</title></svelte:head>
 
 <h1 class="page-title">Feed</h1>
-<p class="subtitle">Three-step pipeline: seed the KG with known entities, scrape articles from news sources, then run the LLM pipeline to extract relationships.</p>
+<p class="subtitle">
+	Three-step pipeline: seed the KG with known entities, scrape articles from news sources, then
+	run the LLM pipeline to extract relationships. Follow the steps in order on a fresh database.
+	Each step is safe to re-run — seeding and scraping are idempotent; duplicate articles and
+	entities are silently skipped.
+</p>
 
 {#if entityCount === 0}
 	<div class="empty-kg-warning">
@@ -163,7 +168,12 @@
 		<div class="step-number step-zero">0</div>
 		<div class="step-body">
 			<h2>Seed entities</h2>
-			<p class="step-desc">Load the curated financial entities and Wikidata snapshots into the KG. Required once on a fresh database — idempotent, safe to re-run.</p>
+			<p class="step-desc">
+				Load the curated financial entities (companies, indices, people) and Wikidata snapshots
+				into the KG. This step is required once on a fresh database. Re-running it is safe —
+				entities that already exist are skipped. <strong>The pipeline cannot find mentions without
+				entities in the graph.</strong>
+			</p>
 			<div class="entity-count">
 				{#if entityCount === null}
 					<span class="muted">Loading…</span>
@@ -187,7 +197,11 @@
 		<div class="step-number">1</div>
 		<div class="step-body">
 			<h2>Scrape articles</h2>
-			<p class="step-desc">Fetch the latest articles from BBC, Reuters, and AP and store them in the articles database.</p>
+			<p class="step-desc">
+				Fetch the latest articles from BBC, Reuters, and AP and store them in the articles
+				database. Scraping runs in the background — the articles table below refreshes
+				automatically after a few seconds. Articles already in the database are not duplicated.
+			</p>
 			<button class="btn" onclick={triggerScrape} disabled={scrapeStatus?.kind === 'running'}>
 				{scrapeStatus?.kind === 'running' ? 'Scraping…' : 'Scrape all sources'}
 			</button>
@@ -204,24 +218,41 @@
 		<div class="step-number">2</div>
 		<div class="step-body">
 			<h2>Run pipeline</h2>
-			<p class="step-desc">Detect entity mentions in stored articles, resolve them against the KG, and extract relationships using the LLM.</p>
+			<p class="step-desc">
+				Detect entity mentions in stored articles, resolve them against the KG, and extract
+				relationships using the LLM. The pipeline runs in the background — progress is shown
+				below and the runs table updates every few seconds.
+			</p>
 			<div class="field-row">
 				<label class="field">
 					<span>LLM provider</span>
 					<select class="input-sm" bind:value={ingestProvider}>
-						<option value="claude">Claude</option>
-						<option value="ollama">Ollama</option>
+						<option value="claude">Claude (Anthropic API)</option>
+						<option value="ollama">Ollama (local model)</option>
 					</select>
 				</label>
 				<label class="field">
 					<span>Max articles</span>
 					<input class="input-sm" type="number" bind:value={ingestLimit} min="1" max="500" style="width:80px" />
 				</label>
-				<label class="field field-checkbox" title="Skip relationship extraction — let the LLM propose new entities from raw text instead. Use on a freshly seeded KG before relationships can be meaningfully extracted.">
+				<label class="field">
 					<span>Cold start</span>
 					<input type="checkbox" bind:checked={ingestColdStart} />
 				</label>
 			</div>
+			{#if ingestColdStart}
+				<p class="cold-start-hint">
+					<strong>Cold start mode:</strong> the LLM proposes new entities from raw text instead
+					of extracting relationships. Use this on a freshly seeded KG where the entity coverage
+					is still sparse — it lets the model discover entities the seed data missed before you
+					start extracting relationships.
+				</p>
+			{:else}
+				<p class="cold-start-hint muted">
+					<strong>Cold start off</strong> (default): the pipeline resolves mentions against
+					existing entities and extracts relationships between them.
+				</p>
+			{/if}
 			<button class="btn btn-green" onclick={triggerIngest} disabled={ingestStatus?.kind === 'running'}>
 				{ingestStatus?.kind === 'running' ? 'Running…' : 'Run pipeline'}
 			</button>
@@ -235,10 +266,19 @@
 <details class="maintenance">
 	<summary>KG Maintenance</summary>
 	<div class="maintenance-body">
+		<p class="maint-section-desc">
+			These operations maintain the quality of the Knowledge Graph over time. They are not part
+			of the normal ingestion pipeline and should be run manually when needed.
+		</p>
 		<div class="maint-row">
 			<div>
 				<strong>Refresh Wikidata snapshots</strong>
-				<p class="maint-desc">Re-fetch all entity types from the Wikidata SPARQL endpoint, overwrite local snapshots, and import new rows. Takes 1–2 minutes.</p>
+				<p class="maint-desc">
+					Re-fetch all entity types from the Wikidata SPARQL endpoint, overwrite local snapshot
+					files, and import new rows into the KG. Entities already in the graph are skipped;
+					only genuinely new Wikidata entries are added. Takes 1–2 minutes because it queries
+					multiple entity types sequentially.
+				</p>
 			</div>
 			<div class="maint-actions">
 				<button class="btn" onclick={triggerWikidataRefresh} disabled={wikidataStatus?.kind === 'running'}>
@@ -253,7 +293,14 @@
 		<div class="maint-row">
 			<div>
 				<strong>Alias collision audit</strong>
-				<p class="maint-desc">Find aliases shared by multiple entities, ranked by mention prevalence. Same-type collisions are probable duplicates.</p>
+				<p class="maint-desc">
+					Find aliases shared by more than one entity, ranked by how often the alias appears
+					in article mentions. A collision means two entities have the same surface form —
+					the pipeline may resolve mentions to the wrong entity. <em>Same-type collisions</em>
+					(marked ⚠) are the most serious: two entities of the same type sharing an alias
+					are likely duplicates that should be merged. Cross-type collisions (e.g. a person
+					and an organisation sharing an acronym) are usually harmless.
+				</p>
 			</div>
 			<div class="maint-actions">
 				<button class="btn" onclick={runAliasAudit} disabled={aliasAuditStatus?.kind === 'running'}>
@@ -266,6 +313,12 @@
 		</div>
 
 		{#if aliasCollisions.length > 0}
+			<p class="maint-desc" style="margin-bottom:8px">
+				<strong>Alias</strong> — the shared surface form.
+				<strong>Mentions</strong> — total article mentions across all entities with this alias.
+				<strong>Same type?</strong> — ⚠ means both entities have the same type (likely a duplicate).
+				<strong>Keep</strong> badge marks the entity with the most mentions (the likely canonical one).
+			</p>
 			<table class="audit-table">
 				<thead>
 					<tr><th>Alias</th><th>Mentions</th><th>Same type?</th><th>Entities</th></tr>
@@ -308,12 +361,13 @@
 				<button class="btn-icon" onclick={loadArticles} title="Refresh">↻</button>
 			</div>
 		</div>
+		<p class="panel-hint">Articles stored in the database. Titles link to the original source. Use step 1 above to fetch new ones.</p>
 		{#if loadingArticles}
 			<p class="muted">Loading…</p>
 		{:else if !articles.length}
 			<p class="muted">No articles yet. Run step 1 to scrape.</p>
 		{:else}
-			<p class="count">{articles.length} articles shown</p>
+			<p class="count">{articles.length} articles shown (most recent 50)</p>
 			<table>
 				<thead>
 					<tr><th>Source</th><th>Title</th><th>Published</th></tr>
@@ -341,6 +395,7 @@
 			<h3>Pipeline runs</h3>
 			<button class="btn-icon" onclick={loadRuns} title="Refresh">↻</button>
 		</div>
+		<p class="panel-hint">Each row is one execution of the LLM pipeline. <strong>Docs</strong> = articles processed. <strong>Entities</strong> = mentions found. <strong>Relations</strong> = relationships written to the graph.</p>
 		{#if loadingRuns}
 			<p class="muted">Loading…</p>
 		{:else if !runs.length}
@@ -398,6 +453,10 @@
 	.step-body { flex: 1; display: flex; flex-direction: column; gap: 10px; }
 	.step-body h2 { font-size: 1rem; font-weight: 700; }
 	.step-desc { font-size: 0.8rem; color: #a0aec0; line-height: 1.5; }
+	.step-desc strong { color: #e2e8f0; }
+	.cold-start-hint { font-size: 0.75rem; line-height: 1.5; padding: 8px 10px; border-radius: 6px; background: #1a2744; border: 1px solid #2a4365; color: #90cdf4; }
+	.cold-start-hint.muted { background: #1a1f2e; border-color: #2d3748; color: #4a5568; }
+	.cold-start-hint strong { color: inherit; }
 	.arrow { font-size: 1.5rem; color: #4a5568; align-self: center; padding: 0 4px; }
 
 	.field-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
@@ -432,7 +491,10 @@
 	.maint-row { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
 	.maint-row > div:first-child { flex: 1; min-width: 200px; }
 	.maint-row strong { font-size: 0.875rem; }
+	.maint-section-desc { font-size: 0.78rem; color: #718096; line-height: 1.5; margin-bottom: 4px; }
 	.maint-desc { font-size: 0.75rem; color: #718096; margin-top: 4px; line-height: 1.5; }
+	.panel-hint { font-size: 0.75rem; color: #4a5568; line-height: 1.5; margin-bottom: 8px; }
+	.panel-hint strong { color: #718096; }
 	.maint-actions { display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
 
 	.audit-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 8px; }
