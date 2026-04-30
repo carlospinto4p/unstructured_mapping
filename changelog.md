@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.60.10 - 30th April 2026
+
+- Added to Feed page (`frontend/src/routes/feed/+page.svelte`):
+  - Model selector: text input with datalist suggestions below the provider dropdown; defaults to `claude-haiku-4-5-20251001` for Claude and `llama3.1:8b` for Ollama, resets automatically on provider change; wired into the ingest API call.
+  - LLM/no-LLM badges on each step card header (Steps 0 and 1 show "No LLM"; Step 2 shows "Uses LLM").
+  - Pipeline stage breakdown inside Step 2: four labelled rows (Entity detection, Alias resolution, Entity resolution, Relationship extraction) each showing an LLM or no-LLM badge and a description; adapts to cold-start mode; "view prompt" links open the prompts modal directly on the relevant tab.
+  - Prompts modal: overlay showing the exact system prompts and user prompt structure for pass 1 (entity resolution) and pass 2 (relationship extraction), with metadata explaining JSON mode differences between Claude and Ollama.
+
+
 ### v0.60.9 - 30th April 2026
 
 - Added workflow guide to `frontend/src/routes/feed/+page.svelte`: collapsible panel covering first-time setup (seed → cold-start → steady-state), ongoing operation cycle, and quality maintenance (alias audit, Wikidata refresh); auto-opens when the KG is empty; includes the Reuters body-text limitation note and links to the graph.

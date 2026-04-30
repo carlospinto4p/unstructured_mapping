@@ -16,9 +16,29 @@
 	let aliasAuditStatus = $state<{ text: string; kind: 'idle' | 'running' | 'done' | 'error' } | null>(null);
 	let aliasCollisions = $state<import('$lib/api').AliasCollision[]>([]);
 	let ingestProvider = $state('claude');
+	let ingestModel = $state('claude-haiku-4-5-20251001');
 	let ingestLimit = $state(50);
 	let ingestColdStart = $state(false);
 	let activeRun = $state<Run | null>(null);
+
+	let showPromptsModal = $state(false);
+	let activePromptTab = $state<'pass1' | 'pass2'>('pass1');
+
+	const CLAUDE_MODELS = [
+		'claude-haiku-4-5-20251001',
+		'claude-sonnet-4-6',
+		'claude-opus-4-7',
+	];
+	const OLLAMA_MODELS = ['llama3.1:8b', 'llama3.1:70b', 'mistral:7b', 'mixtral:8x7b'];
+
+	const PROVIDER_DEFAULTS: Record<string, string> = {
+		claude: 'claude-haiku-4-5-20251001',
+		ollama: 'llama3.1:8b',
+	};
+
+	$effect(() => {
+		ingestModel = PROVIDER_DEFAULTS[ingestProvider] ?? '';
+	});
 
 	onMount(async () => {
 		await Promise.all([loadArticles(), loadRuns(), loadEntityCount()]);
@@ -115,7 +135,7 @@
 	async function triggerIngest() {
 		ingestStatus = { text: 'Starting pipeline…', kind: 'running' };
 		try {
-			await api.runs.ingest({ provider: ingestProvider, limit: ingestLimit, cold_start: ingestColdStart });
+			await api.runs.ingest({ provider: ingestProvider, model: ingestModel || undefined, limit: ingestLimit, cold_start: ingestColdStart });
 			ingestStatus = { text: `Pipeline started (${ingestProvider}, up to ${ingestLimit} articles). Checking for run…`, kind: 'running' };
 
 			const pollInterval = setInterval(async () => {
@@ -249,7 +269,7 @@
 	<div class="step-card">
 		<div class="step-number step-zero">0</div>
 		<div class="step-body">
-			<h2>Seed entities</h2>
+			<div class="step-heading"><h2>Seed entities</h2><span class="badge-no-llm">No LLM</span></div>
 			<p class="step-desc">
 				Load the curated financial entities (companies, indices, people) and Wikidata snapshots
 				into the KG. This step is required once on a fresh database. Re-running it is safe —
@@ -278,7 +298,7 @@
 	<div class="step-card">
 		<div class="step-number">1</div>
 		<div class="step-body">
-			<h2>Scrape articles</h2>
+			<div class="step-heading"><h2>Scrape articles</h2><span class="badge-no-llm">No LLM</span></div>
 			<p class="step-desc">
 				Fetch the latest articles from BBC, Reuters, and AP and store them in the articles
 				database. Scraping runs in the background — the articles table below refreshes
@@ -299,12 +319,25 @@
 	<div class="step-card">
 		<div class="step-number">2</div>
 		<div class="step-body">
-			<h2>Run pipeline</h2>
+			<div class="step-heading"><h2>Run pipeline</h2><span class="badge-llm">Uses LLM</span></div>
 			<p class="step-desc">
 				Detect entity mentions in stored articles, resolve them against the KG, and extract
 				relationships using the LLM. The pipeline runs in the background — progress is shown
 				below and the runs table updates every few seconds.
 			</p>
+
+			<!-- Pipeline stage breakdown -->
+			<div class="stage-list">
+				{#if ingestColdStart}
+					<div class="stage"><span class="stage-badge stage-llm">LLM</span><span class="stage-name">Entity discovery</span><span class="stage-desc">LLM reads raw text and proposes new entities (pass 1 prompt)</span><button class="stage-prompt-btn" onclick={() => { activePromptTab = 'pass1'; showPromptsModal = true; }}>view prompt</button></div>
+				{:else}
+					<div class="stage"><span class="stage-badge stage-no-llm">no LLM</span><span class="stage-name">Entity detection</span><span class="stage-desc">Rule-based Aho-Corasick trie scan — finds alias matches in text</span></div>
+					<div class="stage"><span class="stage-badge stage-no-llm">no LLM</span><span class="stage-name">Alias resolution</span><span class="stage-desc">Exact match on unambiguous aliases — resolved without any LLM call</span></div>
+					<div class="stage"><span class="stage-badge stage-llm">LLM</span><span class="stage-name">Entity resolution</span><span class="stage-desc">LLM disambiguates ambiguous mentions and proposes new entities (pass 1 prompt)</span><button class="stage-prompt-btn" onclick={() => { activePromptTab = 'pass1'; showPromptsModal = true; }}>view prompt</button></div>
+					<div class="stage"><span class="stage-badge stage-llm">LLM</span><span class="stage-name">Relationship extraction</span><span class="stage-desc">LLM extracts directed relationships between resolved entities (pass 2 prompt)</span><button class="stage-prompt-btn" onclick={() => { activePromptTab = 'pass2'; showPromptsModal = true; }}>view prompt</button></div>
+				{/if}
+			</div>
+
 			<div class="field-row">
 				<label class="field">
 					<span>LLM provider</span>
@@ -312,6 +345,21 @@
 						<option value="claude">Claude (Anthropic API)</option>
 						<option value="ollama">Ollama (local model)</option>
 					</select>
+				</label>
+				<label class="field" style="flex:1;min-width:160px">
+					<span>Model</span>
+					<input
+						class="input-sm"
+						type="text"
+						list="model-suggestions"
+						bind:value={ingestModel}
+						placeholder={PROVIDER_DEFAULTS[ingestProvider]}
+					/>
+					<datalist id="model-suggestions">
+						{#each (ingestProvider === 'claude' ? CLAUDE_MODELS : OLLAMA_MODELS) as m}
+							<option value={m}>{m}</option>
+						{/each}
+					</datalist>
 				</label>
 				<label class="field">
 					<span>Max articles</span>
@@ -504,6 +552,142 @@
 	</section>
 </div>
 
+<!-- Prompts modal -->
+{#if showPromptsModal}
+<div class="modal-backdrop" onclick={() => (showPromptsModal = false)} role="presentation">
+	<div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="LLM prompts">
+		<div class="modal-header">
+			<h2>LLM prompts</h2>
+			<button class="modal-close" onclick={() => (showPromptsModal = false)}>✕</button>
+		</div>
+		<p class="modal-intro">
+			These are the exact system prompts sent to the LLM. The user prompt is assembled per article
+			and contains the candidate entities (pass 1) or resolved entity list (pass 2) followed by the
+			article text. Both Claude and Ollama receive the same prompts.
+		</p>
+		<div class="modal-tabs">
+			<button class="modal-tab" class:active={activePromptTab === 'pass1'} onclick={() => (activePromptTab = 'pass1')}>
+				Pass 1 — Entity resolution
+				<span class="tab-badge tab-llm">LLM</span>
+			</button>
+			<button class="modal-tab" class:active={activePromptTab === 'pass2'} onclick={() => (activePromptTab = 'pass2')}>
+				Pass 2 — Relationship extraction
+				<span class="tab-badge tab-llm">LLM</span>
+			</button>
+		</div>
+
+		{#if activePromptTab === 'pass1'}
+			<div class="modal-section">
+				<div class="prompt-meta">
+					<span class="prompt-meta-item"><strong>Used for:</strong> entity detection, disambiguation, new-entity proposals</span>
+					<span class="prompt-meta-item"><strong>Mode:</strong> steady-state (resolves mentions) and cold-start (proposes entities)</span>
+					<span class="prompt-meta-item"><strong>JSON mode:</strong> Ollama enforces via <code>format="json"</code>; Claude relies on prompt instructions</span>
+				</div>
+				<h3 class="prompt-label">System prompt</h3>
+				<pre class="prompt-block">You are an entity resolution assistant. Your task is to
+identify entity mentions in the provided text and resolve
+each mention to a candidate entity from the knowledge
+graph, or propose a new entity if no candidate matches.
+
+Output a single JSON object with this schema:
+
+&#123;
+  "entities": [
+    &#123;
+      "surface_form": "&lt;exact text from the article&gt;",
+      "entity_id": "&lt;candidate ID or null&gt;",
+      "new_entity": null or &#123;
+        "canonical_name": "&lt;authoritative name&gt;",
+        "entity_type": "&lt;one of: person, organization,
+place, topic, product, legislation, asset, metric,
+role, relation_kind&gt;",
+        "subtype": "&lt;finer classification or null&gt;",
+        "description": "&lt;natural-language context&gt;",
+        "aliases": ["&lt;surface forms observed&gt;"]
+      &#125;,
+      "context_snippet": "&lt;~100 chars of surrounding text&gt;"
+    &#125;
+  ]
+&#125;
+
+Rules:
+- Only extract named entities — skip vague references like "the company" or "they".
+- Each entity entry must have exactly one of: `entity_id` (non-null) or `new_entity` (non-null), never both.
+- When resolving to a candidate, copy the exact `entity_id` from the CANDIDATE ENTITIES list.
+- `context_snippet` must be a short passage (~100 characters) from the text surrounding the mention.
+- If no entities are found, return &#123;"entities": []&#125;.
+- Output valid JSON only — no commentary or markdown.</pre>
+				<h3 class="prompt-label">User prompt structure</h3>
+				<pre class="prompt-block prompt-structure">CANDIDATE ENTITIES:                ← omitted in cold-start mode
+
+[1] entity_id=&lt;uuid&gt;
+    name: Federal Reserve
+    type: organization / central_bank
+    aliases: The Fed, Fed
+    description: US central bank
+
+[2] …
+
+PREVIOUSLY RESOLVED ENTITIES:     ← only on chunk 2+ of a long doc
+- Federal Reserve (id=&lt;uuid&gt;)
+
+TEXT:
+&lt;article body text&gt;</pre>
+			</div>
+		{:else}
+			<div class="modal-section">
+				<div class="prompt-meta">
+					<span class="prompt-meta-item"><strong>Used for:</strong> extracting directed relationships between entities already found in pass 1</span>
+					<span class="prompt-meta-item"><strong>Mode:</strong> steady-state only — skipped in cold-start mode</span>
+					<span class="prompt-meta-item"><strong>relation_type:</strong> free-form label invented by the LLM (e.g. "raised_rates", "acquired", "appointed")</span>
+				</div>
+				<h3 class="prompt-label">System prompt</h3>
+				<pre class="prompt-block">You are a relationship extraction assistant. Your task
+is to extract directed relationships between the
+provided entities based on the article text.
+
+Output a single JSON object with this schema:
+
+&#123;
+  "relationships": [
+    &#123;
+      "source": "&lt;entity ID or canonical name&gt;",
+      "target": "&lt;entity ID or canonical name&gt;",
+      "relation_type": "&lt;free-form label&gt;",
+      "qualifier": null or "&lt;entity ID or name&gt;",
+      "valid_from": null or "&lt;ISO 8601 date&gt;",
+      "valid_until": null or "&lt;ISO 8601 date&gt;",
+      "confidence": null or &lt;number 0–1&gt;,
+      "context_snippet": "&lt;~100 chars of surrounding text&gt;"
+    &#125;
+  ]
+&#125;
+
+Rules:
+- Only extract relationships between entities in the ENTITIES IN THIS TEXT block.
+- `source` is the subject, `target` is the object of the relationship.
+- `relation_type` is a short descriptive label (e.g. "raised", "appointed", "headquartered_in").
+- `qualifier` is an optional entity reference for n-ary qualification (e.g. a role entity).
+- `valid_from` / `valid_until` are optional ISO 8601 dates ("2024", "2024-03", "2024-03-15").
+- `confidence` is 0–1; use null when you cannot calibrate it.
+- Do not create self-referential relationships (source == target).
+- If no relationships are found, return &#123;"relationships": []&#125;.
+- Output valid JSON only — no commentary or markdown.</pre>
+				<h3 class="prompt-label">User prompt structure</h3>
+				<pre class="prompt-block prompt-structure">ENTITIES IN THIS TEXT:
+
+- Federal Reserve (id=&lt;uuid&gt;)
+- Jerome Powell (id=&lt;uuid&gt;)
+- Goldman Sachs (organization, NEW — not yet in KG)
+
+TEXT:
+&lt;article body text&gt;</pre>
+			</div>
+		{/if}
+	</div>
+</div>
+{/if}
+
 <style>
 	.page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
 	.subtitle { color: #718096; font-size: 0.875rem; margin-bottom: 16px; max-width: 640px; line-height: 1.5; }
@@ -645,4 +829,65 @@
 	.badge.running { background: #2a4365; color: #90cdf4; }
 	.badge.failed { background: #742a2a; color: #fc8181; }
 	.active-row { background: #1a2744; }
+
+	/* Step heading with LLM badge */
+	.step-heading { display: flex; align-items: center; gap: 8px; }
+	.step-heading h2 { font-size: 1rem; font-weight: 700; }
+	.badge-llm    { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: #2a3f6e; color: #90cdf4; border: 1px solid #2b6cb0; white-space: nowrap; }
+	.badge-no-llm { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: #1a2e22; color: #68d391; border: 1px solid #276749; white-space: nowrap; }
+
+	/* Pipeline stage breakdown */
+	.stage-list { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-top: 1px solid #2d3748; border-bottom: 1px solid #2d3748; }
+	.stage { display: flex; align-items: baseline; gap: 8px; font-size: 0.78rem; flex-wrap: wrap; }
+	.stage-badge { font-size: 0.62rem; font-weight: 700; padding: 1px 6px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+	.stage-llm    { background: #2a3f6e; color: #90cdf4; border: 1px solid #2b6cb0; }
+	.stage-no-llm { background: #1a2e22; color: #68d391; border: 1px solid #276749; }
+	.stage-name { font-weight: 600; color: #e2e8f0; white-space: nowrap; }
+	.stage-desc { color: #4a5568; flex: 1; }
+	.stage-prompt-btn { background: none; border: none; color: #63b3ed; font-size: 0.72rem; cursor: pointer; text-decoration: underline; padding: 0; white-space: nowrap; }
+	.stage-prompt-btn:hover { color: #90cdf4; }
+
+	/* Modal */
+	.modal-backdrop {
+		position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+		display: flex; align-items: flex-start; justify-content: center;
+		z-index: 100; padding: 40px 16px; overflow-y: auto;
+	}
+	.modal {
+		background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px;
+		width: 100%; max-width: 760px; display: flex; flex-direction: column;
+		gap: 0; flex-shrink: 0;
+	}
+	.modal-header {
+		display: flex; justify-content: space-between; align-items: center;
+		padding: 18px 20px 14px; border-bottom: 1px solid #2d3748;
+	}
+	.modal-header h2 { font-size: 1rem; font-weight: 700; }
+	.modal-close { background: none; border: none; color: #718096; cursor: pointer; font-size: 1.1rem; }
+	.modal-close:hover { color: #e2e8f0; }
+	.modal-intro { padding: 12px 20px 0; font-size: 0.78rem; color: #718096; line-height: 1.55; }
+	.modal-tabs { display: flex; gap: 4px; padding: 12px 20px 0; }
+	.modal-tab {
+		padding: 7px 14px; background: none; border: 1px solid #2d3748;
+		border-radius: 6px; color: #718096; cursor: pointer; font-size: 0.8rem;
+		display: flex; align-items: center; gap: 6px;
+	}
+	.modal-tab.active { background: #2b6cb0; border-color: #2b6cb0; color: #fff; }
+	.tab-badge { font-size: 0.6rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+	.tab-llm { background: rgba(255,255,255,0.2); color: #fff; }
+	.modal-tab:not(.active) .tab-llm { background: #2a3f6e; color: #90cdf4; }
+	.modal-section { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+	.prompt-meta { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; background: #141920; border-radius: 6px; border: 1px solid #2d3748; }
+	.prompt-meta-item { font-size: 0.75rem; color: #718096; line-height: 1.5; }
+	.prompt-meta-item strong { color: #a0aec0; }
+	.prompt-meta-item code { font-family: monospace; font-size: 0.75rem; background: #2d3748; padding: 0 4px; border-radius: 3px; color: #e2e8f0; }
+	.prompt-label { font-size: 0.72rem; font-weight: 700; color: #4a5568; text-transform: uppercase; letter-spacing: 0.05em; }
+	.prompt-block {
+		background: #0f1117; border: 1px solid #2d3748; border-radius: 8px;
+		padding: 14px 16px; font-family: monospace; font-size: 0.75rem;
+		line-height: 1.65; color: #a0aec0; white-space: pre-wrap;
+		word-break: break-word; margin: 0; overflow-x: auto;
+	}
+	.prompt-structure { color: #718096; }
+	.prompt-structure { border-left: 3px solid #2b6cb0; }
 </style>
