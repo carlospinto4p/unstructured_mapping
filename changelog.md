@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.60.9 - 30th April 2026
+
+- Added workflow guide to `frontend/src/routes/feed/+page.svelte`: collapsible panel covering first-time setup (seed → cold-start → steady-state), ongoing operation cycle, and quality maintenance (alias audit, Wikidata refresh); auto-opens when the KG is empty; includes the Reuters body-text limitation note and links to the graph.
+- Added Reuters body extraction gap to `backlog.md`.
+
+
 ### v0.60.8 - 30th April 2026
 
 - Improved frontend clarity across all four pages (`frontend/src/routes/`):

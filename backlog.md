@@ -16,6 +16,10 @@
 - [x] **LOW** — Remove redundant outer `transaction()` in `ArticleProcessor.process_article` (line 315) — `_persist_aggregated` already wraps its writes in `with self._store.transaction()`; the outer wrapper is a no-op (reentrant depth counter), but its presence implies ownership it does not have and conflicts with the method's own docstring
 - [x] **LOW** — Fix `supports_json_mode` ABC vs class-attribute inconsistency in `pipeline/llm/provider.py` — `LLMProvider` declares it `@property @abstractmethod` but `ClaudeProvider` / `OllamaProvider` satisfy it via class-level constants; either change the ABC to a concrete `@property` returning `False` (override-friendly) or document the class-attr pattern explicitly
 
+### 2026 April 30th (scraping)
+
+- [ ] **MEDIUM** — Reuters scraper has no body text (`web_scraping/_reuters.py`): `ReutersScraper` deliberately skips `_extract_body` because reuters.com blocks direct scraping — articles only contain the RSS headline and a 1–2 sentence summary, giving the LLM pipeline far less signal than BBC/AP; fix options: (a) replace with a Reuters API key, (b) route through a third-party news aggregator API (NewsAPI, GDELT), or (c) accept limitation and document it clearly
+
 ### 2026 March 30th
 
 #### Post-population (after KG is populated)

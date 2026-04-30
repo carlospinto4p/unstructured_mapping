@@ -156,9 +156,91 @@
 	entities are silently skipped.
 </p>
 
+<details class="workflow-guide" open={entityCount === 0 || entityCount === null}>
+	<summary>Workflow guide — how to populate the KG</summary>
+	<div class="workflow-body">
+
+		<div class="workflow-phase">
+			<div class="phase-label phase-setup">First time setup</div>
+			<ol class="phase-steps">
+				<li>
+					<strong>Seed the KG (Step 0).</strong> Click "Seed entities" to load the curated
+					financial entity list and Wikidata snapshots. This gives the pipeline a set of known
+					entities to match against. You must do this before running the pipeline — without
+					entities in the graph, the detector has nothing to find.
+				</li>
+				<li>
+					<strong>Scrape articles (Step 1).</strong> Click "Scrape all sources" to fetch the
+					latest articles from BBC, Reuters, and AP.
+					<span class="phase-note">
+						Note: Reuters articles only contain a headline and a short summary (1–2 sentences)
+						because Reuters blocks full-text scraping. BBC and AP deliver full article body text.
+					</span>
+				</li>
+				<li>
+					<strong>Cold-start pass (Step 2, Cold start ON).</strong> Enable the "Cold start"
+					checkbox and run the pipeline. In this mode the LLM reads raw article text and
+					<em>proposes new entities</em> it finds — people, companies, assets — that aren't yet
+					in the seed data. No relationships are extracted in this pass. Run it over a large
+					batch of articles (100–200) to build up good entity coverage.
+				</li>
+				<li>
+					<strong>Steady-state pass (Step 2, Cold start OFF).</strong> Disable Cold start and
+					run the pipeline again over the same (or new) articles. Now that the KG has entities
+					from both seeding and cold-start discovery, the pipeline will detect mentions, resolve
+					them to specific entities, and <em>extract relationships</em> between them.
+					Relationships only appear after this step.
+				</li>
+			</ol>
+		</div>
+
+		<div class="workflow-phase">
+			<div class="phase-label phase-ongoing">Ongoing operation</div>
+			<ol class="phase-steps">
+				<li>
+					<strong>Scrape fresh articles regularly (Step 1)</strong> to keep the article database
+					up to date. Articles already in the database are skipped automatically.
+				</li>
+				<li>
+					<strong>Run the pipeline in steady-state mode (Step 2, Cold start OFF)</strong> on new
+					articles. Processed articles are also skipped, so you can safely re-run without
+					double-counting.
+				</li>
+				<li>
+					<strong>Occasionally run a cold-start pass</strong> if news coverage drifts to new
+					entities that aren't in the graph yet (new companies, new people entering the news).
+					Follow it with a steady-state pass to extract their relationships.
+				</li>
+			</ol>
+		</div>
+
+		<div class="workflow-phase">
+			<div class="phase-label phase-maintenance">Quality maintenance</div>
+			<ol class="phase-steps">
+				<li>
+					<strong>Run the alias collision audit</strong> (KG Maintenance below) after each
+					cold-start batch. Cold start may create near-duplicate entities with slightly different
+					names for the same real-world object. The audit flags aliases shared by multiple
+					entities — same-type collisions are the ones to investigate first.
+				</li>
+				<li>
+					<strong>Refresh Wikidata snapshots</strong> periodically to pick up newly listed
+					companies, new central bank governors, and other changes to the financial landscape.
+				</li>
+			</ol>
+		</div>
+
+		<p class="workflow-footer">
+			Use the <a href="/graph">KG Graph</a> to inspect entities and their relationships, and the
+			entity detail pages to review individual mentions and confidence scores.
+		</p>
+	</div>
+</details>
+
 {#if entityCount === 0}
 	<div class="empty-kg-warning">
-		<strong>KG is empty.</strong> Seed entities first (Step 0) — without entities in the graph, the pipeline cannot detect mentions or extract relationships.
+		<strong>KG is empty.</strong> Start with Step 0 below — see the workflow guide above for the
+		full recommended sequence.
 	</div>
 {/if}
 
@@ -425,6 +507,45 @@
 <style>
 	.page-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
 	.subtitle { color: #718096; font-size: 0.875rem; margin-bottom: 16px; max-width: 640px; line-height: 1.5; }
+
+	/* Workflow guide */
+	.workflow-guide {
+		background: #141920; border: 1px solid #2d3748; border-radius: 10px;
+		margin-bottom: 20px;
+	}
+	.workflow-guide summary {
+		padding: 12px 20px; font-size: 0.8rem; font-weight: 700;
+		color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em;
+		cursor: pointer; user-select: none;
+	}
+	.workflow-guide summary:hover { color: #e2e8f0; }
+	.workflow-body {
+		padding: 0 20px 20px;
+		display: flex; flex-direction: column; gap: 20px;
+	}
+	.workflow-phase { display: flex; flex-direction: column; gap: 8px; }
+	.phase-label {
+		font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+		letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px;
+		align-self: flex-start;
+	}
+	.phase-setup      { background: #1a2744; color: #90cdf4; border: 1px solid #2a4365; }
+	.phase-ongoing    { background: #1a2e22; color: #9ae6b4; border: 1px solid #276749; }
+	.phase-maintenance { background: #2d2a00; color: #f6e05e; border: 1px solid #744210; }
+	.phase-steps {
+		margin: 0; padding-left: 20px;
+		display: flex; flex-direction: column; gap: 8px;
+	}
+	.phase-steps li { font-size: 0.8rem; color: #a0aec0; line-height: 1.6; }
+	.phase-steps li strong { color: #e2e8f0; }
+	.phase-steps li em { color: #90cdf4; font-style: normal; font-weight: 600; }
+	.phase-note {
+		display: block; margin-top: 4px;
+		font-size: 0.75rem; color: #718096;
+		padding-left: 4px; border-left: 2px solid #2d3748;
+	}
+	.workflow-footer { font-size: 0.78rem; color: #4a5568; line-height: 1.5; padding-top: 4px; border-top: 1px solid #1a1f2e; }
+	.workflow-footer a { color: #63b3ed; }
 
 	.empty-kg-warning {
 		background: #2d1a00; color: #f6ad55; border: 1px solid #744210;
