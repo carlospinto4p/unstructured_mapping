@@ -1,5 +1,13 @@
 ## Backlog
 
+### 2026 April 30th (optimization review)
+
+- [ ] **HIGH** — Batch relationship existence checks in `save_relationships` (`_relationship_mixin.py:128–145`): currently runs one `SELECT 1 FROM relationships WHERE ...` per candidate before bulk insert — N queries for N relationships; fix by fetching all existing composite keys in a single query and filtering in Python
+- [ ] **HIGH** — Batch relationship history inserts in `save_relationships` (`_relationship_mixin.py:175–176`): `_log_relationship` issues one `INSERT INTO relationship_history` per new row; replace with a single `executemany` call for the whole batch
+- [ ] **MEDIUM** — Eliminate quadratic context rebuilding in `fit_candidates` (`budget.py:227–233`): each loop iteration calls `build_kg_context_block([*fitted, entity])` which rebuilds the entire block from scratch — O(N²) string work; fix by tracking a running token count and the incremental cost of each new entity
+- [ ] **MEDIUM** — Cache lowercased chunk text in `_count_alias_matches` (`budget.py:158`): called once per candidate inside `sorted()`'s key function, but lowercases the chunk text from scratch each call; move `chunk_text.lower()` outside the sort and pass it as a pre-lowercased argument
+- [ ] **LOW** — Deduplicate entity IDs before `load_aliases_batch` in `find_mentions_with_entities` (`_provenance_mixin.py:264`): `eids` can contain duplicate entity IDs (one per provenance row), inflating the batch query unnecessarily; fix with `list(dict.fromkeys(r["entity_id"] for r in rows))`
+
 ### 2026 April 30th (refactor review)
 
 - [x] **HIGH** — Move `_fetch_mapped` and `_write_snapshot` from `cli/wikidata_seed.py` to `wikidata/` — `api/kg.py` imports these private CLI functions with `# noqa: PLC2701` suppression, violating layer boundaries (API → CLI coupling); promote them to the `wikidata` module where they logically belong
