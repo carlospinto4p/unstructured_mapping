@@ -139,7 +139,7 @@ def _count_occurrences(text: str, substring: str) -> int:
 
 def _count_alias_matches(
     entity: Entity,
-    chunk_text: str,
+    lower_text: str,
 ) -> int:
     """Count how many alias matches an entity has in text.
 
@@ -152,15 +152,46 @@ def _count_alias_matches(
     mention spans.
 
     :param entity: The candidate entity.
-    :param chunk_text: The chunk text to search.
+    :param lower_text: Chunk text, already lowercased by
+        the caller to avoid repeated lowercasing across
+        the sorted() key function.
     :return: Total number of alias occurrences.
     """
-    lower_text = chunk_text.lower()
     count = 0
     for alias in entity.aliases:
         count += _count_occurrences(lower_text, alias.lower())
     count += _count_occurrences(lower_text, entity.canonical_name.lower())
     return count
+
+
+#: Char count of the "CANDIDATE ENTITIES:\n" header emitted
+#: by build_kg_context_block when at least one entity is present.
+_KG_HEADER_CHARS: int = len("\n".join(["CANDIDATE ENTITIES:", ""]))
+
+
+def _entity_block_chars(entity: Entity, idx: int) -> int:
+    """Incremental char cost of one entity in a KG context block.
+
+    Mirrors the format produced by `build_kg_context_block` so
+    that `fit_candidates` can track the running char count without
+    rebuilding the whole block from scratch on each iteration.
+    """
+    type_label = entity.entity_type.value
+    if entity.subtype:
+        type_label += f" / {entity.subtype}"
+    aliases_str = ", ".join(entity.aliases)
+    lines: list[str] = [
+        f"[{idx}] entity_id={entity.entity_id}",
+        f"    name: {entity.canonical_name}",
+        f"    type: {type_label}",
+    ]
+    if aliases_str:
+        lines.append(f"    aliases: {aliases_str}")
+    lines.append(f"    description: {entity.description}")
+    lines.append("")
+    # sum of line lengths + one "\n" separator per line (including
+    # the "\n" that connects this block to the preceding content)
+    return sum(len(ln) for ln in lines) + len(lines)
 
 
 def fit_candidates(
@@ -218,19 +249,31 @@ def fit_candidates(
         return list(candidates), chunk_text
 
     # -- Rank by alias matches, keep what fits -----------
+    lower_chunk = chunk_text.lower()
     ranked = sorted(
         candidates,
-        key=lambda e: _count_alias_matches(e, chunk_text),
+        key=lambda e: _count_alias_matches(e, lower_chunk),
         reverse=True,
     )
 
     fitted: list[Entity] = []
-    for entity in ranked:
-        trial = build_kg_context_block([*fitted, entity])
-        if count(trial) <= kg_budget:
-            fitted.append(entity)
-        else:
-            break
+    if tokenizer is None:
+        running_chars = _KG_HEADER_CHARS
+        for entity in ranked:
+            delta = _entity_block_chars(entity, len(fitted) + 1)
+            new_chars = running_chars + delta
+            if math.ceil(new_chars / _CHARS_PER_TOKEN) <= kg_budget:
+                fitted.append(entity)
+                running_chars = new_chars
+            else:
+                break
+    else:
+        for entity in ranked:
+            trial = build_kg_context_block([*fitted, entity])
+            if tokenizer(trial) <= kg_budget:
+                fitted.append(entity)
+            else:
+                break
 
     if len(fitted) < len(candidates):
         log.info(

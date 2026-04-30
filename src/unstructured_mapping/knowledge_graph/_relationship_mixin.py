@@ -125,23 +125,32 @@ class RelationshipMixin:
                 continue
             seen.add(key)
             candidates.append(rel)
+        source_ids = list({r.source_id for r in candidates})
+        placeholders = ", ".join("?" * len(source_ids))
+        existing_keys: set[tuple[str, str, str, str]] = {
+            (
+                r["source_id"],
+                r["target_id"],
+                r["relation_type"],
+                r["valid_from"] or "",
+            )
+            for r in self._conn.execute(
+                f"SELECT source_id, target_id, relation_type, valid_from "
+                f"FROM relationships "
+                f"WHERE source_id IN ({placeholders})",
+                source_ids,
+            ).fetchall()
+        }
         new_rels = [
             rel
             for rel in candidates
-            if self._conn.execute(
-                "SELECT 1 FROM relationships "
-                "WHERE source_id = ? "
-                "AND target_id = ? "
-                "AND relation_type = ? "
-                "AND valid_from = ?",
-                (
-                    rel.source_id,
-                    rel.target_id,
-                    rel.relation_type,
-                    dt_to_iso(rel.valid_from) or "",
-                ),
-            ).fetchone()
-            is None
+            if (
+                rel.source_id,
+                rel.target_id,
+                rel.relation_type,
+                dt_to_iso(rel.valid_from) or "",
+            )
+            not in existing_keys
         ]
         if not new_rels:
             return 0
@@ -172,8 +181,34 @@ class RelationshipMixin:
                 for r in new_rels
             ],
         )
-        for rel in new_rels:
-            self._log_relationship(rel, "create", reason)
+        changed_at = now_iso()
+        self._conn.executemany(
+            "INSERT INTO relationship_history "
+            "(operation, changed_at, source_id, "
+            "target_id, relation_type, description, "
+            "qualifier_id, relation_kind_id, "
+            "valid_from, valid_until, document_id, "
+            "reason) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                (
+                    "create",
+                    changed_at,
+                    r.source_id,
+                    r.target_id,
+                    r.relation_type,
+                    r.description,
+                    r.qualifier_id,
+                    r.relation_kind_id,
+                    dt_to_iso(r.valid_from) or "",
+                    dt_to_iso(r.valid_until),
+                    r.document_id,
+                    reason,
+                )
+                for r in new_rels
+            ],
+        )
         self._commit()
         return len(new_rels)
 

@@ -261,7 +261,7 @@ class ProvenanceMixin:
         ).fetchall()
         if not rows:
             return []
-        eids = [r["entity_id"] for r in rows]
+        eids = list(dict.fromkeys(r["entity_id"] for r in rows))
         alias_map = load_aliases_batch(self._conn, eids)
         results: list[tuple[Entity, Provenance]] = []
         for row in rows:

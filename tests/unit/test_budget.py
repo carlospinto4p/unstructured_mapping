@@ -146,7 +146,7 @@ def test_compute_budget_returns_prompt_budget():
 
 def test_alias_matches_single(fed_entity):
     text = "the Fed raised rates"
-    count = _count_alias_matches(fed_entity, text)
+    count = _count_alias_matches(fed_entity, text.lower())
 
     # "the Fed" matches, "Fed" matches (substring of
     # "the Fed" found twice)
@@ -155,14 +155,14 @@ def test_alias_matches_single(fed_entity):
 
 def test_alias_matches_case_insensitive(fed_entity):
     text = "THE FED raised rates"
-    count = _count_alias_matches(fed_entity, text)
+    count = _count_alias_matches(fed_entity, text.lower())
 
     assert count >= 1
 
 
 def test_alias_matches_canonical_name(fed_entity):
     text = "Federal Reserve raised rates"
-    count = _count_alias_matches(fed_entity, text)
+    count = _count_alias_matches(fed_entity, text.lower())
 
     # "Federal Reserve" appears as both alias and
     # canonical name
@@ -178,7 +178,7 @@ def test_alias_matches_none():
         aliases=("UnknownCorp",),
     )
     text = "The Fed raised rates"
-    count = _count_alias_matches(entity, text)
+    count = _count_alias_matches(entity, text.lower())
 
     assert count == 0
 
@@ -187,7 +187,7 @@ def test_alias_matches_multiple_occurrences(
     powell_entity,
 ):
     text = "Powell spoke. Then Powell added."
-    count = _count_alias_matches(powell_entity, text)
+    count = _count_alias_matches(powell_entity, text.lower())
 
     # "Powell" appears twice as alias, plus canonical
     # "Jerome Powell" doesn't appear

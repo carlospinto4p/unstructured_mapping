@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.60.7 - 30th April 2026
+
+- Optimised `knowledge_graph/_relationship_mixin.py` `save_relationships`:
+  - Replaced N per-row `SELECT 1` existence checks with a single bulk `SELECT` filtered by source IDs, then Python-set filtering.
+  - Replaced N individual `_log_relationship` calls with a single `executemany` batch insert into `relationship_history`.
+- Optimised `pipeline/llm/budget.py`:
+  - `_count_alias_matches`: parameter renamed `lower_text`; callers now pass pre-lowercased text so `chunk_text.lower()` is called once per `fit_candidates` invocation instead of once per candidate.
+  - `fit_candidates`: replaced O(N²) `build_kg_context_block([*fitted, entity])` loop with incremental char-count tracking via new `_entity_block_chars` helper (fast path for the default `estimate_tokens` case; falls back to the original approach when a custom tokenizer is provided).
+- Optimised `knowledge_graph/_provenance_mixin.py` `find_mentions_with_entities`: deduplicate entity IDs before `load_aliases_batch` using `dict.fromkeys` to avoid inflating the batch query with duplicates.
+
+
 ### v0.60.6 - 30th April 2026
 
 - Refactored `pipeline/_article_processor.py`:
