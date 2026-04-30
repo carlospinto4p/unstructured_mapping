@@ -11,7 +11,7 @@ from unstructured_mapping.knowledge_graph import (
     EntityType,
     KnowledgeStore,
 )
-from unstructured_mapping.wikidata import TYPE_REGISTRY
+from unstructured_mapping.wikidata import TYPE_REGISTRY, write_snapshot
 from unstructured_mapping.wikidata.mapper import (
     MappedEntity,
 )
@@ -354,7 +354,7 @@ def test_write_snapshot_produces_seed_compatible_file(
         _mapped("Q1", "Alpha", aliases=("ticker:ALP",)),
     ]
     path = tmp_path / "snapshot.json"
-    wikidata_seed._write_snapshot(mapped, path)
+    write_snapshot(mapped, path)
     data = json.loads(path.read_text(encoding="utf-8"))
     assert data["version"] == 1
     assert data["reason"] == "wikidata-seed"

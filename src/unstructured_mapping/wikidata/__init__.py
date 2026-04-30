@@ -16,6 +16,10 @@ from unstructured_mapping.wikidata.client import (
     SparqlClient,
     SparqlError,
 )
+from unstructured_mapping.wikidata.fetch import (
+    fetch_mapped,
+    write_snapshot,
+)
 from unstructured_mapping.wikidata.mapper import (
     MappedEntity,
     dedupe_mapped_by_qid,
@@ -57,6 +61,7 @@ __all__ = [
     "TypeHandler",
     "build_query",
     "dedupe_mapped_by_qid",
+    "fetch_mapped",
     "map_central_bank_row",
     "map_company_row",
     "map_crypto_row",
@@ -64,4 +69,5 @@ __all__ = [
     "map_exchange_row",
     "map_index_row",
     "map_regulator_row",
+    "write_snapshot",
 ]

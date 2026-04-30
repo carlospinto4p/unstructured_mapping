@@ -12,16 +12,16 @@ from unstructured_mapping.cli.audit_aliases import (
     score_collisions,
 )
 from unstructured_mapping.cli.populate import StageReport, populate
-from unstructured_mapping.cli.wikidata_seed import (
-    _fetch_mapped,  # noqa: PLC2701
-    _write_snapshot,  # noqa: PLC2701
-    import_entities,
-)
+from unstructured_mapping.cli.wikidata_seed import import_entities
 from unstructured_mapping.knowledge_graph import KnowledgeStore
 from unstructured_mapping.knowledge_graph.validation import (
     find_alias_collisions,
 )
-from unstructured_mapping.wikidata import TYPE_REGISTRY
+from unstructured_mapping.wikidata import (
+    TYPE_REGISTRY,
+    fetch_mapped,
+    write_snapshot,
+)
 
 from ._deps import get_kg, get_kg_path, get_seed_dir
 
@@ -137,9 +137,9 @@ def _run_wikidata_refresh_thread(
     with KnowledgeStore(db_path=kg_path) as kg:
         for kind in types:
             try:
-                mapped = _fetch_mapped(kind, limit)
+                mapped = fetch_mapped(kind, limit)
                 snapshot_path = wikidata_dir / f"{kind}.json"
-                _write_snapshot(mapped, snapshot_path)
+                write_snapshot(mapped, snapshot_path)
                 created, skipped, _ = import_entities(mapped, kg)
                 reports.append(
                     {

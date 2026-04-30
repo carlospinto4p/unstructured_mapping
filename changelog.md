@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.60.5 - 30th April 2026
+
+- Refactored `wikidata/`:
+  - Added `fetch.py` with public `fetch_mapped()` and `write_snapshot()`, promoted from private helpers in `cli/wikidata_seed.py`.
+  - Exported both from `wikidata/__init__.py`.
+- Updated `api/kg.py`: replaced private CLI imports (`_fetch_mapped`, `_write_snapshot`) with `wikidata.fetch_mapped` and `wikidata.write_snapshot`; removed `# noqa: PLC2701` suppressions.
+- Updated `cli/wikidata_seed.py`: removed duplicated function bodies and imported from `wikidata` instead.
+- Updated `tests/unit/test_wikidata_seed.py`: updated `write_snapshot` call to use `wikidata.write_snapshot`.
+
+
 ### v0.60.4 - 30th April 2026
 
 - Updated `api/kg.py`:

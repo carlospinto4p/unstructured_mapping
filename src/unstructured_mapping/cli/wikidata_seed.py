@@ -32,7 +32,6 @@ offline artifact of the import.
 """
 
 import argparse
-import json
 import logging
 from collections import Counter
 from pathlib import Path
@@ -47,16 +46,14 @@ from unstructured_mapping.cli._seed_helpers import (
     log_import_summary,
 )
 from unstructured_mapping.knowledge_graph import (
-    Entity,
     EntityType,
     KnowledgeStore,
 )
 from unstructured_mapping.wikidata import (
     TYPE_REGISTRY,
     MappedEntity,
-    SparqlClient,
-    build_query,
-    dedupe_mapped_by_qid,
+    fetch_mapped,
+    write_snapshot,
 )
 
 logger = logging.getLogger(__name__)
@@ -100,29 +97,6 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def _fetch_mapped(kind: str, limit: int) -> list[MappedEntity]:
-    """Fetch rows from Wikidata and map them to entities.
-
-    :param kind: One of the keys of
-        :data:`unstructured_mapping.wikidata.TYPE_REGISTRY`.
-    :param limit: Row cap passed to the SPARQL query.
-    :return: The mapped entities with ``None`` results
-        (unlabelled rows etc.) filtered out.
-    """
-    handler = TYPE_REGISTRY[kind]
-    query = build_query(handler.query, limit=limit)
-    with SparqlClient() as client:
-        rows = client.query(query)
-    mapped: list[MappedEntity] = []
-    for row in rows:
-        result = handler.mapper(row)
-        if result is not None:
-            mapped.append(result)
-    # Wikidata OPTIONAL joins fan each QID out into several
-    # rows; collapse them before snapshot writing or dedup.
-    return dedupe_mapped_by_qid(mapped)
-
-
 def _build_dedup_check(store: KnowledgeStore):
     """Build an ``is_duplicate`` closure with prefetched state.
 
@@ -159,7 +133,8 @@ def import_entities(
 ) -> tuple[int, int, Counter]:
     """Persist mapped entities, skipping duplicates.
 
-    :param mapped: Entities returned by :func:`_fetch_mapped`.
+    :param mapped: Entities returned by
+        :func:`unstructured_mapping.wikidata.fetch_mapped`.
     :param store: Target knowledge store.
     :param dry_run: When True, only run dedup; do not write.
     :return: ``(created, skipped, counts_by_subtype)``.
@@ -175,41 +150,6 @@ def import_entities(
     )
 
 
-def _entity_to_seed_json(entity: Entity) -> dict:
-    """Serialise an entity to a seed-file-compatible dict."""
-    return {
-        "canonical_name": entity.canonical_name,
-        "entity_type": entity.entity_type.value,
-        "subtype": entity.subtype,
-        "description": entity.description,
-        "aliases": list(entity.aliases),
-    }
-
-
-def _write_snapshot(mapped: list[MappedEntity], path: Path) -> None:
-    """Write mapped entities as a seed-compatible JSON file.
-
-    The ``"reason"`` field tells :func:`cli.seed.load_seed`
-    how to tag ``entity_history`` entries on replay, so a
-    rebuild from snapshots preserves the
-    ``reason="wikidata-seed"`` origin signal.
-    """
-    payload = {
-        "version": 1,
-        "reason": "wikidata-seed",
-        "description": (
-            "Wikidata seed snapshot. Re-loadable via "
-            "cli.seed for reproducibility."
-        ),
-        "entities": [_entity_to_seed_json(m.entity) for m in mapped],
-    }
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
-
-
 def main(argv: list[str] | None = None) -> None:
     """Entry point for the Wikidata seed CLI."""
     setup_logging()
@@ -220,11 +160,11 @@ def main(argv: list[str] | None = None) -> None:
         args.limit,
         args.type,
     )
-    mapped = _fetch_mapped(args.type, args.limit)
+    mapped = fetch_mapped(args.type, args.limit)
     logger.info("Mapped %d entities", len(mapped))
 
     if args.snapshot is not None:
-        _write_snapshot(mapped, args.snapshot)
+        write_snapshot(mapped, args.snapshot)
         logger.info("Wrote snapshot %s", args.snapshot)
 
     with KnowledgeStore(db_path=args.db) as store:
