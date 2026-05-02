@@ -1,8 +1,21 @@
 # Testing Guidelines
 
+## Test Structure
+
+| Suite | Location | Runs with | Purpose |
+|-------|----------|-----------|---------|
+| Unit | `tests/` | `uv run pytest tests/ -v` | Fast, isolated, no real data |
+
+**Unit tests** use fixtures and temporary paths (`tmp_path`).
+They never depend on external services or real data files.
+
 ## Style
 
 - **No test classes.** Use plain functions with `test_` prefix.
+- Group tests by module, separated by comment headers:
+  ```python
+  # ── Module Name Tests ──────────────────────────────────────
+  ```
 - Use `pytest` idioms: fixtures, parametrize, `pytest.raises`.
 - Keep test files named `test_<module>.py` mirroring the source.
 
@@ -18,6 +31,7 @@
 
 - One logical assertion per test when possible.
 - Use plain `assert` — avoid `unittest`-style methods.
+- For float comparisons: `assert abs(actual - expected) < 1e-9`.
 
 ## Naming
 
@@ -28,6 +42,6 @@
 ## What to Test
 
 - **Do test:** public functions, edge cases, error paths, data
-  roundtrips.
+  roundtrips, serialization schemas.
 - **Don't test:** private helpers directly (test through public
   API), trivial getters/setters.
