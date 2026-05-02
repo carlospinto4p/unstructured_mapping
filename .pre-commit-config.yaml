@@ -16,3 +16,9 @@ repos:
         entry: uv run ruff format .
         language: system
         types: [python]
+      - id: warn-unstaged-claude
+        name: Unstaged .claude/ changes
+        entry: python .pre-commit-scripts/check_unstaged_claude.py
+        language: system
+        pass_filenames: false
+        always_run: true
