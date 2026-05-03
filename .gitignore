@@ -21,6 +21,7 @@ credentials/
 # Temp / local overrides
 *.local.*
 *.tmp.*
+*.bak.*
 
 # AWS / Cloud
 .aws-sam/

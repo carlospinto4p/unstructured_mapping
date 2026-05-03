@@ -5,7 +5,7 @@ following situations:
 
 ## When to Suggest
 
-1. **Every 6-7 versions released**: Same cadence as `/refactor` —
+1. **Every 6-7 versions released**: Same cadence as `/scan` —
    suggest an optimization pass alongside refactoring reviews.
 
 2. **During long sessions**: When a session involves multiple features
